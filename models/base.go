@@ -1,8 +1,8 @@
 //
 // Date: 2018-03-20
 // Author: spicer (spicer@cloudmanic.com)
-// Last Modified by: spicer
-// Last Modified: 2018-03-20
+// Last Modified by: Spicer Matthews
+// Last Modified: 2018-03-21
 // Copyright: 2017 Cloudmanic Labs, LLC. All rights reserved.
 //
 
@@ -52,16 +52,16 @@ func NewDB() (*DB, error) {
 		return nil, err
 	}
 
-	// Enable
-	//db.LogMode(true)
-	//db.SetLogger(log.New(os.Stdout, "\r\n", 0))
-
 	// Run migrations
-	//db.AutoMigrate(&Unit{})
+	db.AutoMigrate(&LabelsToLedger{}) // Must be first.
+	db.AutoMigrate(&Label{})
+	db.AutoMigrate(&Ledger{})
+	db.AutoMigrate(&Contact{})
+	db.AutoMigrate(&Category{})
 
-	// Is this a testing run? If so load testing data.
+	// Is this a testing run?
 	if flag.Lookup("test.v") != nil {
-		LoadTestingData(db)
+		ClearTestingData(db)
 	}
 
 	// Return db connection.
@@ -69,13 +69,16 @@ func NewDB() (*DB, error) {
 }
 
 //
-// Load testing data.
+// Clear testing data.
 //
-func LoadTestingData(db *gorm.DB) {
+func ClearTestingData(db *gorm.DB) {
 
-	// Shared time we use.
-	//ts := time.Date(2017, 10, 29, 17, 20, 01, 507451, time.UTC)
-	//ds := Date{time.Date(2017, 10, 29, 17, 20, 01, 507451, time.UTC)}
+	// Clear tables
+	db.Exec("TRUNCATE TABLE Labels;")
+	db.Exec("TRUNCATE TABLE Ledger;")
+	db.Exec("TRUNCATE TABLE Contacts;")
+	db.Exec("TRUNCATE TABLE Categories;")
+	db.Exec("TRUNCATE TABLE LabelsToLedger;")
 
 }
 

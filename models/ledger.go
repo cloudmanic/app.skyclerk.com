@@ -1,8 +1,8 @@
 //
 // Date: 2018-03-20
 // Author: Spicer Matthews (spicer@cloudmanic.com)
-// Last Modified by: spicer
-// Last Modified: 2018-03-20
+// Last Modified by: Spicer Matthews
+// Last Modified: 2018-03-21
 // Copyright: 2017 Cloudmanic Labs, LLC. All rights reserved.
 //
 
@@ -31,7 +31,7 @@ type Ledger struct {
 	AirBnbHash       string    `gorm:"column:LedgerAirBnbHash" sql:"not null" json:"_"`
 	AuthGatewayToken string    `gorm:"column:LedgerAuthGatewayToken" sql:"not null" json:"_"`
 	StripeId         string    `gorm:"column:LedgerStripeId" sql:"not null" json:"_"`
-	Labels           []Label   `gorm:"_" sql:"not null" json:"labels"`
+	Labels           []Label   `gorm:"many2many:LabelsToLedger;association_foreignkey:LabelsId;foreignkey:LedgerId;association_jointable_foreignkey:LabelsToLedgerLabelId;jointable_foreignkey:LabelsToLedgerLedgerId" sql:"not null" json:"labels"`
 }
 
 //
@@ -64,10 +64,8 @@ func (db *DB) CreateLedger(ledger *Ledger) error {
 	// Store this ledger entry.
 	db.Create(&ledger)
 
-	// Store label lookups
-	for _, row := range ledger.Labels {
-		db.Exec("INSERT INTO LabelsToLedger (LabelsToLedgerAccountId, LabelsToLedgerLabelId, LabelsToLedgerLedgerId, LabelsToLedgerUpdatedAt, LabelsToLedgerCreatedAt) VALUES (?, ?, ?, ?, ?)", ledger.AccountId, row.Id, ledger.Id, time.Now(), time.Now())
-	}
+	// Add additional data to lookups TODO: remove this once we retire PHP app.
+	db.Model(LabelsToLedger{}).Where("LabelsToLedgerLedgerId = ?", ledger.Id).Updates(LabelsToLedger{LabelsToLedgerAccountId: ledger.AccountId, LabelsToLedgerCreatedAt: time.Now()})
 
 	return nil
 }
