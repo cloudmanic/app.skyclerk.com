@@ -44,7 +44,7 @@ func (Ledger) TableName() string {
 //
 // Create a new ledger entry.
 //
-func (db *DB) CreateLedger(ledger *Ledger) error {
+func (db *DB) LedgerCreate(ledger *Ledger) error {
 
 	// Setup the contact
 	if (len(ledger.Contact.FirstName) > 0) || (len(ledger.Contact.LastName) > 0) {
