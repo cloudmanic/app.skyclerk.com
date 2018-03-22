@@ -1,8 +1,8 @@
 //
 // Date: 2018-03-20
 // Author: spicer (spicer@cloudmanic.com)
-// Last Modified by: spicer
-// Last Modified: 2018-03-20
+// Last Modified by: Spicer Matthews
+// Last Modified: 2018-03-22
 // Copyright: 2017 Cloudmanic Labs, LLC. All rights reserved.
 //
 
@@ -10,6 +10,7 @@ package main
 
 import (
 	"github.com/cloudmanic/skyclerk.com/cmd"
+	"github.com/cloudmanic/skyclerk.com/controllers"
 	"github.com/cloudmanic/skyclerk.com/models"
 	"github.com/cloudmanic/skyclerk.com/services"
 	_ "github.com/jpfuentes2/go-env/autoload"
@@ -36,6 +37,17 @@ func main() {
 	if status == true {
 		return
 	}
+
+	// ----------- Start Web Server ------------- //
+
+	// Startup controller
+	c := &controllers.Controller{}
+
+	// Set the database the controller uses.
+	c.SetDB(db)
+
+	// Start webserver & controllers
+	c.StartWebServer()
 
 }
 

@@ -11,6 +11,12 @@ package models
 // Database interface
 type Datastore interface {
 
+	// Generic database functions
+	Count(model interface{}, params QueryParam) (uint, error)
+	Query(model interface{}, params QueryParam) error
+	QueryWithNoFilterCount(model interface{}, params QueryParam) (int, error)
+	GetQueryMetaData(limitCount int, noLimitCount int, params QueryParam) QueryMetaData
+
 	// Ledger
 	LedgerCreate(ledger *Ledger) error
 }
