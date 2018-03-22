@@ -24,23 +24,11 @@ func (t *Controller) DoRoutes(r *gin.Engine) {
 
 	apiV1.Use(t.AuthMiddleware())
 	{
-		// Labels routes
+		// Labels
 		apiV1.GET("/:account/labels", t.GetLabels)
 
-		// // Ledgers routes
-		// apiV1.GET("/ledgers", t.GetLedgers)
-		// apiV1.POST("/ledgers", t.CreateLedger)
-
-		// // Ledger Categories
-		// apiV1.GET("/ledger_categories", t.GetLedgersCategories)
-
-		// // Account routes
-		// apiV1.GET("/accounts", t.GetAccounts)
-		// apiV1.POST("/accounts", t.CreateAccount)
-		// apiV1.GET("/accounts/:id", t.GetAccount)
-		// apiV1.GET("/accounts/:id/marks", t.GetAccountMarks)
-		// apiV1.POST("/accounts/:id/marks", t.CreateAccountMark)
-		// apiV1.POST("/accounts/:id/funds", t.AccountManageFunds)
+		// Categories
+		apiV1.GET("/:account/categories", t.GetCategories)
 	}
 
 	// ------------ Non-Auth Routes ------ //
