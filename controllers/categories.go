@@ -39,6 +39,16 @@ func (t *Controller) GetCategories(c *gin.Context) {
 		},
 	}
 
+	// Did we pass in a type of income?
+	if c.Query("type") == "income" {
+		params.Wheres = append(params.Wheres, models.KeyValue{Key: "CategoriesType", Value: "2"})
+	}
+
+	// Did we pass in a type of expense?
+	if c.Query("type") == "expense" {
+		params.Wheres = append(params.Wheres, models.KeyValue{Key: "CategoriesType", Value: "1"})
+	}
+
 	// Run the query
 	meta, err := t.db.QueryMeta(&results, params)
 
