@@ -16,7 +16,8 @@ import (
 )
 
 //
-// Return a list of labels
+// Return a list of labels. We limit to 500 mainly so we do not overload the
+// system, but enough so the front-end does not have to page
 //
 func (t *Controller) GetLabels(c *gin.Context) {
 
@@ -30,7 +31,7 @@ func (t *Controller) GetLabels(c *gin.Context) {
 	params := models.QueryParam{
 		Order:            c.DefaultQuery("order", "LabelsName"),
 		Sort:             c.DefaultQuery("sort", "ASC"),
-		Limit:            defaultLimit,
+		Limit:            500,
 		Page:             page,
 		AllowedOrderCols: []string{"LabelsId", "LabelsName"},
 		Wheres: []models.KeyValue{
