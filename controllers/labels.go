@@ -39,19 +39,10 @@ func (t *Controller) GetLabels(c *gin.Context) {
 	}
 
 	// Run the query
-	err := t.db.Query(&results, params)
-
-	// Get no filter count.
-	noFilterCount, _ := t.db.QueryWithNoFilterCount(&results, params)
-
-	// Get the meta data related to this query.
-	meta := t.db.GetQueryMetaData(len(results), noFilterCount, params)
-
-	// Put meta data in header.
-	response.AddPagingInfoToHeaders(c, meta)
+	meta, err := t.db.QueryMeta(&results, params)
 
 	// Return json based on if this was a good result or not.
-	response.Results(c, results, err)
+	response.ResultsMeta(c, results, err, meta)
 }
 
 /* End File */

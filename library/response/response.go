@@ -29,6 +29,18 @@ func AddPagingInfoToHeaders(c *gin.Context, meta models.QueryMetaData) {
 }
 
 //
+// Results with meta in the header
+//
+func ResultsMeta(c *gin.Context, results interface{}, err error, meta models.QueryMetaData) {
+
+	// Put meta data in header.
+	AddPagingInfoToHeaders(c, meta)
+
+	// Results
+	Results(c, results, err)
+}
+
+//
 // This is used when we are returning a list of results. Should
 // almost never error. If no results are found it will be an empty array.
 //

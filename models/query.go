@@ -47,6 +47,32 @@ type QueryMetaData struct {
 }
 
 //
+// A generic way to query any model we want, and return meta data with it.
+//
+func (t *DB) QueryMeta(model interface{}, params QueryParam) (QueryMetaData, error) {
+
+	// Get no filter count.
+	noFilterCount, err := t.QueryWithNoFilterCount(model, params)
+
+	if err != nil {
+		return QueryMetaData{}, err
+	}
+
+	// Figure out the length of the result.
+	count, err := t.Count(model, params)
+
+	if err != nil {
+		return QueryMetaData{}, err
+	}
+
+	// Get the meta data related to this query.
+	meta := t.GetQueryMetaData(int(count), noFilterCount, params)
+
+	// Return happy
+	return meta, nil
+}
+
+//
 // A generic way to query any model we want.
 //
 func (t *DB) Query(model interface{}, params QueryParam) error {
@@ -137,25 +163,12 @@ func (t *DB) GetQueryMetaData(limitCount int, noLimitCount int, params QueryPara
 func (t *DB) Count(model interface{}, params QueryParam) (uint, error) {
 
 	var count uint = 0
-	var query *gorm.DB
 
-	// Useful just to kick this off
-	query = t.Order("id ASC")
+	// Build the query.
+	query, err := t.buildGenericQuery(params)
 
-	// Are we debugging this?
-	if params.Debug {
-		query = query.Debug()
-	}
-
-	// Add in Where clauses
-	for _, row := range params.Wheres {
-		if len(row.Value) > 0 {
-			query = query.Where(row.Key+" = ?", row.Value)
-		}
-
-		if row.ValueInt > 0 {
-			query = query.Where(row.Key+" = ?", row.ValueInt)
-		}
+	if err != nil {
+		return 0, err
 	}
 
 	// Run the query
