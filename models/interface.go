@@ -10,7 +10,6 @@ package models
 
 // Database interface
 type Datastore interface {
-
 	// Generic database functions
 	Count(model interface{}, params QueryParam) (uint, error)
 	Query(model interface{}, params QueryParam) error
