@@ -245,4 +245,44 @@ func TestGetLabels04(t *testing.T) {
 	st.Expect(t, results[4].Name, "Xyz")
 }
 
+//
+// Test get a ledger 05 - Failed Order Col
+//
+func TestGetLabels05(t *testing.T) {
+
+	// Start the db connection.
+	db, _ := models.NewDB()
+	defer db.Close()
+
+	// Create controller
+	c := &Controller{}
+	c.SetDB(db)
+
+	// Test labels.
+	db.Save(&models.Label{AccountId: 33, Name: "label #1"})
+	db.Save(&models.Label{AccountId: 33, Name: "label #2"})
+	db.Save(&models.Label{AccountId: 33, Name: "label #3"})
+	db.Save(&models.Label{AccountId: 33, Name: "Abc"})
+	db.Save(&models.Label{AccountId: 33, Name: "Xyz"})
+
+	// Setup request
+	req, _ := http.NewRequest("GET", "/api/v1/33/labels?sort=asc&order=FailedId", nil)
+
+	// Setup writer.
+	w := httptest.NewRecorder()
+	gin.SetMode("release")
+	gin.DisableConsoleColor()
+
+	r := gin.New()
+	r.Use(func(c *gin.Context) {
+		c.Set("account", 33)
+		c.Set("userId", uint(109))
+	})
+	r.GET("/api/v1/33/labels", c.GetLabels)
+	r.ServeHTTP(w, req)
+
+	// Test results
+	st.Expect(t, w.Body.String(), `{"error":"There was an error. Please contact help@skyclerk.com for help."}`)
+}
+
 /* End File */
