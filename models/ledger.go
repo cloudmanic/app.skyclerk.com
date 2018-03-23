@@ -2,7 +2,7 @@
 // Date: 2018-03-20
 // Author: Spicer Matthews (spicer@cloudmanic.com)
 // Last Modified by: Spicer Matthews
-// Last Modified: 2018-03-21
+// Last Modified: 2018-03-22
 // Copyright: 2017 Cloudmanic Labs, LLC. All rights reserved.
 //
 
@@ -46,15 +46,19 @@ func (Ledger) TableName() string {
 //
 func (db *DB) LedgerCreate(ledger *Ledger) error {
 
-	// Setup the contact
-	if (len(ledger.Contact.FirstName) > 0) || (len(ledger.Contact.LastName) > 0) {
-		db.Where("ContactsAccountId = ? AND ContactsName = ?", ledger.Contact.AccountId, ledger.Contact.Name).Or("ContactsAccountId = ? AND ContactsFirstName = ? AND ContactsLastName = ?", ledger.Contact.AccountId, ledger.Contact.FirstName, ledger.Contact.LastName).FirstOrCreate(&ledger.Contact)
-	} else {
-		db.Where("ContactsAccountId = ? AND ContactsName = ?", ledger.Contact.AccountId, ledger.Contact.Name).FirstOrCreate(&ledger.Contact)
+	// Setup the contact. If we have a ledger.Contact.Id we assume we are not adding the contact on insert.
+	if ledger.Contact.Id == 0 {
+		if (len(ledger.Contact.FirstName) > 0) || (len(ledger.Contact.LastName) > 0) {
+			db.Where("ContactsAccountId = ? AND ContactsName = ?", ledger.Contact.AccountId, ledger.Contact.Name).Or("ContactsAccountId = ? AND ContactsFirstName = ? AND ContactsLastName = ?", ledger.Contact.AccountId, ledger.Contact.FirstName, ledger.Contact.LastName).FirstOrCreate(&ledger.Contact)
+		} else {
+			db.Where("ContactsAccountId = ? AND ContactsName = ?", ledger.Contact.AccountId, ledger.Contact.Name).FirstOrCreate(&ledger.Contact)
+		}
 	}
 
 	// Setup the category
-	db.Where("CategoriesAccountId = ? AND CategoriesName = ? AND CategoriesType = ?", ledger.Category.AccountId, ledger.Category.Name, ledger.Category.Type).FirstOrCreate(&ledger.Category)
+	if ledger.Category.Id == 0 {
+		db.Where("CategoriesAccountId = ? AND CategoriesName = ? AND CategoriesType = ?", ledger.Category.AccountId, ledger.Category.Name, ledger.Category.Type).FirstOrCreate(&ledger.Category)
+	}
 
 	// Setup the labels
 	for key, row := range ledger.Labels {
