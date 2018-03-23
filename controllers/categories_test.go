@@ -247,4 +247,59 @@ func TestGetCategories04(t *testing.T) {
 	st.Expect(t, w.Body.String(), `{"error":"There was an error. Please contact help@skyclerk.com for help."}`)
 }
 
+//
+// Test get a Get Categories 05 - Test Type
+//
+func TestGetCategories05(t *testing.T) {
+
+	// Start the db connection.
+	db, _ := models.NewDB()
+	defer db.Close()
+
+	// Create controller
+	c := &Controller{}
+	c.SetDB(db)
+
+	// Test labels. -- First 2 are to make sure we don't get them as they are not our account.
+	db.Save(&models.Category{AccountId: 34, Type: "1", Name: "No #1"})
+	db.Save(&models.Category{AccountId: 34, Type: "1", Name: "No #2"})
+	db.Save(&models.Category{AccountId: 33, Type: "1", Name: "Category #1"})
+	db.Save(&models.Category{AccountId: 33, Type: "2", Name: "Category #2"})
+	db.Save(&models.Category{AccountId: 33, Type: "1", Name: "Category #3"})
+	db.Save(&models.Category{AccountId: 33, Type: "2", Name: "Abc"})
+	db.Save(&models.Category{AccountId: 33, Type: "1", Name: "Xyz"})
+
+	// Setup request
+	req, _ := http.NewRequest("GET", "/api/v1/33/categories?type=income", nil)
+
+	// Setup writer.
+	w := httptest.NewRecorder()
+	gin.SetMode("release")
+	gin.DisableConsoleColor()
+
+	r := gin.New()
+	r.Use(func(c *gin.Context) {
+		c.Set("account", 33)
+		c.Set("userId", uint(109))
+	})
+	r.GET("/api/v1/33/categories", c.GetCategories)
+	r.ServeHTTP(w, req)
+
+	// Grab result and convert to strut
+	results := []models.Category{}
+	err := json.Unmarshal([]byte(w.Body.String()), &results)
+
+	// Test results
+	st.Expect(t, err, nil)
+
+	st.Expect(t, results[0].Id, uint(6))
+	st.Expect(t, results[1].Id, uint(4))
+
+	st.Expect(t, results[0].Name, "Abc")
+	st.Expect(t, results[1].Name, "Category #2")
+
+	st.Expect(t, results[0].Type, "income")
+	st.Expect(t, results[1].Type, "income")
+}
+
 /* End File */
