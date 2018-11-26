@@ -1,0 +1,20 @@
+---
+
+- name: Deploys the server config for skyclerk.com to production
+  
+  hosts: web-servers
+  
+  become: yes
+  
+  become_user: root
+
+  roles:
+    - bootstrap
+    - users
+    - docker-sites
+    - docker-mysql
+    - docker-nginx-proxy
+    
+  vars_files:
+    - "vars/env.yml"
+    - "vars/all.yml"    

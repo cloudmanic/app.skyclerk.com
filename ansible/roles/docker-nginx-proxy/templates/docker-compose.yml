@@ -1,0 +1,64 @@
+# {{ ansible_managed }}
+
+version: '2.1'
+
+services:
+  
+  # Nginx Proxy    
+  nginx-proxy:
+  
+    image: jwilder/nginx-proxy
+    
+    container_name: nginx-proxy
+    
+    ports:
+      - "80:80"
+      - "443:443"
+
+    logging:
+      driver: "syslog"
+      options:
+        syslog-address: "tcp+tls://logs6.papertrailapp.com:49242"
+        tag: "nginx-proxy.cloudmanic.com"      
+      
+    restart: always
+    
+    networks:
+      - shared        
+    
+    volumes:
+      - /var/run/docker.sock:/tmp/docker.sock:ro  
+      - ./vhost_config:/etc/nginx/vhost.d:ro
+      - ./ssl_certs:/etc/nginx/certs:ro
+      - /usr/share/nginx/html      
+      
+  # Let's Encrypt      
+  letsencrypt:
+    
+    container_name: letsencrypt
+    
+    image: jrcs/letsencrypt-nginx-proxy-companion
+
+    volumes_from:
+      - nginx-proxy
+      
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - ./vhost_config:/etc/nginx/vhost.d:rw
+      - ./ssl_certs:/etc/nginx/certs:rw
+      
+    restart: always     
+
+    logging:
+      driver: "syslog"
+      options:
+        syslog-address: "tcp+tls://logs6.papertrailapp.com:49242"
+        tag: "letsencrypt.cloudmanic.com"         
+
+    networks:
+      - shared 
+         
+networks:
+  shared:
+    external:
+      name: shared

@@ -1,0 +1,9 @@
+---
+
+- name: Deploy backups for options.cafe to production
+  hosts: production
+  roles:
+    - cloudmanic-backup
+    
+  vars_files:
+    - "vars/env.yml"

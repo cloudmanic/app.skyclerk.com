@@ -1,0 +1,17 @@
+---
+
+# Setup backup.options.cafe base directory
+- name: Setup backup.options.cafe base directory
+  file: path=/sites/optionscafe/backup.options.cafe owner=optionscafe group=optionscafe mode=0755 state=directory
+
+# Install docker-compose for backup.options.cafe
+- name: Install docker-compose for backup.options.cafe
+  template: src=docker-compose.yml dest=/sites/optionscafe/backup.options.cafe/docker-compose.yml owner=optionscafe group=optionscafe mode=0644
+
+# Install Dockerfile for backup.options.cafe
+- name: Install Dockerfile for backup.options.cafe
+  template: src=Dockerfile dest=/sites/optionscafe/backup.options.cafe/Dockerfile owner=optionscafe group=optionscafe mode=0644
+
+# Install ENV File for backup.options.cafe
+- name: Install ENV File for backup.options.cafe
+  template: src=env dest=/sites/optionscafe/backup.options.cafe/.env owner=optionscafe group=optionscafe mode=0644

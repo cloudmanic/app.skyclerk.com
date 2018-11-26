@@ -1,0 +1,35 @@
+---
+
+# Setup site base directory
+- name: Setup docker site base directory
+  file: path={{ docker_site_dir }} owner=root group=root mode=0755 state=directory
+
+# Install groups for different site users.       
+- name: Install groups for different site users. 
+  group: name={{ item.site_slug }} state=present gid={{ item.gid }}
+  with_items: "{{ docker_sites }}"
+
+# Install Users For Different Sites
+- name: Install Users For Different Sites
+  user: name={{ item.site_slug }} state=present home={{ docker_site_dir }}/{{ item.site_slug }} shell=/bin/bash group={{ item.site_slug }} append=yes uid={{ item.uid }}     
+  with_items: "{{ docker_sites }}"
+
+# Setup the different site directories.
+- name: Set directory perms for docker site directories
+  file: path={{ docker_site_dir }}/{{ item.site_slug }} owner={{ item.site_slug }} group=deploy mode=0750 state=directory 
+  with_items: "{{ docker_sites }}" 
+  
+# Set the ssh directory
+- name: Set the .ssh directory for docker sites.
+  file: path={{ docker_site_dir }}/{{ item.site_slug }}/.ssh state=directory owner={{ item.site_slug }} group={{ item.site_slug }} mode=0700 
+  with_items: "{{ docker_sites }}"
+  
+# Install authorized_keys
+- name: Add authorized_keys For docker sites
+  copy: src=authorized_keys dest={{ docker_site_dir }}/{{ item.site_slug }}/.ssh/authorized_keys2 owner={{ item.site_slug }} group={{ item.site_slug }} mode=0600 
+  with_items: "{{ docker_sites }}"  
+
+# Installed shared networks.
+- name: Docker Create shared network
+  command: "docker network create shared"
+  ignore_errors: yes

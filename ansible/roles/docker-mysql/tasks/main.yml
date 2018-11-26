@@ -1,0 +1,23 @@
+---
+
+# ------------ Mysql 5.5 ------------ #
+    
+# Set directory perms for mysql directories
+- name: Set directory perms for docker mysql directories
+  file: path={{ docker_mysql_dir }} owner=deploy group=deploy mode=0770 state=directory 
+  
+# Install core services docker-compose
+- name: Install mysql docker-compose
+  template: src=docker-compose.yml dest={{ docker_mysql_dir }}/docker-compose.yml owner=deploy group=deploy mode=0640  
+
+# Install core services env
+- name: Install mysql env
+  template: src=env dest={{ docker_mysql_dir }}/.env owner=deploy group=deploy mode=0640  
+
+# Install Mysql5.5 my.cnf
+- name: Install mysql env
+  template: src=my-5.5.cnf dest={{ docker_mysql_dir }}/my-5.5.cnf owner=deploy group=deploy mode=0644 
+    
+# Start mysql(s)
+- name: Start mysql(s)
+  command: docker-compose -f {{ docker_mysql_dir }}/docker-compose.yml up -d 

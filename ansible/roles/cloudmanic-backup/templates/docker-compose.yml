@@ -1,0 +1,66 @@
+# {{ ansible_managed }}
+
+version: '2.1'
+
+services:
+
+  # App
+  app_backup:
+
+    hostname: backup.options.cafe
+
+    container_name: backup.options.cafe
+
+    build:
+      context: ./
+      dockerfile: Dockerfile
+      args:
+        P_UID: 1002
+        P_GID: 1002      
+    
+    image: backup.options.cafe/cloudmanic-backup
+
+    restart: always
+
+    logging:
+      driver: "syslog"
+      options:
+        syslog-address: tcp+tls://logs6.papertrailapp.com:49242
+        tag: backup.options.cafe
+
+    environment:   
+      BACKUP_NAME: app.options.cafe      
+      ALERT_EMAIL: help@options.cafe    
+      OBJECT_REGION: us-east-1
+      OBJECT_BUCKET: db-backups
+      OBJECT_ACCESS_KEY_ID: {{OBJECT_ACCESS_KEY_ID}}
+      OBJECT_SECRET_ACCESS_KEY: {{OBJECT_SECRET_ACCESS_KEY}}
+      OBJECT_ENDPOINT: s3.wasabisys.com      
+      MYSQL_HOST: mariadb-10.2
+      MYSQL_PORT: 3306
+      MYSQL_DB: app_options_cafe
+      MYSQL_USER: {{DB_USERNAME}}
+      MYSQL_PASSWORD: {{DB_PASSWORD}}      
+      MAIL_DRIVER: mailgun
+      MAIL_HOST: 
+      MAIL_PORT: 
+      MAIL_USERNAME: 
+      MAIL_PASSWORD: 
+      MAIL_ENCRYPTION: 
+      MAIL_FROM_EMAIL: help@options.cafe      
+      MAILGUN_DOMAIN: {{MAILGUN_DOMAIN}}
+      MAILGUN_API_KEY: {{MAILGUN_API_KEY}}      
+      ENCRYPT_KEY: {{APP_BACKUP_ENCRYPTION_KEY}}     
+      BACKUP_DB_STORE_DIR: app.options.cafe      
+      HOURS_BETWEEN_BACKUPS: 4     
+      DB_SIZE_CHECK_LOW: 3000000     
+      DB_SIZE_CHECK_HIGH: 50000000      
+      PING_SUCCESS_URL: https://hchk.io/2e4c75f5-ab9d-4a08-84d4-d8c6b78d3e27
+
+    networks:
+      - shared
+
+networks:
+  shared:
+    external:
+      name: shared

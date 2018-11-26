@@ -1,2 +1,9 @@
 .env
 .DS_Store
+
+# Ansible stuff
+.vault_pass
+app.retry
+server.retry
+bootstrap.retry
+server-config.retry

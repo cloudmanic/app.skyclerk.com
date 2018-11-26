@@ -1,0 +1,9 @@
+---
+
+- name: Deploys the app.options.cafe to production
+  hosts: production
+  roles:
+    - app
+    
+  vars_files:
+    - "vars/env.yml"

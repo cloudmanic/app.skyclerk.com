@@ -1,0 +1,31 @@
+# {{ ansible_managed }}
+
+version: '2.1'
+
+services:
+
+  {% for row in docker_mysql_servers %} 
+  {{ row.name }}:
+    image: {{ row.image }}
+    
+    container_name: {{ row.container_name }}
+    
+    ports:
+      - {{ row.port_mapping }}:3306   
+    
+    volumes:
+      - /sites/mysql/{{ row.name }}_data:/var/lib/mysql
+    
+    restart: always
+    
+    networks:
+      - shared      
+    
+    environment:
+      MYSQL_ROOT_PASSWORD: {{ row.password }}
+  {% endfor %}
+
+networks:
+  shared:
+    external:
+      name: shared

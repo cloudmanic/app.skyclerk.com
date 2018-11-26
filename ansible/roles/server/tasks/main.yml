@@ -1,0 +1,29 @@
+---
+
+# Setup app.options.cafe base directory
+- name: Setup app.options.cafe base directory
+  file: path=/sites/optionscafe/app.options.cafe owner=optionscafe group=optionscafe mode=0755 state=directory
+
+# Create docker directory
+- name: Create docker directory
+  file: path=/sites/optionscafe/app.options.cafe/docker owner=optionscafe group=optionscafe mode=0755 state=directory
+
+# Create docker build directory
+- name: Create docker build directory
+  file: path=/sites/optionscafe/app.options.cafe/docker/build owner=optionscafe group=optionscafe mode=0755 state=directory
+
+# Create cache directory
+- name: Create cache directory
+  file: path=/sites/optionscafe/app.options.cafe/cache owner=optionscafe group=optionscafe mode=0755 state=directory
+
+# Install docker-compose
+- name: Install docker-compose
+  template: src=docker-compose.yml dest=/sites/optionscafe/app.options.cafe/docker/docker-compose.yml owner=optionscafe group=optionscafe mode=0644
+
+# Install Dockerfile
+- name: Install Dockerfile
+  template: src=Dockerfile dest=/sites/optionscafe/app.options.cafe/docker/build/Dockerfile owner=optionscafe group=optionscafe mode=0644
+
+# Install ENV File
+- name: Install ENV File
+  template: src=env dest=/sites/optionscafe/app.options.cafe/docker/.env owner=optionscafe group=optionscafe mode=0644
