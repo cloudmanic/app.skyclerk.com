@@ -7,7 +7,7 @@
 ```
 #cloud-config
 users:
-  - name: deploy
+  - name: spicer
     groups: sudo
     shell: /bin/bash
     sudo: ['ALL=(ALL) NOPASSWD:ALL']

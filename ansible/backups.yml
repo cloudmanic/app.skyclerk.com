@@ -1,9 +1,16 @@
 ---
 
-- name: Deploy backups for options.cafe to production
-  hosts: production
+- name: Deploy backups for skyclerk.com to production
+  
+  hosts: web-servers
+
+  become: yes
+  
+  become_user: root
+
   roles:
     - cloudmanic-backup
     
   vars_files:
     - "vars/env.yml"
+    - "vars/all.yml"

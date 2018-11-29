@@ -1,9 +1,9 @@
 ---
 
-# Install app.options.cafe binary
-- name: Copying app.options.cafe binary to server(s)
-  copy: src=../backend/builds/app.options.cafe dest=/sites/optionscafe/app.options.cafe/docker/build owner=optionscafe group=optionscafe mode=0755
+# # Install app.options.cafe binary
+# - name: Copying app.options.cafe binary to server(s)
+#   copy: src=../backend/builds/app.options.cafe dest=/sites/optionscafe/app.options.cafe/docker/build owner=optionscafe group=optionscafe mode=0755
 
-# Install app.options.cafe frontend code.
-- name: Copying app.options.cafe frontend code to server(s)
-  synchronize: src=../frontend/dist/ dest=/sites/optionscafe/app.options.cafe/docker/build/frontend
+# # Install app.options.cafe frontend code.
+# - name: Copying app.options.cafe frontend code to server(s)
+#   synchronize: src=../frontend/dist/ dest=/sites/optionscafe/app.options.cafe/docker/build/frontend

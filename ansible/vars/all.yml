@@ -6,10 +6,13 @@ spicer_gid: 1000
 deploy_uid: 1001
 deploy_gid: 1001
 
+syslog_port: 49242
+syslog_address: logs6.papertrailapp.com
+
 docker_mysql: yes
 
 docker_mysql_servers:
-  - { "name": "mysql55", "image": "mysql:5.5", "container_name": "mysql-5.5", "port_mapping": "127.0.0.1:3355", "password": "{{ mysql_root_password }}" }  
+  - { "name": "mysql55", "image": "mysql:5.5", "container_name": "mysql-5.5", "port_mapping": "127.0.0.1:3355", "password": "{{ MYSQL_ROOT_PASSWORD }}" }  
 
 docker_nginx_proxy: yes
 
@@ -32,3 +35,28 @@ core_packages:
   - mysql-client
   - docker.io
   - docker-compose
+
+# S3 Storage Stuff
+object_region: us-east-1
+object_bucket: skyclerk.com
+object_endpoint: s3.wasabisys.com
+
+# Backup configs
+backup_uid: 1004
+backup_gid: 1004
+backup_user: skyclerk
+backup_group: skyclerk
+backup_db_port: 3306
+backup_db_host: mysql-5.5
+backup_db_name: skyclerk_cloudmanic_com
+backup_name: skyclerk.com
+backup_host: web1.skyclerk.com
+backup_email_driver: mailgun
+backup_email: support@cloudmanic.com
+backup_hostname: backups.skyclerk.com
+backup_db_low_size: 200000000
+backup_db_high_size: 300000000
+backup_hours_between: 4
+backup_object_bucket: db-backups
+backup_success_ping_url: https://hc-ping.com/fece912b-5eda-4333-bc92-652947306706
+backup_site_dir: /sites/skyclerk/backup.skyclerk.com  

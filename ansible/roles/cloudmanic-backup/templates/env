@@ -1,1 +1,1 @@
-COMPOSE_PROJECT_NAME=app-backup.options.cafe
+COMPOSE_PROJECT_NAME={{ backup_hostname }}
