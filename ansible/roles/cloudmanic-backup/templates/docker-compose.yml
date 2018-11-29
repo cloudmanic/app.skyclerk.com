@@ -55,6 +55,108 @@ services:
     networks:
       - shared
 
+  # Accounts Backup
+  accounts_backup:
+
+    hostname: accounts.{{ backup_hostname }}
+
+    container_name: accounts.{{ backup_hostname }}
+
+    user: {{ backup_uid }}:{{ backup_gid }}     
+    
+    image: cloudmanic/cloudmanic-backup
+
+    restart: always
+
+    logging:
+      driver: "syslog"
+      options:
+        syslog-address: tcp+tls://{{ syslog_address }}:{{ syslog_port }}
+        tag: accounts.{{ backup_hostname }}
+
+    environment:   
+      BACKUP_NAME: accounts.{{ backup_name }}     
+      ALERT_EMAIL: {{ backup_email }}    
+      OBJECT_REGION: {{ object_region }}
+      OBJECT_BUCKET: {{ backup_object_bucket }}
+      OBJECT_ACCESS_KEY_ID: {{ object_access_key }}
+      OBJECT_SECRET_ACCESS_KEY: {{ object_secret_key }}
+      OBJECT_ENDPOINT: {{ object_endpoint }}      
+      MYSQL_HOST: {{ backup_db_host }}
+      MYSQL_PORT: {{ backup_db_port }}
+      MYSQL_DB: accounts_cloudmanic_com
+      MYSQL_USER: {{ accounts_db_username }}
+      MYSQL_PASSWORD: {{ accounts_db_password }}      
+      MAIL_DRIVER: {{ backup_email_driver }}
+      MAIL_HOST: 
+      MAIL_PORT: 
+      MAIL_USERNAME: 
+      MAIL_PASSWORD: 
+      MAIL_ENCRYPTION: 
+      MAIL_FROM_EMAIL: {{ backup_email }}      
+      MAILGUN_DOMAIN: {{ mailgun_domain }}
+      MAILGUN_API_KEY: {{ mailgun_api_key }}      
+      ENCRYPT_KEY: {{ app_backup_encryption_key }}     
+      BACKUP_DB_STORE_DIR: accounts.{{ backup_name }}      
+      HOURS_BETWEEN_BACKUPS: 12     
+      DB_SIZE_CHECK_LOW: {{ backup_db_low_size }}     
+      DB_SIZE_CHECK_HIGH: {{ backup_db_high_size }}      
+      PING_SUCCESS_URL: https://hc-ping.com/e170e728-d257-47bf-9c88-dca4144122bb
+
+    networks:
+      - shared
+
+  # Centcom Backup
+  centcom_backup:
+
+    hostname: centcom.{{ backup_hostname }}
+
+    container_name: centcom.{{ backup_hostname }}
+
+    user: {{ backup_uid }}:{{ backup_gid }}     
+    
+    image: cloudmanic/cloudmanic-backup
+
+    restart: always
+
+    logging:
+      driver: "syslog"
+      options:
+        syslog-address: tcp+tls://{{ syslog_address }}:{{ syslog_port }}
+        tag: centcom.{{ backup_hostname }}
+
+    environment:   
+      BACKUP_NAME: centcom.{{ backup_name }}     
+      ALERT_EMAIL: {{ backup_email }}    
+      OBJECT_REGION: {{ object_region }}
+      OBJECT_BUCKET: {{ backup_object_bucket }}
+      OBJECT_ACCESS_KEY_ID: {{ object_access_key }}
+      OBJECT_SECRET_ACCESS_KEY: {{ object_secret_key }}
+      OBJECT_ENDPOINT: {{ object_endpoint }}      
+      MYSQL_HOST: {{ backup_db_host }}
+      MYSQL_PORT: {{ backup_db_port }}
+      MYSQL_DB: centcom_cloudmanic_com
+      MYSQL_USER: {{ centcom_db_username }}
+      MYSQL_PASSWORD: {{ centcom_db_password }}      
+      MAIL_DRIVER: {{ backup_email_driver }}
+      MAIL_HOST: 
+      MAIL_PORT: 
+      MAIL_USERNAME: 
+      MAIL_PASSWORD: 
+      MAIL_ENCRYPTION: 
+      MAIL_FROM_EMAIL: {{ backup_email }}      
+      MAILGUN_DOMAIN: {{ mailgun_domain }}
+      MAILGUN_API_KEY: {{ mailgun_api_key }}      
+      ENCRYPT_KEY: {{ app_backup_encryption_key }}     
+      BACKUP_DB_STORE_DIR: centcom.{{ backup_name }}      
+      HOURS_BETWEEN_BACKUPS: 24     
+      DB_SIZE_CHECK_LOW: 100000000     
+      DB_SIZE_CHECK_HIGH: {{ backup_db_high_size }}      
+      PING_SUCCESS_URL: https://hc-ping.com/c6b7dbf2-7ee7-4b08-9b72-7208c1a31057
+
+    networks:
+      - shared
+
 networks:
   shared:
     external:
