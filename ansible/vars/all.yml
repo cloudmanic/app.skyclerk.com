@@ -54,7 +54,7 @@ backup_host: web1.skyclerk.com
 backup_email_driver: mailgun
 backup_email: support@cloudmanic.com
 backup_hostname: backups.skyclerk.com
-backup_db_low_size: 200000000
+backup_db_low_size: 100000000
 backup_db_high_size: 300000000
 backup_hours_between: 4
 backup_object_bucket: db-backups
