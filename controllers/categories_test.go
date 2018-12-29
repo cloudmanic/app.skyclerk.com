@@ -305,6 +305,92 @@ func TestGetCategories05(t *testing.T) {
 }
 
 //
+// Test Get Category 01
+//
+func TestGetCategory01(t *testing.T) {
+
+	// Start the db connection.
+	db, _ := models.NewDB()
+	defer db.Close()
+
+	// Create controller
+	c := &Controller{}
+	c.SetDB(db)
+
+	// Create test cat to conflict with
+	db.Save(&models.Category{AccountId: 33, Type: "1", Name: "Category #1"})
+	db.Save(&models.Category{AccountId: 33, Type: "1", Name: "Category #2"})
+	db.Save(&models.Category{AccountId: 33, Type: "1", Name: "Category #3"})
+
+	// Setup request
+	req, _ := http.NewRequest("GET", "/api/v1/33/categories/2", nil)
+
+	// Setup writer.
+	w := httptest.NewRecorder()
+	gin.SetMode("release")
+	gin.DisableConsoleColor()
+
+	r := gin.New()
+	r.Use(func(c *gin.Context) {
+		c.Set("id", 2)
+		c.Set("account", 33)
+		c.Set("userId", 109)
+	})
+	r.GET("/api/v1/33/categories/2", c.GetCategory)
+	r.ServeHTTP(w, req)
+
+	// Grab result and convert to strut
+	result := models.Category{}
+	err := json.Unmarshal([]byte(w.Body.String()), &result)
+
+	// Test results
+	st.Expect(t, err, nil)
+	st.Expect(t, w.Code, 200)
+	st.Expect(t, result.Name, "Category #2")
+	st.Expect(t, result.Type, "expense")
+}
+
+//
+// Test Get Category 02 - wrong account
+//
+func TestGetCategory02(t *testing.T) {
+
+	// Start the db connection.
+	db, _ := models.NewDB()
+	defer db.Close()
+
+	// Create controller
+	c := &Controller{}
+	c.SetDB(db)
+
+	// Create test cat to conflict with
+	db.Save(&models.Category{AccountId: 33, Type: "1", Name: "Category #1"})
+	db.Save(&models.Category{AccountId: 55, Type: "1", Name: "Category #2"})
+	db.Save(&models.Category{AccountId: 33, Type: "1", Name: "Category #3"})
+
+	// Setup request
+	req, _ := http.NewRequest("GET", "/api/v1/33/categories/2", nil)
+
+	// Setup writer.
+	w := httptest.NewRecorder()
+	gin.SetMode("release")
+	gin.DisableConsoleColor()
+
+	r := gin.New()
+	r.Use(func(c *gin.Context) {
+		c.Set("id", 2)
+		c.Set("account", 33)
+		c.Set("userId", 109)
+	})
+	r.GET("/api/v1/33/categories/2", c.GetCategory)
+	r.ServeHTTP(w, req)
+
+	// Test results
+	st.Expect(t, w.Code, 400)
+	st.Expect(t, gjson.Get(w.Body.String(), "error").String(), "Category not found.")
+}
+
+//
 // Test create Category 01
 //
 func TestCreateCategory01(t *testing.T) {

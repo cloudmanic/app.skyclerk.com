@@ -29,6 +29,7 @@ func (t *Controller) DoRoutes(r *gin.Engine) {
 
 		// Categories
 		apiV1.GET("/:account/categories", t.GetCategories)
+		apiV1.GET("/:account/categories/:id", t.GetCategory)
 		apiV1.POST("/:account/categories", t.CreateCategory)
 		apiV1.PUT("/:account/categories/:id", t.UpdateCategory)
 		apiV1.DELETE("/:account/categories/:id", t.DeleteCategory)

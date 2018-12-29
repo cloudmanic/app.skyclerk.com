@@ -69,6 +69,30 @@ func (t *Controller) GetCategories(c *gin.Context) {
 }
 
 //
+// Get Category by id
+//
+func (t *Controller) GetCategory(c *gin.Context) {
+
+	// Get category and make sure we have perms to it
+	orgCat, err := t.db.GetCategoryByAccountAndId(uint(c.MustGet("account").(int)), uint(c.MustGet("id").(int)))
+
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Category not found."})
+		return
+	}
+
+	// Make the API more clear TODO: get rid of the numbering in the db in the future once we kill PHP
+	if orgCat.Type == "1" {
+		orgCat.Type = "expense"
+	} else {
+		orgCat.Type = "income"
+	}
+
+	// Return happy.
+	response.Results(c, orgCat, nil)
+}
+
+//
 // Create a category within the account.
 //
 func (t *Controller) CreateCategory(c *gin.Context) {
@@ -111,7 +135,7 @@ func (t *Controller) UpdateCategory(c *gin.Context) {
 	orgCat, err := t.db.GetCategoryByAccountAndId(uint(c.MustGet("account").(int)), uint(c.MustGet("id").(int)))
 
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"errors": "Category not found."})
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Category not found."})
 		return
 	}
 
@@ -150,7 +174,7 @@ func (t *Controller) DeleteCategory(c *gin.Context) {
 	_, err := t.db.GetCategoryByAccountAndId(uint(c.MustGet("account").(int)), uint(c.MustGet("id").(int)))
 
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"errors": "Category not found."})
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Category not found."})
 		return
 	}
 
