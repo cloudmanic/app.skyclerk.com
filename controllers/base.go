@@ -2,7 +2,7 @@
 // Date: 2018-03-21
 // Author: Spicer Matthews (spicer@cloudmanic.com)
 // Last Modified by: Spicer Matthews
-// Last Modified: 2018-12-28
+// Last Modified: 2018-12-29
 // Copyright: 2017 Cloudmanic Labs, LLC. All rights reserved.
 //
 
@@ -30,7 +30,7 @@ type Controller struct {
 }
 
 type ValidateRequest interface {
-	Validate(models.Datastore, string, uint, uint) error
+	Validate(models.Datastore, string, uint, uint, uint) error
 }
 
 //
@@ -49,13 +49,20 @@ func (t *Controller) ValidateRequest(c *gin.Context, obj ValidateRequest, action
 	if err := c.ShouldBindJSON(obj); err == nil {
 
 		// Get user id.
-		userId := c.MustGet("userId").(uint)
+		userId := uint(c.MustGet("userId").(int))
 
 		// AccountId.
 		accountId := uint(c.MustGet("account").(int))
 
+		// If the action is update add the id
+		var id uint = 0
+
+		if action == "update" {
+			id = uint(c.MustGet("id").(int))
+		}
+
 		// Run validation
-		err := obj.Validate(t.db, action, userId, accountId)
+		err := obj.Validate(t.db, action, userId, accountId, id)
 
 		// If we had validation errors return them and do no more.
 		if err != nil {

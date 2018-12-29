@@ -2,13 +2,14 @@
 // Date: 2018-03-21
 // Author: Spicer Matthews (spicer@cloudmanic.com)
 // Last Modified by: Spicer Matthews
-// Last Modified: 2018-12-28
+// Last Modified: 2018-12-29
 // Copyright: 2017 Cloudmanic Labs, LLC. All rights reserved.
 //
 
 package controllers
 
 import (
+	"net/http"
 	"strings"
 
 	"github.com/cloudmanic/skyclerk.com/library/request"
@@ -99,6 +100,45 @@ func (t *Controller) CreateCategory(c *gin.Context) {
 
 	// Return happy.
 	response.RespondCreated(c, o, nil)
+}
+
+//
+// Update a category within the account.
+//
+func (t *Controller) UpdateCategory(c *gin.Context) {
+
+	// First we make sure this is an entry we have access to.
+	orgCat, err := t.db.GetCategoryByAccountAndId(uint(c.MustGet("account").(int)), uint(c.MustGet("id").(int)))
+
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"errors": "Category not found."})
+		return
+	}
+
+	// Setup Category obj
+	o := models.Category{}
+
+	// Here we parse the JSON sent in, assign it to a struct, set validation errors if any.
+	if t.ValidateRequest(c, &o, "update") != nil {
+		return
+	}
+
+	// We just allow updating of a few fields
+	orgCat.Type = strings.Trim(o.Type, " ")
+	orgCat.Name = strings.Trim(o.Name, " ")
+
+	// Update category
+	t.db.New().Save(&orgCat)
+
+	// Make the API more clear TODO: get rid of the numbering in the db in the future once we kill PHP
+	if orgCat.Type == "1" {
+		orgCat.Type = "expense"
+	} else {
+		orgCat.Type = "income"
+	}
+
+	// Return happy.
+	response.RespondUpdated(c, orgCat, nil)
 }
 
 /* End File */

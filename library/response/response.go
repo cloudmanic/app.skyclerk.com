@@ -2,7 +2,7 @@
 // Date: 2018-03-22
 // Author: Spicer Matthews (spicer@cloudmanic.com)
 // Last Modified by: Spicer Matthews
-// Last Modified: 2018-12-28
+// Last Modified: 2018-12-29
 // Copyright: 2017 Cloudmanic Labs, LLC. All rights reserved.
 //
 
@@ -81,7 +81,7 @@ func RespondUpdated(c *gin.Context, payload interface{}, err error) {
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 	} else {
-		c.JSON(http.StatusCreated, payload)
+		c.JSON(http.StatusOK, payload)
 	}
 }
 

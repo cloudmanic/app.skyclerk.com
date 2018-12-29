@@ -2,7 +2,7 @@
 // Date: 2018-03-20
 // Author: spicer (spicer@cloudmanic.com)
 // Last Modified by: Spicer Matthews
-// Last Modified: 2018-12-28
+// Last Modified: 2018-12-29
 // Copyright: 2017 Cloudmanic Labs, LLC. All rights reserved.
 //
 
@@ -27,7 +27,8 @@ type Datastore interface {
 	LedgerCreate(ledger *Ledger) error
 
 	// Category
-	ValidateDuplicateName(cat Category, accountId uint, action string) error
+	ValidateDuplicateName(cat Category, accountId uint, objId uint, action string) error
+	GetCategoryByAccountAndId(accountId uint, categoryId uint) (Category, error)
 }
 
 /* End File */

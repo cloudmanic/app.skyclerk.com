@@ -2,7 +2,7 @@
 // Date: 2018-03-20
 // Author: Spicer Matthews (spicer@cloudmanic.com)
 // Last Modified by: Spicer Matthews
-// Last Modified: 2018-12-28
+// Last Modified: 2018-12-29
 // Copyright: 2017 Cloudmanic Labs, LLC. All rights reserved.
 //
 
@@ -37,12 +37,12 @@ func (a Category) TableName() string {
 //
 // Validate for this model.
 //
-func (a Category) Validate(db Datastore, action string, userId uint, accountId uint) error {
+func (a Category) Validate(db Datastore, action string, userId uint, accountId uint, objId uint) error {
 	return validation.ValidateStruct(&a,
 
 		validation.Field(&a.Name,
 			validation.Required.Error("The name field is required."),
-			validation.By(func(value interface{}) error { return db.ValidateDuplicateName(a, accountId, action) }),
+			validation.By(func(value interface{}) error { return db.ValidateDuplicateName(a, accountId, objId, action) }),
 		),
 
 		validation.Field(&a.Type,
@@ -55,7 +55,7 @@ func (a Category) Validate(db Datastore, action string, userId uint, accountId u
 //
 // Validate Duplicate Name
 //
-func (db *DB) ValidateDuplicateName(cat Category, accountId uint, action string) error {
+func (db *DB) ValidateDuplicateName(cat Category, accountId uint, objId uint, action string) error {
 
 	const errMsg = "Category name is already in use."
 
@@ -76,10 +76,43 @@ func (db *DB) ValidateDuplicateName(cat Category, accountId uint, action string)
 			return errors.New(errMsg)
 		}
 
+	} else if action == "update" {
+
+		c := Category{}
+
+		if !db.New().Where("CategoriesAccountId = ? AND CategoriesName = ? AND CategoriesType = ?", accountId, catName, cat.Type).First(&c).RecordNotFound() {
+
+			// Make sure it is not the same id as the one we are updating
+			if c.Id != objId {
+				return errors.New(errMsg)
+			}
+		}
+
+		// Double check casing
+		if (c.Id != objId) && (strings.ToLower(catName) == strings.ToLower(c.Name)) {
+			return errors.New(errMsg)
+		}
+
 	}
 
 	// All good in the hood
 	return nil
+}
+
+//
+// Return a category by account and id.
+//
+func (db *DB) GetCategoryByAccountAndId(accountId uint, categoryId uint) (Category, error) {
+
+	c := Category{}
+
+	// Make query
+	if db.New().Where("CategoriesAccountId = ? AND CategoriesId = ?", accountId, categoryId).First(&c).RecordNotFound() {
+		return Category{}, errors.New("Category not found.")
+	}
+
+	// Return result
+	return c, nil
 }
 
 /* End File */

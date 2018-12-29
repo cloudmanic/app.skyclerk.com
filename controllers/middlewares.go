@@ -2,7 +2,7 @@
 // Date: 2018-03-21
 // Author: Spicer Matthews (spicer@cloudmanic.com)
 // Last Modified by: Spicer Matthews
-// Last Modified: 2018-03-22
+// Last Modified: 2018-12-28
 // Copyright: 2017 Cloudmanic Labs, LLC. All rights reserved.
 //
 
@@ -111,7 +111,7 @@ func (t *Controller) ParamValidateMiddleware() gin.HandlerFunc {
 				return
 			}
 
-			c.Set("id", int(id))
+			c.Set("id", id)
 		}
 
 		// Capture account...
@@ -125,7 +125,7 @@ func (t *Controller) ParamValidateMiddleware() gin.HandlerFunc {
 				return
 			}
 
-			c.Set("account", int(account))
+			c.Set("account", account)
 		}
 
 		// On to the next middleware or the controller.
