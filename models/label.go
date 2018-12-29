@@ -10,7 +10,10 @@ package models
 
 import (
 	"errors"
+	"strings"
 	"time"
+
+	validation "github.com/go-ozzo/ozzo-validation"
 )
 
 type Label struct {
@@ -27,6 +30,66 @@ type Label struct {
 //
 func (Label) TableName() string {
 	return "Labels"
+}
+
+//
+// Validate for this model.
+//
+func (a Label) Validate(db Datastore, action string, userId uint, accountId uint, objId uint) error {
+	return validation.ValidateStruct(&a,
+
+		validation.Field(&a.Name,
+			validation.Required.Error("The name field is required."),
+			validation.By(func(value interface{}) error { return db.ValidateDuplicateLabelName(a, accountId, objId, action) }),
+		),
+	)
+}
+
+//
+// Validate Duplicate Name
+//
+func (db *DB) ValidateDuplicateLabelName(obj Label, accountId uint, objId uint, action string) error {
+
+	const errMsg = "Label name is already in use."
+
+	// trim any white space
+	lbName := strings.Trim(obj.Name, " ")
+
+	// Make sure this category is not already in use.
+	if action == "create" {
+
+		c := Label{}
+
+		if !db.New().Where("LabelsAccountId = ? AND LabelsName = ?", accountId, lbName).First(&c).RecordNotFound() {
+			return errors.New(errMsg)
+		}
+
+		// Double check casing
+		if strings.ToLower(lbName) == strings.ToLower(c.Name) {
+			return errors.New(errMsg)
+		}
+
+	} else if action == "update" {
+
+		c := Label{}
+
+		if !db.New().Where("LabelsAccountId = ? AND LabelsName = ?", accountId, lbName).First(&c).RecordNotFound() {
+
+			// Make sure it is not the same id as the one we are updating
+			if c.Id != objId {
+				return errors.New(errMsg)
+			}
+		}
+
+		// Double check casing
+		if (c.Id != objId) && (strings.ToLower(lbName) == strings.ToLower(c.Name)) {
+			return errors.New(errMsg)
+		}
+
+	}
+
+	// All good in the hood
+	return nil
 }
 
 //

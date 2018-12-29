@@ -10,6 +10,7 @@ package controllers
 
 import (
 	"net/http"
+	"strings"
 
 	"github.com/cloudmanic/skyclerk.com/library/request"
 	"github.com/cloudmanic/skyclerk.com/library/response"
@@ -63,6 +64,32 @@ func (t *Controller) GetLabel(c *gin.Context) {
 
 	// Return happy.
 	response.Results(c, l, nil)
+}
+
+//
+// Create a Label within the account.
+//
+func (t *Controller) CreateLabel(c *gin.Context) {
+
+	// Setup Label obj
+	o := models.Label{}
+
+	// Here we parse the JSON sent in, assign it to a struct, set validation errors if any.
+	if t.ValidateRequest(c, &o, "create") != nil {
+		return
+	}
+
+	// Make sure the AccountId is correct.
+	o.AccountId = uint(c.MustGet("account").(int))
+
+	// Clean up some vars
+	o.Name = strings.Trim(o.Name, " ")
+
+	// Create label
+	t.db.New().Create(&o)
+
+	// Return happy.
+	response.RespondCreated(c, o, nil)
 }
 
 /* End File */

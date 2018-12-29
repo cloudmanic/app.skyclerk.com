@@ -27,6 +27,7 @@ func (t *Controller) DoRoutes(r *gin.Engine) {
 		// Labels
 		apiV1.GET("/:account/labels", t.GetLabels)
 		apiV1.GET("/:account/labels/:id", t.GetLabel)
+		apiV1.POST("/:account/labels", t.CreateLabel)
 
 		// Categories
 		apiV1.GET("/:account/categories", t.GetCategories)

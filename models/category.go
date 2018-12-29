@@ -42,7 +42,7 @@ func (a Category) Validate(db Datastore, action string, userId uint, accountId u
 
 		validation.Field(&a.Name,
 			validation.Required.Error("The name field is required."),
-			validation.By(func(value interface{}) error { return db.ValidateDuplicateName(a, accountId, objId, action) }),
+			validation.By(func(value interface{}) error { return db.ValidateDuplicateCategoryName(a, accountId, objId, action) }),
 		),
 
 		validation.Field(&a.Type,
@@ -55,7 +55,7 @@ func (a Category) Validate(db Datastore, action string, userId uint, accountId u
 //
 // Validate Duplicate Name
 //
-func (db *DB) ValidateDuplicateName(cat Category, accountId uint, objId uint, action string) error {
+func (db *DB) ValidateDuplicateCategoryName(cat Category, accountId uint, objId uint, action string) error {
 
 	const errMsg = "Category name is already in use."
 

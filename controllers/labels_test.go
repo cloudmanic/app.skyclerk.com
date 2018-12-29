@@ -9,6 +9,7 @@
 package controllers
 
 import (
+	"bytes"
 	"encoding/json"
 	"net/http"
 	"net/http/httptest"
@@ -377,6 +378,234 @@ func TestGetLabel02(t *testing.T) {
 	// Test results
 	st.Expect(t, w.Code, 400)
 	st.Expect(t, gjson.Get(w.Body.String(), "error").String(), "Label not found.")
+}
+
+//
+// Test create Label 01
+//
+func TestCreateLabel01(t *testing.T) {
+
+	// Start the db connection.
+	db, _ := models.NewDB()
+	defer db.Close()
+
+	// Create controller
+	c := &Controller{}
+	c.SetDB(db)
+
+	// Post data
+	lPost := models.Label{Name: "Label #1"}
+
+	// Get JSON
+	postStr, _ := json.Marshal(lPost)
+
+	// Setup request
+	req, _ := http.NewRequest("POST", "/api/v1/33/labels", bytes.NewBuffer(postStr))
+
+	// Setup writer.
+	w := httptest.NewRecorder()
+	gin.SetMode("release")
+	gin.DisableConsoleColor()
+
+	r := gin.New()
+	r.Use(func(c *gin.Context) {
+		c.Set("account", 33)
+		c.Set("userId", 109)
+	})
+	r.POST("/api/v1/33/labels", c.CreateLabel)
+	r.ServeHTTP(w, req)
+
+	// Grab result and convert to strut
+	result := models.Label{}
+	err := json.Unmarshal([]byte(w.Body.String()), &result)
+
+	// Test results
+	st.Expect(t, err, nil)
+	st.Expect(t, w.Code, 201)
+	st.Expect(t, result.Name, "Label #1")
+
+	// Double check the db.
+	lb := models.Label{}
+	db.First(&lb, 1)
+	st.Expect(t, lb.Id, uint(1))
+	st.Expect(t, lb.Name, "Label #1")
+}
+
+//
+// Test create Label 02 - duplicate
+//
+func TestCreateLabel02(t *testing.T) {
+
+	// Start the db connection.
+	db, _ := models.NewDB()
+	defer db.Close()
+
+	// Create controller
+	c := &Controller{}
+	c.SetDB(db)
+
+	// Set conflict
+	db.Save(&models.Label{AccountId: 33, Name: "label #1"})
+
+	// Post data
+	lPost := models.Label{Name: "Label #1"}
+
+	// Get JSON
+	postStr, _ := json.Marshal(lPost)
+
+	// Setup request
+	req, _ := http.NewRequest("POST", "/api/v1/33/labels", bytes.NewBuffer(postStr))
+
+	// Setup writer.
+	w := httptest.NewRecorder()
+	gin.SetMode("release")
+	gin.DisableConsoleColor()
+
+	r := gin.New()
+	r.Use(func(c *gin.Context) {
+		c.Set("account", 33)
+		c.Set("userId", 109)
+	})
+	r.POST("/api/v1/33/labels", c.CreateLabel)
+	r.ServeHTTP(w, req)
+
+	// Test results
+	st.Expect(t, w.Code, 400)
+	st.Expect(t, gjson.Get(w.Body.String(), "errors.name").String(), "Label name is already in use.")
+}
+
+//
+// Test create Label 03 -- spaces
+//
+func TestCreateLabel03(t *testing.T) {
+
+	// Start the db connection.
+	db, _ := models.NewDB()
+	defer db.Close()
+
+	// Create controller
+	c := &Controller{}
+	c.SetDB(db)
+
+	// Post data
+	lPost := models.Label{Name: "  Label #1  "}
+
+	// Get JSON
+	postStr, _ := json.Marshal(lPost)
+
+	// Setup request
+	req, _ := http.NewRequest("POST", "/api/v1/33/labels", bytes.NewBuffer(postStr))
+
+	// Setup writer.
+	w := httptest.NewRecorder()
+	gin.SetMode("release")
+	gin.DisableConsoleColor()
+
+	r := gin.New()
+	r.Use(func(c *gin.Context) {
+		c.Set("account", 33)
+		c.Set("userId", 109)
+	})
+	r.POST("/api/v1/33/labels", c.CreateLabel)
+	r.ServeHTTP(w, req)
+
+	// Grab result and convert to strut
+	result := models.Label{}
+	err := json.Unmarshal([]byte(w.Body.String()), &result)
+
+	// Test results
+	st.Expect(t, err, nil)
+	st.Expect(t, w.Code, 201)
+	st.Expect(t, result.Name, "Label #1")
+
+	// Double check the db.
+	lb := models.Label{}
+	db.First(&lb, 1)
+	st.Expect(t, lb.Id, uint(1))
+	st.Expect(t, lb.Name, "Label #1")
+}
+
+//
+// Test create Label 04 - duplicate / space
+//
+func TestCreateLabel04(t *testing.T) {
+
+	// Start the db connection.
+	db, _ := models.NewDB()
+	defer db.Close()
+
+	// Create controller
+	c := &Controller{}
+	c.SetDB(db)
+
+	// Set conflict
+	db.Save(&models.Label{AccountId: 33, Name: "label #1"})
+
+	// Post data
+	lPost := models.Label{Name: "    Label #1    "}
+
+	// Get JSON
+	postStr, _ := json.Marshal(lPost)
+
+	// Setup request
+	req, _ := http.NewRequest("POST", "/api/v1/33/labels", bytes.NewBuffer(postStr))
+
+	// Setup writer.
+	w := httptest.NewRecorder()
+	gin.SetMode("release")
+	gin.DisableConsoleColor()
+
+	r := gin.New()
+	r.Use(func(c *gin.Context) {
+		c.Set("account", 33)
+		c.Set("userId", 109)
+	})
+	r.POST("/api/v1/33/labels", c.CreateLabel)
+	r.ServeHTTP(w, req)
+
+	// Test results
+	st.Expect(t, w.Code, 400)
+	st.Expect(t, gjson.Get(w.Body.String(), "errors.name").String(), "Label name is already in use.")
+}
+
+//
+// Test create Label 05 - blank
+//
+func TestCreateLabel05(t *testing.T) {
+
+	// Start the db connection.
+	db, _ := models.NewDB()
+	defer db.Close()
+
+	// Create controller
+	c := &Controller{}
+	c.SetDB(db)
+
+	// Post data
+	lPost := models.Label{Name: ""}
+
+	// Get JSON
+	postStr, _ := json.Marshal(lPost)
+
+	// Setup request
+	req, _ := http.NewRequest("POST", "/api/v1/33/labels", bytes.NewBuffer(postStr))
+
+	// Setup writer.
+	w := httptest.NewRecorder()
+	gin.SetMode("release")
+	gin.DisableConsoleColor()
+
+	r := gin.New()
+	r.Use(func(c *gin.Context) {
+		c.Set("account", 33)
+		c.Set("userId", 109)
+	})
+	r.POST("/api/v1/33/labels", c.CreateLabel)
+	r.ServeHTTP(w, req)
+
+	// Test results
+	st.Expect(t, w.Code, 400)
+	st.Expect(t, gjson.Get(w.Body.String(), "errors.name").String(), "The name field is required.")
 }
 
 /* End File */
