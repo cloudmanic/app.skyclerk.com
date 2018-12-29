@@ -115,4 +115,22 @@ func (db *DB) GetCategoryByAccountAndId(accountId uint, categoryId uint) (Catego
 	return c, nil
 }
 
+//
+// Delete a category by account and id.
+//
+func (db *DB) DeleteCategoryByAccountAndId(accountId uint, categoryId uint) error {
+
+	// Make query to see if we have ledger entries with this category
+	if !db.New().Where("LedgerAccountId = ? AND LedgerCategoryId = ?", accountId, categoryId).First(&Ledger{}).RecordNotFound() {
+		return errors.New("Can not delete category. It is in use by a ledger entry.")
+	}
+
+	// Make query
+	db.New().Where("CategoriesAccountId = ? AND CategoriesId = ?", accountId, categoryId).Delete(Category{})
+
+	// Return result
+	return nil
+
+}
+
 /* End File */

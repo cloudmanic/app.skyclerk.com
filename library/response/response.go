@@ -86,6 +86,24 @@ func RespondUpdated(c *gin.Context, payload interface{}, err error) {
 }
 
 //
+// Respond with an error or object. When we deleted the object in the system
+//
+func RespondDeleted(c *gin.Context, err error) {
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+	} else {
+		c.JSON(http.StatusNoContent, nil)
+	}
+}
+
+//
+// Respond with an error.
+//
+func RespondError(c *gin.Context, err error) {
+	c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+}
+
+//
 // Take an interface and return a pretty print version in json.
 //
 func interfaceToPretty(results interface{}) string {

@@ -1018,4 +1018,95 @@ func TestUpdateCategory06(t *testing.T) {
 	st.Expect(t, gjson.Get(w.Body.String(), "errors.name").String(), "Category name is already in use.")
 }
 
+//
+// Test delete Category 01
+//
+func TestDeleteCategory01(t *testing.T) {
+
+	// Start the db connection.
+	db, _ := models.NewDB()
+	defer db.Close()
+
+	// Create controller
+	c := &Controller{}
+	c.SetDB(db)
+
+	// Create test cat to conflict with
+	db.Save(&models.Category{AccountId: 33, Type: "1", Name: "Category #1"})
+	db.Save(&models.Category{AccountId: 33, Type: "1", Name: "Category #2 Delete Me"})
+	db.Save(&models.Category{AccountId: 33, Type: "1", Name: "Category #3"})
+
+	// Setup request
+	req, _ := http.NewRequest("DELETE", "/api/v1/33/categories/2", nil)
+
+	// Setup writer.
+	w := httptest.NewRecorder()
+	gin.SetMode("release")
+	gin.DisableConsoleColor()
+
+	r := gin.New()
+	r.Use(func(c *gin.Context) {
+		c.Set("id", 2)
+		c.Set("account", 33)
+		c.Set("userId", 109)
+	})
+	r.DELETE("/api/v1/33/categories/2", c.DeleteCategory)
+	r.ServeHTTP(w, req)
+
+	// Test results
+	st.Expect(t, w.Code, 204)
+
+	// Double check the db.
+	cats := []models.Category{}
+	db.Find(&cats)
+	st.Expect(t, len(cats), 2)
+	st.Expect(t, cats[0].Id, uint(1))
+	st.Expect(t, cats[0].Name, "Category #1")
+	st.Expect(t, cats[1].Id, uint(3))
+	st.Expect(t, cats[1].Name, "Category #3")
+}
+
+//
+// Test delete Category 02
+//
+func TestDeleteCategory02(t *testing.T) {
+
+	// Start the db connection.
+	db, _ := models.NewDB()
+	defer db.Close()
+
+	// Create controller
+	c := &Controller{}
+	c.SetDB(db)
+
+	// Create test cat to conflict with
+	db.Save(&models.Category{AccountId: 33, Type: "1", Name: "Category #1"})
+	db.Save(&models.Category{AccountId: 33, Type: "1", Name: "Category #2 Delete Me"})
+	db.Save(&models.Category{AccountId: 33, Type: "1", Name: "Category #3"})
+
+	// Create test ledger
+	db.Save(&models.Ledger{AccountId: 33, CategoryId: 2})
+
+	// Setup request
+	req, _ := http.NewRequest("DELETE", "/api/v1/33/categories/2", nil)
+
+	// Setup writer.
+	w := httptest.NewRecorder()
+	gin.SetMode("release")
+	gin.DisableConsoleColor()
+
+	r := gin.New()
+	r.Use(func(c *gin.Context) {
+		c.Set("id", 2)
+		c.Set("account", 33)
+		c.Set("userId", 109)
+	})
+	r.DELETE("/api/v1/33/categories/2", c.DeleteCategory)
+	r.ServeHTTP(w, req)
+
+	// Test results
+	st.Expect(t, w.Code, 400)
+	st.Expect(t, gjson.Get(w.Body.String(), "error").String(), "Can not delete category. It is in use by a ledger entry.")
+}
+
 /* End File */

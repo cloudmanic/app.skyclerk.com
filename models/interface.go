@@ -27,6 +27,7 @@ type Datastore interface {
 	LedgerCreate(ledger *Ledger) error
 
 	// Category
+	DeleteCategoryByAccountAndId(accountId uint, categoryId uint) error
 	ValidateDuplicateName(cat Category, accountId uint, objId uint, action string) error
 	GetCategoryByAccountAndId(accountId uint, categoryId uint) (Category, error)
 }

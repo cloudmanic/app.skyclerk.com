@@ -141,4 +141,29 @@ func (t *Controller) UpdateCategory(c *gin.Context) {
 	response.RespondUpdated(c, orgCat, nil)
 }
 
+//
+// Delete a category within the account.
+//
+func (t *Controller) DeleteCategory(c *gin.Context) {
+
+	// First we make sure this is an entry we have access to.
+	_, err := t.db.GetCategoryByAccountAndId(uint(c.MustGet("account").(int)), uint(c.MustGet("id").(int)))
+
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"errors": "Category not found."})
+		return
+	}
+
+	// Delete category
+	err = t.db.DeleteCategoryByAccountAndId(uint(c.MustGet("account").(int)), uint(c.MustGet("id").(int)))
+
+	if err != nil {
+		response.RespondError(c, err)
+		return
+	}
+
+	// Return happy.
+	response.RespondDeleted(c, nil)
+}
+
 /* End File */
