@@ -2,13 +2,16 @@
 // Date: 2018-03-20
 // Author: Spicer Matthews (spicer@cloudmanic.com)
 // Last Modified by: Spicer Matthews
-// Last Modified: 2018-03-21
+// Last Modified: 2018-12-29
 // Copyright: 2017 Cloudmanic Labs, LLC. All rights reserved.
 //
 
 package models
 
-import "time"
+import (
+	"errors"
+	"time"
+)
 
 type Label struct {
 	Id        uint      `gorm:"primary_key;column:LabelsId" json:"id"`
@@ -24,6 +27,22 @@ type Label struct {
 //
 func (Label) TableName() string {
 	return "Labels"
+}
+
+//
+// Return a label by account and id.
+//
+func (db *DB) GetLabelByAccountAndId(accountId uint, labelId uint) (Label, error) {
+
+	l := Label{}
+
+	// Make query
+	if db.New().Where("LabelsAccountId = ? AND LabelsId = ?", accountId, labelId).First(&l).RecordNotFound() {
+		return Label{}, errors.New("Label not found.")
+	}
+
+	// Return result
+	return l, nil
 }
 
 /* End File */

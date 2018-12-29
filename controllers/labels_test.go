@@ -2,7 +2,7 @@
 // Date: 2018-03-22
 // Author: Spicer Matthews (spicer@cloudmanic.com)
 // Last Modified by: Spicer Matthews
-// Last Modified: 2018-03-22
+// Last Modified: 2018-12-29
 // Copyright: 2017 Cloudmanic Labs, LLC. All rights reserved.
 //
 
@@ -17,6 +17,7 @@ import (
 	"github.com/cloudmanic/skyclerk.com/models"
 	"github.com/gin-gonic/gin"
 	"github.com/nbio/st"
+	"github.com/tidwall/gjson"
 )
 
 //
@@ -283,6 +284,99 @@ func TestGetLabels05(t *testing.T) {
 
 	// Test results
 	st.Expect(t, w.Body.String(), `{"error":"There was an error. Please contact help@skyclerk.com for help."}`)
+}
+
+//
+// Test get a label 01
+//
+func TestGetLabel01(t *testing.T) {
+
+	// Start the db connection.
+	db, _ := models.NewDB()
+	defer db.Close()
+
+	// Create controller
+	c := &Controller{}
+	c.SetDB(db)
+
+	// Test labels. -- First 2 are to make sure we don't get them as they are not our account.
+	db.Save(&models.Label{AccountId: 34, Name: "No #1"})
+	db.Save(&models.Label{AccountId: 34, Name: "No #2"})
+	db.Save(&models.Label{AccountId: 33, Name: "label #1"})
+	db.Save(&models.Label{AccountId: 33, Name: "label #2"})
+	db.Save(&models.Label{AccountId: 33, Name: "label #3"})
+	db.Save(&models.Label{AccountId: 33, Name: "Abc"})
+	db.Save(&models.Label{AccountId: 33, Name: "Xyz"})
+
+	// Setup request
+	req, _ := http.NewRequest("GET", "/api/v1/33/labels/3", nil)
+
+	// Setup writer.
+	w := httptest.NewRecorder()
+	gin.SetMode("release")
+	gin.DisableConsoleColor()
+
+	r := gin.New()
+	r.Use(func(c *gin.Context) {
+		c.Set("id", 3)
+		c.Set("account", 33)
+		c.Set("userId", 109)
+	})
+	r.GET("/api/v1/33/labels/3", c.GetLabel)
+	r.ServeHTTP(w, req)
+
+	// Grab result and convert to strut
+	result := models.Label{}
+	err := json.Unmarshal([]byte(w.Body.String()), &result)
+
+	// Test results
+	st.Expect(t, err, nil)
+	st.Expect(t, result.Id, uint(3))
+	st.Expect(t, result.Name, "label #1")
+}
+
+//
+// Test get a label 02 - no perms
+//
+func TestGetLabel02(t *testing.T) {
+
+	// Start the db connection.
+	db, _ := models.NewDB()
+	defer db.Close()
+
+	// Create controller
+	c := &Controller{}
+	c.SetDB(db)
+
+	// Test labels. -- First 2 are to make sure we don't get them as they are not our account.
+	db.Save(&models.Label{AccountId: 34, Name: "No #1"})
+	db.Save(&models.Label{AccountId: 34, Name: "No #2"})
+	db.Save(&models.Label{AccountId: 33, Name: "label #1"})
+	db.Save(&models.Label{AccountId: 33, Name: "label #2"})
+	db.Save(&models.Label{AccountId: 33, Name: "label #3"})
+	db.Save(&models.Label{AccountId: 33, Name: "Abc"})
+	db.Save(&models.Label{AccountId: 33, Name: "Xyz"})
+
+	// Setup request
+	req, _ := http.NewRequest("GET", "/api/v1/33/labels/2", nil)
+
+	// Setup writer.
+	w := httptest.NewRecorder()
+	gin.SetMode("release")
+	gin.DisableConsoleColor()
+
+	r := gin.New()
+	r.Use(func(c *gin.Context) {
+		c.Set("id", 2)
+		c.Set("account", 33)
+		c.Set("userId", 109)
+	})
+	r.GET("/api/v1/33/labels/2", c.GetLabel)
+	r.ServeHTTP(w, req)
+
+	// Test results
+	st.Expect(t, w.Code, 400)
+	st.Expect(t, gjson.Get(w.Body.String(), "error").String(), "Label not found.")
 }
 
 /* End File */

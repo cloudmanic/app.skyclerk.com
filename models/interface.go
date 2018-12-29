@@ -25,6 +25,7 @@ type Datastore interface {
 
 	// Ledger
 	LedgerCreate(ledger *Ledger) error
+	GetLabelByAccountAndId(accountId uint, labelId uint) (Label, error)
 
 	// Category
 	DeleteCategoryByAccountAndId(accountId uint, categoryId uint) error
