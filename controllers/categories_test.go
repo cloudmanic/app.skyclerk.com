@@ -2,13 +2,14 @@
 // Date: 2018-03-22
 // Author: Spicer Matthews (spicer@cloudmanic.com)
 // Last Modified by: Spicer Matthews
-// Last Modified: 2018-03-22
+// Last Modified: 2018-12-28
 // Copyright: 2017 Cloudmanic Labs, LLC. All rights reserved.
 //
 
 package controllers
 
 import (
+	"bytes"
 	"encoding/json"
 	"net/http"
 	"net/http/httptest"
@@ -17,6 +18,7 @@ import (
 	"github.com/cloudmanic/skyclerk.com/models"
 	"github.com/gin-gonic/gin"
 	"github.com/nbio/st"
+	"github.com/tidwall/gjson"
 )
 
 //
@@ -96,7 +98,7 @@ func TestGetCategories02(t *testing.T) {
 	c := &Controller{}
 	c.SetDB(db)
 
-	// Test labels. -- First 2 are to make sure we don't get them as they are not our account.
+	// Test categories. -- First 2 are to make sure we don't get them as they are not our account.
 	db.Save(&models.Category{AccountId: 34, Type: "1", Name: "No #1"})
 	db.Save(&models.Category{AccountId: 34, Type: "1", Name: "No #2"})
 	db.Save(&models.Category{AccountId: 33, Type: "1", Name: "Category #1"})
@@ -300,6 +302,410 @@ func TestGetCategories05(t *testing.T) {
 
 	st.Expect(t, results[0].Type, "income")
 	st.Expect(t, results[1].Type, "income")
+}
+
+//
+// Test create Category 01
+//
+func TestCreateCategory01(t *testing.T) {
+
+	// Start the db connection.
+	db, _ := models.NewDB()
+	defer db.Close()
+
+	// Create controller
+	c := &Controller{}
+	c.SetDB(db)
+
+	// Post data
+	catPost := models.Category{Type: "1", Name: "Category #1"}
+
+	// Get JSON
+	postStr, _ := json.Marshal(catPost)
+
+	// Setup request
+	req, _ := http.NewRequest("POST", "/api/v1/33/categories", bytes.NewBuffer(postStr))
+
+	// Setup writer.
+	w := httptest.NewRecorder()
+	gin.SetMode("release")
+	gin.DisableConsoleColor()
+
+	r := gin.New()
+	r.Use(func(c *gin.Context) {
+		c.Set("account", 33)
+		c.Set("userId", uint(109))
+	})
+	r.POST("/api/v1/33/categories", c.CreateCategory)
+	r.ServeHTTP(w, req)
+
+	// Grab result and convert to strut
+	result := models.Category{}
+	err := json.Unmarshal([]byte(w.Body.String()), &result)
+
+	// Test results
+	st.Expect(t, err, nil)
+	st.Expect(t, w.Code, 201)
+	st.Expect(t, result.Name, "Category #1")
+	st.Expect(t, result.Type, "expense")
+
+	// Double check the db.
+	cat := models.Category{}
+	db.First(&cat, 1)
+	st.Expect(t, cat.Id, uint(1))
+	st.Expect(t, cat.Name, "Category #1")
+	st.Expect(t, cat.Type, "1")
+}
+
+//
+// Test create Category 02
+//
+func TestCreateCategory02(t *testing.T) {
+
+	// Start the db connection.
+	db, _ := models.NewDB()
+	defer db.Close()
+
+	// Create controller
+	c := &Controller{}
+	c.SetDB(db)
+
+	// Post data
+	catPost := models.Category{Type: "2", Name: "Category #2"}
+
+	// Get JSON
+	postStr, _ := json.Marshal(catPost)
+
+	// Setup request
+	req, _ := http.NewRequest("POST", "/api/v1/33/categories", bytes.NewBuffer(postStr))
+
+	// Setup writer.
+	w := httptest.NewRecorder()
+	gin.SetMode("release")
+	gin.DisableConsoleColor()
+
+	r := gin.New()
+	r.Use(func(c *gin.Context) {
+		c.Set("account", 33)
+		c.Set("userId", uint(109))
+	})
+	r.POST("/api/v1/33/categories", c.CreateCategory)
+	r.ServeHTTP(w, req)
+
+	// Grab result and convert to strut
+	result := models.Category{}
+	err := json.Unmarshal([]byte(w.Body.String()), &result)
+
+	// Test results
+	st.Expect(t, err, nil)
+	st.Expect(t, w.Code, 201)
+	st.Expect(t, result.Name, "Category #2")
+	st.Expect(t, result.Type, "income")
+
+	// Double check the db.
+	cat := models.Category{}
+	db.First(&cat, 1)
+	st.Expect(t, cat.Id, uint(1))
+	st.Expect(t, cat.Name, "Category #2")
+	st.Expect(t, cat.Type, "2")
+}
+
+//
+// Test create Category 03 - Duplicate category name
+//
+func TestCreateCategory03(t *testing.T) {
+
+	// Start the db connection.
+	db, _ := models.NewDB()
+	defer db.Close()
+
+	// Create controller
+	c := &Controller{}
+	c.SetDB(db)
+
+	// Create test cat to conflict with
+	db.Save(&models.Category{AccountId: 33, Type: "1", Name: "Category #1"})
+
+	// Post data
+	catPost := models.Category{AccountId: 88, Type: "1", Name: "Category #1"}
+
+	// Get JSON
+	postStr, _ := json.Marshal(catPost)
+
+	// Setup request
+	req, _ := http.NewRequest("POST", "/api/v1/33/categories", bytes.NewBuffer(postStr))
+
+	// Setup writer.
+	w := httptest.NewRecorder()
+	gin.SetMode("release")
+	gin.DisableConsoleColor()
+
+	r := gin.New()
+	r.Use(func(c *gin.Context) {
+		c.Set("account", 33)
+		c.Set("userId", uint(109))
+	})
+	r.POST("/api/v1/33/categories", c.CreateCategory)
+	r.ServeHTTP(w, req)
+
+	// Test results
+	st.Expect(t, w.Code, 400)
+	st.Expect(t, gjson.Get(w.Body.String(), "errors.name").String(), "Category name is already in use.")
+}
+
+//
+// Test create Category 04 - Duplicate category name case
+//
+func TestCreateCategory04(t *testing.T) {
+
+	// Start the db connection.
+	db, _ := models.NewDB()
+	defer db.Close()
+
+	// Create controller
+	c := &Controller{}
+	c.SetDB(db)
+
+	// Create test cat to conflict with
+	db.Save(&models.Category{AccountId: 33, Type: "1", Name: "Category #1"})
+
+	// Post data
+	catPost := models.Category{Type: "1", Name: "category #1"} // lower case c
+
+	// Get JSON
+	postStr, _ := json.Marshal(catPost)
+
+	// Setup request
+	req, _ := http.NewRequest("POST", "/api/v1/33/categories", bytes.NewBuffer(postStr))
+
+	// Setup writer.
+	w := httptest.NewRecorder()
+	gin.SetMode("release")
+	gin.DisableConsoleColor()
+
+	r := gin.New()
+	r.Use(func(c *gin.Context) {
+		c.Set("account", 33)
+		c.Set("userId", uint(109))
+	})
+	r.POST("/api/v1/33/categories", c.CreateCategory)
+	r.ServeHTTP(w, req)
+
+	// Test results
+	st.Expect(t, w.Code, 400)
+	st.Expect(t, gjson.Get(w.Body.String(), "errors.name").String(), "Category name is already in use.")
+}
+
+//
+// Test create Category 05 - Duplicate category spaces
+//
+func TestCreateCategory05(t *testing.T) {
+
+	// Start the db connection.
+	db, _ := models.NewDB()
+	defer db.Close()
+
+	// Create controller
+	c := &Controller{}
+	c.SetDB(db)
+
+	// Create test cat to conflict with
+	db.Save(&models.Category{AccountId: 33, Type: "1", Name: "Category #1"})
+
+	// Post data
+	catPost := models.Category{Type: "1", Name: "  Category #1  "} // spaces
+
+	// Get JSON
+	postStr, _ := json.Marshal(catPost)
+
+	// Setup request
+	req, _ := http.NewRequest("POST", "/api/v1/33/categories", bytes.NewBuffer(postStr))
+
+	// Setup writer.
+	w := httptest.NewRecorder()
+	gin.SetMode("release")
+	gin.DisableConsoleColor()
+
+	r := gin.New()
+	r.Use(func(c *gin.Context) {
+		c.Set("account", 33)
+		c.Set("userId", uint(109))
+	})
+	r.POST("/api/v1/33/categories", c.CreateCategory)
+	r.ServeHTTP(w, req)
+
+	// Test results
+	st.Expect(t, w.Code, 400)
+	st.Expect(t, gjson.Get(w.Body.String(), "errors.name").String(), "Category name is already in use.")
+}
+
+//
+// Test create Category 06 - correct types
+//
+func TestCreateCategory06(t *testing.T) {
+
+	// Start the db connection.
+	db, _ := models.NewDB()
+	defer db.Close()
+
+	// Create controller
+	c := &Controller{}
+	c.SetDB(db)
+
+	// Post data
+	catPost := models.Category{Type: "9", Name: "Category #1"}
+
+	// Get JSON
+	postStr, _ := json.Marshal(catPost)
+
+	// Setup request
+	req, _ := http.NewRequest("POST", "/api/v1/33/categories", bytes.NewBuffer(postStr))
+
+	// Setup writer.
+	w := httptest.NewRecorder()
+	gin.SetMode("release")
+	gin.DisableConsoleColor()
+
+	r := gin.New()
+	r.Use(func(c *gin.Context) {
+		c.Set("account", 33)
+		c.Set("userId", uint(109))
+	})
+	r.POST("/api/v1/33/categories", c.CreateCategory)
+	r.ServeHTTP(w, req)
+
+	// Test results
+	st.Expect(t, w.Code, 400)
+	st.Expect(t, gjson.Get(w.Body.String(), "errors.type").String(), "The type field must be 1, or 2.")
+}
+
+//
+// Test create Category 07 - No Type
+//
+func TestCreateCategory07(t *testing.T) {
+
+	// Start the db connection.
+	db, _ := models.NewDB()
+	defer db.Close()
+
+	// Create controller
+	c := &Controller{}
+	c.SetDB(db)
+
+	// Post data
+	catPost := models.Category{Name: "Category #1"} // No Type
+
+	// Get JSON
+	postStr, _ := json.Marshal(catPost)
+
+	// Setup request
+	req, _ := http.NewRequest("POST", "/api/v1/33/categories", bytes.NewBuffer(postStr))
+
+	// Setup writer.
+	w := httptest.NewRecorder()
+	gin.SetMode("release")
+	gin.DisableConsoleColor()
+
+	r := gin.New()
+	r.Use(func(c *gin.Context) {
+		c.Set("account", 33)
+		c.Set("userId", uint(109))
+	})
+	r.POST("/api/v1/33/categories", c.CreateCategory)
+	r.ServeHTTP(w, req)
+
+	// Test results
+	st.Expect(t, w.Code, 400)
+	st.Expect(t, gjson.Get(w.Body.String(), "errors.type").String(), "The type field is required.")
+}
+
+//
+// Test create Category 08 - Type with spaces
+//
+func TestCreateCategory08(t *testing.T) {
+
+	// Start the db connection.
+	db, _ := models.NewDB()
+	defer db.Close()
+
+	// Create controller
+	c := &Controller{}
+	c.SetDB(db)
+
+	// Post data
+	catPost := models.Category{Type: " 1 ", Name: "Category #1"} // spaces
+
+	// Get JSON
+	postStr, _ := json.Marshal(catPost)
+
+	// Setup request
+	req, _ := http.NewRequest("POST", "/api/v1/33/categories", bytes.NewBuffer(postStr))
+
+	// Setup writer.
+	w := httptest.NewRecorder()
+	gin.SetMode("release")
+	gin.DisableConsoleColor()
+
+	r := gin.New()
+	r.Use(func(c *gin.Context) {
+		c.Set("account", 33)
+		c.Set("userId", uint(109))
+	})
+	r.POST("/api/v1/33/categories", c.CreateCategory)
+	r.ServeHTTP(w, req)
+
+	// Test results
+	st.Expect(t, w.Code, 400)
+	st.Expect(t, gjson.Get(w.Body.String(), "errors.type").String(), "The type field must be 1, or 2.")
+}
+
+//
+// Test create Category 09 - Same cat, different type
+//
+func TestCreateCategory09(t *testing.T) {
+
+	// Start the db connection.
+	db, _ := models.NewDB()
+	defer db.Close()
+
+	// Create controller
+	c := &Controller{}
+	c.SetDB(db)
+
+	// Create test cat to conflict with
+	db.Save(&models.Category{AccountId: 33, Type: "1", Name: "Category #1"})
+
+	// Post data
+	catPost := models.Category{Type: "2", Name: "Category #1"}
+
+	// Get JSON
+	postStr, _ := json.Marshal(catPost)
+
+	// Setup request
+	req, _ := http.NewRequest("POST", "/api/v1/33/categories", bytes.NewBuffer(postStr))
+
+	// Setup writer.
+	w := httptest.NewRecorder()
+	gin.SetMode("release")
+	gin.DisableConsoleColor()
+
+	r := gin.New()
+	r.Use(func(c *gin.Context) {
+		c.Set("account", 33)
+		c.Set("userId", uint(109))
+	})
+	r.POST("/api/v1/33/categories", c.CreateCategory)
+	r.ServeHTTP(w, req)
+
+	// Grab result and convert to strut
+	result := models.Category{}
+	err := json.Unmarshal([]byte(w.Body.String()), &result)
+
+	// Test results
+	st.Expect(t, err, nil)
+	st.Expect(t, w.Code, 201)
+	st.Expect(t, result.Name, "Category #1")
+	st.Expect(t, result.Type, "income")
 }
 
 /* End File */

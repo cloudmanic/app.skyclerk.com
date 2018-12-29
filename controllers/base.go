@@ -2,7 +2,7 @@
 // Date: 2018-03-21
 // Author: Spicer Matthews (spicer@cloudmanic.com)
 // Last Modified by: Spicer Matthews
-// Last Modified: 2018-03-22
+// Last Modified: 2018-12-28
 // Copyright: 2017 Cloudmanic Labs, LLC. All rights reserved.
 //
 
@@ -29,11 +29,47 @@ type Controller struct {
 	db models.Datastore
 }
 
+type ValidateRequest interface {
+	Validate(models.Datastore, string, uint, uint) error
+}
+
 //
 // Set the database.
 //
 func (t *Controller) SetDB(db models.Datastore) {
 	t.db = db
+}
+
+//
+// Validate and Create object.
+//
+func (t *Controller) ValidateRequest(c *gin.Context, obj ValidateRequest, action string) error {
+
+	// Bind the JSON that got sent into an object and validate.
+	if err := c.ShouldBindJSON(obj); err == nil {
+
+		// Get user id.
+		userId := c.MustGet("userId").(uint)
+
+		// AccountId.
+		accountId := uint(c.MustGet("account").(int))
+
+		// Run validation
+		err := obj.Validate(t.db, action, userId, accountId)
+
+		// If we had validation errors return them and do no more.
+		if err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"errors": err})
+			return err
+		}
+
+	} else {
+		services.LogWarning(err)
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid JSON in body. There is a chance the JSON maybe valid but does not match the data type requirements. For example maybe you passed a string in for an integer."})
+		return err
+	}
+
+	return nil
 }
 
 //

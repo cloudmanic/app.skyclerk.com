@@ -2,14 +2,20 @@
 // Date: 2018-03-20
 // Author: spicer (spicer@cloudmanic.com)
 // Last Modified by: Spicer Matthews
-// Last Modified: 2018-03-22
+// Last Modified: 2018-12-28
 // Copyright: 2017 Cloudmanic Labs, LLC. All rights reserved.
 //
 
 package models
 
+import "github.com/jinzhu/gorm"
+
 // Database interface
 type Datastore interface {
+
+	// Gorm Functions
+	New() *gorm.DB
+
 	// Generic database functions
 	Count(model interface{}, params QueryParam) (uint, error)
 	Query(model interface{}, params QueryParam) error
@@ -19,6 +25,9 @@ type Datastore interface {
 
 	// Ledger
 	LedgerCreate(ledger *Ledger) error
+
+	// Category
+	ValidateDuplicateName(cat Category, accountId uint, action string) error
 }
 
 /* End File */

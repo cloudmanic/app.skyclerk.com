@@ -1,8 +1,8 @@
 //
 // Date: 2018-03-20
 // Author: spicer (spicer@cloudmanic.com)
-// Last Modified by: spicer
-// Last Modified: 2018-03-20
+// Last Modified by: Spicer Matthews
+// Last Modified: 2018-12-28
 // Copyright: 2017 Cloudmanic Labs, LLC. All rights reserved.
 //
 
@@ -37,6 +37,17 @@ func LogDebug(message string) {
 //
 func LogFatal(err error) {
 	log.Fatal(err)
+}
+
+//
+// Warning Log.
+//
+func LogWarning(err error) {
+
+	caller := MyCaller()
+
+	// Standard out
+	log.Println(ansi.Color("[App:Warning] "+caller+" : "+err.Error(), "yellow"))
 }
 
 //

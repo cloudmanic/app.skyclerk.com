@@ -2,13 +2,15 @@
 // Date: 2018-03-21
 // Author: Spicer Matthews (spicer@cloudmanic.com)
 // Last Modified by: Spicer Matthews
-// Last Modified: 2018-03-22
+// Last Modified: 2018-12-28
 // Copyright: 2017 Cloudmanic Labs, LLC. All rights reserved.
 //
 
 package controllers
 
 import (
+	"strings"
+
 	"github.com/cloudmanic/skyclerk.com/library/request"
 	"github.com/cloudmanic/skyclerk.com/library/response"
 	"github.com/cloudmanic/skyclerk.com/models"
@@ -63,6 +65,40 @@ func (t *Controller) GetCategories(c *gin.Context) {
 
 	// Return json based on if this was a good result or not.
 	response.ResultsMeta(c, results, err, meta)
+}
+
+//
+// Create a category within the account.
+//
+func (t *Controller) CreateCategory(c *gin.Context) {
+
+	// Setup Category obj
+	o := models.Category{}
+
+	// Here we parse the JSON sent in, assign it to a struct, set validation errors if any.
+	if t.ValidateRequest(c, &o, "create") != nil {
+		return
+	}
+
+	// Make sure the AccountId is correct.
+	o.AccountId = uint(c.MustGet("account").(int))
+
+	// Clean up some vars
+	o.Type = strings.Trim(o.Type, " ")
+	o.Name = strings.Trim(o.Name, " ")
+
+	// Create category
+	t.db.New().Create(&o)
+
+	// Make the API more clear TODO: get rid of the numbering in the db in the future once we kill PHP
+	if o.Type == "1" {
+		o.Type = "expense"
+	} else {
+		o.Type = "income"
+	}
+
+	// Return happy.
+	response.RespondCreated(c, o, nil)
 }
 
 /* End File */

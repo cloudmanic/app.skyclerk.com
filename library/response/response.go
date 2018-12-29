@@ -2,7 +2,7 @@
 // Date: 2018-03-22
 // Author: Spicer Matthews (spicer@cloudmanic.com)
 // Last Modified by: Spicer Matthews
-// Last Modified: 2018-03-22
+// Last Modified: 2018-12-28
 // Copyright: 2017 Cloudmanic Labs, LLC. All rights reserved.
 //
 
@@ -61,6 +61,28 @@ func Results(c *gin.Context, results interface{}, err error) {
 
 	}
 
+}
+
+//
+// Respond with an error or object. When we create a new object in the system
+//
+func RespondCreated(c *gin.Context, payload interface{}, err error) {
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+	} else {
+		c.JSON(http.StatusCreated, payload)
+	}
+}
+
+//
+// Respond with an error or object. When we update an object in the system
+//
+func RespondUpdated(c *gin.Context, payload interface{}, err error) {
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+	} else {
+		c.JSON(http.StatusCreated, payload)
+	}
 }
 
 //

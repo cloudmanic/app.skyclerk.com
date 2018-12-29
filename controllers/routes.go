@@ -2,7 +2,7 @@
 // Date: 2018-03-21
 // Author: Spicer Matthews (spicer@cloudmanic.com)
 // Last Modified by: Spicer Matthews
-// Last Modified: 2018-03-22
+// Last Modified: 2018-12-28
 // Copyright: 2017 Cloudmanic Labs, LLC. All rights reserved.
 //
 
@@ -29,6 +29,7 @@ func (t *Controller) DoRoutes(r *gin.Engine) {
 
 		// Categories
 		apiV1.GET("/:account/categories", t.GetCategories)
+		apiV1.POST("/:account/categories", t.CreateCategory)
 	}
 
 	// ------------ Non-Auth Routes ------ //

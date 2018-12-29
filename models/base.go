@@ -2,7 +2,7 @@
 // Date: 2018-03-20
 // Author: spicer (spicer@cloudmanic.com)
 // Last Modified by: Spicer Matthews
-// Last Modified: 2018-03-22
+// Last Modified: 2018-12-28
 // Copyright: 2017 Cloudmanic Labs, LLC. All rights reserved.
 //
 
@@ -22,10 +22,7 @@ import (
 // Start up the controller.
 //
 func init() {
-	// Helpful for testing
-	if flag.Lookup("test.v") != nil {
-		env.ReadEnv(build.Default.GOPATH + "/src/github.com/cloudmanic/skyclerk.com/.env")
-	}
+	env.ReadEnv(build.Default.GOPATH + "/src/github.com/cloudmanic/skyclerk.com/.env")
 }
 
 //
