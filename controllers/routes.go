@@ -2,7 +2,7 @@
 // Date: 2018-03-21
 // Author: Spicer Matthews (spicer@cloudmanic.com)
 // Last Modified by: Spicer Matthews
-// Last Modified: 2018-12-29
+// Last Modified: 2019-01-13
 // Copyright: 2017 Cloudmanic Labs, LLC. All rights reserved.
 //
 
@@ -35,6 +35,9 @@ func (t *Controller) DoRoutes(r *gin.Engine) {
 		apiV1.POST("/:account/categories", t.CreateCategory)
 		apiV1.PUT("/:account/categories/:id", t.UpdateCategory)
 		apiV1.DELETE("/:account/categories/:id", t.DeleteCategory)
+
+		// Contacts
+		apiV1.POST("/:account/contacts", t.CreateContact)
 	}
 
 	// ------------ Non-Auth Routes ------ //

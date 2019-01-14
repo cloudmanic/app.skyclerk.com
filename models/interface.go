@@ -2,7 +2,7 @@
 // Date: 2018-03-20
 // Author: spicer (spicer@cloudmanic.com)
 // Last Modified by: Spicer Matthews
-// Last Modified: 2018-12-29
+// Last Modified: 2019-01-13
 // Copyright: 2017 Cloudmanic Labs, LLC. All rights reserved.
 //
 
@@ -32,6 +32,9 @@ type Datastore interface {
 	DeleteCategoryByAccountAndId(accountId uint, categoryId uint) error
 	ValidateDuplicateCategoryName(cat Category, accountId uint, objId uint, action string) error
 	GetCategoryByAccountAndId(accountId uint, categoryId uint) (Category, error)
+
+	// Contact
+	ValidateContactNameOrFirstLast(contact Contact, accountId uint, objId uint, action string) error
 }
 
 /* End File */
