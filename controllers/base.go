@@ -12,13 +12,15 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"strconv"
 	"strings"
 	"time"
 
-	"github.com/cloudmanic/skyclerk.com/models"
-	"github.com/cloudmanic/skyclerk.com/services"
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
+
+	"github.com/cloudmanic/skyclerk.com/models"
+	"github.com/cloudmanic/skyclerk.com/services"
 )
 
 var (
@@ -58,7 +60,14 @@ func (t *Controller) ValidateRequest(c *gin.Context, obj ValidateRequest, action
 		var id uint = 0
 
 		if action == "update" {
-			id = uint(c.MustGet("id").(int))
+			id2, err := strconv.ParseInt(c.Param("id"), 10, 32)
+
+			if err != nil {
+				c.JSON(http.StatusBadRequest, gin.H{"errors": err})
+				return err
+			}
+
+			id = uint(id2)
 		}
 
 		// Run validation

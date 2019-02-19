@@ -10,6 +10,7 @@ package controllers
 
 import (
 	"net/http"
+	"strconv"
 	"strings"
 
 	"github.com/cloudmanic/skyclerk.com/library/request"
@@ -53,9 +54,15 @@ func (t *Controller) GetLabels(c *gin.Context) {
 // Get Label by id
 //
 func (t *Controller) GetLabel(c *gin.Context) {
+	id, err := strconv.ParseInt(c.Param("id"), 10, 32)
+
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"errors": err})
+		return
+	}
 
 	// Get category and make sure we have perms to it
-	l, err := t.db.GetLabelByAccountAndId(uint(c.MustGet("account").(int)), uint(c.MustGet("id").(int)))
+	l, err := t.db.GetLabelByAccountAndId(uint(c.MustGet("account").(int)), uint(id))
 
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Label not found."})
@@ -67,7 +74,7 @@ func (t *Controller) GetLabel(c *gin.Context) {
 }
 
 //
-// Create a Label within the account.
+// CreateLabel - Create a Label within the account.
 //
 func (t *Controller) CreateLabel(c *gin.Context) {
 
@@ -90,6 +97,44 @@ func (t *Controller) CreateLabel(c *gin.Context) {
 
 	// Return happy.
 	response.RespondCreated(c, o, nil)
+}
+
+//
+// UpdateLabel - Pass in a label to update.
+//
+func (t *Controller) UpdateLabel(c *gin.Context) {
+
+	id, err := strconv.ParseInt(c.Param("id"), 10, 32)
+
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"errors": err})
+		return
+	}
+
+	// First we make sure this is an entry we have access to.
+	orgLb, err := t.db.GetLabelByAccountAndId(uint(c.MustGet("account").(int)), uint(id))
+
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Label not found."})
+		return
+	}
+
+	// Setup Label obj
+	o := models.Label{}
+
+	// Here we parse the JSON sent in, assign it to a struct, set validation errors if any.
+	if t.ValidateRequest(c, &o, "update") != nil {
+		return
+	}
+
+	// We just allow updating of a few fields
+	orgLb.Name = strings.Trim(o.Name, " ")
+
+	// Update category
+	t.db.New().Save(&orgLb)
+
+	// Return happy.
+	response.RespondUpdated(c, orgLb, nil)
 }
 
 /* End File */

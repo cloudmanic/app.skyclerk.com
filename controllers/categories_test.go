@@ -56,7 +56,7 @@ func TestGetCategories01(t *testing.T) {
 		c.Set("account", 33)
 		c.Set("userId", 109)
 	})
-	r.GET("/api/v1/33/categories", c.GetCategories)
+	r.GET("/api/v1/:account/categories", c.GetCategories)
 	r.ServeHTTP(w, req)
 
 	// Grab result and convert to strut
@@ -120,7 +120,7 @@ func TestGetCategories02(t *testing.T) {
 		c.Set("account", 33)
 		c.Set("userId", 109)
 	})
-	r.GET("/api/v1/33/categories", c.GetCategories)
+	r.GET("/api/v1/:account/categories", c.GetCategories)
 	r.ServeHTTP(w, req)
 
 	// Grab result and convert to strut
@@ -184,7 +184,7 @@ func TestGetCategories03(t *testing.T) {
 		c.Set("account", 33)
 		c.Set("userId", 109)
 	})
-	r.GET("/api/v1/33/categories", c.GetCategories)
+	r.GET("/api/v1/:account/categories", c.GetCategories)
 	r.ServeHTTP(w, req)
 
 	// Grab result and convert to strut
@@ -242,7 +242,7 @@ func TestGetCategories04(t *testing.T) {
 		c.Set("account", 33)
 		c.Set("userId", 109)
 	})
-	r.GET("/api/v1/33/categories", c.GetCategories)
+	r.GET("/api/v1/:account/categories", c.GetCategories)
 	r.ServeHTTP(w, req)
 
 	// Test results
@@ -284,7 +284,7 @@ func TestGetCategories05(t *testing.T) {
 		c.Set("account", 33)
 		c.Set("userId", 109)
 	})
-	r.GET("/api/v1/33/categories", c.GetCategories)
+	r.GET("/api/v1/:account/categories", c.GetCategories)
 	r.ServeHTTP(w, req)
 
 	// Grab result and convert to strut
@@ -332,11 +332,10 @@ func TestGetCategory01(t *testing.T) {
 
 	r := gin.New()
 	r.Use(func(c *gin.Context) {
-		c.Set("id", 2)
 		c.Set("account", 33)
 		c.Set("userId", 109)
 	})
-	r.GET("/api/v1/33/categories/2", c.GetCategory)
+	r.GET("/api/v1/:account/categories/:id", c.GetCategory)
 	r.ServeHTTP(w, req)
 
 	// Grab result and convert to strut
@@ -378,11 +377,10 @@ func TestGetCategory02(t *testing.T) {
 
 	r := gin.New()
 	r.Use(func(c *gin.Context) {
-		c.Set("id", 2)
 		c.Set("account", 33)
 		c.Set("userId", 109)
 	})
-	r.GET("/api/v1/33/categories/2", c.GetCategory)
+	r.GET("/api/v1/:account/categories/:id", c.GetCategory)
 	r.ServeHTTP(w, req)
 
 	// Test results
@@ -422,7 +420,7 @@ func TestCreateCategory01(t *testing.T) {
 		c.Set("account", 33)
 		c.Set("userId", 109)
 	})
-	r.POST("/api/v1/33/categories", c.CreateCategory)
+	r.POST("/api/v1/:account/categories", c.CreateCategory)
 	r.ServeHTTP(w, req)
 
 	// Grab result and convert to strut
@@ -475,7 +473,7 @@ func TestCreateCategory02(t *testing.T) {
 		c.Set("account", 33)
 		c.Set("userId", 109)
 	})
-	r.POST("/api/v1/33/categories", c.CreateCategory)
+	r.POST("/api/v1/:account/categories", c.CreateCategory)
 	r.ServeHTTP(w, req)
 
 	// Grab result and convert to strut
@@ -531,7 +529,7 @@ func TestCreateCategory03(t *testing.T) {
 		c.Set("account", 33)
 		c.Set("userId", 109)
 	})
-	r.POST("/api/v1/33/categories", c.CreateCategory)
+	r.POST("/api/v1/:account/categories", c.CreateCategory)
 	r.ServeHTTP(w, req)
 
 	// Test results
@@ -574,7 +572,7 @@ func TestCreateCategory04(t *testing.T) {
 		c.Set("account", 33)
 		c.Set("userId", 109)
 	})
-	r.POST("/api/v1/33/categories", c.CreateCategory)
+	r.POST("/api/v1/:account/categories", c.CreateCategory)
 	r.ServeHTTP(w, req)
 
 	// Test results
@@ -617,7 +615,7 @@ func TestCreateCategory05(t *testing.T) {
 		c.Set("account", 33)
 		c.Set("userId", 109)
 	})
-	r.POST("/api/v1/33/categories", c.CreateCategory)
+	r.POST("/api/v1/:account/categories", c.CreateCategory)
 	r.ServeHTTP(w, req)
 
 	// Test results
@@ -657,7 +655,7 @@ func TestCreateCategory06(t *testing.T) {
 		c.Set("account", 33)
 		c.Set("userId", 109)
 	})
-	r.POST("/api/v1/33/categories", c.CreateCategory)
+	r.POST("/api/v1/:account/categories", c.CreateCategory)
 	r.ServeHTTP(w, req)
 
 	// Test results
@@ -697,7 +695,7 @@ func TestCreateCategory07(t *testing.T) {
 		c.Set("account", 33)
 		c.Set("userId", 109)
 	})
-	r.POST("/api/v1/33/categories", c.CreateCategory)
+	r.POST("/api/v1/:account/categories", c.CreateCategory)
 	r.ServeHTTP(w, req)
 
 	// Test results
@@ -737,7 +735,7 @@ func TestCreateCategory08(t *testing.T) {
 		c.Set("account", 33)
 		c.Set("userId", 109)
 	})
-	r.POST("/api/v1/33/categories", c.CreateCategory)
+	r.POST("/api/v1/:account/categories", c.CreateCategory)
 	r.ServeHTTP(w, req)
 
 	// Test results
@@ -780,7 +778,7 @@ func TestCreateCategory09(t *testing.T) {
 		c.Set("account", 33)
 		c.Set("userId", 109)
 	})
-	r.POST("/api/v1/33/categories", c.CreateCategory)
+	r.POST("/api/v1/:account/categories", c.CreateCategory)
 	r.ServeHTTP(w, req)
 
 	// Grab result and convert to strut
@@ -826,11 +824,10 @@ func TestUpdateCategory01(t *testing.T) {
 
 	r := gin.New()
 	r.Use(func(c *gin.Context) {
-		c.Set("id", 1)
 		c.Set("account", 33)
 		c.Set("userId", 109)
 	})
-	r.PUT("/api/v1/33/categories/1", c.UpdateCategory)
+	r.PUT("/api/v1/:account/categories/:id", c.UpdateCategory)
 	r.ServeHTTP(w, req)
 
 	// Grab result and convert to strut
@@ -884,11 +881,10 @@ func TestUpdateCategory02(t *testing.T) {
 
 	r := gin.New()
 	r.Use(func(c *gin.Context) {
-		c.Set("id", 1)
 		c.Set("account", 33)
 		c.Set("userId", 109)
 	})
-	r.PUT("/api/v1/33/categories/1", c.UpdateCategory)
+	r.PUT("/api/v1/:account/categories/:id", c.UpdateCategory)
 	r.ServeHTTP(w, req)
 
 	// Test results
@@ -929,11 +925,10 @@ func TestUpdateCategory03(t *testing.T) {
 
 	r := gin.New()
 	r.Use(func(c *gin.Context) {
-		c.Set("id", 2)
 		c.Set("account", 33)
 		c.Set("userId", 109)
 	})
-	r.PUT("/api/v1/33/categories/2", c.UpdateCategory)
+	r.PUT("/api/v1/:account/categories/:id", c.UpdateCategory)
 	r.ServeHTTP(w, req)
 
 	// Grab result and convert to strut
@@ -988,11 +983,10 @@ func TestUpdateCategory04(t *testing.T) {
 
 	r := gin.New()
 	r.Use(func(c *gin.Context) {
-		c.Set("id", 2)
 		c.Set("account", 33)
 		c.Set("userId", 109)
 	})
-	r.PUT("/api/v1/33/categories/2", c.UpdateCategory)
+	r.PUT("/api/v1/:account/categories/:id", c.UpdateCategory)
 	r.ServeHTTP(w, req)
 
 	// Grab result and convert to strut
@@ -1047,11 +1041,10 @@ func TestUpdateCategory05(t *testing.T) {
 
 	r := gin.New()
 	r.Use(func(c *gin.Context) {
-		c.Set("id", 1)
 		c.Set("account", 33)
 		c.Set("userId", 109)
 	})
-	r.PUT("/api/v1/33/categories/1", c.UpdateCategory)
+	r.PUT("/api/v1/:account/categories/:id", c.UpdateCategory)
 	r.ServeHTTP(w, req)
 
 	// Test results
@@ -1092,11 +1085,10 @@ func TestUpdateCategory06(t *testing.T) {
 
 	r := gin.New()
 	r.Use(func(c *gin.Context) {
-		c.Set("id", 1)
 		c.Set("account", 33)
 		c.Set("userId", 109)
 	})
-	r.PUT("/api/v1/33/categories/1", c.UpdateCategory)
+	r.PUT("/api/v1/:account/categories/:id", c.UpdateCategory)
 	r.ServeHTTP(w, req)
 
 	// Test results
@@ -1132,11 +1124,10 @@ func TestDeleteCategory01(t *testing.T) {
 
 	r := gin.New()
 	r.Use(func(c *gin.Context) {
-		c.Set("id", 2)
 		c.Set("account", 33)
 		c.Set("userId", 109)
 	})
-	r.DELETE("/api/v1/33/categories/2", c.DeleteCategory)
+	r.DELETE("/api/v1/:account/categories/:id", c.DeleteCategory)
 	r.ServeHTTP(w, req)
 
 	// Test results
@@ -1183,11 +1174,10 @@ func TestDeleteCategory02(t *testing.T) {
 
 	r := gin.New()
 	r.Use(func(c *gin.Context) {
-		c.Set("id", 2)
 		c.Set("account", 33)
 		c.Set("userId", 109)
 	})
-	r.DELETE("/api/v1/33/categories/2", c.DeleteCategory)
+	r.DELETE("/api/v1/:account/categories/:id", c.DeleteCategory)
 	r.ServeHTTP(w, req)
 
 	// Test results

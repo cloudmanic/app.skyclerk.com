@@ -14,7 +14,7 @@ import (
 )
 
 //
-// Do Routes
+// DoRoutes - Do Routes
 //
 func (t *Controller) DoRoutes(r *gin.Engine) {
 
@@ -28,6 +28,7 @@ func (t *Controller) DoRoutes(r *gin.Engine) {
 		apiV1.GET("/:account/labels", t.GetLabels)
 		apiV1.GET("/:account/labels/:id", t.GetLabel)
 		apiV1.POST("/:account/labels", t.CreateLabel)
+		apiV1.PUT("/:account/labels/:id", t.UpdateLabel)
 
 		// Categories
 		apiV1.GET("/:account/categories", t.GetCategories)

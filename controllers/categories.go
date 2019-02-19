@@ -10,6 +10,7 @@ package controllers
 
 import (
 	"net/http"
+	"strconv"
 	"strings"
 
 	"github.com/cloudmanic/skyclerk.com/library/request"
@@ -73,8 +74,15 @@ func (t *Controller) GetCategories(c *gin.Context) {
 //
 func (t *Controller) GetCategory(c *gin.Context) {
 
+	id, err := strconv.ParseInt(c.Param("id"), 10, 32)
+
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"errors": err})
+		return
+	}
+
 	// Get category and make sure we have perms to it
-	orgCat, err := t.db.GetCategoryByAccountAndId(uint(c.MustGet("account").(int)), uint(c.MustGet("id").(int)))
+	orgCat, err := t.db.GetCategoryByAccountAndId(uint(c.MustGet("account").(int)), uint(id))
 
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Category not found."})
@@ -131,8 +139,15 @@ func (t *Controller) CreateCategory(c *gin.Context) {
 //
 func (t *Controller) UpdateCategory(c *gin.Context) {
 
+	id, err := strconv.ParseInt(c.Param("id"), 10, 32)
+
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"errors": err})
+		return
+	}
+
 	// First we make sure this is an entry we have access to.
-	orgCat, err := t.db.GetCategoryByAccountAndId(uint(c.MustGet("account").(int)), uint(c.MustGet("id").(int)))
+	orgCat, err := t.db.GetCategoryByAccountAndId(uint(c.MustGet("account").(int)), uint(id))
 
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Category not found."})
@@ -170,16 +185,23 @@ func (t *Controller) UpdateCategory(c *gin.Context) {
 //
 func (t *Controller) DeleteCategory(c *gin.Context) {
 
-	// First we make sure this is an entry we have access to.
-	_, err := t.db.GetCategoryByAccountAndId(uint(c.MustGet("account").(int)), uint(c.MustGet("id").(int)))
+	id, err := strconv.ParseInt(c.Param("id"), 10, 32)
 
 	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"errors": err})
+		return
+	}
+
+	// First we make sure this is an entry we have access to.
+	_, err2 := t.db.GetCategoryByAccountAndId(uint(c.MustGet("account").(int)), uint(id))
+
+	if err2 != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Category not found."})
 		return
 	}
 
 	// Delete category
-	err = t.db.DeleteCategoryByAccountAndId(uint(c.MustGet("account").(int)), uint(c.MustGet("id").(int)))
+	err = t.db.DeleteCategoryByAccountAndId(uint(c.MustGet("account").(int)), uint(id))
 
 	if err != nil {
 		response.RespondError(c, err)

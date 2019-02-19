@@ -56,7 +56,7 @@ func TestGetLabels01(t *testing.T) {
 		c.Set("account", 33)
 		c.Set("userId", uint(109))
 	})
-	r.GET("/api/v1/33/labels", c.GetLabels)
+	r.GET("/api/v1/:account/labels", c.GetLabels)
 	r.ServeHTTP(w, req)
 
 	// Grab result and convert to strut
@@ -112,7 +112,7 @@ func TestGetLabels02(t *testing.T) {
 		c.Set("account", 33)
 		c.Set("userId", uint(109))
 	})
-	r.GET("/api/v1/33/labels", c.GetLabels)
+	r.GET("/api/v1/:account/labels", c.GetLabels)
 	r.ServeHTTP(w, req)
 
 	// Grab result and convert to strut
@@ -168,7 +168,7 @@ func TestGetLabels03(t *testing.T) {
 		c.Set("account", 33)
 		c.Set("userId", uint(109))
 	})
-	r.GET("/api/v1/33/labels", c.GetLabels)
+	r.GET("/api/v1/:account/labels", c.GetLabels)
 	r.ServeHTTP(w, req)
 
 	// Grab result and convert to strut
@@ -224,7 +224,7 @@ func TestGetLabels04(t *testing.T) {
 		c.Set("account", 33)
 		c.Set("userId", uint(109))
 	})
-	r.GET("/api/v1/33/labels", c.GetLabels)
+	r.GET("/api/v1/:account/labels", c.GetLabels)
 	r.ServeHTTP(w, req)
 
 	// Grab result and convert to strut
@@ -280,7 +280,7 @@ func TestGetLabels05(t *testing.T) {
 		c.Set("account", 33)
 		c.Set("userId", uint(109))
 	})
-	r.GET("/api/v1/33/labels", c.GetLabels)
+	r.GET("/api/v1/:account/labels", c.GetLabels)
 	r.ServeHTTP(w, req)
 
 	// Test results
@@ -319,11 +319,10 @@ func TestGetLabel01(t *testing.T) {
 
 	r := gin.New()
 	r.Use(func(c *gin.Context) {
-		c.Set("id", 3)
 		c.Set("account", 33)
 		c.Set("userId", 109)
 	})
-	r.GET("/api/v1/33/labels/3", c.GetLabel)
+	r.GET("/api/v1/:account/labels/:id", c.GetLabel)
 	r.ServeHTTP(w, req)
 
 	// Grab result and convert to strut
@@ -368,11 +367,10 @@ func TestGetLabel02(t *testing.T) {
 
 	r := gin.New()
 	r.Use(func(c *gin.Context) {
-		c.Set("id", 2)
 		c.Set("account", 33)
 		c.Set("userId", 109)
 	})
-	r.GET("/api/v1/33/labels/2", c.GetLabel)
+	r.GET("/api/v1/:account/labels/:id", c.GetLabel)
 	r.ServeHTTP(w, req)
 
 	// Test results
@@ -412,7 +410,7 @@ func TestCreateLabel01(t *testing.T) {
 		c.Set("account", 33)
 		c.Set("userId", 109)
 	})
-	r.POST("/api/v1/33/labels", c.CreateLabel)
+	r.POST("/api/v1/:account/labels", c.CreateLabel)
 	r.ServeHTTP(w, req)
 
 	// Grab result and convert to strut
@@ -466,7 +464,7 @@ func TestCreateLabel02(t *testing.T) {
 		c.Set("account", 33)
 		c.Set("userId", 109)
 	})
-	r.POST("/api/v1/33/labels", c.CreateLabel)
+	r.POST("/api/v1/:account/labels", c.CreateLabel)
 	r.ServeHTTP(w, req)
 
 	// Test results
@@ -506,7 +504,7 @@ func TestCreateLabel03(t *testing.T) {
 		c.Set("account", 33)
 		c.Set("userId", 109)
 	})
-	r.POST("/api/v1/33/labels", c.CreateLabel)
+	r.POST("/api/v1/:account/labels", c.CreateLabel)
 	r.ServeHTTP(w, req)
 
 	// Grab result and convert to strut
@@ -560,7 +558,7 @@ func TestCreateLabel04(t *testing.T) {
 		c.Set("account", 33)
 		c.Set("userId", 109)
 	})
-	r.POST("/api/v1/33/labels", c.CreateLabel)
+	r.POST("/api/v1/:account/labels", c.CreateLabel)
 	r.ServeHTTP(w, req)
 
 	// Test results
@@ -600,12 +598,263 @@ func TestCreateLabel05(t *testing.T) {
 		c.Set("account", 33)
 		c.Set("userId", 109)
 	})
-	r.POST("/api/v1/33/labels", c.CreateLabel)
+	r.POST("/api/v1/:account/labels", c.CreateLabel)
 	r.ServeHTTP(w, req)
 
 	// Test results
 	st.Expect(t, w.Code, 400)
 	st.Expect(t, gjson.Get(w.Body.String(), "errors.name").String(), "The name field is required.")
+}
+
+//
+// TestUpdateLabel01 - Test update Label 01
+//
+func TestUpdateLabel01(t *testing.T) {
+
+	// Start the db connection.
+	db, _ := models.NewDB()
+	defer db.Close()
+
+	// Create controller
+	c := &Controller{}
+	c.SetDB(db)
+
+	// Create test label to conflict with
+	db.Save(&models.Label{AccountId: 33, Name: "Label #1"})
+
+	// Put data
+	lbPut := models.Label{Name: "Label #1 Unit Test"}
+
+	// Get JSON
+	putStr, _ := json.Marshal(lbPut)
+
+	// Setup request
+	req, _ := http.NewRequest("PUT", "/api/v1/33/labels/1", bytes.NewBuffer(putStr))
+
+	// Setup writer.
+	w := httptest.NewRecorder()
+	gin.SetMode("release")
+	gin.DisableConsoleColor()
+
+	r := gin.New()
+	r.Use(func(c *gin.Context) {
+		c.Set("account", 33)
+		c.Set("userId", 109)
+	})
+	r.PUT("/api/v1/:account/labels/:id", c.UpdateLabel)
+	r.ServeHTTP(w, req)
+
+	// Grab result and convert to strut
+	result := models.Label{}
+	err := json.Unmarshal([]byte(w.Body.String()), &result)
+
+	// Test results
+	st.Expect(t, err, nil)
+	st.Expect(t, w.Code, 200)
+	st.Expect(t, result.Name, "Label #1 Unit Test")
+
+	// Double check the db.
+	lb := models.Label{}
+	db.First(&lb, 1)
+	st.Expect(t, lb.Id, uint(1))
+	st.Expect(t, lb.Name, "Label #1 Unit Test")
+}
+
+//
+// TestUpdateCategory02 - Test update Label 02 - Duplicate Label
+//
+func TestUpdateLabel02(t *testing.T) {
+
+	// Start the db connection.
+	db, _ := models.NewDB()
+	defer db.Close()
+
+	// Create controller
+	c := &Controller{}
+	c.SetDB(db)
+
+	// Create test label to conflict with
+	db.Save(&models.Label{AccountId: 33, Name: "Label #1"})
+	db.Save(&models.Label{AccountId: 33, Name: "Label #2"})
+
+	// Put data
+	lbPut := models.Label{Name: "Label #2"}
+
+	// Get JSON
+	putStr, _ := json.Marshal(lbPut)
+
+	// Setup request
+	req, _ := http.NewRequest("PUT", "/api/v1/33/labels/1", bytes.NewBuffer(putStr))
+
+	// Setup writer.
+	w := httptest.NewRecorder()
+	gin.SetMode("release")
+	gin.DisableConsoleColor()
+
+	r := gin.New()
+	r.Use(func(c *gin.Context) {
+		c.Set("account", 33)
+		c.Set("userId", 109)
+	})
+	r.PUT("/api/v1/:account/labels/:id", c.UpdateLabel)
+	r.ServeHTTP(w, req)
+
+	// Test results
+	st.Expect(t, w.Code, 400)
+	st.Expect(t, gjson.Get(w.Body.String(), "errors.name").String(), "Label name is already in use.")
+}
+
+//
+// TestUpdateLabel03 - Test update Label 03 - Duplicate same id
+//
+func TestUpdateLabel03(t *testing.T) {
+
+	// Start the db connection.
+	db, _ := models.NewDB()
+	defer db.Close()
+
+	// Create controller
+	c := &Controller{}
+	c.SetDB(db)
+
+	// Create test label to conflict with
+	db.Save(&models.Label{AccountId: 33, Name: "Label #1"})
+	db.Save(&models.Label{AccountId: 33, Name: "Label #2"})
+
+	// Put data
+	lbPut := models.Label{Name: "Label #2"}
+
+	// Get JSON
+	putStr, _ := json.Marshal(lbPut)
+
+	// Setup request
+	req, _ := http.NewRequest("PUT", "/api/v1/33/labels/2", bytes.NewBuffer(putStr))
+
+	// Setup writer.
+	w := httptest.NewRecorder()
+	gin.SetMode("release")
+	gin.DisableConsoleColor()
+
+	r := gin.New()
+	r.Use(func(c *gin.Context) {
+		c.Set("account", 33)
+		c.Set("userId", 109)
+	})
+	r.PUT("/api/v1/:account/labels/:id", c.UpdateLabel)
+	r.ServeHTTP(w, req)
+
+	// Grab result and convert to strut
+	result := models.Label{}
+	err := json.Unmarshal([]byte(w.Body.String()), &result)
+
+	// Test results
+	st.Expect(t, err, nil)
+	st.Expect(t, w.Code, 200)
+	st.Expect(t, result.Name, "Label #2")
+
+	// Double check the db.
+	lb := models.Label{}
+	db.First(&lb, 2)
+	st.Expect(t, lb.Id, uint(2))
+	st.Expect(t, lb.Name, "Label #2")
+}
+
+//
+// TestUpdateLabel04 - Test update Label 02 - Duplicate Label space
+//
+func TestUpdateLabel04(t *testing.T) {
+
+	// Start the db connection.
+	db, _ := models.NewDB()
+	defer db.Close()
+
+	// Create controller
+	c := &Controller{}
+	c.SetDB(db)
+
+	// Create test label to conflict with
+	db.Save(&models.Label{AccountId: 33, Name: "Label #1"})
+	db.Save(&models.Label{AccountId: 33, Name: "Label #2"})
+
+	// Put data
+	lbPut := models.Label{Name: "    Label #2    "}
+
+	// Get JSON
+	putStr, _ := json.Marshal(lbPut)
+
+	// Setup request
+	req, _ := http.NewRequest("PUT", "/api/v1/33/labels/1", bytes.NewBuffer(putStr))
+
+	// Setup writer.
+	w := httptest.NewRecorder()
+	gin.SetMode("release")
+	gin.DisableConsoleColor()
+
+	r := gin.New()
+	r.Use(func(c *gin.Context) {
+		c.Set("account", 33)
+		c.Set("userId", 109)
+	})
+	r.PUT("/api/v1/:account/labels/:id", c.UpdateLabel)
+	r.ServeHTTP(w, req)
+
+	// Test results
+	st.Expect(t, w.Code, 400)
+	st.Expect(t, gjson.Get(w.Body.String(), "errors.name").String(), "Label name is already in use.")
+}
+
+//
+// TestUpdateLabel05 - Test update Label 05 - Space
+//
+func TestUpdateLabel05(t *testing.T) {
+
+	// Start the db connection.
+	db, _ := models.NewDB()
+	defer db.Close()
+
+	// Create controller
+	c := &Controller{}
+	c.SetDB(db)
+
+	// Create test label to conflict with
+	db.Save(&models.Label{AccountId: 33, Name: "Label #1"})
+
+	// Put data
+	lbPut := models.Label{Name: "     Label #1 Unit Test     "}
+
+	// Get JSON
+	putStr, _ := json.Marshal(lbPut)
+
+	// Setup request
+	req, _ := http.NewRequest("PUT", "/api/v1/33/labels/1", bytes.NewBuffer(putStr))
+
+	// Setup writer.
+	w := httptest.NewRecorder()
+	gin.SetMode("release")
+	gin.DisableConsoleColor()
+
+	r := gin.New()
+	r.Use(func(c *gin.Context) {
+		c.Set("account", 33)
+		c.Set("userId", 109)
+	})
+	r.PUT("/api/v1/:account/labels/:id", c.UpdateLabel)
+	r.ServeHTTP(w, req)
+
+	// Grab result and convert to strut
+	result := models.Label{}
+	err := json.Unmarshal([]byte(w.Body.String()), &result)
+
+	// Test results
+	st.Expect(t, err, nil)
+	st.Expect(t, w.Code, 200)
+	st.Expect(t, result.Name, "Label #1 Unit Test")
+
+	// Double check the db.
+	lb := models.Label{}
+	db.First(&lb, 1)
+	st.Expect(t, lb.Id, uint(1))
+	st.Expect(t, lb.Name, "Label #1 Unit Test")
 }
 
 /* End File */

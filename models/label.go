@@ -46,7 +46,7 @@ func (a Label) Validate(db Datastore, action string, userId uint, accountId uint
 }
 
 //
-// Validate Duplicate Name
+// ValidateDuplicateLabelName - Validate Duplicate Name
 //
 func (db *DB) ValidateDuplicateLabelName(obj Label, accountId uint, objId uint, action string) error {
 
