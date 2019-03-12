@@ -135,6 +135,55 @@ func TestGetContacts02(t *testing.T) {
 }
 
 //
+// TestGetContact0 Test get contacts 01
+//
+func TestGetContact01(t *testing.T) {
+
+	// Start the db connection.
+	db, _ := models.NewDB()
+	defer db.Close()
+
+	// Create controller
+	c := &Controller{}
+	c.SetDB(db)
+
+	// Test labels. -- First 2 are to make sure we don't get them as they are not our account.
+	db.Save(&models.Contact{AccountId: 34, Name: "Apple Inc.", FirstName: "", LastName: ""})
+	db.Save(&models.Contact{AccountId: 34, Name: "Matthews Etc. LLC", FirstName: "Spicer", LastName: "Matthews"})
+	db.Save(&models.Contact{AccountId: 33, Name: "", FirstName: "Jane", LastName: "Wells"})
+	db.Save(&models.Contact{AccountId: 33, Name: "", FirstName: "Mike", LastName: "Rosso"})
+	db.Save(&models.Contact{AccountId: 33, Name: "Zoo Inc.", FirstName: "", LastName: ""})
+	db.Save(&models.Contact{AccountId: 33, Name: "Abc Inc.", FirstName: "Katie", LastName: "Matthews"})
+	db.Save(&models.Contact{AccountId: 33, Name: "Dope Dealer, LLC", FirstName: "", LastName: ""})
+
+	// Setup request
+	req, _ := http.NewRequest("GET", "/api/v1/33/contacts/4", nil)
+
+	// Setup writer.
+	w := httptest.NewRecorder()
+	gin.SetMode("release")
+	gin.DisableConsoleColor()
+
+	r := gin.New()
+	r.Use(func(c *gin.Context) {
+		c.Set("accountId", 33)
+		c.Set("userId", uint(109))
+	})
+	r.GET("/api/v1/:account/contacts/:id", c.GetContact)
+	r.ServeHTTP(w, req)
+
+	// Grab result and convert to strut
+	result := models.Contact{}
+	err := json.Unmarshal([]byte(w.Body.String()), &result)
+
+	// Test results
+	st.Expect(t, err, nil)
+	st.Expect(t, result.Id, uint(4))
+	st.Expect(t, result.FirstName, "Mike")
+	st.Expect(t, result.LastName, "Rosso")
+}
+
+//
 // Test create Contact 01
 //
 func TestCreateContact01(t *testing.T) {

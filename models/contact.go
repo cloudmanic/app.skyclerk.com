@@ -139,4 +139,19 @@ func (db *DB) ValidateContactNameOrFirstLast(contact Contact, accountId uint, ob
 	return nil
 }
 
+//
+// GetContactByAccountAndId - Return a contact by account and id.
+//
+func (db *DB) GetContactByAccountAndId(accountId uint, conId uint) (Contact, error) {
+	l := Contact{}
+
+	// Make query
+	if db.New().Where("ContactsAccountId = ? AND ContactsId = ?", accountId, conId).First(&l).RecordNotFound() {
+		return Contact{}, errors.New("Contact not found.")
+	}
+
+	// Return result
+	return l, nil
+}
+
 /* End File */

@@ -32,6 +32,7 @@ type Datastore interface {
 	GetCategoryByAccountAndId(accountId uint, categoryId uint) (Category, error)
 
 	// Contact
+	GetContactByAccountAndId(accountId uint, conId uint) (Contact, error)
 	ValidateContactNameOrFirstLast(contact Contact, accountId uint, objId uint, action string) error
 
 	// Labels

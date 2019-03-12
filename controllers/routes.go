@@ -40,6 +40,7 @@ func (t *Controller) DoRoutes(r *gin.Engine) {
 
 		// Contacts
 		apiV1.GET("/:account/contacts", t.GetContacts)
+		apiV1.GET("/:account/contacts/:id", t.GetContact)
 		apiV1.POST("/:account/contacts", t.CreateContact)
 	}
 

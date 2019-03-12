@@ -9,6 +9,8 @@
 package controllers
 
 import (
+	"net/http"
+	"strconv"
 	"strings"
 
 	"github.com/gin-gonic/gin"
@@ -47,6 +49,30 @@ func (t *Controller) GetContacts(c *gin.Context) {
 
 	// Return json based on if this was a good result or not.
 	response.ResultsMeta(c, results, err, meta)
+}
+
+//
+// GetContact - Get Contact by id
+//
+func (t *Controller) GetContact(c *gin.Context) {
+
+	id, err := strconv.ParseInt(c.Param("id"), 10, 32)
+
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"errors": err})
+		return
+	}
+
+	// Get contact and make sure we have perms to it
+	orgCon, err := t.db.GetContactByAccountAndId(uint(c.MustGet("accountId").(int)), uint(id))
+
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Contact not found."})
+		return
+	}
+
+	// Return happy.
+	response.Results(c, orgCon, nil)
 }
 
 //
