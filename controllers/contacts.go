@@ -11,13 +11,46 @@ package controllers
 import (
 	"strings"
 
+	"github.com/gin-gonic/gin"
+
+	"github.com/cloudmanic/skyclerk.com/library/request"
 	"github.com/cloudmanic/skyclerk.com/library/response"
 	"github.com/cloudmanic/skyclerk.com/models"
-	"github.com/gin-gonic/gin"
 )
 
 //
-// Create a contact within the account.
+// GetContacts - Return a list of contacts. We limit to 500 mainly so we do not overload the
+// system, but enough so the front-end does not have to page
+//
+func (t *Controller) GetContacts(c *gin.Context) {
+
+	// Place to store the results.
+	var results = []models.Contact{}
+
+	// Get limits and pages
+	page, _, _ := request.GetSetPagingParms(c)
+
+	// Set the query parms
+	params := models.QueryParam{
+		Order:            c.DefaultQuery("order", "ContactsName"),
+		Sort:             c.DefaultQuery("sort", "ASC"),
+		Limit:            500,
+		Page:             page,
+		AllowedOrderCols: []string{"ContactsId", "ContactsName"},
+		Wheres: []models.KeyValue{
+			{Key: "ContactsAccountId", ValueInt: c.MustGet("accountId").(int)},
+		},
+	}
+
+	// Run the query
+	meta, err := t.db.QueryMeta(&results, params)
+
+	// Return json based on if this was a good result or not.
+	response.ResultsMeta(c, results, err, meta)
+}
+
+//
+// CreateContact - Create a contact within the account.
 //
 func (t *Controller) CreateContact(c *gin.Context) {
 
