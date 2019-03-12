@@ -118,20 +118,20 @@ func (db *DB) ValidateContactNameOrFirstLast(contact Contact, accountId uint, ob
 
 	} else if action == "update" {
 
-		// c := Contact{}
+		c := Contact{}
 
-		// if !db.New().Where("ContactsAccountId = ? AND ContactsName = ?", accountId, contactName).First(&c).RecordNotFound() {
+		if !db.New().Where("ContactsAccountId = ? AND ContactsName = ? AND ContactsFirstName = ? AND ContactsLastName = ?", accountId, contactName, contactFirstName, contactLastName).First(&c).RecordNotFound() {
 
-		// 	// Make sure it is not the same id as the one we are updating
-		// 	if c.Id != objId {
-		// 		return errors.New(errMsg)
-		// 	}
-		// }
+			// Make sure it is not the same id as the one we are updating
+			if c.Id != objId {
+				return errors.New("Contact company name, first, and last name is already in use.")
+			}
+		}
 
-		// // Double check casing
-		// if (c.Id != objId) && (strings.ToLower(contactName) == strings.ToLower(c.Name)) {
-		// 	return errors.New(errMsg)
-		// }
+		// Double check casing
+		if (c.Id != objId) && (strings.ToLower(contactName) == strings.ToLower(c.Name) && (strings.ToLower(contactFirstName) == strings.ToLower(c.FirstName)) && (strings.ToLower(contactLastName) == strings.ToLower(c.LastName))) {
+			return errors.New("Contact company name, first, and last name is already in use.")
+		}
 
 	}
 

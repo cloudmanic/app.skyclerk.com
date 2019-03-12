@@ -147,7 +147,7 @@ func TestGetContact01(t *testing.T) {
 	c := &Controller{}
 	c.SetDB(db)
 
-	// Test labels. -- First 2 are to make sure we don't get them as they are not our account.
+	// Test contacts. -- First 2 are to make sure we don't get them as they are not our account.
 	db.Save(&models.Contact{AccountId: 34, Name: "Apple Inc.", FirstName: "", LastName: ""})
 	db.Save(&models.Contact{AccountId: 34, Name: "Matthews Etc. LLC", FirstName: "Spicer", LastName: "Matthews"})
 	db.Save(&models.Contact{AccountId: 33, Name: "", FirstName: "Jane", LastName: "Wells"})
@@ -475,6 +475,119 @@ func TestCreateContact05(t *testing.T) {
 	st.Expect(t, contact.Twitter, "@spicermatthews")
 	st.Expect(t, contact.Facebook, "http://www.facebook.com/user-profile")
 	st.Expect(t, contact.Linkedin, "http://www.linkedin.com/your-profile")
+}
+
+//
+// TestUpdateContact01 - Test update contact 01
+//
+func TestUpdateContact01(t *testing.T) {
+
+	// Start the db connection.
+	db, _ := models.NewDB()
+	defer db.Close()
+
+	// Create controller
+	c := &Controller{}
+	c.SetDB(db)
+
+	// Test contacts. -- First 2 are to make sure we don't get them as they are not our account.
+	db.Save(&models.Contact{AccountId: 34, Name: "Apple Inc.", FirstName: "", LastName: ""})
+	db.Save(&models.Contact{AccountId: 34, Name: "Matthews Etc. LLC", FirstName: "Spicer", LastName: "Matthews"})
+	db.Save(&models.Contact{AccountId: 33, Name: "", FirstName: "Jane", LastName: "Wells"})
+	db.Save(&models.Contact{AccountId: 33, Name: "", FirstName: "Mike", LastName: "Rosso"})
+	db.Save(&models.Contact{AccountId: 33, Name: "Zoo Inc.", FirstName: "", LastName: ""})
+	db.Save(&models.Contact{AccountId: 33, Name: "Abc Inc.", FirstName: "Katie", LastName: "Matthews"})
+	db.Save(&models.Contact{AccountId: 33, Name: "Dope Dealer, LLC", FirstName: "", LastName: ""})
+
+	// Put data
+	conPut := models.Contact{Name: "Wells Holdings, LLC", FirstName: "Jane", LastName: "Wells"}
+
+	// Get JSON
+	putStr, _ := json.Marshal(conPut)
+
+	// Setup request
+	req, _ := http.NewRequest("PUT", "/api/v1/33/contacts/3", bytes.NewBuffer(putStr))
+
+	// Setup writer.
+	w := httptest.NewRecorder()
+	gin.SetMode("release")
+	gin.DisableConsoleColor()
+
+	r := gin.New()
+	r.Use(func(c *gin.Context) {
+		c.Set("accountId", 33)
+		c.Set("userId", 109)
+	})
+	r.PUT("/api/v1/:account/contacts/:id", c.UpdateContact)
+	r.ServeHTTP(w, req)
+
+	// Grab result and convert to strut
+	result := models.Contact{}
+	err := json.Unmarshal([]byte(w.Body.String()), &result)
+
+	// Test results
+	st.Expect(t, err, nil)
+	st.Expect(t, w.Code, 200)
+	st.Expect(t, result.Name, "Wells Holdings, LLC")
+	st.Expect(t, result.FirstName, "Jane")
+	st.Expect(t, result.LastName, "Wells")
+
+	// Double check the db.
+	con := models.Contact{}
+	db.First(&con, 3)
+	st.Expect(t, con.Id, uint(3))
+	st.Expect(t, con.Name, "Wells Holdings, LLC")
+	st.Expect(t, con.FirstName, "Jane")
+	st.Expect(t, con.LastName, "Wells")
+}
+
+//
+// TestUpdateContact02 - Test update contact 02
+//
+func TestUpdateContact02(t *testing.T) {
+
+	// Start the db connection.
+	db, _ := models.NewDB()
+	defer db.Close()
+
+	// Create controller
+	c := &Controller{}
+	c.SetDB(db)
+
+	// Test contacts. -- First 2 are to make sure we don't get them as they are not our account.
+	db.Save(&models.Contact{AccountId: 34, Name: "Apple Inc.", FirstName: "", LastName: ""})
+	db.Save(&models.Contact{AccountId: 34, Name: "Matthews Etc. LLC", FirstName: "Spicer", LastName: "Matthews"})
+	db.Save(&models.Contact{AccountId: 33, Name: "", FirstName: "Jane", LastName: "Wells"})
+	db.Save(&models.Contact{AccountId: 33, Name: "", FirstName: "Mike", LastName: "Rosso"})
+	db.Save(&models.Contact{AccountId: 33, Name: "Zoo Inc.", FirstName: "", LastName: ""})
+	db.Save(&models.Contact{AccountId: 33, Name: "Abc Inc.", FirstName: "Katie", LastName: "Matthews"})
+	db.Save(&models.Contact{AccountId: 33, Name: "Dope Dealer, LLC", FirstName: "", LastName: ""})
+
+	// Put data
+	conPut := models.Contact{Name: "Abc Inc.", FirstName: "Katie", LastName: "Matthews"}
+
+	// Get JSON
+	putStr, _ := json.Marshal(conPut)
+
+	// Setup request
+	req, _ := http.NewRequest("PUT", "/api/v1/33/contacts/3", bytes.NewBuffer(putStr))
+
+	// Setup writer.
+	w := httptest.NewRecorder()
+	gin.SetMode("release")
+	gin.DisableConsoleColor()
+
+	r := gin.New()
+	r.Use(func(c *gin.Context) {
+		c.Set("accountId", 33)
+		c.Set("userId", 109)
+	})
+	r.PUT("/api/v1/:account/contacts/:id", c.UpdateContact)
+	r.ServeHTTP(w, req)
+
+	// Test results
+	st.Expect(t, w.Code, 400)
+	st.Expect(t, w.Body.String(), `{"errors":{"name":"Contact company name, first, and last name is already in use."}}`)
 }
 
 /* End File */

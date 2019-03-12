@@ -103,4 +103,44 @@ func (t *Controller) CreateContact(c *gin.Context) {
 	response.RespondCreated(c, o, nil)
 }
 
+//
+// UpdateContact - Update a contact within the account.
+//
+func (t *Controller) UpdateContact(c *gin.Context) {
+
+	id, err := strconv.ParseInt(c.Param("id"), 10, 32)
+
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"errors": err})
+		return
+	}
+
+	// First we make sure this is an entry we have access to.
+	orgCon, err := t.db.GetContactByAccountAndId(uint(c.MustGet("accountId").(int)), uint(id))
+
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Contact not found."})
+		return
+	}
+
+	// Setup Contact obj
+	o := models.Contact{}
+
+	// Here we parse the JSON sent in, assign it to a struct, set validation errors if any.
+	if t.ValidateRequest(c, &o, "update") != nil {
+		return
+	}
+
+	// We just allow updating of a few fields
+	orgCon.Name = strings.Trim(o.Name, " ")
+	orgCon.FirstName = strings.Trim(o.FirstName, " ")
+	orgCon.LastName = strings.Trim(o.LastName, " ")
+
+	// Update category
+	t.db.New().Save(&orgCon)
+
+	// Return happy.
+	response.RespondUpdated(c, orgCon, nil)
+}
+
 /* End File */
