@@ -81,7 +81,15 @@ func (t *Controller) AuthMiddleware() gin.HandlerFunc {
 
 		// TODO: verify this user is allowed to access this account.
 		// This is set in ParamValidateMiddleware.
-		// c.MustGet("account").(int)
+		accountId, err := strconv.ParseInt(c.Param("account"), 10, 32)
+
+		if err != nil {
+			c.JSON(http.StatusUnauthorized, gin.H{"error": "Account Not Found - Unable to Authenticate (#001)"})
+			c.AbortWithStatus(401)
+			return
+		}
+
+		c.Set("accountId", accountId)
 
 		// CORS for local deve opment.
 		if os.Getenv("APP_ENV") == "local" {

@@ -30,7 +30,7 @@ func (t *Controller) CreateContact(c *gin.Context) {
 	}
 
 	// Make sure the AccountId is correct.
-	o.AccountId = uint(c.MustGet("account").(int))
+	o.AccountId = uint(c.MustGet("accountId").(int))
 
 	// Clean up some vars
 	o.Name = strings.Trim(o.Name, " ")

@@ -15,10 +15,11 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	"github.com/cloudmanic/skyclerk.com/models"
 	"github.com/gin-gonic/gin"
 	"github.com/nbio/st"
 	"github.com/tidwall/gjson"
+
+	"github.com/cloudmanic/skyclerk.com/models"
 )
 
 //
@@ -50,7 +51,7 @@ func TestCreateContact01(t *testing.T) {
 
 	r := gin.New()
 	r.Use(func(c *gin.Context) {
-		c.Set("account", 33)
+		c.Set("accountId", 33)
 		c.Set("userId", 109)
 	})
 	r.POST("/api/v1/33/contacts", c.CreateContact)
@@ -108,7 +109,7 @@ func TestCreateContact02(t *testing.T) {
 
 	r := gin.New()
 	r.Use(func(c *gin.Context) {
-		c.Set("account", 33)
+		c.Set("accountId", 33)
 		c.Set("userId", 109)
 	})
 	r.POST("/api/v1/33/contacts", c.CreateContact)
@@ -151,7 +152,7 @@ func TestCreateContact03(t *testing.T) {
 
 	r := gin.New()
 	r.Use(func(c *gin.Context) {
-		c.Set("account", 33)
+		c.Set("accountId", 33)
 		c.Set("userId", 109)
 	})
 	r.POST("/api/v1/33/contacts", c.CreateContact)
@@ -191,7 +192,7 @@ func TestCreateContact04(t *testing.T) {
 
 	r := gin.New()
 	r.Use(func(c *gin.Context) {
-		c.Set("account", 33)
+		c.Set("accountId", 33)
 		c.Set("userId", 109)
 	})
 	r.POST("/api/v1/33/contacts", c.CreateContact)
@@ -263,7 +264,7 @@ func TestCreateContact05(t *testing.T) {
 
 	r := gin.New()
 	r.Use(func(c *gin.Context) {
-		c.Set("account", 33)
+		c.Set("accountId", 33)
 		c.Set("userId", 109)
 	})
 	r.POST("/api/v1/33/contacts", c.CreateContact)

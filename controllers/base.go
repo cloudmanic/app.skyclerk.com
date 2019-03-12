@@ -54,7 +54,7 @@ func (t *Controller) ValidateRequest(c *gin.Context, obj ValidateRequest, action
 		userId := uint(c.MustGet("userId").(int))
 
 		// AccountId.
-		accountId := uint(c.MustGet("account").(int))
+		accountId := uint(c.MustGet("accountId").(int))
 
 		// If the action is update add the id
 		var id uint = 0

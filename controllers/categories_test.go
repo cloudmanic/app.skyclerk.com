@@ -53,7 +53,7 @@ func TestGetCategories01(t *testing.T) {
 
 	r := gin.New()
 	r.Use(func(c *gin.Context) {
-		c.Set("account", 33)
+		c.Set("accountId", 33)
 		c.Set("userId", 109)
 	})
 	r.GET("/api/v1/:account/categories", c.GetCategories)
@@ -117,7 +117,7 @@ func TestGetCategories02(t *testing.T) {
 
 	r := gin.New()
 	r.Use(func(c *gin.Context) {
-		c.Set("account", 33)
+		c.Set("accountId", 33)
 		c.Set("userId", 109)
 	})
 	r.GET("/api/v1/:account/categories", c.GetCategories)
@@ -181,7 +181,7 @@ func TestGetCategories03(t *testing.T) {
 
 	r := gin.New()
 	r.Use(func(c *gin.Context) {
-		c.Set("account", 33)
+		c.Set("accountId", 33)
 		c.Set("userId", 109)
 	})
 	r.GET("/api/v1/:account/categories", c.GetCategories)
@@ -239,7 +239,7 @@ func TestGetCategories04(t *testing.T) {
 
 	r := gin.New()
 	r.Use(func(c *gin.Context) {
-		c.Set("account", 33)
+		c.Set("accountId", 33)
 		c.Set("userId", 109)
 	})
 	r.GET("/api/v1/:account/categories", c.GetCategories)
@@ -281,7 +281,7 @@ func TestGetCategories05(t *testing.T) {
 
 	r := gin.New()
 	r.Use(func(c *gin.Context) {
-		c.Set("account", 33)
+		c.Set("accountId", 33)
 		c.Set("userId", 109)
 	})
 	r.GET("/api/v1/:account/categories", c.GetCategories)
@@ -332,7 +332,7 @@ func TestGetCategory01(t *testing.T) {
 
 	r := gin.New()
 	r.Use(func(c *gin.Context) {
-		c.Set("account", 33)
+		c.Set("accountId", 33)
 		c.Set("userId", 109)
 	})
 	r.GET("/api/v1/:account/categories/:id", c.GetCategory)
@@ -377,7 +377,7 @@ func TestGetCategory02(t *testing.T) {
 
 	r := gin.New()
 	r.Use(func(c *gin.Context) {
-		c.Set("account", 33)
+		c.Set("accountId", 33)
 		c.Set("userId", 109)
 	})
 	r.GET("/api/v1/:account/categories/:id", c.GetCategory)
@@ -417,7 +417,7 @@ func TestCreateCategory01(t *testing.T) {
 
 	r := gin.New()
 	r.Use(func(c *gin.Context) {
-		c.Set("account", 33)
+		c.Set("accountId", 33)
 		c.Set("userId", 109)
 	})
 	r.POST("/api/v1/:account/categories", c.CreateCategory)
@@ -470,7 +470,7 @@ func TestCreateCategory02(t *testing.T) {
 
 	r := gin.New()
 	r.Use(func(c *gin.Context) {
-		c.Set("account", 33)
+		c.Set("accountId", 33)
 		c.Set("userId", 109)
 	})
 	r.POST("/api/v1/:account/categories", c.CreateCategory)
@@ -526,7 +526,7 @@ func TestCreateCategory03(t *testing.T) {
 
 	r := gin.New()
 	r.Use(func(c *gin.Context) {
-		c.Set("account", 33)
+		c.Set("accountId", 33)
 		c.Set("userId", 109)
 	})
 	r.POST("/api/v1/:account/categories", c.CreateCategory)
@@ -569,7 +569,7 @@ func TestCreateCategory04(t *testing.T) {
 
 	r := gin.New()
 	r.Use(func(c *gin.Context) {
-		c.Set("account", 33)
+		c.Set("accountId", 33)
 		c.Set("userId", 109)
 	})
 	r.POST("/api/v1/:account/categories", c.CreateCategory)
@@ -612,7 +612,7 @@ func TestCreateCategory05(t *testing.T) {
 
 	r := gin.New()
 	r.Use(func(c *gin.Context) {
-		c.Set("account", 33)
+		c.Set("accountId", 33)
 		c.Set("userId", 109)
 	})
 	r.POST("/api/v1/:account/categories", c.CreateCategory)
@@ -652,7 +652,7 @@ func TestCreateCategory06(t *testing.T) {
 
 	r := gin.New()
 	r.Use(func(c *gin.Context) {
-		c.Set("account", 33)
+		c.Set("accountId", 33)
 		c.Set("userId", 109)
 	})
 	r.POST("/api/v1/:account/categories", c.CreateCategory)
@@ -692,7 +692,7 @@ func TestCreateCategory07(t *testing.T) {
 
 	r := gin.New()
 	r.Use(func(c *gin.Context) {
-		c.Set("account", 33)
+		c.Set("accountId", 33)
 		c.Set("userId", 109)
 	})
 	r.POST("/api/v1/:account/categories", c.CreateCategory)
@@ -732,7 +732,7 @@ func TestCreateCategory08(t *testing.T) {
 
 	r := gin.New()
 	r.Use(func(c *gin.Context) {
-		c.Set("account", 33)
+		c.Set("accountId", 33)
 		c.Set("userId", 109)
 	})
 	r.POST("/api/v1/:account/categories", c.CreateCategory)
@@ -775,7 +775,7 @@ func TestCreateCategory09(t *testing.T) {
 
 	r := gin.New()
 	r.Use(func(c *gin.Context) {
-		c.Set("account", 33)
+		c.Set("accountId", 33)
 		c.Set("userId", 109)
 	})
 	r.POST("/api/v1/:account/categories", c.CreateCategory)
@@ -824,7 +824,7 @@ func TestUpdateCategory01(t *testing.T) {
 
 	r := gin.New()
 	r.Use(func(c *gin.Context) {
-		c.Set("account", 33)
+		c.Set("accountId", 33)
 		c.Set("userId", 109)
 	})
 	r.PUT("/api/v1/:account/categories/:id", c.UpdateCategory)
@@ -881,7 +881,7 @@ func TestUpdateCategory02(t *testing.T) {
 
 	r := gin.New()
 	r.Use(func(c *gin.Context) {
-		c.Set("account", 33)
+		c.Set("accountId", 33)
 		c.Set("userId", 109)
 	})
 	r.PUT("/api/v1/:account/categories/:id", c.UpdateCategory)
@@ -925,7 +925,7 @@ func TestUpdateCategory03(t *testing.T) {
 
 	r := gin.New()
 	r.Use(func(c *gin.Context) {
-		c.Set("account", 33)
+		c.Set("accountId", 33)
 		c.Set("userId", 109)
 	})
 	r.PUT("/api/v1/:account/categories/:id", c.UpdateCategory)
@@ -983,7 +983,7 @@ func TestUpdateCategory04(t *testing.T) {
 
 	r := gin.New()
 	r.Use(func(c *gin.Context) {
-		c.Set("account", 33)
+		c.Set("accountId", 33)
 		c.Set("userId", 109)
 	})
 	r.PUT("/api/v1/:account/categories/:id", c.UpdateCategory)
@@ -1041,7 +1041,7 @@ func TestUpdateCategory05(t *testing.T) {
 
 	r := gin.New()
 	r.Use(func(c *gin.Context) {
-		c.Set("account", 33)
+		c.Set("accountId", 33)
 		c.Set("userId", 109)
 	})
 	r.PUT("/api/v1/:account/categories/:id", c.UpdateCategory)
@@ -1085,7 +1085,7 @@ func TestUpdateCategory06(t *testing.T) {
 
 	r := gin.New()
 	r.Use(func(c *gin.Context) {
-		c.Set("account", 33)
+		c.Set("accountId", 33)
 		c.Set("userId", 109)
 	})
 	r.PUT("/api/v1/:account/categories/:id", c.UpdateCategory)
@@ -1124,7 +1124,7 @@ func TestDeleteCategory01(t *testing.T) {
 
 	r := gin.New()
 	r.Use(func(c *gin.Context) {
-		c.Set("account", 33)
+		c.Set("accountId", 33)
 		c.Set("userId", 109)
 	})
 	r.DELETE("/api/v1/:account/categories/:id", c.DeleteCategory)
@@ -1174,7 +1174,7 @@ func TestDeleteCategory02(t *testing.T) {
 
 	r := gin.New()
 	r.Use(func(c *gin.Context) {
-		c.Set("account", 33)
+		c.Set("accountId", 33)
 		c.Set("userId", 109)
 	})
 	r.DELETE("/api/v1/:account/categories/:id", c.DeleteCategory)

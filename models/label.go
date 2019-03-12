@@ -93,10 +93,9 @@ func (db *DB) ValidateDuplicateLabelName(obj Label, accountId uint, objId uint, 
 }
 
 //
-// Return a label by account and id.
+// GetLabelByAccountAndId - Return a label by account and id.
 //
 func (db *DB) GetLabelByAccountAndId(accountId uint, labelId uint) (Label, error) {
-
 	l := Label{}
 
 	// Make query
@@ -106,6 +105,20 @@ func (db *DB) GetLabelByAccountAndId(accountId uint, labelId uint) (Label, error
 
 	// Return result
 	return l, nil
+}
+
+//
+// DeleteLabelByAccountAndId - Delete a label by account and id.
+//
+func (db *DB) DeleteLabelByAccountAndId(accountId uint, labelId uint) error {
+	// Make query to delete
+	db.New().Where("LabelsAccountId = ? AND LabelsId = ?", accountId, labelId).Delete(Label{})
+
+	// Delete from look up table.
+	db.New().Where("LabelsToLedgerAccountId = ? AND LabelsToLedgerLabelId = ?", accountId, labelId).Delete(LabelsToLedger{})
+
+	// Return result
+	return nil
 }
 
 /* End File */

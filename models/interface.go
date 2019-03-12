@@ -10,7 +10,7 @@ package models
 
 import "github.com/jinzhu/gorm"
 
-// Database interface
+// Datastore interface
 type Datastore interface {
 
 	// Gorm Functions
@@ -25,8 +25,6 @@ type Datastore interface {
 
 	// Ledger
 	LedgerCreate(ledger *Ledger) error
-	GetLabelByAccountAndId(accountId uint, labelId uint) (Label, error)
-	ValidateDuplicateLabelName(obj Label, accountId uint, objId uint, action string) error
 
 	// Category
 	DeleteCategoryByAccountAndId(accountId uint, categoryId uint) error
@@ -35,6 +33,11 @@ type Datastore interface {
 
 	// Contact
 	ValidateContactNameOrFirstLast(contact Contact, accountId uint, objId uint, action string) error
+
+	// Labels
+	GetLabelByAccountAndId(accountId uint, labelId uint) (Label, error)
+	DeleteLabelByAccountAndId(accountId uint, labelId uint) error
+	ValidateDuplicateLabelName(obj Label, accountId uint, objId uint, action string) error
 }
 
 /* End File */

@@ -53,7 +53,7 @@ func TestGetLabels01(t *testing.T) {
 
 	r := gin.New()
 	r.Use(func(c *gin.Context) {
-		c.Set("account", 33)
+		c.Set("accountId", 33)
 		c.Set("userId", uint(109))
 	})
 	r.GET("/api/v1/:account/labels", c.GetLabels)
@@ -109,7 +109,7 @@ func TestGetLabels02(t *testing.T) {
 
 	r := gin.New()
 	r.Use(func(c *gin.Context) {
-		c.Set("account", 33)
+		c.Set("accountId", 33)
 		c.Set("userId", uint(109))
 	})
 	r.GET("/api/v1/:account/labels", c.GetLabels)
@@ -165,7 +165,7 @@ func TestGetLabels03(t *testing.T) {
 
 	r := gin.New()
 	r.Use(func(c *gin.Context) {
-		c.Set("account", 33)
+		c.Set("accountId", 33)
 		c.Set("userId", uint(109))
 	})
 	r.GET("/api/v1/:account/labels", c.GetLabels)
@@ -221,7 +221,7 @@ func TestGetLabels04(t *testing.T) {
 
 	r := gin.New()
 	r.Use(func(c *gin.Context) {
-		c.Set("account", 33)
+		c.Set("accountId", 33)
 		c.Set("userId", uint(109))
 	})
 	r.GET("/api/v1/:account/labels", c.GetLabels)
@@ -277,7 +277,7 @@ func TestGetLabels05(t *testing.T) {
 
 	r := gin.New()
 	r.Use(func(c *gin.Context) {
-		c.Set("account", 33)
+		c.Set("accountId", 33)
 		c.Set("userId", uint(109))
 	})
 	r.GET("/api/v1/:account/labels", c.GetLabels)
@@ -319,7 +319,7 @@ func TestGetLabel01(t *testing.T) {
 
 	r := gin.New()
 	r.Use(func(c *gin.Context) {
-		c.Set("account", 33)
+		c.Set("accountId", 33)
 		c.Set("userId", 109)
 	})
 	r.GET("/api/v1/:account/labels/:id", c.GetLabel)
@@ -367,7 +367,7 @@ func TestGetLabel02(t *testing.T) {
 
 	r := gin.New()
 	r.Use(func(c *gin.Context) {
-		c.Set("account", 33)
+		c.Set("accountId", 33)
 		c.Set("userId", 109)
 	})
 	r.GET("/api/v1/:account/labels/:id", c.GetLabel)
@@ -407,7 +407,7 @@ func TestCreateLabel01(t *testing.T) {
 
 	r := gin.New()
 	r.Use(func(c *gin.Context) {
-		c.Set("account", 33)
+		c.Set("accountId", 33)
 		c.Set("userId", 109)
 	})
 	r.POST("/api/v1/:account/labels", c.CreateLabel)
@@ -461,7 +461,7 @@ func TestCreateLabel02(t *testing.T) {
 
 	r := gin.New()
 	r.Use(func(c *gin.Context) {
-		c.Set("account", 33)
+		c.Set("accountId", 33)
 		c.Set("userId", 109)
 	})
 	r.POST("/api/v1/:account/labels", c.CreateLabel)
@@ -501,7 +501,7 @@ func TestCreateLabel03(t *testing.T) {
 
 	r := gin.New()
 	r.Use(func(c *gin.Context) {
-		c.Set("account", 33)
+		c.Set("accountId", 33)
 		c.Set("userId", 109)
 	})
 	r.POST("/api/v1/:account/labels", c.CreateLabel)
@@ -555,7 +555,7 @@ func TestCreateLabel04(t *testing.T) {
 
 	r := gin.New()
 	r.Use(func(c *gin.Context) {
-		c.Set("account", 33)
+		c.Set("accountId", 33)
 		c.Set("userId", 109)
 	})
 	r.POST("/api/v1/:account/labels", c.CreateLabel)
@@ -595,7 +595,7 @@ func TestCreateLabel05(t *testing.T) {
 
 	r := gin.New()
 	r.Use(func(c *gin.Context) {
-		c.Set("account", 33)
+		c.Set("accountId", 33)
 		c.Set("userId", 109)
 	})
 	r.POST("/api/v1/:account/labels", c.CreateLabel)
@@ -638,7 +638,7 @@ func TestUpdateLabel01(t *testing.T) {
 
 	r := gin.New()
 	r.Use(func(c *gin.Context) {
-		c.Set("account", 33)
+		c.Set("accountId", 33)
 		c.Set("userId", 109)
 	})
 	r.PUT("/api/v1/:account/labels/:id", c.UpdateLabel)
@@ -693,7 +693,7 @@ func TestUpdateLabel02(t *testing.T) {
 
 	r := gin.New()
 	r.Use(func(c *gin.Context) {
-		c.Set("account", 33)
+		c.Set("accountId", 33)
 		c.Set("userId", 109)
 	})
 	r.PUT("/api/v1/:account/labels/:id", c.UpdateLabel)
@@ -737,7 +737,7 @@ func TestUpdateLabel03(t *testing.T) {
 
 	r := gin.New()
 	r.Use(func(c *gin.Context) {
-		c.Set("account", 33)
+		c.Set("accountId", 33)
 		c.Set("userId", 109)
 	})
 	r.PUT("/api/v1/:account/labels/:id", c.UpdateLabel)
@@ -792,7 +792,7 @@ func TestUpdateLabel04(t *testing.T) {
 
 	r := gin.New()
 	r.Use(func(c *gin.Context) {
-		c.Set("account", 33)
+		c.Set("accountId", 33)
 		c.Set("userId", 109)
 	})
 	r.PUT("/api/v1/:account/labels/:id", c.UpdateLabel)
@@ -835,7 +835,7 @@ func TestUpdateLabel05(t *testing.T) {
 
 	r := gin.New()
 	r.Use(func(c *gin.Context) {
-		c.Set("account", 33)
+		c.Set("accountId", 33)
 		c.Set("userId", 109)
 	})
 	r.PUT("/api/v1/:account/labels/:id", c.UpdateLabel)
@@ -855,6 +855,127 @@ func TestUpdateLabel05(t *testing.T) {
 	db.First(&lb, 1)
 	st.Expect(t, lb.Id, uint(1))
 	st.Expect(t, lb.Name, "Label #1 Unit Test")
+}
+
+//
+// TestDeleteLabel01 - Test delete Label 01
+//
+func TestDeleteLabel01(t *testing.T) {
+	// Start the db connection.
+	db, _ := models.NewDB()
+	defer db.Close()
+
+	// Create controller
+	c := &Controller{}
+	c.SetDB(db)
+
+	// Test labels. -- First 2 are to make sure we don't get them as they are not our account.
+	db.Save(&models.Label{AccountId: 34, Name: "No #1"})
+	db.Save(&models.Label{AccountId: 34, Name: "No #2"})
+	db.Save(&models.Label{AccountId: 33, Name: "label #1"})
+	db.Save(&models.Label{AccountId: 33, Name: "label #2"})
+	db.Save(&models.Label{AccountId: 33, Name: "label #3"})
+	db.Save(&models.Label{AccountId: 33, Name: "Abc"})
+	db.Save(&models.Label{AccountId: 33, Name: "Xyz"})
+
+	// Assign some fake ledger entries to the loop up table.
+	db.Save(&models.LabelsToLedger{LabelsToLedgerAccountId: 33, LabelsToLedgerLabelId: 4, LabelsToLedgerLedgerId: 1})
+	db.Save(&models.LabelsToLedger{LabelsToLedgerAccountId: 33, LabelsToLedgerLabelId: 4, LabelsToLedgerLedgerId: 2})
+	db.Save(&models.LabelsToLedger{LabelsToLedgerAccountId: 33, LabelsToLedgerLabelId: 4, LabelsToLedgerLedgerId: 3})
+	db.Save(&models.LabelsToLedger{LabelsToLedgerAccountId: 33, LabelsToLedgerLabelId: 4, LabelsToLedgerLedgerId: 4})
+	db.Save(&models.LabelsToLedger{LabelsToLedgerAccountId: 34, LabelsToLedgerLabelId: 1, LabelsToLedgerLedgerId: 4})
+	db.Save(&models.LabelsToLedger{LabelsToLedgerAccountId: 34, LabelsToLedgerLabelId: 1, LabelsToLedgerLedgerId: 4})
+
+	// Setup request
+	req, _ := http.NewRequest("DELETE", "/api/v1/33/labels/4", nil)
+
+	// Setup writer.
+	w := httptest.NewRecorder()
+	gin.SetMode("release")
+	gin.DisableConsoleColor()
+
+	r := gin.New()
+	r.Use(func(c *gin.Context) {
+		c.Set("accountId", 33)
+		c.Set("userId", 109)
+	})
+	r.DELETE("/api/v1/:account/labels/:id", c.DeleteLabel)
+	r.ServeHTTP(w, req)
+
+	// Test results
+	st.Expect(t, w.Code, 204)
+
+	// Check results
+	lbs := []models.Label{}
+	db.Find(&lbs)
+	st.Expect(t, len(lbs), 6)
+
+	lb := models.Label{}
+	db.Where("LabelsName = ?", "label #2").Find(&lb)
+	st.Expect(t, lb.Id, uint(0))
+
+	lb2 := models.Label{}
+	db.Where("LabelsName = ?", "label #3").Find(&lb2)
+	st.Expect(t, lb2.Id, uint(5))
+
+	// Check to make sure LabelsToLedger get deleted
+	ltls := []models.LabelsToLedger{}
+	db.Find(&ltls)
+	st.Expect(t, len(ltls), 2)
+
+	ltl := []models.LabelsToLedger{}
+	db.Where("LabelsToLedgerLabelId = ?", 4).Find(&ltl)
+	st.Expect(t, len(ltl), 0)
+}
+
+//
+// TestDeleteLabel02 - Test delete Label 02 - not owned by you
+//
+func TestDeleteLabel02(t *testing.T) {
+	// Start the db connection.
+	db, _ := models.NewDB()
+	defer db.Close()
+
+	// Create controller
+	c := &Controller{}
+	c.SetDB(db)
+
+	// Test labels. -- First 2 are to make sure we don't get them as they are not our account.
+	db.Save(&models.Label{AccountId: 34, Name: "No #1"})
+	db.Save(&models.Label{AccountId: 34, Name: "No #2"})
+	db.Save(&models.Label{AccountId: 33, Name: "label #1"})
+	db.Save(&models.Label{AccountId: 33, Name: "label #2"})
+	db.Save(&models.Label{AccountId: 33, Name: "label #3"})
+	db.Save(&models.Label{AccountId: 33, Name: "Abc"})
+	db.Save(&models.Label{AccountId: 33, Name: "Xyz"})
+
+	// Assign some fake ledger entries to the loop up table.
+	db.Save(&models.LabelsToLedger{LabelsToLedgerAccountId: 33, LabelsToLedgerLabelId: 4, LabelsToLedgerLedgerId: 1})
+	db.Save(&models.LabelsToLedger{LabelsToLedgerAccountId: 33, LabelsToLedgerLabelId: 4, LabelsToLedgerLedgerId: 2})
+	db.Save(&models.LabelsToLedger{LabelsToLedgerAccountId: 33, LabelsToLedgerLabelId: 4, LabelsToLedgerLedgerId: 3})
+	db.Save(&models.LabelsToLedger{LabelsToLedgerAccountId: 33, LabelsToLedgerLabelId: 4, LabelsToLedgerLedgerId: 4})
+	db.Save(&models.LabelsToLedger{LabelsToLedgerAccountId: 34, LabelsToLedgerLabelId: 1, LabelsToLedgerLedgerId: 4})
+	db.Save(&models.LabelsToLedger{LabelsToLedgerAccountId: 34, LabelsToLedgerLabelId: 1, LabelsToLedgerLedgerId: 4})
+
+	// Setup request
+	req, _ := http.NewRequest("DELETE", "/api/v1/33/labels/2", nil)
+
+	// Setup writer.
+	w := httptest.NewRecorder()
+	gin.SetMode("release")
+	gin.DisableConsoleColor()
+
+	r := gin.New()
+	r.Use(func(c *gin.Context) {
+		c.Set("accountId", 33)
+		c.Set("userId", 109)
+	})
+	r.DELETE("/api/v1/:account/labels/:id", c.DeleteLabel)
+	r.ServeHTTP(w, req)
+
+	// Test results
+	st.Expect(t, w.Code, 400)
+	st.Expect(t, w.Body.String(), `{"error":"Label not found."}`)
 }
 
 /* End File */

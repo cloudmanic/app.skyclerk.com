@@ -13,14 +13,15 @@ import (
 	"strconv"
 	"strings"
 
+	"github.com/gin-gonic/gin"
+
 	"github.com/cloudmanic/skyclerk.com/library/request"
 	"github.com/cloudmanic/skyclerk.com/library/response"
 	"github.com/cloudmanic/skyclerk.com/models"
-	"github.com/gin-gonic/gin"
 )
 
 //
-// Return a list of labels. We limit to 500 mainly so we do not overload the
+// GetLabels - Return a list of labels. We limit to 500 mainly so we do not overload the
 // system, but enough so the front-end does not have to page
 //
 func (t *Controller) GetLabels(c *gin.Context) {
@@ -39,7 +40,7 @@ func (t *Controller) GetLabels(c *gin.Context) {
 		Page:             page,
 		AllowedOrderCols: []string{"LabelsId", "LabelsName"},
 		Wheres: []models.KeyValue{
-			{Key: "LabelsAccountId", ValueInt: c.MustGet("account").(int)},
+			{Key: "LabelsAccountId", ValueInt: c.MustGet("accountId").(int)},
 		},
 	}
 
@@ -51,7 +52,7 @@ func (t *Controller) GetLabels(c *gin.Context) {
 }
 
 //
-// Get Label by id
+// GetLabel - Get Label by id
 //
 func (t *Controller) GetLabel(c *gin.Context) {
 	id, err := strconv.ParseInt(c.Param("id"), 10, 32)
@@ -62,7 +63,7 @@ func (t *Controller) GetLabel(c *gin.Context) {
 	}
 
 	// Get category and make sure we have perms to it
-	l, err := t.db.GetLabelByAccountAndId(uint(c.MustGet("account").(int)), uint(id))
+	l, err := t.db.GetLabelByAccountAndId(uint(c.MustGet("accountId").(int)), uint(id))
 
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Label not found."})
@@ -87,7 +88,7 @@ func (t *Controller) CreateLabel(c *gin.Context) {
 	}
 
 	// Make sure the AccountId is correct.
-	o.AccountId = uint(c.MustGet("account").(int))
+	o.AccountId = uint(c.MustGet("accountId").(int))
 
 	// Clean up some vars
 	o.Name = strings.Trim(o.Name, " ")
@@ -112,7 +113,7 @@ func (t *Controller) UpdateLabel(c *gin.Context) {
 	}
 
 	// First we make sure this is an entry we have access to.
-	orgLb, err := t.db.GetLabelByAccountAndId(uint(c.MustGet("account").(int)), uint(id))
+	orgLb, err := t.db.GetLabelByAccountAndId(uint(c.MustGet("accountId").(int)), uint(id))
 
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Label not found."})
@@ -135,6 +136,41 @@ func (t *Controller) UpdateLabel(c *gin.Context) {
 
 	// Return happy.
 	response.RespondUpdated(c, orgLb, nil)
+}
+
+//
+// DeleteLabel - Delete a label within the account.
+//
+func (t *Controller) DeleteLabel(c *gin.Context) {
+	// Get the label id
+	id, err := strconv.ParseInt(c.Param("id"), 10, 32)
+
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"errors": err})
+		return
+	}
+
+	// AccountId.
+	accountId := uint(c.MustGet("accountId").(int))
+
+	// First we make sure this is an entry we have access to.
+	_, err = t.db.GetLabelByAccountAndId(accountId, uint(id))
+
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Label not found."})
+		return
+	}
+
+	// Delete label
+	err = t.db.DeleteLabelByAccountAndId(accountId, uint(id))
+
+	if err != nil {
+		response.RespondError(c, err)
+		return
+	}
+
+	// Return happy.
+	response.RespondDeleted(c, nil)
 }
 
 /* End File */

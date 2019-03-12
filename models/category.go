@@ -116,7 +116,7 @@ func (db *DB) GetCategoryByAccountAndId(accountId uint, categoryId uint) (Catego
 }
 
 //
-// Delete a category by account and id.
+// DeleteCategoryByAccountAndId - Delete a category by account and id.
 //
 func (db *DB) DeleteCategoryByAccountAndId(accountId uint, categoryId uint) error {
 
@@ -130,7 +130,6 @@ func (db *DB) DeleteCategoryByAccountAndId(accountId uint, categoryId uint) erro
 
 	// Return result
 	return nil
-
 }
 
 /* End File */
