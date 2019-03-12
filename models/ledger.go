@@ -42,10 +42,9 @@ func (Ledger) TableName() string {
 }
 
 //
-// Create a new ledger entry.
+// LedgerCreate - Create a new ledger entry.
 //
 func (db *DB) LedgerCreate(ledger *Ledger) error {
-
 	// Setup the contact. If we have a ledger.Contact.Id we assume we are not adding the contact on insert.
 	if ledger.Contact.Id == 0 {
 		if (len(ledger.Contact.FirstName) > 0) || (len(ledger.Contact.LastName) > 0) {
