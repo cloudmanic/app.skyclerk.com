@@ -18,7 +18,7 @@ import (
 
 type Label struct {
 	Id        uint      `gorm:"primary_key;column:LabelsId" json:"id"`
-	AccountId uint      `gorm:"column:LabelsAccountId" sql:"not null" json:"_"`
+	AccountId uint      `gorm:"column:LabelsAccountId" sql:"not null" json:"account_id"`
 	UpdatedAt time.Time `gorm:"column:LabelsUpdatedAt" sql:"not null" json:"_"`
 	CreatedAt time.Time `gorm:"column:LabelsCreatedAt" sql:"not null" json:"_"`
 	Name      string    `gorm:"column:LabelsName" sql:"not null;" json:"name"`

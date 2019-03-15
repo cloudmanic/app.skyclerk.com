@@ -42,7 +42,6 @@ type QueryMetaData struct {
 	Offset       int
 	PageCount    int
 	LastPage     bool
-	LimitCount   int
 	NoLimitCount int
 }
 
@@ -58,15 +57,15 @@ func (t *DB) QueryMeta(model interface{}, params QueryParam) (QueryMetaData, err
 		return QueryMetaData{}, err
 	}
 
-	// Figure out the length of the result.
-	count, err := t.Count(model, params)
+	// Query
+	err = t.Query(model, params)
 
 	if err != nil {
 		return QueryMetaData{}, err
 	}
 
 	// Get the meta data related to this query.
-	meta := t.GetQueryMetaData(int(count), noFilterCount, params)
+	meta := t.GetQueryMetaData(noFilterCount, params)
 
 	// Return happy
 	return meta, nil
@@ -120,13 +119,12 @@ func (t *DB) QueryWithNoFilterCount(model interface{}, params QueryParam) (int, 
 //
 // Return all the meta data we need about a query.
 //
-func (t *DB) GetQueryMetaData(limitCount int, noLimitCount int, params QueryParam) QueryMetaData {
+func (t *DB) GetQueryMetaData(noLimitCount int, params QueryParam) QueryMetaData {
 
 	// Start meta data object
 	meta := QueryMetaData{
 		LastPage:     false,
 		Limit:        int(params.Limit),
-		LimitCount:   limitCount,
 		NoLimitCount: noLimitCount,
 	}
 
@@ -155,27 +153,6 @@ func (t *DB) GetQueryMetaData(limitCount int, noLimitCount int, params QueryPara
 
 	// Return meta data object.
 	return meta
-}
-
-//
-// A generic way find out how many rows are in a table
-//
-func (t *DB) Count(model interface{}, params QueryParam) (uint, error) {
-
-	var count uint = 0
-
-	// Build the query.
-	query, err := t.buildGenericQuery(params)
-
-	if err != nil {
-		return 0, err
-	}
-
-	// Run the query
-	query.Model(model).Count(&count)
-
-	// If we made it this far no errors.
-	return count, nil
 }
 
 //

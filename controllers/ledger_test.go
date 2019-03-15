@@ -8,17 +8,23 @@
 package controllers
 
 import (
+	"encoding/json"
+	"net/http"
+	"net/http/httptest"
 	"testing"
 
 	"github.com/cloudmanic/skyclerk.com/library/test"
 	"github.com/cloudmanic/skyclerk.com/models"
-	"github.com/davecgh/go-spew/spew"
+	"github.com/gin-gonic/gin"
+	"github.com/nbio/st"
 )
 
 //
 // TestGetLedgers01 Test get ledgers 01
 //
 func TestGetLedgers01(t *testing.T) {
+	// Data map
+	dMap := make(map[uint]models.Ledger)
 
 	// Start the db connection.
 	db, _ := models.NewDB()
@@ -28,52 +34,115 @@ func TestGetLedgers01(t *testing.T) {
 	c := &Controller{}
 	c.SetDB(db)
 
-	l1 := test.GetRandomLedger()
-	db.LedgerCreate(&l1)
+	// Create like 10 ledger entries. Diffent account.
+	for i := 0; i < 10; i++ {
+		l := test.GetRandomLedger(23)
+		db.LedgerCreate(&l)
+	}
 
-	spew.Dump(l1)
+	// Create like 105 ledger entries.
+	for i := 0; i < 105; i++ {
+		l := test.GetRandomLedger(33)
+		db.LedgerCreate(&l)
+		dMap[l.Id] = l
+	}
 
-	// // Test labels. -- First 2 are to make sure we don't get them as they are not our account.
-	// db.Save(&models.Contact{AccountId: 34, Name: "Apple Inc.", FirstName: "", LastName: ""})
-	// db.Save(&models.Contact{AccountId: 34, Name: "Matthews Etc. LLC", FirstName: "Spicer", LastName: "Matthews"})
-	// db.Save(&models.Contact{AccountId: 33, Name: "", FirstName: "Jane", LastName: "Wells"})
-	// db.Save(&models.Contact{AccountId: 33, Name: "", FirstName: "Mike", LastName: "Rosso"})
-	// db.Save(&models.Contact{AccountId: 33, Name: "Zoo Inc.", FirstName: "", LastName: ""})
-	// db.Save(&models.Contact{AccountId: 33, Name: "Abc Inc.", FirstName: "Katie", LastName: "Matthews"})
-	// db.Save(&models.Contact{AccountId: 33, Name: "Dope Dealer, LLC", FirstName: "", LastName: ""})
-	//
-	// // Setup request
-	// req, _ := http.NewRequest("GET", "/api/v1/33/contacts", nil)
-	//
-	// // Setup writer.
-	// w := httptest.NewRecorder()
-	// gin.SetMode("release")
-	// gin.DisableConsoleColor()
-	//
-	// r := gin.New()
-	// r.Use(func(c *gin.Context) {
-	// 	c.Set("accountId", 33)
-	// 	c.Set("userId", uint(109))
-	// })
-	// r.GET("/api/v1/:account/contacts", c.GetContacts)
-	// r.ServeHTTP(w, req)
-	//
-	// // Grab result and convert to strut
-	// results := []models.Contact{}
-	// err := json.Unmarshal([]byte(w.Body.String()), &results)
-	//
-	// // Test results
-	// st.Expect(t, err, nil)
-	// st.Expect(t, results[0].Id, uint(3))
-	// st.Expect(t, results[1].Id, uint(4))
-	// st.Expect(t, results[2].Id, uint(6))
-	// st.Expect(t, results[3].Id, uint(7))
-	// st.Expect(t, results[4].Id, uint(5))
-	// st.Expect(t, results[0].Name, "")
-	// st.Expect(t, results[1].Name, "")
-	// st.Expect(t, results[2].Name, "Abc Inc.")
-	// st.Expect(t, results[3].Name, "Dope Dealer, LLC")
-	// st.Expect(t, results[4].Name, "Zoo Inc.")
+	// Create like 10 ledger entries. Diffent account.
+	for i := 0; i < 10; i++ {
+		l := test.GetRandomLedger(43)
+		db.LedgerCreate(&l)
+	}
+
+	// Setup request
+	req, _ := http.NewRequest("GET", "/api/v1/33/ledger", nil)
+
+	// Setup writer.
+	w := httptest.NewRecorder()
+	gin.SetMode("release")
+	gin.DisableConsoleColor()
+
+	r := gin.New()
+	r.Use(func(c *gin.Context) {
+		c.Set("accountId", 33)
+		c.Set("userId", uint(109))
+	})
+	r.GET("/api/v1/:account/ledger", c.GetLedgers)
+	r.ServeHTTP(w, req)
+
+	// Grab result and convert to strut
+	results := []models.Ledger{}
+	err := json.Unmarshal([]byte(w.Body.String()), &results)
+
+	// Test results
+	st.Expect(t, err, nil)
+	st.Expect(t, w.Code, 200)
+	st.Expect(t, len(results), 50)
+	st.Expect(t, w.HeaderMap["X-Offset"][0], "0")
+	st.Expect(t, w.HeaderMap["X-Limit"][0], "50")
+	st.Expect(t, w.HeaderMap["X-No-Limit-Count"][0], "105")
+	st.Expect(t, w.HeaderMap["X-Last-Page"][0], "false")
+
+	for key, row := range results {
+		st.Expect(t, row.Id, dMap[row.Id].Id)
+		st.Expect(t, row.AccountId, uint(33))
+		st.Expect(t, row.Date.Format("2006-01-02"), dMap[row.Id].Date.Format("2006-01-02"))
+		st.Expect(t, row.Amount, dMap[row.Id].Amount)
+		st.Expect(t, row.Note, dMap[row.Id].Note)
+		st.Expect(t, row.Contact.Name, dMap[row.Id].Contact.Name)
+		st.Expect(t, row.Contact.FirstName, dMap[row.Id].Contact.FirstName)
+		st.Expect(t, row.Contact.LastName, dMap[row.Id].Contact.LastName)
+		st.Expect(t, row.Contact.Email, dMap[row.Id].Contact.Email)
+		st.Expect(t, row.Contact.AccountId, uint(33))
+		st.Expect(t, row.Category.AccountId, uint(33))
+		st.Expect(t, row.Category.Name, dMap[row.Id].Category.Name)
+		st.Expect(t, row.Labels[0].AccountId, uint(33))
+
+		// Verfiy default Order
+		if key > 0 {
+			diff := row.Date.Sub(results[key-1].Date)
+			st.Expect(t, (diff <= 0), true)
+		}
+	}
+
+	// ----------- Test Paging 2 ---------- //
+
+	// Setup request
+	req2, _ := http.NewRequest("GET", "/api/v1/33/ledger?page=2", nil)
+	w2 := httptest.NewRecorder()
+	r.ServeHTTP(w2, req2)
+
+	// Grab result and convert to strut
+	results2 := []models.Ledger{}
+	err = json.Unmarshal([]byte(w2.Body.String()), &results2)
+
+	// Test results
+	st.Expect(t, err, nil)
+	st.Expect(t, w2.Code, 200)
+	st.Expect(t, len(results2), 50)
+	st.Expect(t, w2.HeaderMap["X-Offset"][0], "50")
+	st.Expect(t, w2.HeaderMap["X-Limit"][0], "50")
+	st.Expect(t, w2.HeaderMap["X-No-Limit-Count"][0], "105")
+	st.Expect(t, w2.HeaderMap["X-Last-Page"][0], "false")
+
+	// ----------- Test Paging 3 ---------- //
+
+	// Setup request
+	req3, _ := http.NewRequest("GET", "/api/v1/33/ledger?page=3", nil)
+	w3 := httptest.NewRecorder()
+	r.ServeHTTP(w3, req3)
+
+	// Grab result and convert to strut
+	results3 := []models.Ledger{}
+	err = json.Unmarshal([]byte(w3.Body.String()), &results3)
+
+	// Test results
+	st.Expect(t, err, nil)
+	st.Expect(t, w3.Code, 200)
+	st.Expect(t, len(results3), 5)
+	st.Expect(t, w3.HeaderMap["X-Offset"][0], "100")
+	st.Expect(t, w3.HeaderMap["X-Limit"][0], "50")
+	st.Expect(t, w3.HeaderMap["X-No-Limit-Count"][0], "105")
+	st.Expect(t, w3.HeaderMap["X-Last-Page"][0], "true")
 }
 
 /* End File */

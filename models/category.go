@@ -18,7 +18,7 @@ import (
 
 type Category struct {
 	Id        uint      `gorm:"primary_key;column:CategoriesId" json:"id"`
-	AccountId uint      `gorm:"column:CategoriesAccountId" sql:"not null" json:"AccountId"`
+	AccountId uint      `gorm:"column:CategoriesAccountId" sql:"not null" json:"account_id"`
 	UpdatedAt time.Time `gorm:"column:CategoriesUpdatedAt" sql:"not null" json:"_"`
 	CreatedAt time.Time `gorm:"column:CategoriesCreatedAt" sql:"not null" json:"_"`
 	Name      string    `gorm:"column:CategoriesName" sql:"not null;" json:"name"`

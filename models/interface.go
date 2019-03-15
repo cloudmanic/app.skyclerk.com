@@ -17,11 +17,10 @@ type Datastore interface {
 	New() *gorm.DB
 
 	// Generic database functions
-	Count(model interface{}, params QueryParam) (uint, error)
 	Query(model interface{}, params QueryParam) error
 	QueryMeta(model interface{}, params QueryParam) (QueryMetaData, error)
 	QueryWithNoFilterCount(model interface{}, params QueryParam) (int, error)
-	GetQueryMetaData(limitCount int, noLimitCount int, params QueryParam) QueryMetaData
+	GetQueryMetaData(noLimitCount int, params QueryParam) QueryMetaData
 
 	// Ledger
 	LedgerCreate(ledger *Ledger) error

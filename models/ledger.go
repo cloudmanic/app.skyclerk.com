@@ -45,23 +45,28 @@ func (Ledger) TableName() string {
 // LedgerCreate - Create a new ledger entry.
 //
 func (db *DB) LedgerCreate(ledger *Ledger) error {
+	// Make sure there is no funny biz with account ids. We make sure ledger.AccountId is always set correctly
+	ledger.Contact.AccountId = ledger.AccountId
+	ledger.Category.AccountId = ledger.AccountId
+
 	// Setup the contact. If we have a ledger.Contact.Id we assume we are not adding the contact on insert.
 	if ledger.Contact.Id == 0 {
 		if (len(ledger.Contact.FirstName) > 0) || (len(ledger.Contact.LastName) > 0) {
-			db.Where("ContactsAccountId = ? AND ContactsName = ?", ledger.Contact.AccountId, ledger.Contact.Name).Or("ContactsAccountId = ? AND ContactsFirstName = ? AND ContactsLastName = ?", ledger.Contact.AccountId, ledger.Contact.FirstName, ledger.Contact.LastName).FirstOrCreate(&ledger.Contact)
+			db.Where("ContactsAccountId = ? AND ContactsName = ?", ledger.AccountId, ledger.Contact.Name).Or("ContactsAccountId = ? AND ContactsFirstName = ? AND ContactsLastName = ?", ledger.AccountId, ledger.Contact.FirstName, ledger.Contact.LastName).FirstOrCreate(&ledger.Contact)
 		} else {
-			db.Where("ContactsAccountId = ? AND ContactsName = ?", ledger.Contact.AccountId, ledger.Contact.Name).FirstOrCreate(&ledger.Contact)
+			db.Where("ContactsAccountId = ? AND ContactsName = ?", ledger.AccountId, ledger.Contact.Name).FirstOrCreate(&ledger.Contact)
 		}
 	}
 
 	// Setup the category
 	if ledger.Category.Id == 0 {
-		db.Where("CategoriesAccountId = ? AND CategoriesName = ? AND CategoriesType = ?", ledger.Category.AccountId, ledger.Category.Name, ledger.Category.Type).FirstOrCreate(&ledger.Category)
+		db.Where("CategoriesAccountId = ? AND CategoriesName = ? AND CategoriesType = ?", ledger.AccountId, ledger.Category.Name, ledger.Category.Type).FirstOrCreate(&ledger.Category)
 	}
 
 	// Setup the labels
 	for key, row := range ledger.Labels {
-		db.Where("LabelsAccountId = ? AND LabelsName = ?", row.AccountId, row.Name).FirstOrCreate(&ledger.Labels[key])
+		ledger.Labels[key].AccountId = ledger.AccountId
+		db.Where("LabelsAccountId = ? AND LabelsName = ?", ledger.AccountId, row.Name).FirstOrCreate(&ledger.Labels[key])
 	}
 
 	// Store this ledger entry.

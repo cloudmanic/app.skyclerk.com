@@ -48,17 +48,13 @@ func Results(c *gin.Context, results interface{}, err error) {
 
 	// Return json based on if this was a good result or not.
 	if err != nil {
-
 		c.JSON(http.StatusNotFound, gin.H{"error": "There was an error. Please contact help@skyclerk.com for help."})
-
 	} else {
-
 		if c.DefaultQuery("output", "json") == "pretty" {
 			c.String(http.StatusOK, interfaceToPretty(results))
 		} else {
 			c.JSON(http.StatusOK, results)
 		}
-
 	}
 
 }
