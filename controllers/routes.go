@@ -43,6 +43,7 @@ func (t *Controller) DoRoutes(r *gin.Engine) {
 		apiV1.GET("/:account/contacts/:id", t.GetContact)
 		apiV1.POST("/:account/contacts", t.CreateContact)
 		apiV1.PUT("/:account/contacts/:id", t.UpdateContact)
+		apiV1.DELETE("/:account/contacts/:id", t.DeleteContact)
 	}
 
 	// ------------ Non-Auth Routes ------ //

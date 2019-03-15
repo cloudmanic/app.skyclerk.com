@@ -154,4 +154,20 @@ func (db *DB) GetContactByAccountAndId(accountId uint, conId uint) (Contact, err
 	return l, nil
 }
 
+//
+// DeleteContactByAccountAndId - Delete a contact by account and id.
+//
+func (db *DB) DeleteContactByAccountAndId(accountId uint, contactId uint) error {
+	// Make query to see if we have ledger entries with this contact
+	if !db.New().Where("LedgerAccountId = ? AND LedgerContactId = ?", accountId, contactId).First(&Ledger{}).RecordNotFound() {
+		return errors.New("Can not delete contact. It is in use by a ledger entry.")
+	}
+
+	// Make query
+	db.New().Where("ContactsAccountId = ? AND ContactsId = ?", accountId, contactId).Delete(Contact{})
+
+	// Return result
+	return nil
+}
+
 /* End File */

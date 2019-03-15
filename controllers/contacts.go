@@ -143,4 +143,36 @@ func (t *Controller) UpdateContact(c *gin.Context) {
 	response.RespondUpdated(c, orgCon, nil)
 }
 
+//
+// DeleteContact a contact within the account.
+//
+func (t *Controller) DeleteContact(c *gin.Context) {
+
+	id, err := strconv.ParseInt(c.Param("id"), 10, 32)
+
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"errors": err})
+		return
+	}
+
+	// First we make sure this is an entry we have access to.
+	_, err2 := t.db.GetContactByAccountAndId(uint(c.MustGet("accountId").(int)), uint(id))
+
+	if err2 != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Contact not found."})
+		return
+	}
+
+	// Delete category
+	err = t.db.DeleteContactByAccountAndId(uint(c.MustGet("accountId").(int)), uint(id))
+
+	if err != nil {
+		response.RespondError(c, err)
+		return
+	}
+
+	// Return happy.
+	response.RespondDeleted(c, nil)
+}
+
 /* End File */

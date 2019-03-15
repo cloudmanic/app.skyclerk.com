@@ -590,4 +590,156 @@ func TestUpdateContact02(t *testing.T) {
 	st.Expect(t, w.Body.String(), `{"errors":{"name":"Contact company name, first, and last name is already in use."}}`)
 }
 
+//
+// TestDeleteContact01 - Test delete Contact 01
+//
+func TestDeleteContact01(t *testing.T) {
+
+	// Start the db connection.
+	db, _ := models.NewDB()
+	defer db.Close()
+
+	// Create controller
+	c := &Controller{}
+	c.SetDB(db)
+
+	// Test contacts. -- First 2 are to make sure we don't get them as they are not our account.
+	db.Save(&models.Contact{AccountId: 34, Name: "Apple Inc.", FirstName: "", LastName: ""})
+	db.Save(&models.Contact{AccountId: 34, Name: "Matthews Etc. LLC", FirstName: "Spicer", LastName: "Matthews"})
+	db.Save(&models.Contact{AccountId: 33, Name: "", FirstName: "Jane", LastName: "Wells"})
+	db.Save(&models.Contact{AccountId: 33, Name: "", FirstName: "Mike", LastName: "Rosso"})
+	db.Save(&models.Contact{AccountId: 33, Name: "Zoo Inc.", FirstName: "", LastName: ""})
+	db.Save(&models.Contact{AccountId: 33, Name: "Abc Inc.", FirstName: "Katie", LastName: "Matthews"})
+	db.Save(&models.Contact{AccountId: 33, Name: "Dope Dealer, LLC", FirstName: "", LastName: ""})
+
+	// Make sure our delete record is in the DB
+	con1 := models.Contact{}
+	db.Find(&con1, 5)
+	st.Expect(t, con1.Id, uint(5))
+
+	// Setup request
+	req, _ := http.NewRequest("DELETE", "/api/v1/33/contacts/5", nil)
+
+	// Setup writer.
+	w := httptest.NewRecorder()
+	gin.SetMode("release")
+	gin.DisableConsoleColor()
+
+	r := gin.New()
+	r.Use(func(c *gin.Context) {
+		c.Set("accountId", 33)
+		c.Set("userId", 109)
+	})
+	r.DELETE("/api/v1/:account/contacts/:id", c.DeleteContact)
+	r.ServeHTTP(w, req)
+
+	// Test results
+	st.Expect(t, w.Code, 204)
+
+	// Double check the db.
+	cons := []models.Contact{}
+	db.Find(&cons)
+	st.Expect(t, len(cons), 6)
+	st.Expect(t, cons[3].Id, uint(4))
+	st.Expect(t, cons[3].Name, "")
+	st.Expect(t, cons[4].Id, uint(6))
+	st.Expect(t, cons[4].Name, "Abc Inc.")
+	st.Expect(t, cons[5].Id, uint(7))
+	st.Expect(t, cons[5].Name, "Dope Dealer, LLC")
+
+	// More double check
+	con := models.Contact{}
+	db.Find(&con, 5)
+	st.Expect(t, con.Id, uint(0))
+}
+
+//
+// TestDeleteContact02 - Already part of a ledger.
+//
+func TestDeleteContact02(t *testing.T) {
+
+	// Start the db connection.
+	db, _ := models.NewDB()
+	defer db.Close()
+
+	// Create controller
+	c := &Controller{}
+	c.SetDB(db)
+
+	// Test contacts. -- First 2 are to make sure we don't get them as they are not our account.
+	db.Save(&models.Contact{AccountId: 34, Name: "Apple Inc.", FirstName: "", LastName: ""})
+	db.Save(&models.Contact{AccountId: 34, Name: "Matthews Etc. LLC", FirstName: "Spicer", LastName: "Matthews"})
+	db.Save(&models.Contact{AccountId: 33, Name: "", FirstName: "Jane", LastName: "Wells"})
+	db.Save(&models.Contact{AccountId: 33, Name: "", FirstName: "Mike", LastName: "Rosso"})
+	db.Save(&models.Contact{AccountId: 33, Name: "Zoo Inc.", FirstName: "", LastName: ""})
+	db.Save(&models.Contact{AccountId: 33, Name: "Abc Inc.", FirstName: "Katie", LastName: "Matthews"})
+	db.Save(&models.Contact{AccountId: 33, Name: "Dope Dealer, LLC", FirstName: "", LastName: ""})
+
+	// Create test ledger
+	db.Save(&models.Ledger{AccountId: 33, ContactId: 5})
+
+	// Setup request
+	req, _ := http.NewRequest("DELETE", "/api/v1/33/contacts/5", nil)
+
+	// Setup writer.
+	w := httptest.NewRecorder()
+	gin.SetMode("release")
+	gin.DisableConsoleColor()
+
+	r := gin.New()
+	r.Use(func(c *gin.Context) {
+		c.Set("accountId", 33)
+		c.Set("userId", 109)
+	})
+	r.DELETE("/api/v1/:account/contacts/:id", c.DeleteContact)
+	r.ServeHTTP(w, req)
+
+	// Test results
+	st.Expect(t, w.Code, 400)
+	st.Expect(t, gjson.Get(w.Body.String(), "error").String(), "Can not delete contact. It is in use by a ledger entry.")
+}
+
+//
+// TestDeleteContact03 - Failed account
+//
+func TestDeleteContact03(t *testing.T) {
+
+	// Start the db connection.
+	db, _ := models.NewDB()
+	defer db.Close()
+
+	// Create controller
+	c := &Controller{}
+	c.SetDB(db)
+
+	// Test contacts. -- First 2 are to make sure we don't get them as they are not our account.
+	db.Save(&models.Contact{AccountId: 34, Name: "Apple Inc.", FirstName: "", LastName: ""})
+	db.Save(&models.Contact{AccountId: 34, Name: "Matthews Etc. LLC", FirstName: "Spicer", LastName: "Matthews"})
+	db.Save(&models.Contact{AccountId: 33, Name: "", FirstName: "Jane", LastName: "Wells"})
+	db.Save(&models.Contact{AccountId: 33, Name: "", FirstName: "Mike", LastName: "Rosso"})
+	db.Save(&models.Contact{AccountId: 33, Name: "Zoo Inc.", FirstName: "", LastName: ""})
+	db.Save(&models.Contact{AccountId: 33, Name: "Abc Inc.", FirstName: "Katie", LastName: "Matthews"})
+	db.Save(&models.Contact{AccountId: 33, Name: "Dope Dealer, LLC", FirstName: "", LastName: ""})
+
+	// Setup request
+	req, _ := http.NewRequest("DELETE", "/api/v1/33/contacts/1", nil)
+
+	// Setup writer.
+	w := httptest.NewRecorder()
+	gin.SetMode("release")
+	gin.DisableConsoleColor()
+
+	r := gin.New()
+	r.Use(func(c *gin.Context) {
+		c.Set("accountId", 33)
+		c.Set("userId", 109)
+	})
+	r.DELETE("/api/v1/:account/contacts/:id", c.DeleteContact)
+	r.ServeHTTP(w, req)
+
+	// Test results
+	st.Expect(t, w.Code, 400)
+	st.Expect(t, gjson.Get(w.Body.String(), "error").String(), "Contact not found.")
+}
+
 /* End File */
