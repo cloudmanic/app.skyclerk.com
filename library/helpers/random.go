@@ -6,7 +6,18 @@
 
 package helpers
 
-import "crypto/rand"
+import (
+	"math/rand"
+	"time"
+)
+
+//
+// RandStr returns a random simple ASCII string of the given length.
+//
+func RandStr(length int) string {
+	r, _ := GenerateRandomString(length)
+	return r
+}
 
 // GenerateRandomString returns a securely generated random string.
 // It will return an error if the system's secure random
@@ -14,7 +25,7 @@ import "crypto/rand"
 // case the caller should not continue.
 //
 func GenerateRandomString(n int) (string, error) {
-	const letters = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz-"
+	const letters = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"
 
 	bytes, err := GenerateRandomBytes(n)
 
@@ -38,6 +49,7 @@ func GenerateRandomString(n int) (string, error) {
 func GenerateRandomBytes(n int) ([]byte, error) {
 	b := make([]byte, n)
 
+	rand.Seed(time.Now().UnixNano())
 	_, err := rand.Read(b)
 
 	// Note that err == nil only if we read len(b) bytes.
