@@ -26,7 +26,7 @@ func init() {
 }
 
 //
-// Setup the db connection.
+// NewDB Setup the db connection.
 //
 func NewDB() (*DB, error) {
 
@@ -69,14 +69,12 @@ func NewDB() (*DB, error) {
 // Clear testing data.
 //
 func ClearTestingData(db *gorm.DB) {
-
 	// Clear tables
 	db.Exec("TRUNCATE TABLE Labels;")
 	db.Exec("TRUNCATE TABLE Ledger;")
 	db.Exec("TRUNCATE TABLE Contacts;")
 	db.Exec("TRUNCATE TABLE Categories;")
 	db.Exec("TRUNCATE TABLE LabelsToLedger;")
-
 }
 
 /* End File */

@@ -76,6 +76,29 @@ func (t *Controller) GetLedger(c *gin.Context) {
 }
 
 //
+// CreateLedger - Create a ledger within the account.
+//
+func (t *Controller) CreateLedger(c *gin.Context) {
+
+	// Setup Contact obj
+	o := models.Ledger{}
+
+	// Here we parse the JSON sent in, assign it to a struct, set validation errors if any.
+	if t.ValidateRequest(c, &o, "create") != nil {
+		return
+	}
+
+	// Make sure the AccountId is correct.
+	o.AccountId = uint(c.MustGet("accountId").(int))
+
+	// Create category
+	t.db.LedgerCreate(&o)
+
+	// Return happy.
+	response.RespondCreated(c, o, nil)
+}
+
+//
 // DeleteLedger a ledger within the account.
 //
 func (t *Controller) DeleteLedger(c *gin.Context) {

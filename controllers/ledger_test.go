@@ -8,6 +8,7 @@
 package controllers
 
 import (
+	"bytes"
 	"encoding/json"
 	"net/http"
 	"net/http/httptest"
@@ -266,6 +267,79 @@ func TestGetLedger02(t *testing.T) {
 	// Test results
 	st.Expect(t, w.Code, 400)
 	st.Expect(t, w.Body.String(), `{"error":"Ledger entry not found."}`)
+}
+
+//
+// Test create Ledger 01
+//
+func TestCreateLedger01(t *testing.T) {
+	// Start the db connection.
+	db, _ := models.NewDB()
+	defer db.Close()
+
+	// Create controller
+	c := &Controller{}
+	c.SetDB(db)
+
+	// Post data
+	post := test.GetRandomLedger(33)
+
+	// Get JSON
+	postStr, _ := json.Marshal(post)
+
+	// Setup request
+	req, _ := http.NewRequest("POST", "/api/v1/33/ledger", bytes.NewBuffer(postStr))
+
+	// Setup writer.
+	w := httptest.NewRecorder()
+	gin.SetMode("release")
+	gin.DisableConsoleColor()
+
+	r := gin.New()
+	r.Use(func(c *gin.Context) {
+		c.Set("accountId", 33)
+		c.Set("userId", 109)
+	})
+	r.POST("/api/v1/33/ledger", c.CreateLedger)
+	r.ServeHTTP(w, req)
+
+	// Grab result and convert to strut
+	result := models.Ledger{}
+	err := json.Unmarshal([]byte(w.Body.String()), &result)
+
+	// Test results
+	st.Expect(t, err, nil)
+	st.Expect(t, w.Code, 201)
+	st.Expect(t, result.Id, uint(1))
+	st.Expect(t, result.AccountId, uint(33))
+	st.Expect(t, result.Date.Format("2006-01-02"), post.Date.Format("2006-01-02"))
+	st.Expect(t, result.Amount, post.Amount)
+	st.Expect(t, result.Note, post.Note)
+	st.Expect(t, result.Contact.Name, post.Contact.Name)
+	st.Expect(t, result.Contact.FirstName, post.Contact.FirstName)
+	st.Expect(t, result.Contact.LastName, post.Contact.LastName)
+	st.Expect(t, result.Contact.Email, post.Contact.Email)
+	st.Expect(t, result.Contact.AccountId, uint(33))
+	st.Expect(t, result.Category.AccountId, uint(33))
+	st.Expect(t, result.Category.Name, post.Category.Name)
+	st.Expect(t, result.Labels[0].AccountId, uint(33))
+
+	// Double check the db.
+	result1, err := db.GetLedgerByAccountAndId(uint(33), uint(1))
+	st.Expect(t, err, nil)
+	st.Expect(t, result1.Id, uint(1))
+	st.Expect(t, result1.AccountId, uint(33))
+	st.Expect(t, result1.Date.Format("2006-01-02"), post.Date.Format("2006-01-02"))
+	st.Expect(t, result1.Amount, post.Amount)
+	st.Expect(t, result1.Note, post.Note)
+	st.Expect(t, result1.Contact.Name, post.Contact.Name)
+	st.Expect(t, result1.Contact.FirstName, post.Contact.FirstName)
+	st.Expect(t, result1.Contact.LastName, post.Contact.LastName)
+	st.Expect(t, result1.Contact.Email, post.Contact.Email)
+	st.Expect(t, result1.Contact.AccountId, uint(33))
+	st.Expect(t, result1.Category.AccountId, uint(33))
+	st.Expect(t, result1.Category.Name, post.Category.Name)
+	st.Expect(t, result1.Labels[0].AccountId, uint(33))
 }
 
 //

@@ -11,6 +11,8 @@ package models
 import (
 	"errors"
 	"time"
+
+	validation "github.com/go-ozzo/ozzo-validation"
 )
 
 type Ledger struct {
@@ -40,6 +42,22 @@ type Ledger struct {
 //
 func (Ledger) TableName() string {
 	return "Ledger"
+}
+
+//
+// Validate for this model.
+//
+func (a Ledger) Validate(db Datastore, action string, userId uint, accountId uint, objId uint) error {
+	return validation.ValidateStruct(&a,
+
+		validation.Field(&a.Amount,
+			validation.Required.Error("The amount field is required."),
+		),
+
+		validation.Field(&a.Date,
+			validation.Required.Error("The date field is required."),
+		),
+	)
 }
 
 //
