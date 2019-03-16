@@ -115,6 +115,9 @@ func (db *DB) LedgerCreate(ledger *Ledger) error {
 	ledger.Contact.AccountId = ledger.AccountId
 	ledger.Category.AccountId = ledger.AccountId
 
+	// Trim Note
+	ledger.Note = strings.Trim(ledger.Note, " ")
+
 	// Trim Contact
 	ledger.Contact.Name = strings.Trim(ledger.Contact.Name, " ")
 	ledger.Contact.FirstName = strings.Trim(ledger.Contact.FirstName, " ")
