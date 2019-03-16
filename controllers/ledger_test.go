@@ -343,6 +343,54 @@ func TestCreateLedger01(t *testing.T) {
 }
 
 //
+// Test create Ledger 02 - Validation
+//
+func TestCreateLedger02(t *testing.T) {
+	// Start the db connection.
+	db, _ := models.NewDB()
+	defer db.Close()
+
+	// Create controller
+	c := &Controller{}
+	c.SetDB(db)
+
+	// Get JSON
+	postStr := []byte(`{ "amount": 88.12 }`)
+
+	// Setup request
+	req, _ := http.NewRequest("POST", "/api/v1/33/ledger", bytes.NewBuffer(postStr))
+
+	// Setup writer.
+	w := httptest.NewRecorder()
+	gin.SetMode("release")
+	gin.DisableConsoleColor()
+
+	r := gin.New()
+	r.Use(func(c *gin.Context) {
+		c.Set("accountId", 33)
+		c.Set("userId", 109)
+	})
+	r.POST("/api/v1/33/ledger", c.CreateLedger)
+	r.ServeHTTP(w, req)
+
+	// Check result
+	st.Expect(t, w.Body.String(), `{"errors":{"date":"The date field is required."}}`)
+
+	// ------------ Test 2 ---------------- //
+
+	// Get JSON
+	postStr = []byte(`{ "amount": 88.12, "date": "2018-08-13" }`)
+
+	// Setup request
+	req, _ = http.NewRequest("POST", "/api/v1/33/ledger", bytes.NewBuffer(postStr))
+	w = httptest.NewRecorder()
+	r.ServeHTTP(w, req)
+
+	// Check result
+	st.Expect(t, w.Body.String(), `{"error":"Invalid JSON in body. There is a chance the JSON maybe valid but does not match the data type requirements. For example maybe you passed a string in for an integer."}`)
+}
+
+//
 // TestDeleteLedger01 - Test delete Ledger 01
 //
 func TestDeleteLedger01(t *testing.T) {
