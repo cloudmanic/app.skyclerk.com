@@ -23,6 +23,7 @@ type Datastore interface {
 
 	// Ledger
 	LedgerCreate(ledger *Ledger) error
+	LedgerUpdate(ledger *Ledger) error
 	DeleteLedgerByAccountAndId(accountId uint, id uint) error
 	GetLedgerByAccountAndId(accountId uint, id uint) (Ledger, error)
 	ValidateLedgerContact(ledger Ledger, accountId uint, objId uint, action string) error

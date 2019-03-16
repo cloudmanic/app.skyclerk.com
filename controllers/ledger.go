@@ -63,7 +63,7 @@ func (t *Controller) GetLedger(c *gin.Context) {
 		return
 	}
 
-	// Get category and make sure we have perms to it
+	// Get ledger and make sure we have perms to it
 	l, err := t.db.GetLedgerByAccountAndId(uint(c.MustGet("accountId").(int)), uint(id))
 
 	if err != nil {
@@ -99,6 +99,49 @@ func (t *Controller) CreateLedger(c *gin.Context) {
 
 	// Return happy.
 	response.RespondCreated(c, o, nil)
+}
+
+//
+// UpdateLedger - Update a ledger within the account.
+//
+func (t *Controller) UpdateLedger(c *gin.Context) {
+	// Get ID from URL
+	id, err := strconv.ParseInt(c.Param("id"), 10, 32)
+
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"errors": err})
+		return
+	}
+
+	// Get ledger and make sure we have perms to it
+	org, err := t.db.GetLedgerByAccountAndId(uint(c.MustGet("accountId").(int)), uint(id))
+
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Ledger entry not found."})
+		return
+	}
+
+	// Setup Ledger obj
+	o := models.Ledger{}
+
+	// Here we parse the JSON sent in, assign it to a struct, set validation errors if any.
+	if t.ValidateRequest(c, &o, "update") != nil {
+		return
+	}
+
+	// Make sure the AccountId is correct.
+	o.AccountId = uint(c.MustGet("accountId").(int))
+
+	// Change some CreatedAt dates. This is hacky. Maybe find a better way some day.
+	o.CreatedAt = org.CreatedAt
+	o.Contact.CreatedAt = org.Contact.CreatedAt
+	o.Category.CreatedAt = org.Category.CreatedAt
+
+	// Create category
+	t.db.LedgerUpdate(&o)
+
+	// Return happy.
+	response.RespondUpdated(c, o, nil)
 }
 
 //

@@ -13,6 +13,7 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"testing"
+	"time"
 
 	"github.com/cloudmanic/skyclerk.com/library/test"
 	"github.com/cloudmanic/skyclerk.com/models"
@@ -268,6 +269,8 @@ func TestGetLedger02(t *testing.T) {
 	st.Expect(t, w.Code, 400)
 	st.Expect(t, w.Body.String(), `{"error":"Ledger entry not found."}`)
 }
+
+// -------------- Create Ledger ---------------------- //
 
 //
 // Test create Ledger 01
@@ -529,6 +532,201 @@ func TestCreateLedger04(t *testing.T) {
 	st.Expect(t, result1.Category.Id, uint(1))
 	st.Expect(t, result1.Category.Name, cat.Name)
 }
+
+// -------------- Update Ledger ---------------------- //
+
+//
+// Test update Ledger 01
+//
+func TestUpdateLedger01(t *testing.T) {
+	// Start the db connection.
+	db, _ := models.NewDB()
+	defer db.Close()
+
+	// Create controller
+	c := &Controller{}
+	c.SetDB(db)
+
+	// Create like random ledger entries.
+	l := test.GetRandomLedger(33)
+	db.LedgerCreate(&l)
+
+	// Udpate a few fields.
+	l.Amount = 199.23
+	l.Date = time.Date(2019, 01, 01, 17, 20, 01, 507451, time.UTC)
+	l.Contact.FirstName = "Testfirst"
+	l.Contact.LastName = "Testlast"
+	l.Contact.Name = "Test Company"
+	l.Category.Name = "Test Category"
+	l.Labels = []models.Label{
+		{Name: "Test Label Unit Test"},
+	}
+
+	// Get JSON
+	postStr, _ := json.Marshal(l)
+
+	// Setup request
+	req, _ := http.NewRequest("PUT", "/api/v1/33/ledger/1", bytes.NewBuffer(postStr))
+
+	// Setup writer.
+	w := httptest.NewRecorder()
+	gin.SetMode("release")
+	gin.DisableConsoleColor()
+
+	r := gin.New()
+	r.Use(func(c *gin.Context) {
+		c.Set("accountId", 33)
+		c.Set("userId", 109)
+	})
+	r.PUT("/api/v1/33/ledger/:id", c.UpdateLedger)
+	r.ServeHTTP(w, req)
+
+	// Grab result and convert to strut
+	result := models.Ledger{}
+	err := json.Unmarshal([]byte(w.Body.String()), &result)
+
+	// Test results
+	st.Expect(t, err, nil)
+	st.Expect(t, w.Code, 200)
+	st.Expect(t, result.Id, uint(1))
+	st.Expect(t, result.AccountId, uint(33))
+	st.Expect(t, result.Date.Format("2006-01-02"), l.Date.Format("2006-01-02"))
+	st.Expect(t, result.Amount, l.Amount)
+	st.Expect(t, result.Note, l.Note)
+	st.Expect(t, result.Contact.Name, l.Contact.Name)
+	st.Expect(t, result.Contact.FirstName, l.Contact.FirstName)
+	st.Expect(t, result.Contact.LastName, l.Contact.LastName)
+	st.Expect(t, result.Contact.Email, l.Contact.Email)
+	st.Expect(t, result.Contact.AccountId, uint(33))
+	st.Expect(t, result.Category.AccountId, uint(33))
+	st.Expect(t, result.Category.Name, l.Category.Name)
+	st.Expect(t, result.Labels[0].AccountId, uint(33))
+	st.Expect(t, result.Labels[0].Name, "Test Label Unit Test")
+	st.Expect(t, len(result.Labels), 1)
+
+	// Double check the db.
+	result1, err := db.GetLedgerByAccountAndId(uint(33), uint(1))
+	st.Expect(t, err, nil)
+	st.Expect(t, result1.Id, uint(1))
+	st.Expect(t, result1.AccountId, uint(33))
+	st.Expect(t, result1.Date.Format("2006-01-02"), l.Date.Format("2006-01-02"))
+	st.Expect(t, result1.Amount, l.Amount)
+	st.Expect(t, result1.Note, l.Note)
+	st.Expect(t, result1.Contact.Name, l.Contact.Name)
+	st.Expect(t, result1.Contact.FirstName, l.Contact.FirstName)
+	st.Expect(t, result1.Contact.LastName, l.Contact.LastName)
+	st.Expect(t, result1.Contact.Email, l.Contact.Email)
+	st.Expect(t, result1.Contact.AccountId, uint(33))
+	st.Expect(t, result1.Category.AccountId, uint(33))
+	st.Expect(t, result1.Category.Name, l.Category.Name)
+	st.Expect(t, result1.Labels[0].AccountId, uint(33))
+	st.Expect(t, result1.Labels[0].Name, "Test Label Unit Test")
+	st.Expect(t, len(result1.Labels), 1)
+}
+
+//
+// Test update Ledger 02 - No Perms
+//
+func TestUpdateLedger02(t *testing.T) {
+	// Start the db connection.
+	db, _ := models.NewDB()
+	defer db.Close()
+
+	// Create controller
+	c := &Controller{}
+	c.SetDB(db)
+
+	// Create like random ledger entries.
+	l := test.GetRandomLedger(34)
+	db.LedgerCreate(&l)
+
+	// Udpate a few fields.
+	l.Amount = 199.23
+	l.Date = time.Date(2019, 01, 01, 17, 20, 01, 507451, time.UTC)
+	l.Contact.FirstName = "Testfirst"
+	l.Contact.LastName = "Testlast"
+	l.Contact.Name = "Test Company"
+	l.Category.Name = "Test Category"
+	l.Labels = []models.Label{
+		{Name: "Test Label Unit Test"},
+	}
+
+	// Get JSON
+	postStr, _ := json.Marshal(l)
+
+	// Setup request
+	req, _ := http.NewRequest("PUT", "/api/v1/33/ledger/1", bytes.NewBuffer(postStr))
+
+	// Setup writer.
+	w := httptest.NewRecorder()
+	gin.SetMode("release")
+	gin.DisableConsoleColor()
+
+	r := gin.New()
+	r.Use(func(c *gin.Context) {
+		c.Set("accountId", 33)
+		c.Set("userId", 109)
+	})
+	r.PUT("/api/v1/33/ledger/:id", c.UpdateLedger)
+	r.ServeHTTP(w, req)
+
+	// Test results
+	st.Expect(t, w.Code, 400)
+	st.Expect(t, w.Body.String(), `{"error":"Ledger entry not found."}`)
+}
+
+//
+// Test update Ledger 03 - Validation
+//
+func TestUpdateLedger03(t *testing.T) {
+	// Start the db connection.
+	db, _ := models.NewDB()
+	defer db.Close()
+
+	// Create controller
+	c := &Controller{}
+	c.SetDB(db)
+
+	// Create like random ledger entries.
+	l := test.GetRandomLedger(33)
+	db.LedgerCreate(&l)
+
+	// Udpate a few fields.
+	l.Amount = 199.23
+	l.Date = time.Date(2019, 01, 01, 17, 20, 01, 507451, time.UTC)
+	l.Contact.FirstName = ""
+	l.Contact.LastName = ""
+	l.Contact.Name = ""
+	l.Category.Name = ""
+	l.Labels = []models.Label{
+		{Name: "Test Label Unit Test"},
+	}
+
+	// Get JSON
+	postStr, _ := json.Marshal(l)
+
+	// Setup request
+	req, _ := http.NewRequest("PUT", "/api/v1/33/ledger/1", bytes.NewBuffer(postStr))
+
+	// Setup writer.
+	w := httptest.NewRecorder()
+	gin.SetMode("release")
+	gin.DisableConsoleColor()
+
+	r := gin.New()
+	r.Use(func(c *gin.Context) {
+		c.Set("accountId", 33)
+		c.Set("userId", 109)
+	})
+	r.PUT("/api/v1/33/ledger/:id", c.UpdateLedger)
+	r.ServeHTTP(w, req)
+
+	// Test results
+	st.Expect(t, w.Code, 400)
+	st.Expect(t, w.Body.String(), `{"errors":{"category":"Category name is required.","contact":"Contact name is required."}}`)
+}
+
+// -------------- Delete Ledger ---------------------- //
 
 //
 // TestDeleteLedger01 - Test delete Ledger 01

@@ -111,44 +111,30 @@ func (db *DB) ValidateLedgerCategory(ledger Ledger, accountId uint, objId uint, 
 // LedgerCreate - Create a new ledger entry.
 //
 func (db *DB) LedgerCreate(ledger *Ledger) error {
-	// Make sure there is no funny biz with account ids. We make sure ledger.AccountId is always set correctly
-	ledger.Contact.AccountId = ledger.AccountId
-	ledger.Category.AccountId = ledger.AccountId
-
-	// Trim Note
-	ledger.Note = strings.Trim(ledger.Note, " ")
-
-	// Trim Contact
-	ledger.Contact.Name = strings.Trim(ledger.Contact.Name, " ")
-	ledger.Contact.FirstName = strings.Trim(ledger.Contact.FirstName, " ")
-	ledger.Contact.LastName = strings.Trim(ledger.Contact.LastName, " ")
-
-	// Trim Category
-	ledger.Category.Name = strings.Trim(ledger.Category.Name, " ")
-	ledger.Category.Type = strings.Trim(ledger.Category.Type, " ")
-
-	// Setup the contact. If we have a ledger.Contact.Id we assume we are not adding the contact on insert.
-	if ledger.Contact.Id == 0 {
-		if (len(ledger.Contact.FirstName) > 0) || (len(ledger.Contact.LastName) > 0) {
-			db.Where("ContactsAccountId = ? AND ContactsName = ?", ledger.AccountId, ledger.Contact.Name).Or("ContactsAccountId = ? AND ContactsFirstName = ? AND ContactsLastName = ?", ledger.AccountId, ledger.Contact.FirstName, ledger.Contact.LastName).FirstOrCreate(&ledger.Contact)
-		} else {
-			db.Where("ContactsAccountId = ? AND ContactsName = ?", ledger.AccountId, ledger.Contact.Name).FirstOrCreate(&ledger.Contact)
-		}
-	}
-
-	// Setup the category. Add the Id if we do not pass one in.
-	if ledger.Category.Id == 0 {
-		db.Where("CategoriesAccountId = ? AND CategoriesName = ? AND CategoriesType = ?", ledger.AccountId, ledger.Category.Name, ledger.Category.Type).FirstOrCreate(&ledger.Category)
-	}
-
-	// Setup the labels
-	for key, row := range ledger.Labels {
-		ledger.Labels[key].AccountId = ledger.AccountId
-		db.Where("LabelsAccountId = ? AND LabelsName = ?", ledger.AccountId, strings.Trim(row.Name, " ")).FirstOrCreate(&ledger.Labels[key])
-	}
+	// Prep Vars
+	prepLedgerVars(db, ledger)
 
 	// Store this ledger entry.
 	db.Create(&ledger)
+
+	// Add additional data to lookups TODO: remove this once we retire PHP app.
+	db.Model(LabelsToLedger{}).Where("LabelsToLedgerLedgerId = ?", ledger.Id).Updates(LabelsToLedger{LabelsToLedgerAccountId: ledger.AccountId, LabelsToLedgerCreatedAt: time.Now()})
+
+	return nil
+}
+
+//
+// LedgerUpdate - Update a ledger entry.
+//
+func (db *DB) LedgerUpdate(ledger *Ledger) error {
+	// Prep Vars
+	prepLedgerVars(db, ledger)
+
+	// Clear out old labels. We start fresh every time.
+	db.New().Where("LabelsToLedgerAccountId = ? AND LabelsToLedgerLedgerId = ?", ledger.AccountId, ledger.Id).Delete(LabelsToLedger{})
+
+	// Update this ledger entry.
+	db.Save(&ledger)
 
 	// Add additional data to lookups TODO: remove this once we retire PHP app.
 	db.Model(LabelsToLedger{}).Where("LabelsToLedgerLedgerId = ?", ledger.Id).Updates(LabelsToLedger{LabelsToLedgerAccountId: ledger.AccountId, LabelsToLedgerCreatedAt: time.Now()})
@@ -184,6 +170,50 @@ func (db *DB) DeleteLedgerByAccountAndId(accountId uint, id uint) error {
 
 	// Return result
 	return nil
+}
+
+// ----------------- Private Helper Funcs -------------- //
+
+//
+// prepLedgerVars for update or create
+//
+func prepLedgerVars(db *DB, ledger *Ledger) {
+	// Make sure there is no funny biz with account ids. We make sure ledger.AccountId is always set correctly
+	ledger.Contact.AccountId = ledger.AccountId
+	ledger.Category.AccountId = ledger.AccountId
+
+	// Trim Note
+	ledger.Note = strings.Trim(ledger.Note, " ")
+
+	// Trim Contact
+	ledger.Contact.Type = "Both" // TODO(spicer): get rid of this column some day.
+	ledger.Contact.Name = strings.Trim(ledger.Contact.Name, " ")
+	ledger.Contact.FirstName = strings.Trim(ledger.Contact.FirstName, " ")
+	ledger.Contact.LastName = strings.Trim(ledger.Contact.LastName, " ")
+
+	// Trim Category
+	ledger.Category.Name = strings.Trim(ledger.Category.Name, " ")
+	ledger.Category.Type = strings.Trim(ledger.Category.Type, " ")
+
+	// Setup the contact. If we have a ledger.Contact.Id we assume we are not adding the contact on insert.
+	if ledger.Contact.Id == 0 {
+		if (len(ledger.Contact.FirstName) > 0) || (len(ledger.Contact.LastName) > 0) {
+			db.Where("ContactsAccountId = ? AND ContactsName = ?", ledger.AccountId, ledger.Contact.Name).Or("ContactsAccountId = ? AND ContactsFirstName = ? AND ContactsLastName = ?", ledger.AccountId, ledger.Contact.FirstName, ledger.Contact.LastName).FirstOrCreate(&ledger.Contact)
+		} else {
+			db.Where("ContactsAccountId = ? AND ContactsName = ?", ledger.AccountId, ledger.Contact.Name).FirstOrCreate(&ledger.Contact)
+		}
+	}
+
+	// Setup the category. Add the Id if we do not pass one in.
+	if ledger.Category.Id == 0 {
+		db.Where("CategoriesAccountId = ? AND CategoriesName = ? AND CategoriesType = ?", ledger.AccountId, ledger.Category.Name, ledger.Category.Type).FirstOrCreate(&ledger.Category)
+	}
+
+	// Setup the labels
+	for key, row := range ledger.Labels {
+		ledger.Labels[key].AccountId = ledger.AccountId
+		db.Where("LabelsAccountId = ? AND LabelsName = ?", ledger.AccountId, strings.Trim(row.Name, " ")).FirstOrCreate(&ledger.Labels[key])
+	}
 }
 
 /* End File */

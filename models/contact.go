@@ -19,8 +19,8 @@ import (
 type Contact struct {
 	Id            uint      `gorm:"primary_key;column:ContactsId" json:"id"`
 	AccountId     uint      `gorm:"column:ContactsAccountId" sql:"not null" json:"account_id"`
-	UpdatedAt     time.Time `gorm:"column:ContactsUpdatedAt" sql:"not null" json:"created_at"`
-	CreatedAt     time.Time `gorm:"column:ContactsCreatedAt" sql:"not null" json:"updated_at"`
+	UpdatedAt     time.Time `gorm:"column:ContactsUpdatedAt" sql:"not null" json:"_"`
+	CreatedAt     time.Time `gorm:"column:ContactsCreatedAt" sql:"not null" json:"_"`
 	Name          string    `gorm:"column:ContactsName" sql:"not null" json:"name"`
 	FirstName     string    `gorm:"column:ContactsFirstName" sql:"not null" json:"first_name"`
 	LastName      string    `gorm:"column:ContactsLastName" sql:"not null" json:"last_name"`
