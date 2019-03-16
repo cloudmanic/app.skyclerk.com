@@ -95,4 +95,18 @@ func (db *DB) GetLedgerByAccountAndId(accountId uint, id uint) (Ledger, error) {
 	return c, nil
 }
 
+//
+// DeleteLedgerByAccountAndId - Delete a label by account and id.
+//
+func (db *DB) DeleteLedgerByAccountAndId(accountId uint, id uint) error {
+	// Make query to delete
+	db.New().Where("LedgerAccountId = ? AND LedgerId = ?", accountId, id).Delete(Ledger{})
+
+	// Delete from look up table.
+	db.New().Where("LabelsToLedgerAccountId = ? AND LabelsToLedgerLedgerId = ?", accountId, id).Delete(LabelsToLedger{})
+
+	// Return result
+	return nil
+}
+
 /* End File */

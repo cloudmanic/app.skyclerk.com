@@ -75,4 +75,36 @@ func (t *Controller) GetLedger(c *gin.Context) {
 	response.Results(c, l, nil)
 }
 
+//
+// DeleteLedger a ledger within the account.
+//
+func (t *Controller) DeleteLedger(c *gin.Context) {
+	// Get Id
+	id, err := strconv.ParseInt(c.Param("id"), 10, 32)
+
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"errors": err})
+		return
+	}
+
+	// First we make sure this is an entry we have access to.
+	_, err2 := t.db.GetLedgerByAccountAndId(uint(c.MustGet("accountId").(int)), uint(id))
+
+	if err2 != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Ledger entry not found."})
+		return
+	}
+
+	// Delete ledger
+	err = t.db.DeleteLedgerByAccountAndId(uint(c.MustGet("accountId").(int)), uint(id))
+
+	if err != nil {
+		response.RespondError(c, err)
+		return
+	}
+
+	// Return happy.
+	response.RespondDeleted(c, nil)
+}
+
 /* End File */

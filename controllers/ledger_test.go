@@ -215,7 +215,162 @@ func TestGetLedger01(t *testing.T) {
 	st.Expect(t, result.Category.AccountId, uint(33))
 	st.Expect(t, result.Category.Name, dMap[result.Id].Category.Name)
 	st.Expect(t, result.Labels[0].AccountId, uint(33))
+}
 
+//
+// TestGetLedger02 Test get ledger 02 - No perms
+//
+func TestGetLedger02(t *testing.T) {
+	// Start the db connection.
+	db, _ := models.NewDB()
+	defer db.Close()
+
+	// Create controller
+	c := &Controller{}
+	c.SetDB(db)
+
+	// Create like 10 ledger entries. Diffent account.
+	for i := 0; i < 10; i++ {
+		l := test.GetRandomLedger(23)
+		db.LedgerCreate(&l)
+	}
+
+	// Create like 10 ledger entries.
+	for i := 0; i < 10; i++ {
+		l := test.GetRandomLedger(33)
+		db.LedgerCreate(&l)
+	}
+
+	// Create like 10 ledger entries. Diffent account.
+	for i := 0; i < 10; i++ {
+		l := test.GetRandomLedger(43)
+		db.LedgerCreate(&l)
+	}
+
+	// Setup request
+	req, _ := http.NewRequest("GET", "/api/v1/33/ledger/5", nil)
+
+	// Setup writer.
+	w := httptest.NewRecorder()
+	gin.SetMode("release")
+	gin.DisableConsoleColor()
+
+	r := gin.New()
+	r.Use(func(c *gin.Context) {
+		c.Set("accountId", 33)
+		c.Set("userId", uint(109))
+	})
+	r.GET("/api/v1/:account/ledger/:id", c.GetLedger)
+	r.ServeHTTP(w, req)
+
+	// Test results
+	st.Expect(t, w.Code, 400)
+	st.Expect(t, w.Body.String(), `{"error":"Ledger entry not found."}`)
+}
+
+//
+// TestDeleteLedger01 - Test delete Ledger 01
+//
+func TestDeleteLedger01(t *testing.T) {
+
+	// Start the db connection.
+	db, _ := models.NewDB()
+	defer db.Close()
+
+	// Create controller
+	c := &Controller{}
+	c.SetDB(db)
+
+	// Create like 10 ledger entries.
+	for i := 0; i < 10; i++ {
+		l := test.GetRandomLedger(33)
+		db.LedgerCreate(&l)
+	}
+
+	// Make sure our delete record is in the DB
+	l1 := models.Ledger{}
+	db.Find(&l1, 5)
+	st.Expect(t, l1.Id, uint(5))
+
+	// Setup request
+	req, _ := http.NewRequest("DELETE", "/api/v1/33/ledger/5", nil)
+
+	// Setup writer.
+	w := httptest.NewRecorder()
+	gin.SetMode("release")
+	gin.DisableConsoleColor()
+
+	r := gin.New()
+	r.Use(func(c *gin.Context) {
+		c.Set("accountId", 33)
+		c.Set("userId", 109)
+	})
+	r.DELETE("/api/v1/:account/ledger/:id", c.DeleteLedger)
+	r.ServeHTTP(w, req)
+
+	// Test results
+	st.Expect(t, w.Code, 204)
+
+	// More double check
+	l := models.Ledger{}
+	db.Find(&l, 5)
+	st.Expect(t, l.Id, uint(0))
+
+	// More double double check
+	l2 := []models.Ledger{}
+	db.Find(&l2)
+	st.Expect(t, len(l2), 9)
+}
+
+//
+// TestDeleteLedger02 - No perms
+//
+func TestDeleteLedger02(t *testing.T) {
+	// Start the db connection.
+	db, _ := models.NewDB()
+	defer db.Close()
+
+	// Create controller
+	c := &Controller{}
+	c.SetDB(db)
+
+	// Create like 10 ledger entries. Diffent account.
+	for i := 0; i < 10; i++ {
+		l := test.GetRandomLedger(23)
+		db.LedgerCreate(&l)
+	}
+
+	// Create like 10 ledger entries.
+	for i := 0; i < 10; i++ {
+		l := test.GetRandomLedger(33)
+		db.LedgerCreate(&l)
+	}
+
+	// Create like 10 ledger entries. Diffent account.
+	for i := 0; i < 10; i++ {
+		l := test.GetRandomLedger(43)
+		db.LedgerCreate(&l)
+	}
+
+	// Setup request
+	req, _ := http.NewRequest("DELETE", "/api/v1/33/ledger/5", nil)
+
+	// Setup writer.
+	w := httptest.NewRecorder()
+	gin.SetMode("release")
+	gin.DisableConsoleColor()
+
+	r := gin.New()
+	r.Use(func(c *gin.Context) {
+		c.Set("accountId", 33)
+		c.Set("userId", 109)
+	})
+	r.DELETE("/api/v1/:account/ledger/:id", c.DeleteLedger)
+	r.ServeHTTP(w, req)
+
+	// Test results
+	st.Expect(t, w.Code, 400)
+	st.Expect(t, w.Body.String(), `{"error":"Ledger entry not found."}`)
 }
 
 /* End File */

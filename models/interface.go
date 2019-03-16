@@ -12,7 +12,6 @@ import "github.com/jinzhu/gorm"
 
 // Datastore interface
 type Datastore interface {
-
 	// Gorm Functions
 	New() *gorm.DB
 
@@ -24,6 +23,7 @@ type Datastore interface {
 
 	// Ledger
 	LedgerCreate(ledger *Ledger) error
+	DeleteLedgerByAccountAndId(accountId uint, id uint) error
 	GetLedgerByAccountAndId(accountId uint, id uint) (Ledger, error)
 
 	// Category
