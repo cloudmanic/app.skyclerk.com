@@ -9,6 +9,9 @@
 package controllers
 
 import (
+	"net/http"
+	"strconv"
+
 	"github.com/gin-gonic/gin"
 
 	"github.com/cloudmanic/skyclerk.com/library/request"
@@ -46,6 +49,30 @@ func (t *Controller) GetLedgers(c *gin.Context) {
 
 	// Return json based on if this was a good result or not.
 	response.ResultsMeta(c, results, err, meta)
+}
+
+//
+// GetLedger by id
+//
+func (t *Controller) GetLedger(c *gin.Context) {
+
+	id, err := strconv.ParseInt(c.Param("id"), 10, 32)
+
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"errors": err})
+		return
+	}
+
+	// Get category and make sure we have perms to it
+	l, err := t.db.GetLedgerByAccountAndId(uint(c.MustGet("accountId").(int)), uint(id))
+
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Ledger entry not found."})
+		return
+	}
+
+	// Return happy.
+	response.Results(c, l, nil)
 }
 
 /* End File */

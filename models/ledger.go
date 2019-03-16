@@ -9,6 +9,7 @@
 package models
 
 import (
+	"errors"
 	"time"
 )
 
@@ -76,6 +77,22 @@ func (db *DB) LedgerCreate(ledger *Ledger) error {
 	db.Model(LabelsToLedger{}).Where("LabelsToLedgerLedgerId = ?", ledger.Id).Updates(LabelsToLedger{LabelsToLedgerAccountId: ledger.AccountId, LabelsToLedgerCreatedAt: time.Now()})
 
 	return nil
+}
+
+//
+// GetLedgerByAccountAndId by account and id.
+//
+func (db *DB) GetLedgerByAccountAndId(accountId uint, id uint) (Ledger, error) {
+	// Ledger to return
+	c := Ledger{}
+
+	// Make query
+	if db.New().Preload("Contact").Preload("Category").Preload("Labels").Where("LedgerAccountId = ? AND LedgerId = ?", accountId, id).First(&c).RecordNotFound() {
+		return Ledger{}, errors.New("Ledger entry not found.")
+	}
+
+	// Return result
+	return c, nil
 }
 
 /* End File */

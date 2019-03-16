@@ -145,4 +145,77 @@ func TestGetLedgers01(t *testing.T) {
 	st.Expect(t, w3.HeaderMap["X-Last-Page"][0], "true")
 }
 
+//
+// TestGetLedger01 Test get ledger 01
+//
+func TestGetLedger01(t *testing.T) {
+	// Data map
+	dMap := make(map[uint]models.Ledger)
+
+	// Start the db connection.
+	db, _ := models.NewDB()
+	defer db.Close()
+
+	// Create controller
+	c := &Controller{}
+	c.SetDB(db)
+
+	// Create like 10 ledger entries. Diffent account.
+	for i := 0; i < 10; i++ {
+		l := test.GetRandomLedger(23)
+		db.LedgerCreate(&l)
+	}
+
+	// Create like 10 ledger entries.
+	for i := 0; i < 10; i++ {
+		l := test.GetRandomLedger(33)
+		db.LedgerCreate(&l)
+		dMap[l.Id] = l
+	}
+
+	// Create like 10 ledger entries. Diffent account.
+	for i := 0; i < 10; i++ {
+		l := test.GetRandomLedger(43)
+		db.LedgerCreate(&l)
+	}
+
+	// Setup request
+	req, _ := http.NewRequest("GET", "/api/v1/33/ledger/15", nil)
+
+	// Setup writer.
+	w := httptest.NewRecorder()
+	gin.SetMode("release")
+	gin.DisableConsoleColor()
+
+	r := gin.New()
+	r.Use(func(c *gin.Context) {
+		c.Set("accountId", 33)
+		c.Set("userId", uint(109))
+	})
+	r.GET("/api/v1/:account/ledger/:id", c.GetLedger)
+	r.ServeHTTP(w, req)
+
+	// Grab result and convert to strut
+	result := models.Ledger{}
+	err := json.Unmarshal([]byte(w.Body.String()), &result)
+
+	// Test results
+	st.Expect(t, err, nil)
+	st.Expect(t, w.Code, 200)
+	st.Expect(t, result.Id, dMap[result.Id].Id)
+	st.Expect(t, result.AccountId, uint(33))
+	st.Expect(t, result.Date.Format("2006-01-02"), dMap[result.Id].Date.Format("2006-01-02"))
+	st.Expect(t, result.Amount, dMap[result.Id].Amount)
+	st.Expect(t, result.Note, dMap[result.Id].Note)
+	st.Expect(t, result.Contact.Name, dMap[result.Id].Contact.Name)
+	st.Expect(t, result.Contact.FirstName, dMap[result.Id].Contact.FirstName)
+	st.Expect(t, result.Contact.LastName, dMap[result.Id].Contact.LastName)
+	st.Expect(t, result.Contact.Email, dMap[result.Id].Contact.Email)
+	st.Expect(t, result.Contact.AccountId, uint(33))
+	st.Expect(t, result.Category.AccountId, uint(33))
+	st.Expect(t, result.Category.Name, dMap[result.Id].Category.Name)
+	st.Expect(t, result.Labels[0].AccountId, uint(33))
+
+}
+
 /* End File */

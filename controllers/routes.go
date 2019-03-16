@@ -26,6 +26,7 @@ func (t *Controller) DoRoutes(r *gin.Engine) {
 	{
 		// Ledger
 		apiV1.GET("/:account/ledger", t.GetLedgers)
+		apiV1.GET("/:account/ledger/:id", t.GetLedger)
 
 		// Labels
 		apiV1.GET("/:account/labels", t.GetLabels)
