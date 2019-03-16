@@ -11,6 +11,7 @@ package controllers
 import (
 	"net/http"
 	"strconv"
+	"strings"
 
 	"github.com/gin-gonic/gin"
 
@@ -90,6 +91,10 @@ func (t *Controller) CreateLedger(c *gin.Context) {
 
 	// Make sure the AccountId is correct.
 	o.AccountId = uint(c.MustGet("accountId").(int))
+
+	// Add in auto fields
+	o.AddedById = uint(c.MustGet("userId").(int))
+	o.Note = strings.Trim(o.Note, " ")
 
 	// Create category
 	t.db.LedgerCreate(&o)

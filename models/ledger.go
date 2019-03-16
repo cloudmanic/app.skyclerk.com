@@ -10,6 +10,7 @@ package models
 
 import (
 	"errors"
+	"strings"
 	"time"
 
 	validation "github.com/go-ozzo/ozzo-validation"
@@ -57,7 +58,53 @@ func (a Ledger) Validate(db Datastore, action string, userId uint, accountId uin
 		validation.Field(&a.Date,
 			validation.Required.Error("The date field is required."),
 		),
+
+		validation.Field(&a.Category,
+			validation.By(func(value interface{}) error { return db.ValidateLedgerCategory(a, accountId, objId, action) }),
+		),
+
+		validation.Field(&a.Contact,
+			validation.By(func(value interface{}) error { return db.ValidateLedgerContact(a, accountId, objId, action) }),
+		),
 	)
+}
+
+//
+// ValidateLedgerContact - Make sure all is good.
+//
+func (db *DB) ValidateLedgerContact(ledger Ledger, accountId uint, objId uint, action string) error {
+	const errMsg1 = "Contact name is required."
+	const errMsg2 = "Contact first and last name is required."
+
+	if len(strings.Trim(ledger.Contact.Name, " ")) <= 0 {
+		return errors.New(errMsg1)
+	}
+
+	if (len(strings.Trim(ledger.Contact.FirstName, " ")) <= 0) || (len(strings.Trim(ledger.Contact.LastName, " ")) <= 0) {
+		return errors.New(errMsg2)
+	}
+
+	// All good in the hood
+	return nil
+}
+
+//
+// ValidateLedgerCategory - Make sure all is good.
+//
+func (db *DB) ValidateLedgerCategory(ledger Ledger, accountId uint, objId uint, action string) error {
+	const errMsg1 = "Category name is required."
+	const errMsg2 = "Category type is required."
+
+	if len(strings.Trim(ledger.Category.Name, " ")) <= 0 {
+		return errors.New(errMsg1)
+	}
+
+	if len(strings.Trim(ledger.Category.Type, " ")) <= 0 {
+		return errors.New(errMsg2)
+	}
+
+	// All good in the hood
+	return nil
 }
 
 //
@@ -68,6 +115,15 @@ func (db *DB) LedgerCreate(ledger *Ledger) error {
 	ledger.Contact.AccountId = ledger.AccountId
 	ledger.Category.AccountId = ledger.AccountId
 
+	// Trim Contact
+	ledger.Contact.Name = strings.Trim(ledger.Contact.Name, " ")
+	ledger.Contact.FirstName = strings.Trim(ledger.Contact.FirstName, " ")
+	ledger.Contact.LastName = strings.Trim(ledger.Contact.LastName, " ")
+
+	// Trim Category
+	ledger.Category.Name = strings.Trim(ledger.Category.Name, " ")
+	ledger.Category.Type = strings.Trim(ledger.Category.Type, " ")
+
 	// Setup the contact. If we have a ledger.Contact.Id we assume we are not adding the contact on insert.
 	if ledger.Contact.Id == 0 {
 		if (len(ledger.Contact.FirstName) > 0) || (len(ledger.Contact.LastName) > 0) {
@@ -77,7 +133,7 @@ func (db *DB) LedgerCreate(ledger *Ledger) error {
 		}
 	}
 
-	// Setup the category
+	// Setup the category. Add the Id if we do not pass one in.
 	if ledger.Category.Id == 0 {
 		db.Where("CategoriesAccountId = ? AND CategoriesName = ? AND CategoriesType = ?", ledger.AccountId, ledger.Category.Name, ledger.Category.Type).FirstOrCreate(&ledger.Category)
 	}
@@ -85,7 +141,7 @@ func (db *DB) LedgerCreate(ledger *Ledger) error {
 	// Setup the labels
 	for key, row := range ledger.Labels {
 		ledger.Labels[key].AccountId = ledger.AccountId
-		db.Where("LabelsAccountId = ? AND LabelsName = ?", ledger.AccountId, row.Name).FirstOrCreate(&ledger.Labels[key])
+		db.Where("LabelsAccountId = ? AND LabelsName = ?", ledger.AccountId, strings.Trim(row.Name, " ")).FirstOrCreate(&ledger.Labels[key])
 	}
 
 	// Store this ledger entry.

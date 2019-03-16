@@ -374,12 +374,13 @@ func TestCreateLedger02(t *testing.T) {
 	r.ServeHTTP(w, req)
 
 	// Check result
-	st.Expect(t, w.Body.String(), `{"errors":{"date":"The date field is required."}}`)
+	st.Expect(t, w.Code, 400)
+	st.Expect(t, w.Body.String(), `{"errors":{"category":"Category name is required.","contact":"Contact name is required.","date":"The date field is required."}}`)
 
 	// ------------ Test 2 ---------------- //
 
 	// Get JSON
-	postStr = []byte(`{ "amount": 88.12, "date": "2018-08-13" }`)
+	postStr = []byte(`{ "amount": 88.12, "date": "2018-08-02" }`)
 
 	// Setup request
 	req, _ = http.NewRequest("POST", "/api/v1/33/ledger", bytes.NewBuffer(postStr))
@@ -387,7 +388,146 @@ func TestCreateLedger02(t *testing.T) {
 	r.ServeHTTP(w, req)
 
 	// Check result
+	st.Expect(t, w.Code, 400)
 	st.Expect(t, w.Body.String(), `{"error":"Invalid JSON in body. There is a chance the JSON maybe valid but does not match the data type requirements. For example maybe you passed a string in for an integer."}`)
+
+	// ------------ Test 3 ---------------- //
+
+	// Get JSON
+	postStr = []byte(`{ "amount": 88.12, "date": "2018-08-02T08:18:20Z", "category": { "name": "woots" } }`)
+
+	// Setup request
+	req, _ = http.NewRequest("POST", "/api/v1/33/ledger", bytes.NewBuffer(postStr))
+	w = httptest.NewRecorder()
+	r.ServeHTTP(w, req)
+
+	// Check result
+	st.Expect(t, w.Code, 400)
+	st.Expect(t, w.Body.String(), `{"errors":{"category":"Category type is required.","contact":"Contact name is required."}}`)
+
+	// ------------ Test 4 ---------------- //
+
+	// Get JSON
+	postStr = []byte(`{ "amount": 88.12, "date": "2018-08-02T08:18:20Z", "category": { "name": "woots" }, "contact": { "first_name": "Jane", "last_name": "Wells", "name": "ABC Inc." } }`)
+
+	// Setup request
+	req, _ = http.NewRequest("POST", "/api/v1/33/ledger", bytes.NewBuffer(postStr))
+	w = httptest.NewRecorder()
+	r.ServeHTTP(w, req)
+
+	// Check result
+	st.Expect(t, w.Code, 400)
+	st.Expect(t, w.Body.String(), `{"errors":{"category":"Category type is required."}}`)
+}
+
+//
+// Test create Ledger 03 - trim and more
+//
+func TestCreateLedger03(t *testing.T) {
+	// Start the db connection.
+	db, _ := models.NewDB()
+	defer db.Close()
+
+	// Create controller
+	c := &Controller{}
+	c.SetDB(db)
+
+	// Get JSON
+	postStr := []byte(`{ "amount": 88.12, "date": "2018-08-02T08:18:20Z", "category": { "name": "  woots  ", "type": "  2  " }, "contact": { "first_name": "   Jane  ", "last_name": "  Wells  ", "name": "  ABC Inc.  " } }`)
+
+	// Setup request
+	req, _ := http.NewRequest("POST", "/api/v1/33/ledger", bytes.NewBuffer(postStr))
+
+	// Setup writer.
+	w := httptest.NewRecorder()
+	gin.SetMode("release")
+	gin.DisableConsoleColor()
+
+	r := gin.New()
+	r.Use(func(c *gin.Context) {
+		c.Set("accountId", 33)
+		c.Set("userId", 109)
+	})
+	r.POST("/api/v1/33/ledger", c.CreateLedger)
+	r.ServeHTTP(w, req)
+
+	// Check result
+	st.Expect(t, w.Code, 201)
+
+	// Double check the db.
+	result1, err := db.GetLedgerByAccountAndId(uint(33), uint(1))
+	st.Expect(t, err, nil)
+	st.Expect(t, result1.Id, uint(1))
+	st.Expect(t, result1.AccountId, uint(33))
+	st.Expect(t, result1.Date.Format("2006-01-02"), "2018-08-02")
+	st.Expect(t, result1.Amount, 88.12)
+	st.Expect(t, result1.Note, "")
+	st.Expect(t, result1.Contact.Name, "ABC Inc.")
+	st.Expect(t, result1.Contact.FirstName, "Jane")
+	st.Expect(t, result1.Contact.LastName, "Wells")
+	st.Expect(t, result1.Contact.AccountId, uint(33))
+	st.Expect(t, result1.Category.AccountId, uint(33))
+	st.Expect(t, result1.Category.Name, "woots")
+}
+
+//
+// Test create Ledger 04 - exsiting Contact / Category
+//
+func TestCreateLedger04(t *testing.T) {
+	// Start the db connection.
+	db, _ := models.NewDB()
+	defer db.Close()
+
+	// Create controller
+	c := &Controller{}
+	c.SetDB(db)
+
+	// Save random contact
+	con := test.GetRandomContact(33)
+	db.Save(&con)
+
+	// Save random category
+	cat := test.GetRandomCategory(33)
+	db.Save(&cat)
+
+	// Get JSON
+	postStr := []byte(`{ "amount": 88.12, "date": "2018-08-02T08:18:20Z", "category": { "name": "` + cat.Name + `", "type": "` + cat.Type + `" }, "contact": { "first_name": "` + con.FirstName + `", "last_name": "` + con.LastName + `", "name": "` + con.Name + `", "email": "` + con.Email + `" } }`)
+
+	// Setup request
+	req, _ := http.NewRequest("POST", "/api/v1/33/ledger", bytes.NewBuffer(postStr))
+
+	// Setup writer.
+	w := httptest.NewRecorder()
+	gin.SetMode("release")
+	gin.DisableConsoleColor()
+
+	r := gin.New()
+	r.Use(func(c *gin.Context) {
+		c.Set("accountId", 33)
+		c.Set("userId", 109)
+	})
+	r.POST("/api/v1/33/ledger", c.CreateLedger)
+	r.ServeHTTP(w, req)
+
+	// Check result
+	st.Expect(t, w.Code, 201)
+
+	// Double check the db.
+	result1, err := db.GetLedgerByAccountAndId(uint(33), uint(1))
+	st.Expect(t, err, nil)
+	st.Expect(t, result1.Id, uint(1))
+	st.Expect(t, result1.AccountId, uint(33))
+	st.Expect(t, result1.Date.Format("2006-01-02"), "2018-08-02")
+	st.Expect(t, result1.Amount, 88.12)
+	st.Expect(t, result1.Note, "")
+	st.Expect(t, result1.Contact.Id, uint(1))
+	st.Expect(t, result1.Contact.Name, con.Name)
+	st.Expect(t, result1.Contact.FirstName, con.FirstName)
+	st.Expect(t, result1.Contact.LastName, con.LastName)
+	st.Expect(t, result1.Contact.AccountId, uint(33))
+	st.Expect(t, result1.Category.AccountId, uint(33))
+	st.Expect(t, result1.Category.Id, uint(1))
+	st.Expect(t, result1.Category.Name, cat.Name)
 }
 
 //

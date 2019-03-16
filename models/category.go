@@ -81,7 +81,6 @@ func (db *DB) ValidateDuplicateCategoryName(cat Category, accountId uint, objId 
 		c := Category{}
 
 		if !db.New().Where("CategoriesAccountId = ? AND CategoriesName = ? AND CategoriesType = ?", accountId, catName, cat.Type).First(&c).RecordNotFound() {
-
 			// Make sure it is not the same id as the one we are updating
 			if c.Id != objId {
 				return errors.New(errMsg)
