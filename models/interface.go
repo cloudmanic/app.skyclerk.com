@@ -21,6 +21,9 @@ type Datastore interface {
 	QueryWithNoFilterCount(model interface{}, params QueryParam) (int, error)
 	GetQueryMetaData(noLimitCount int, params QueryParam) QueryMetaData
 
+	// Application
+	ValidateClientIdGrantType(clientId string, grantType string) (Application, error)
+
 	// Ledger
 	LedgerCreate(ledger *Ledger) error
 	LedgerUpdate(ledger *Ledger) error

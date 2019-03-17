@@ -51,6 +51,9 @@ func NewDB() (*DB, error) {
 
 	// Run migrations
 	db.AutoMigrate(&LabelsToLedger{}) // Must be first.
+	db.AutoMigrate(&User{})
+	db.AutoMigrate(&Session{})
+	db.AutoMigrate(&Application{})
 	db.AutoMigrate(&Label{})
 	db.AutoMigrate(&Ledger{})
 	db.AutoMigrate(&Contact{})
@@ -70,6 +73,9 @@ func NewDB() (*DB, error) {
 //
 func ClearTestingData(db *gorm.DB) {
 	// Clear tables
+	db.Exec("TRUNCATE TABLE Users;")
+	db.Exec("TRUNCATE TABLE Applications;")
+	db.Exec("TRUNCATE TABLE GoSessions;")
 	db.Exec("TRUNCATE TABLE Labels;")
 	db.Exec("TRUNCATE TABLE Ledger;")
 	db.Exec("TRUNCATE TABLE Contacts;")
