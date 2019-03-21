@@ -1,56 +1,38 @@
 version: v1.0
-name: First pipeline example
+name: skyclerk.com
 agent:
   machine:
     type: e1-standard-2
     os_image: ubuntu1804
+
 blocks:
-  - name: "Build"
+  - name: Build app
     task:
       env_vars:
-        - name: APP_ENV
-          value: prod
+        - name: DB_HOST
+          value: tcp(127.0.0.1:33102)
+        - name: DB_USERNAME
+          value: root
+        - name: DB_PASSWORD
+          value: foobar
+        - name: DB_DATABASE
+          value: skyclerk_com_testing
+
       jobs:
-      - name: Docker build
+      - name: Get app code, get packages, build, test
         commands:
+          - env
+          - export "GOPATH=$(go env GOPATH)"
+          - export "GOBIN=$(go env GOPATH)/bin"
+          - export "SEMAPHORE_GIT_DIR=$(go env GOPATH)/src/github.com/cloudmanic/${SEMAPHORE_PROJECT_NAME}"
+          - export "PATH=$GOBIN:${PATH}"
+          - mkdir -vp "${SEMAPHORE_GIT_DIR}" "$(go env GOPATH)/bin"
+          - docker run --name skyclerk_testing -e MYSQL_ROOT_PASSWORD=foobar --tmpfs /var/lib/mysql -p 127.0.0.1:9906:3306 -d mariadb:10.2
           - checkout
-          - ls -1
-          - echo $APP_ENV
-          - echo "Docker build..."
-          - echo "done"
-  - name: "Smoke tests"
-    task:
-      jobs:
-      - name: Smoke
-        commands:
-          - checkout
-          - echo "make smoke"
-  - name: "Unit tests"
-    task:
-      jobs:
-      - name: RSpec
-        commands:
-          - checkout
-          - echo "make rspec"
-      - name: Lint code
-        commands:
-          - checkout
-          - echo "make lint"
-      - name: Check security
-        commands:
-          - checkout
-          - echo "make security"
-  - name: "Integration tests"
-    task:
-      jobs:
-      - name: Cucumber
-        commands:
-          - checkout
-          - echo "make cucumber"
-  - name: "Push Image"
-    task:
-      jobs:
-      - name: Push
-        commands:
-          - checkout
-          - echo "make docker.push"
+          - sem-version go 1.12
+          - echo $GOPATH $GOBIN $SEMAPHORE_GIT_DIR
+          - pwd
+          - cd $SEMAPHORE_GIT_DIR/backend
+          - go get
+          - go build -ldflags="-s -w" -o builds/skyclerk
+          # - go test ./models/...
