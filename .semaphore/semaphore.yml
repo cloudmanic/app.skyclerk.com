@@ -21,7 +21,6 @@ blocks:
       jobs:
       - name: Get app code, get packages, build, test
         commands:
-          - env
           - export "GOPATH=$(go env GOPATH)"
           - export "GOBIN=$(go env GOPATH)/bin"
           - export "SEMAPHORE_GIT_DIR=$(go env GOPATH)/src/github.com/cloudmanic/${SEMAPHORE_PROJECT_NAME}"
@@ -30,8 +29,7 @@ blocks:
           - docker run --name skyclerk_testing -e MYSQL_ROOT_PASSWORD=foobar --tmpfs /var/lib/mysql -p 127.0.0.1:9906:3306 -d mariadb:10.2
           - checkout
           - sem-version go 1.12
-          - echo $GOPATH $GOBIN $SEMAPHORE_GIT_DIR
-          - pwd
           - cd $SEMAPHORE_GIT_DIR
           - go get -t ./...
+          - go test ./...
           - go build -ldflags="-s -w" -o builds/skyclerk
