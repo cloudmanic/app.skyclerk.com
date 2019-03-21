@@ -10,7 +10,7 @@ blocks:
     task:
       env_vars:
         - name: DB_HOST
-          value: tcp(127.0.0.1:33102)
+          value: tcp(127.0.0.1:9906)
         - name: DB_USERNAME
           value: root
         - name: DB_PASSWORD
@@ -32,7 +32,6 @@ blocks:
           - sem-version go 1.12
           - echo $GOPATH $GOBIN $SEMAPHORE_GIT_DIR
           - pwd
-          - cd $SEMAPHORE_GIT_DIR/backend
-          - go get
+          - cd $SEMAPHORE_GIT_DIR
+          - go get -t ./...
           - go build -ldflags="-s -w" -o builds/skyclerk
-          # - go test ./models/...
