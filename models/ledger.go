@@ -150,7 +150,7 @@ func (db *DB) GetLedgerByAccountAndId(accountId uint, id uint) (Ledger, error) {
 	c := Ledger{}
 
 	// Make query
-	if db.New().Debug().Preload("Contact").Preload("Category").Preload("Labels").Where("LedgerAccountId = ? AND LedgerId = ?", accountId, id).First(&c).RecordNotFound() {
+	if db.New().Preload("Contact").Preload("Category").Preload("Labels").Where("LedgerAccountId = ? AND LedgerId = ?", accountId, id).First(&c).RecordNotFound() {
 		return Ledger{}, errors.New("Ledger entry not found.")
 	}
 
