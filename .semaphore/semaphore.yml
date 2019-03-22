@@ -19,7 +19,7 @@ blocks:
           value: adf23423adfasdf1
 
       jobs:
-      - name: Get app code, get packages, build, test
+      - name: Get app code, get packages, test and build
         commands:
           - env
           - export "GOPATH=$(go env GOPATH)"
