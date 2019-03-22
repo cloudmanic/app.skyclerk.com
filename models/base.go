@@ -29,7 +29,6 @@ func init() {
 // NewDB Setup the db connection.
 //
 func NewDB() (*DB, error) {
-
 	dbName := os.Getenv("DB_DATABASE")
 
 	// Is this a testing run?
@@ -50,6 +49,16 @@ func NewDB() (*DB, error) {
 	}
 
 	// Run migrations
+	doMigrations(db)
+
+	// Return db connection.
+	return &DB{db}, nil
+}
+
+//
+// doMigrations - Run our migrations
+//
+func doMigrations(db *gorm.DB) {
 	db.AutoMigrate(&LabelsToLedger{}) // Must be first.
 	db.AutoMigrate(&User{})
 	db.AutoMigrate(&Session{})
@@ -58,29 +67,6 @@ func NewDB() (*DB, error) {
 	db.AutoMigrate(&Ledger{})
 	db.AutoMigrate(&Contact{})
 	db.AutoMigrate(&Category{})
-
-	// Is this a testing run?
-	if flag.Lookup("test.v") != nil {
-		ClearTestingData(db)
-	}
-
-	// Return db connection.
-	return &DB{db}, nil
-}
-
-//
-// Clear testing data.
-//
-func ClearTestingData(db *gorm.DB) {
-	// Clear tables
-	db.Exec("TRUNCATE TABLE Users;")
-	db.Exec("TRUNCATE TABLE Applications;")
-	db.Exec("TRUNCATE TABLE GoSessions;")
-	db.Exec("TRUNCATE TABLE Labels;")
-	db.Exec("TRUNCATE TABLE Ledger;")
-	db.Exec("TRUNCATE TABLE Contacts;")
-	db.Exec("TRUNCATE TABLE Categories;")
-	db.Exec("TRUNCATE TABLE LabelsToLedger;")
 }
 
 /* End File */

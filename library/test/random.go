@@ -40,7 +40,7 @@ func GetRandomLedger(accountId int64) models.Ledger {
 	rand.Seed(time.Now().UnixNano())
 
 	dates := []time.Time{
-		time.Now().UTC(),
+		time.Now(),
 		time.Date(2017, 10, 29, 17, 20, 01, 507451, time.UTC),
 		time.Date(2018, 8, 19, 17, 20, 01, 507451, time.UTC),
 		time.Date(2019, 1, 10, 17, 20, 01, 507451, time.UTC),

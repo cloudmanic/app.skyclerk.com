@@ -25,10 +25,9 @@ import (
 // Test get a ledger 01
 //
 func TestGetLabels01(t *testing.T) {
-
 	// Start the db connection.
-	db, _ := models.NewDB()
-	defer db.Close()
+	db, dbName, _ := models.NewTestDB("")
+	defer models.TestingTearDown(db, dbName)
 
 	// Create controller
 	c := &Controller{}
@@ -83,10 +82,9 @@ func TestGetLabels01(t *testing.T) {
 // Test get a ledger 02 - Sort
 //
 func TestGetLabels02(t *testing.T) {
-
 	// Start the db connection.
-	db, _ := models.NewDB()
-	defer db.Close()
+	db, dbName, _ := models.NewTestDB("")
+	defer models.TestingTearDown(db, dbName)
 
 	// Create controller
 	c := &Controller{}
@@ -139,10 +137,9 @@ func TestGetLabels02(t *testing.T) {
 // Test get a ledger 03 - Order
 //
 func TestGetLabels03(t *testing.T) {
-
 	// Start the db connection.
-	db, _ := models.NewDB()
-	defer db.Close()
+	db, dbName, _ := models.NewTestDB("")
+	defer models.TestingTearDown(db, dbName)
 
 	// Create controller
 	c := &Controller{}
@@ -195,10 +192,9 @@ func TestGetLabels03(t *testing.T) {
 // Test get a ledger 04 - Order & Sort
 //
 func TestGetLabels04(t *testing.T) {
-
 	// Start the db connection.
-	db, _ := models.NewDB()
-	defer db.Close()
+	db, dbName, _ := models.NewTestDB("")
+	defer models.TestingTearDown(db, dbName)
 
 	// Create controller
 	c := &Controller{}
@@ -251,10 +247,9 @@ func TestGetLabels04(t *testing.T) {
 // Test get a ledger 05 - Failed Order Col
 //
 func TestGetLabels05(t *testing.T) {
-
 	// Start the db connection.
-	db, _ := models.NewDB()
-	defer db.Close()
+	db, dbName, _ := models.NewTestDB("")
+	defer models.TestingTearDown(db, dbName)
 
 	// Create controller
 	c := &Controller{}
@@ -291,10 +286,9 @@ func TestGetLabels05(t *testing.T) {
 // Test get a label 01
 //
 func TestGetLabel01(t *testing.T) {
-
 	// Start the db connection.
-	db, _ := models.NewDB()
-	defer db.Close()
+	db, dbName, _ := models.NewTestDB("")
+	defer models.TestingTearDown(db, dbName)
 
 	// Create controller
 	c := &Controller{}
@@ -339,10 +333,9 @@ func TestGetLabel01(t *testing.T) {
 // Test get a label 02 - no perms
 //
 func TestGetLabel02(t *testing.T) {
-
 	// Start the db connection.
-	db, _ := models.NewDB()
-	defer db.Close()
+	db, dbName, _ := models.NewTestDB("")
+	defer models.TestingTearDown(db, dbName)
 
 	// Create controller
 	c := &Controller{}
@@ -382,10 +375,9 @@ func TestGetLabel02(t *testing.T) {
 // Test create Label 01
 //
 func TestCreateLabel01(t *testing.T) {
-
 	// Start the db connection.
-	db, _ := models.NewDB()
-	defer db.Close()
+	db, dbName, _ := models.NewTestDB("")
+	defer models.TestingTearDown(db, dbName)
 
 	// Create controller
 	c := &Controller{}
@@ -433,10 +425,9 @@ func TestCreateLabel01(t *testing.T) {
 // Test create Label 02 - duplicate
 //
 func TestCreateLabel02(t *testing.T) {
-
 	// Start the db connection.
-	db, _ := models.NewDB()
-	defer db.Close()
+	db, dbName, _ := models.NewTestDB("")
+	defer models.TestingTearDown(db, dbName)
 
 	// Create controller
 	c := &Controller{}
@@ -476,10 +467,9 @@ func TestCreateLabel02(t *testing.T) {
 // Test create Label 03 -- spaces
 //
 func TestCreateLabel03(t *testing.T) {
-
 	// Start the db connection.
-	db, _ := models.NewDB()
-	defer db.Close()
+	db, dbName, _ := models.NewTestDB("")
+	defer models.TestingTearDown(db, dbName)
 
 	// Create controller
 	c := &Controller{}
@@ -527,10 +517,9 @@ func TestCreateLabel03(t *testing.T) {
 // Test create Label 04 - duplicate / space
 //
 func TestCreateLabel04(t *testing.T) {
-
 	// Start the db connection.
-	db, _ := models.NewDB()
-	defer db.Close()
+	db, dbName, _ := models.NewTestDB("")
+	defer models.TestingTearDown(db, dbName)
 
 	// Create controller
 	c := &Controller{}
@@ -570,10 +559,9 @@ func TestCreateLabel04(t *testing.T) {
 // Test create Label 05 - blank
 //
 func TestCreateLabel05(t *testing.T) {
-
 	// Start the db connection.
-	db, _ := models.NewDB()
-	defer db.Close()
+	db, dbName, _ := models.NewTestDB("")
+	defer models.TestingTearDown(db, dbName)
 
 	// Create controller
 	c := &Controller{}
@@ -610,10 +598,9 @@ func TestCreateLabel05(t *testing.T) {
 // TestUpdateLabel01 - Test update Label 01
 //
 func TestUpdateLabel01(t *testing.T) {
-
 	// Start the db connection.
-	db, _ := models.NewDB()
-	defer db.Close()
+	db, dbName, _ := models.NewTestDB("")
+	defer models.TestingTearDown(db, dbName)
 
 	// Create controller
 	c := &Controller{}
@@ -664,10 +651,9 @@ func TestUpdateLabel01(t *testing.T) {
 // TestUpdateCategory02 - Test update Label 02 - Duplicate Label
 //
 func TestUpdateLabel02(t *testing.T) {
-
 	// Start the db connection.
-	db, _ := models.NewDB()
-	defer db.Close()
+	db, dbName, _ := models.NewTestDB("")
+	defer models.TestingTearDown(db, dbName)
 
 	// Create controller
 	c := &Controller{}
@@ -708,10 +694,9 @@ func TestUpdateLabel02(t *testing.T) {
 // TestUpdateLabel03 - Test update Label 03 - Duplicate same id
 //
 func TestUpdateLabel03(t *testing.T) {
-
 	// Start the db connection.
-	db, _ := models.NewDB()
-	defer db.Close()
+	db, dbName, _ := models.NewTestDB("")
+	defer models.TestingTearDown(db, dbName)
 
 	// Create controller
 	c := &Controller{}
@@ -763,10 +748,9 @@ func TestUpdateLabel03(t *testing.T) {
 // TestUpdateLabel04 - Test update Label 02 - Duplicate Label space
 //
 func TestUpdateLabel04(t *testing.T) {
-
 	// Start the db connection.
-	db, _ := models.NewDB()
-	defer db.Close()
+	db, dbName, _ := models.NewTestDB("")
+	defer models.TestingTearDown(db, dbName)
 
 	// Create controller
 	c := &Controller{}
@@ -807,10 +791,9 @@ func TestUpdateLabel04(t *testing.T) {
 // TestUpdateLabel05 - Test update Label 05 - Space
 //
 func TestUpdateLabel05(t *testing.T) {
-
 	// Start the db connection.
-	db, _ := models.NewDB()
-	defer db.Close()
+	db, dbName, _ := models.NewTestDB("")
+	defer models.TestingTearDown(db, dbName)
 
 	// Create controller
 	c := &Controller{}
@@ -862,8 +845,8 @@ func TestUpdateLabel05(t *testing.T) {
 //
 func TestDeleteLabel01(t *testing.T) {
 	// Start the db connection.
-	db, _ := models.NewDB()
-	defer db.Close()
+	db, dbName, _ := models.NewTestDB("")
+	defer models.TestingTearDown(db, dbName)
 
 	// Create controller
 	c := &Controller{}
@@ -933,8 +916,8 @@ func TestDeleteLabel01(t *testing.T) {
 //
 func TestDeleteLabel02(t *testing.T) {
 	// Start the db connection.
-	db, _ := models.NewDB()
-	defer db.Close()
+	db, dbName, _ := models.NewTestDB("")
+	defer models.TestingTearDown(db, dbName)
 
 	// Create controller
 	c := &Controller{}

@@ -17,16 +17,6 @@ blocks:
           value: http://localhost:9090
         - name: ENCRYPTION_KEY
           value: adf23423adfasdf1
-        - name: DB_HOST
-          value: tcp(127.0.0.1:9906)
-        - name: DB_USERNAME
-          value: root
-        - name: DB_PASSWORD
-          value: foobar
-        - name: DB_DATABASE
-          value: skyclerk_com
-        - name: DB_DATABASE_TESTING
-          value: skyclerk_com_testing
 
       jobs:
       - name: Get app code, get packages, build, test
@@ -37,10 +27,11 @@ blocks:
           - export "SEMAPHORE_GIT_DIR=$(go env GOPATH)/src/github.com/cloudmanic/${SEMAPHORE_PROJECT_NAME}"
           - export "PATH=$GOBIN:${PATH}"
           - mkdir -vp "${SEMAPHORE_GIT_DIR}" "$(go env GOPATH)/bin"
-          - docker run --name skyclerk_testing -e MYSQL_ROOT_PASSWORD=foobar -e MYSQL_DATABASE=skyclerk_com_testing --tmpfs /var/lib/mysql -p 127.0.0.1:9906:3306 -d mariadb:10.2
+          - docker run --name skyclerk_com_testing -e MYSQL_ROOT_PASSWORD=foobar --tmpfs /var/lib/mysql -p 127.0.0.1:9907:3306 -d mariadb:10.2
           - checkout
           - sem-version go 1.11
           - cd $SEMAPHORE_GIT_DIR
           - go get -t ./...
-          #- go test ./controllers/...
+          #- go test ./...
+          - go test ./controllers -run TestUpdateLedger01
           - go build -ldflags="-s -w" -o builds/skyclerk

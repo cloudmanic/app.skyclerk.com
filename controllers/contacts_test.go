@@ -26,10 +26,9 @@ import (
 // TestGetContacts01 Test get contacts 01
 //
 func TestGetContacts01(t *testing.T) {
-
 	// Start the db connection.
-	db, _ := models.NewDB()
-	defer db.Close()
+	db, dbName, _ := models.NewTestDB("")
+	defer models.TestingTearDown(db, dbName)
 
 	// Create controller
 	c := &Controller{}
@@ -82,10 +81,9 @@ func TestGetContacts01(t *testing.T) {
 // TestGetContacts02 Test get contacts 02
 //
 func TestGetContacts02(t *testing.T) {
-
 	// Start the db connection.
-	db, _ := models.NewDB()
-	defer db.Close()
+	db, dbName, _ := models.NewTestDB("")
+	defer models.TestingTearDown(db, dbName)
 
 	// Create controller
 	c := &Controller{}
@@ -138,10 +136,9 @@ func TestGetContacts02(t *testing.T) {
 // TestGetContact0 Test get contacts 01
 //
 func TestGetContact01(t *testing.T) {
-
 	// Start the db connection.
-	db, _ := models.NewDB()
-	defer db.Close()
+	db, dbName, _ := models.NewTestDB("")
+	defer models.TestingTearDown(db, dbName)
 
 	// Create controller
 	c := &Controller{}
@@ -187,10 +184,9 @@ func TestGetContact01(t *testing.T) {
 // Test create Contact 01
 //
 func TestCreateContact01(t *testing.T) {
-
 	// Start the db connection.
-	db, _ := models.NewDB()
-	defer db.Close()
+	db, dbName, _ := models.NewTestDB("")
+	defer models.TestingTearDown(db, dbName)
 
 	// Create controller
 	c := &Controller{}
@@ -242,10 +238,9 @@ func TestCreateContact01(t *testing.T) {
 // Test create Contact 02 - Duplicate Name
 //
 func TestCreateContact02(t *testing.T) {
-
 	// Start the db connection.
-	db, _ := models.NewDB()
-	defer db.Close()
+	db, dbName, _ := models.NewTestDB("")
+	defer models.TestingTearDown(db, dbName)
 
 	// Create controller
 	c := &Controller{}
@@ -285,10 +280,9 @@ func TestCreateContact02(t *testing.T) {
 // Test create Contact 03 - Duplicate First / Last
 //
 func TestCreateContact03(t *testing.T) {
-
 	// Start the db connection.
-	db, _ := models.NewDB()
-	defer db.Close()
+	db, dbName, _ := models.NewTestDB("")
+	defer models.TestingTearDown(db, dbName)
 
 	// Create controller
 	c := &Controller{}
@@ -328,10 +322,9 @@ func TestCreateContact03(t *testing.T) {
 // Test create Contact 04 - Add first / last (with spaces)
 //
 func TestCreateContact04(t *testing.T) {
-
 	// Start the db connection.
-	db, _ := models.NewDB()
-	defer db.Close()
+	db, dbName, _ := models.NewTestDB("")
+	defer models.TestingTearDown(db, dbName)
 
 	// Create controller
 	c := &Controller{}
@@ -383,10 +376,9 @@ func TestCreateContact04(t *testing.T) {
 // Test create Contact 05 - Full object test
 //
 func TestCreateContact05(t *testing.T) {
-
 	// Start the db connection.
-	db, _ := models.NewDB()
-	defer db.Close()
+	db, dbName, _ := models.NewTestDB("")
+	defer models.TestingTearDown(db, dbName)
 
 	// Create controller
 	c := &Controller{}
@@ -481,10 +473,9 @@ func TestCreateContact05(t *testing.T) {
 // TestUpdateContact01 - Test update contact 01
 //
 func TestUpdateContact01(t *testing.T) {
-
 	// Start the db connection.
-	db, _ := models.NewDB()
-	defer db.Close()
+	db, dbName, _ := models.NewTestDB("")
+	defer models.TestingTearDown(db, dbName)
 
 	// Create controller
 	c := &Controller{}
@@ -545,10 +536,9 @@ func TestUpdateContact01(t *testing.T) {
 // TestUpdateContact02 - Test update contact 02
 //
 func TestUpdateContact02(t *testing.T) {
-
 	// Start the db connection.
-	db, _ := models.NewDB()
-	defer db.Close()
+	db, dbName, _ := models.NewTestDB("")
+	defer models.TestingTearDown(db, dbName)
 
 	// Create controller
 	c := &Controller{}
@@ -594,10 +584,9 @@ func TestUpdateContact02(t *testing.T) {
 // TestDeleteContact01 - Test delete Contact 01
 //
 func TestDeleteContact01(t *testing.T) {
-
 	// Start the db connection.
-	db, _ := models.NewDB()
-	defer db.Close()
+	db, dbName, _ := models.NewTestDB("")
+	defer models.TestingTearDown(db, dbName)
 
 	// Create controller
 	c := &Controller{}
@@ -657,10 +646,9 @@ func TestDeleteContact01(t *testing.T) {
 // TestDeleteContact02 - Already part of a ledger.
 //
 func TestDeleteContact02(t *testing.T) {
-
 	// Start the db connection.
-	db, _ := models.NewDB()
-	defer db.Close()
+	db, dbName, _ := models.NewTestDB("")
+	defer models.TestingTearDown(db, dbName)
 
 	// Create controller
 	c := &Controller{}
@@ -703,10 +691,9 @@ func TestDeleteContact02(t *testing.T) {
 // TestDeleteContact03 - Failed account
 //
 func TestDeleteContact03(t *testing.T) {
-
 	// Start the db connection.
-	db, _ := models.NewDB()
-	defer db.Close()
+	db, dbName, _ := models.NewTestDB("")
+	defer models.TestingTearDown(db, dbName)
 
 	// Create controller
 	c := &Controller{}

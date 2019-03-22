@@ -25,10 +25,9 @@ import (
 // Test get a Get Categories 01
 //
 func TestGetCategories01(t *testing.T) {
-
 	// Start the db connection.
-	db, _ := models.NewDB()
-	defer db.Close()
+	db, dbName, _ := models.NewTestDB("")
+	defer models.TestingTearDown(db, dbName)
 
 	// Create controller
 	c := &Controller{}
@@ -89,10 +88,9 @@ func TestGetCategories01(t *testing.T) {
 // Test get a Get Categories 02 - Test Sort
 //
 func TestGetCategories02(t *testing.T) {
-
 	// Start the db connection.
-	db, _ := models.NewDB()
-	defer db.Close()
+	db, dbName, _ := models.NewTestDB("")
+	defer models.TestingTearDown(db, dbName)
 
 	// Create controller
 	c := &Controller{}
@@ -153,10 +151,9 @@ func TestGetCategories02(t *testing.T) {
 // Test get a Get Categories 03 - Test Sort
 //
 func TestGetCategories03(t *testing.T) {
-
 	// Start the db connection.
-	db, _ := models.NewDB()
-	defer db.Close()
+	db, dbName, _ := models.NewTestDB("")
+	defer models.TestingTearDown(db, dbName)
 
 	// Create controller
 	c := &Controller{}
@@ -211,10 +208,9 @@ func TestGetCategories03(t *testing.T) {
 // Test get a Get Categories 04 - Failed Order Col
 //
 func TestGetCategories04(t *testing.T) {
-
 	// Start the db connection.
-	db, _ := models.NewDB()
-	defer db.Close()
+	db, dbName, _ := models.NewTestDB("")
+	defer models.TestingTearDown(db, dbName)
 
 	// Create controller
 	c := &Controller{}
@@ -253,10 +249,9 @@ func TestGetCategories04(t *testing.T) {
 // Test get a Get Categories 05 - Test Type
 //
 func TestGetCategories05(t *testing.T) {
-
 	// Start the db connection.
-	db, _ := models.NewDB()
-	defer db.Close()
+	db, dbName, _ := models.NewTestDB("")
+	defer models.TestingTearDown(db, dbName)
 
 	// Create controller
 	c := &Controller{}
@@ -308,10 +303,9 @@ func TestGetCategories05(t *testing.T) {
 // Test Get Category 01
 //
 func TestGetCategory01(t *testing.T) {
-
 	// Start the db connection.
-	db, _ := models.NewDB()
-	defer db.Close()
+	db, dbName, _ := models.NewTestDB("")
+	defer models.TestingTearDown(db, dbName)
 
 	// Create controller
 	c := &Controller{}
@@ -353,10 +347,9 @@ func TestGetCategory01(t *testing.T) {
 // Test Get Category 02 - wrong account
 //
 func TestGetCategory02(t *testing.T) {
-
 	// Start the db connection.
-	db, _ := models.NewDB()
-	defer db.Close()
+	db, dbName, _ := models.NewTestDB("")
+	defer models.TestingTearDown(db, dbName)
 
 	// Create controller
 	c := &Controller{}
@@ -392,10 +385,9 @@ func TestGetCategory02(t *testing.T) {
 // Test create Category 01
 //
 func TestCreateCategory01(t *testing.T) {
-
 	// Start the db connection.
-	db, _ := models.NewDB()
-	defer db.Close()
+	db, dbName, _ := models.NewTestDB("")
+	defer models.TestingTearDown(db, dbName)
 
 	// Create controller
 	c := &Controller{}
@@ -445,10 +437,9 @@ func TestCreateCategory01(t *testing.T) {
 // Test create Category 02
 //
 func TestCreateCategory02(t *testing.T) {
-
 	// Start the db connection.
-	db, _ := models.NewDB()
-	defer db.Close()
+	db, dbName, _ := models.NewTestDB("")
+	defer models.TestingTearDown(db, dbName)
 
 	// Create controller
 	c := &Controller{}
@@ -498,10 +489,9 @@ func TestCreateCategory02(t *testing.T) {
 // Test create Category 03 - Duplicate category name
 //
 func TestCreateCategory03(t *testing.T) {
-
 	// Start the db connection.
-	db, _ := models.NewDB()
-	defer db.Close()
+	db, dbName, _ := models.NewTestDB("")
+	defer models.TestingTearDown(db, dbName)
 
 	// Create controller
 	c := &Controller{}
@@ -541,10 +531,9 @@ func TestCreateCategory03(t *testing.T) {
 // Test create Category 04 - Duplicate category name case
 //
 func TestCreateCategory04(t *testing.T) {
-
 	// Start the db connection.
-	db, _ := models.NewDB()
-	defer db.Close()
+	db, dbName, _ := models.NewTestDB("")
+	defer models.TestingTearDown(db, dbName)
 
 	// Create controller
 	c := &Controller{}
@@ -584,10 +573,9 @@ func TestCreateCategory04(t *testing.T) {
 // Test create Category 05 - Duplicate category spaces
 //
 func TestCreateCategory05(t *testing.T) {
-
 	// Start the db connection.
-	db, _ := models.NewDB()
-	defer db.Close()
+	db, dbName, _ := models.NewTestDB("")
+	defer models.TestingTearDown(db, dbName)
 
 	// Create controller
 	c := &Controller{}
@@ -627,10 +615,9 @@ func TestCreateCategory05(t *testing.T) {
 // Test create Category 06 - correct types
 //
 func TestCreateCategory06(t *testing.T) {
-
 	// Start the db connection.
-	db, _ := models.NewDB()
-	defer db.Close()
+	db, dbName, _ := models.NewTestDB("")
+	defer models.TestingTearDown(db, dbName)
 
 	// Create controller
 	c := &Controller{}
@@ -667,10 +654,9 @@ func TestCreateCategory06(t *testing.T) {
 // Test create Category 07 - No Type
 //
 func TestCreateCategory07(t *testing.T) {
-
 	// Start the db connection.
-	db, _ := models.NewDB()
-	defer db.Close()
+	db, dbName, _ := models.NewTestDB("")
+	defer models.TestingTearDown(db, dbName)
 
 	// Create controller
 	c := &Controller{}
@@ -707,10 +693,9 @@ func TestCreateCategory07(t *testing.T) {
 // Test create Category 08 - Type with spaces
 //
 func TestCreateCategory08(t *testing.T) {
-
 	// Start the db connection.
-	db, _ := models.NewDB()
-	defer db.Close()
+	db, dbName, _ := models.NewTestDB("")
+	defer models.TestingTearDown(db, dbName)
 
 	// Create controller
 	c := &Controller{}
@@ -747,10 +732,9 @@ func TestCreateCategory08(t *testing.T) {
 // Test create Category 09 - Same cat, different type
 //
 func TestCreateCategory09(t *testing.T) {
-
 	// Start the db connection.
-	db, _ := models.NewDB()
-	defer db.Close()
+	db, dbName, _ := models.NewTestDB("")
+	defer models.TestingTearDown(db, dbName)
 
 	// Create controller
 	c := &Controller{}
@@ -796,10 +780,9 @@ func TestCreateCategory09(t *testing.T) {
 // Test update Category 01
 //
 func TestUpdateCategory01(t *testing.T) {
-
 	// Start the db connection.
-	db, _ := models.NewDB()
-	defer db.Close()
+	db, dbName, _ := models.NewTestDB("")
+	defer models.TestingTearDown(db, dbName)
 
 	// Create controller
 	c := &Controller{}
@@ -852,10 +835,9 @@ func TestUpdateCategory01(t *testing.T) {
 // Test update Category 02 - Duplicate category
 //
 func TestUpdateCategory02(t *testing.T) {
-
 	// Start the db connection.
-	db, _ := models.NewDB()
-	defer db.Close()
+	db, dbName, _ := models.NewTestDB("")
+	defer models.TestingTearDown(db, dbName)
 
 	// Create controller
 	c := &Controller{}
@@ -896,10 +878,9 @@ func TestUpdateCategory02(t *testing.T) {
 // Test update Category 03 - Duplicate category same id
 //
 func TestUpdateCategory03(t *testing.T) {
-
 	// Start the db connection.
-	db, _ := models.NewDB()
-	defer db.Close()
+	db, dbName, _ := models.NewTestDB("")
+	defer models.TestingTearDown(db, dbName)
 
 	// Create controller
 	c := &Controller{}
@@ -954,10 +935,9 @@ func TestUpdateCategory03(t *testing.T) {
 // Test update Category 04 - Duplicate category same id new type
 //
 func TestUpdateCategory04(t *testing.T) {
-
 	// Start the db connection.
-	db, _ := models.NewDB()
-	defer db.Close()
+	db, dbName, _ := models.NewTestDB("")
+	defer models.TestingTearDown(db, dbName)
 
 	// Create controller
 	c := &Controller{}
@@ -1012,10 +992,9 @@ func TestUpdateCategory04(t *testing.T) {
 // Test update Category 05 - Duplicate category spaces
 //
 func TestUpdateCategory05(t *testing.T) {
-
 	// Start the db connection.
-	db, _ := models.NewDB()
-	defer db.Close()
+	db, dbName, _ := models.NewTestDB("")
+	defer models.TestingTearDown(db, dbName)
 
 	// Create controller
 	c := &Controller{}
@@ -1056,10 +1035,9 @@ func TestUpdateCategory05(t *testing.T) {
 // Test update Category 06 - Duplicate category casing
 //
 func TestUpdateCategory06(t *testing.T) {
-
 	// Start the db connection.
-	db, _ := models.NewDB()
-	defer db.Close()
+	db, dbName, _ := models.NewTestDB("")
+	defer models.TestingTearDown(db, dbName)
 
 	// Create controller
 	c := &Controller{}
@@ -1100,10 +1078,9 @@ func TestUpdateCategory06(t *testing.T) {
 // Test delete Category 01
 //
 func TestDeleteCategory01(t *testing.T) {
-
 	// Start the db connection.
-	db, _ := models.NewDB()
-	defer db.Close()
+	db, dbName, _ := models.NewTestDB("")
+	defer models.TestingTearDown(db, dbName)
 
 	// Create controller
 	c := &Controller{}
@@ -1147,10 +1124,9 @@ func TestDeleteCategory01(t *testing.T) {
 // Test delete Category 02
 //
 func TestDeleteCategory02(t *testing.T) {
-
 	// Start the db connection.
-	db, _ := models.NewDB()
-	defer db.Close()
+	db, dbName, _ := models.NewTestDB("")
+	defer models.TestingTearDown(db, dbName)
 
 	// Create controller
 	c := &Controller{}

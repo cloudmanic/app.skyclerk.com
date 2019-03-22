@@ -29,8 +29,8 @@ func TestGetLedgers01(t *testing.T) {
 	dMap := make(map[uint]models.Ledger)
 
 	// Start the db connection.
-	db, _ := models.NewDB()
-	defer db.Close()
+	db, dbName, _ := models.NewTestDB("")
+	defer models.TestingTearDown(db, dbName)
 
 	// Create controller
 	c := &Controller{}
@@ -155,8 +155,8 @@ func TestGetLedger01(t *testing.T) {
 	dMap := make(map[uint]models.Ledger)
 
 	// Start the db connection.
-	db, _ := models.NewDB()
-	defer db.Close()
+	db, dbName, _ := models.NewTestDB("")
+	defer models.TestingTearDown(db, dbName)
 
 	// Create controller
 	c := &Controller{}
@@ -224,8 +224,8 @@ func TestGetLedger01(t *testing.T) {
 //
 func TestGetLedger02(t *testing.T) {
 	// Start the db connection.
-	db, _ := models.NewDB()
-	defer db.Close()
+	db, dbName, _ := models.NewTestDB("")
+	defer models.TestingTearDown(db, dbName)
 
 	// Create controller
 	c := &Controller{}
@@ -277,8 +277,8 @@ func TestGetLedger02(t *testing.T) {
 //
 func TestCreateLedger01(t *testing.T) {
 	// Start the db connection.
-	db, _ := models.NewDB()
-	defer db.Close()
+	db, dbName, _ := models.NewTestDB("")
+	defer models.TestingTearDown(db, dbName)
 
 	// Create controller
 	c := &Controller{}
@@ -350,8 +350,8 @@ func TestCreateLedger01(t *testing.T) {
 //
 func TestCreateLedger02(t *testing.T) {
 	// Start the db connection.
-	db, _ := models.NewDB()
-	defer db.Close()
+	db, dbName, _ := models.NewTestDB("")
+	defer models.TestingTearDown(db, dbName)
 
 	// Create controller
 	c := &Controller{}
@@ -428,8 +428,8 @@ func TestCreateLedger02(t *testing.T) {
 //
 func TestCreateLedger03(t *testing.T) {
 	// Start the db connection.
-	db, _ := models.NewDB()
-	defer db.Close()
+	db, dbName, _ := models.NewTestDB("")
+	defer models.TestingTearDown(db, dbName)
 
 	// Create controller
 	c := &Controller{}
@@ -478,8 +478,8 @@ func TestCreateLedger03(t *testing.T) {
 //
 func TestCreateLedger04(t *testing.T) {
 	// Start the db connection.
-	db, _ := models.NewDB()
-	defer db.Close()
+	db, dbName, _ := models.NewTestDB("")
+	defer models.TestingTearDown(db, dbName)
 
 	// Create controller
 	c := &Controller{}
@@ -540,8 +540,8 @@ func TestCreateLedger04(t *testing.T) {
 //
 func TestUpdateLedger01(t *testing.T) {
 	// Start the db connection.
-	db, _ := models.NewDB()
-	defer db.Close()
+	db, dbName, _ := models.NewTestDB("")
+	defer models.TestingTearDown(db, dbName)
 
 	// Create controller
 	c := &Controller{}
@@ -629,8 +629,8 @@ func TestUpdateLedger01(t *testing.T) {
 //
 func TestUpdateLedger02(t *testing.T) {
 	// Start the db connection.
-	db, _ := models.NewDB()
-	defer db.Close()
+	db, dbName, _ := models.NewTestDB("")
+	defer models.TestingTearDown(db, dbName)
 
 	// Create controller
 	c := &Controller{}
@@ -680,8 +680,8 @@ func TestUpdateLedger02(t *testing.T) {
 //
 func TestUpdateLedger03(t *testing.T) {
 	// Start the db connection.
-	db, _ := models.NewDB()
-	defer db.Close()
+	db, dbName, _ := models.NewTestDB("")
+	defer models.TestingTearDown(db, dbName)
 
 	// Create controller
 	c := &Controller{}
@@ -732,10 +732,9 @@ func TestUpdateLedger03(t *testing.T) {
 // TestDeleteLedger01 - Test delete Ledger 01
 //
 func TestDeleteLedger01(t *testing.T) {
-
 	// Start the db connection.
-	db, _ := models.NewDB()
-	defer db.Close()
+	db, dbName, _ := models.NewTestDB("")
+	defer models.TestingTearDown(db, dbName)
 
 	// Create controller
 	c := &Controller{}
@@ -787,8 +786,8 @@ func TestDeleteLedger01(t *testing.T) {
 //
 func TestDeleteLedger02(t *testing.T) {
 	// Start the db connection.
-	db, _ := models.NewDB()
-	defer db.Close()
+	db, dbName, _ := models.NewTestDB("")
+	defer models.TestingTearDown(db, dbName)
 
 	// Create controller
 	c := &Controller{}
