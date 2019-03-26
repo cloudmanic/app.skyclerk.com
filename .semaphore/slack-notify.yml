@@ -2,7 +2,7 @@
 apiVersion: v1alpha
 kind: Notification
 metadata:
-  name: notify-slack
+  name: skyclerk-slack-notify
 spec:
   rules:
     - name: "Skyclerk Slack Notification"
