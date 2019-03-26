@@ -77,7 +77,7 @@ func TestGetCategories01(t *testing.T) {
 	st.Expect(t, results[3].Name, "Category #3")
 	st.Expect(t, results[4].Name, "Xyz")
 
-	st.Expect(t, results[0].Type, "income")
+	st.Expect(t, results[0].Type, "income2")
 	st.Expect(t, results[1].Type, "expense")
 	st.Expect(t, results[2].Type, "income")
 	st.Expect(t, results[3].Type, "expense")

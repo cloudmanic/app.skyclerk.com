@@ -1,0 +1,16 @@
+# notify-on-fail.yml
+apiVersion: v1alpha
+kind: Notification
+metadata:
+  name: notify-slack
+spec:
+  rules:
+    - name: "Skyclerk Slack Notification"
+      filter:
+        projects:
+          - skyclerk.com
+        results:
+          - failed
+      notify:
+        slack:
+          endpoint: https://hooks.slack.com/services/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
