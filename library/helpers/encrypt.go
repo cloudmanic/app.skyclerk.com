@@ -11,13 +11,24 @@ import (
 	"bytes"
 	"crypto/aes"
 	"crypto/cipher"
+	"crypto/md5"
 	"crypto/rand"
 	"encoding/base64"
+	"encoding/hex"
 	"errors"
 	"io"
 	"os"
 	"strings"
 )
+
+//
+// Return an MD5 string
+//
+func GetMd5(text string) string {
+	h := md5.New()
+	io.WriteString(h, text)
+	return hex.EncodeToString(h.Sum(nil))
+}
 
 //
 // Encrypt the string.

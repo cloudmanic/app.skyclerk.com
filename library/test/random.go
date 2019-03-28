@@ -15,23 +15,44 @@ import (
 	"github.com/cloudmanic/skyclerk.com/models"
 )
 
-// //
-// // GetRandomUser returns a random user.
-// //
-// func GetRandomUser(accountId int64) models.User {
-// 	rand.Seed(time.Now().UnixNano())
 //
-// 	first := []string{"Bob", "Sue", "Jack", "AH", "Joe", "Spicer", "Steve"}
-// 	last := []string{"Smith", "Doe", "Johnson", "Kaufmann", "Matthews", "Jobs"}
-// 	company := []string{"Cloudmanic Labs, LLC", "Options Cafe", "Skyckerk", "Apple Inc.", "Home Depot"}
+// GetRandomApplication returns a random user.
 //
-// 	label := models.Label{
-// 		AccountId: uint(accountId),
-// 		Name:      name[rand.Intn(len(name))],
-// 	}
+func GetRandomApplication() models.Application {
+	app := models.Application{
+		Name:      "Unit Test Application - " + helpers.RandStr(16),
+		ClientId:  helpers.RandStr(16),
+		Secret:    helpers.RandStr(16),
+		GrantType: "password",
+	}
+
+	return app
+}
+
 //
-// 	return label
-// }
+// GetRandomUser returns a random user.
+//
+func GetRandomUser(accountId int64) models.User {
+	rand.Seed(time.Now().UnixNano())
+
+	first := []string{"Bob", "Sue", "Jack", "AH", "Joe", "Spicer", "Steve"}
+	last := []string{"Smith", "Doe", "Johnson", "Kaufmann", "Matthews", "Jobs"}
+
+	salt := "salt123"
+	pass := "foobar"
+	passMd5 := helpers.GetMd5(pass + salt)
+
+	user := models.User{
+		FirstName:   first[rand.Intn(len(first))],
+		LastName:    last[rand.Intn(len(last))],
+		Email:       helpers.RandStr(16) + "@example.com",
+		Md5Password: passMd5,
+		Md5Salt:     salt,
+		Status:      "Active",
+	}
+
+	return user
+}
 
 //
 // GetRandomLedger returns a random ledger.
