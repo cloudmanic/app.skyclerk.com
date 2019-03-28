@@ -11,19 +11,12 @@ package models
 import "time"
 
 // AcctUsersLu struct
-type AcctUsersLu struct {
-	AcctUsersLuId        uint      `gorm:"primary_key;column:AcctUsersLuId" json:"_"`
-	AcctUsersLuAcctId    uint      `gorm:"column:AcctUsersLuAcctId" json:"_"`
-	AcctUsersLuUserId    uint      `gorm:"column:AcctUsersLuUserId" json:"_"`
-	AcctUsersLuUpdatedAt time.Time `gorm:"column:AcctUsersLuUpdatedAt" sql:"not null" json:"_"`
-	AcctUsersLuCreatedAt time.Time `gorm:"column:AcctUsersLuCreatedAt" sql:"not null" json:"_"`
-}
-
-//
-// Set the table name.
-//
-func (AcctUsersLu) TableName() string {
-	return "AcctUsersLu"
+type AcctToUsers struct {
+	Id        uint      `gorm:"primary_key" json:"_"`
+	CreatedAt time.Time `json:"created_at"`
+	UpdatedAt time.Time `json:"updated_at"`
+	AcctId    uint      `sql:"not null"  json:"_"`
+	UserId    uint      `sql:"not null"  json:"_"`
 }
 
 /* End File */

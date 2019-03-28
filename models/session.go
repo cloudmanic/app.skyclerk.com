@@ -25,7 +25,7 @@ type Session struct {
 // Set the table name.
 //
 func (Session) TableName() string {
-	return "GoSessions"
+	return "go_sessions"
 }
 
 //

@@ -16,7 +16,46 @@ import (
 )
 
 //
-// GetRandomApplication returns a random user.
+// GetRandomAccount returns a random account.
+//
+func GetRandomAccount(accountId int64) models.Account {
+	rand.Seed(time.Now().UnixNano())
+
+	dates := []time.Time{
+		time.Now(),
+		time.Date(2017, 10, 29, 17, 20, 01, 507451, time.UTC),
+		time.Date(2018, 8, 19, 17, 20, 01, 507451, time.UTC),
+		time.Date(2019, 1, 10, 17, 20, 01, 507451, time.UTC),
+	}
+
+	zip := []string{"13601", "97222", "12384", "97345", "97701"}
+	state := []string{"NY", "OR", "TX", "NC", "SC", "VT", "CA"}
+	city := []string{"Newberg", "Watertown", "New York", "Clayton", "Portland", "Road Town", "Seattle"}
+
+	acc := models.Account{
+		Id:           uint(accountId),
+		OwnerId:      uint(1),
+		Name:         "Name " + helpers.RandStr(16),
+		PlanId:       0,
+		Address:      "Address " + helpers.RandStr(16),
+		City:         city[rand.Intn(len(city))],
+		State:        state[rand.Intn(len(state))],
+		Zip:          zip[rand.Intn(len(zip))],
+		Country:      "USA",
+		LastActivity: dates[rand.Intn(len(dates))],
+		StripeId:     "",
+		CardType:     "",
+		CardLast4:    "",
+		CardExpMonth: "",
+		CardExpYear:  "",
+		SignupIp:     "127.0.0.1",
+	}
+
+	return acc
+}
+
+//
+// GetRandomApplication returns a random application.
 //
 func GetRandomApplication() models.Application {
 	app := models.Application{

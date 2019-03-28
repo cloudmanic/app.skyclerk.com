@@ -22,13 +22,6 @@ type Application struct {
 }
 
 //
-// Set the table name.
-//
-func (Application) TableName() string {
-	return "Applications"
-}
-
-//
 // Validate a client id and grant type.
 //
 func (db *DB) ValidateClientIdGrantType(clientId string, grantType string) (Application, error) {

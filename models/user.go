@@ -25,11 +25,4 @@ type User struct {
 	LastActivity time.Time `json:"last_activity"`
 }
 
-//
-// Set the table name.
-//
-func (User) TableName() string {
-	return "Users"
-}
-
 /* End File */
