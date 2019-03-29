@@ -42,7 +42,7 @@ func (t *DB) GetUserById(id uint) (User, error) {
 
 	// Add in accounts TOOD(user): Clean this up to be more GORMY
 	aTU := []AcctToUsers{}
-	t.Where("user_id = ?", id).Find(&aTU)
+	t.Where("user_id = ?", id).Order("acct_id DESC").Find(&aTU)
 
 	for _, row := range aTU {
 		a := Account{}
