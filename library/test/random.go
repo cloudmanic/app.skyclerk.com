@@ -78,7 +78,7 @@ func GetRandomUser(accountId int64) models.User {
 	last := []string{"Smith", "Doe", "Johnson", "Kaufmann", "Matthews", "Jobs"}
 
 	salt := "salt123"
-	pass := "foobar"
+	pass := "F00bAr123"
 	passMd5 := helpers.GetMd5(pass + salt)
 
 	user := models.User{

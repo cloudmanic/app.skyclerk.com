@@ -42,10 +42,18 @@ type Datastore interface {
 	GetContactByAccountAndId(accountId uint, conId uint) (Contact, error)
 	ValidateContactNameOrFirstLast(contact Contact, accountId uint, objId uint, action string) error
 
-	// Labels
+	// Label
 	GetLabelByAccountAndId(accountId uint, labelId uint) (Label, error)
 	DeleteLabelByAccountAndId(accountId uint, labelId uint) error
 	ValidateDuplicateLabelName(obj Label, accountId uint, objId uint, action string) error
+
+	// User
+	GetUserById(id uint) (User, error)
+	GetUserByEmail(email string) (User, error)
+	ValidatePassword(password string) error
+	ValidateEmailAddress(email string) error
+	ValidateUserLogin(email string, password string) error
+	LoginUserByEmailPass(email string, password string, appId uint, userAgent string, ipAddress string) (User, Session, error)
 }
 
 /* End File */

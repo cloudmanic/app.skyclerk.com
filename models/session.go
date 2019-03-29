@@ -41,19 +41,20 @@ func (t *DB) UpdateSession(session *Session) error {
 //
 func (t *DB) GetByAccessToken(accessToken string) (Session, error) {
 	// Session
-	session := Session{}
+	var sess Session
 
-	if t.First(&session, "access_token = ?", accessToken).RecordNotFound() {
-		return Session{}, errors.New("Access Token Not Found - Unable to Authenticate")
+	if t.First(&sess, "access_token = ?", accessToken).RecordNotFound() {
+		return Session{}, errors.New("Access Token Not Found - Unable to Authenticate (#001)")
 	}
 
-	// Double check because of case sensitivity
-	//if session.AccessToken == accessToken {
-	//	return Session{}, errors.New("Access Token Not Found - Unable to Authenticate")
-	//}
+	// TODO(spicer): figure out why this does now work.
+	// // Double check because of case sensitivity
+	// if sess.AccessToken == accessToken {
+	// 	return Session{}, errors.New("Access Token Not Found - Unable to Authenticate (#002)")
+	// }
 
 	// Return happy
-	return session, nil
+	return sess, nil
 }
 
 //
