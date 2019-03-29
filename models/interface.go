@@ -24,6 +24,9 @@ type Datastore interface {
 	// Application
 	ValidateClientIdGrantType(clientId string, grantType string) (Application, error)
 
+	// Session
+	GetByAccessToken(accessToken string) (Session, error)
+
 	// Ledger
 	LedgerCreate(ledger *Ledger) error
 	LedgerUpdate(ledger *Ledger) error

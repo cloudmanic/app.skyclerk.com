@@ -317,7 +317,7 @@ func TestDoOauthToken05(t *testing.T) {
 //
 func TestDoOauthToken06(t *testing.T) {
 	// Start the db connection.
-	db, dbName, _ := models.NewTestDB("testing_db")
+	db, dbName, _ := models.NewTestDB("")
 	defer models.TestingTearDown(db, dbName)
 
 	// Create controller
@@ -399,6 +399,95 @@ func TestDoOauthToken06(t *testing.T) {
 	st.Expect(t, u.Accounts[0].Name, account.Name)
 	st.Expect(t, u.Accounts[1].Name, a2.Name)
 	st.Expect(t, u.Accounts[2].Name, a1.Name)
+}
+
+//
+// TestDoLogOut01 - test logout
+//
+func TestDoLogOut01(t *testing.T) {
+	// Start the db connection.
+	db, dbName, _ := models.NewTestDB("testing_db")
+	defer models.TestingTearDown(db, dbName)
+
+	// Create controller
+	c := &Controller{}
+	c.SetDB(db)
+
+	// Create a test user in DB
+	user, _, app := createTestUserInDB(db)
+
+	// Build stuct that we convert to json.
+	type PostStruct struct {
+		Username  string `json:"username"`
+		Password  string `json:"password"`
+		GrantType string `json:"grant_type"`
+		ClientID  string `json:"client_id"`
+	}
+
+	pS := PostStruct{
+		Username:  user.Email,
+		Password:  "F00bAr123",
+		GrantType: "password",
+		ClientID:  app.ClientId,
+	}
+
+	// Get JSON
+	postStr, _ := json.Marshal(pS)
+
+	// Setup request
+	req, _ := http.NewRequest("POST", "/oauth/token", bytes.NewBuffer(postStr))
+
+	// Setup writer.
+	w := httptest.NewRecorder()
+	gin.SetMode("release")
+	gin.DisableConsoleColor()
+
+	r := gin.New()
+	r.POST("/oauth/token", c.DoOauthToken)
+	r.ServeHTTP(w, req)
+
+	// Get results from json.
+	userId := gjson.Get(w.Body.String(), "user_id").Int()
+	accessToken := gjson.Get(w.Body.String(), "access_token").String()
+
+	// Test results
+	st.Expect(t, w.Code, 200)
+	st.Expect(t, uint(userId), user.Id)
+	st.Expect(t, len(accessToken), 50)
+
+	// Setup request
+	w2 := httptest.NewRecorder()
+	req2, _ := http.NewRequest("GET", "/oauth/logout?access_token="+accessToken, nil)
+	r.GET("/oauth/logout", c.DoLogOut)
+	r.ServeHTTP(w2, req2)
+
+	// Test results
+	st.Expect(t, w2.Code, 200)
+	st.Expect(t, w2.Body.String(), `{"status":"ok"}`)
+
+	// Look in the sessions table for the correct access token
+	sess, err := db.GetByAccessToken(accessToken)
+	st.Expect(t, err.Error(), "Access Token Not Found - Unable to Authenticate (#001)")
+	st.Expect(t, sess.UserId, uint(0))
+	st.Expect(t, sess.AccessToken, "")
+
+	// Setup request
+	w3 := httptest.NewRecorder()
+	req3, _ := http.NewRequest("GET", "/oauth/logout?access_token="+accessToken, nil)
+	r.ServeHTTP(w3, req3)
+
+	// Test results
+	st.Expect(t, w3.Code, 400)
+	st.Expect(t, w3.Body.String(), `{"error":"Sorry, we could not find your session.","status":"error"}`)
+
+	// Setup request
+	w4 := httptest.NewRecorder()
+	req4, _ := http.NewRequest("GET", "/oauth/logout?access_token=", nil)
+	r.ServeHTTP(w4, req4)
+
+	// Test results
+	st.Expect(t, w4.Code, 400)
+	st.Expect(t, w4.Body.String(), `{"error":"Sorry, access_token is required."}`)
 }
 
 /* End File */

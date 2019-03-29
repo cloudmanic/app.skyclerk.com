@@ -73,31 +73,32 @@ func (t *Controller) DoOauthToken(c *gin.Context) {
 	c.JSON(200, gin.H{"access_token": sess.AccessToken, "user_id": user.Id, "token_type": "bearer"})
 }
 
-// //
-// // Logout of account.
-// //
-// func (t *Controller) DoLogOut(c *gin.Context) {
 //
-// 	// Search for symbol
-// 	if c.Query("access_token") == "" {
-// 		c.JSON(http.StatusBadRequest, gin.H{"error": "Sorry, access_token is required."})
-// 		return
-// 	}
+// Logout of account.
 //
-// 	// Log user out by removing the session
-// 	sess, err := t.DB.GetByAccessToken(c.Query("access_token"))
-//
-// 	if err != nil {
-// 		services.Warning(err)
-// 		c.JSON(http.StatusBadRequest, gin.H{"status": "error", "error": "Sorry, we could not find your session."})
-// 		return
-// 	}
-//
-// 	// Delete the session
-// 	t.DB.New().Delete(&sess)
-//
-// 	// Return success json.
-// 	c.JSON(200, gin.H{"status": "ok"})
-// }
+func (t *Controller) DoLogOut(c *gin.Context) {
+	// Search for symbol
+	if c.Query("access_token") == "" {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Sorry, access_token is required."})
+		return
+	}
+
+	// Log user out by removing the session
+	sess, err := t.db.GetByAccessToken(c.Query("access_token"))
+
+	if err != nil {
+		services.Warning(err)
+		c.JSON(http.StatusBadRequest, gin.H{"status": "error", "error": "Sorry, we could not find your session."})
+		return
+	}
+
+	// Delete the session
+	t.db.New().Delete(&sess)
+
+	// TODO(spicer): Support passing in ?redirect_url= and then redriect instead of responding with JSON
+
+	// Return success json.
+	c.JSON(200, gin.H{"status": "ok"})
+}
 
 /* End File */
