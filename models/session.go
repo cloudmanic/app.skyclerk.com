@@ -22,13 +22,6 @@ type Session struct {
 }
 
 //
-// Set the table name.
-//
-func (Session) TableName() string {
-	return "go_sessions"
-}
-
-//
 // Get by Access token.
 //
 func (t *DB) GetByAccessToken(accessToken string) (Session, error) {
