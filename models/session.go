@@ -29,14 +29,6 @@ func (Session) TableName() string {
 }
 
 //
-// Update Session.
-//
-func (t *DB) UpdateSession(session *Session) error {
-	t.Save(session)
-	return nil
-}
-
-//
 // Get by Access token.
 //
 func (t *DB) GetByAccessToken(accessToken string) (Session, error) {

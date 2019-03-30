@@ -46,7 +46,6 @@ func (t *Controller) SetDB(db models.Datastore) {
 // Validate and Create object.
 //
 func (t *Controller) ValidateRequest(c *gin.Context, obj ValidateRequest, action string) error {
-
 	// Bind the JSON that got sent into an object and validate.
 	if err := c.ShouldBindJSON(obj); err == nil {
 
