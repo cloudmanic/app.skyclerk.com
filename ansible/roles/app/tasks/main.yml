@@ -1,9 +1,37 @@
 ---
 
-# # Install app.options.cafe binary
-# - name: Copying app.options.cafe binary to server(s)
-#   copy: src=../backend/builds/app.options.cafe dest=/sites/optionscafe/app.options.cafe/docker/build owner=optionscafe group=optionscafe mode=0755
+# Setup base directory
+- name: Setup {{ site_dir }} as base directory
+  file: path={{ site_dir }} owner={{ site_user }} group={{ site_user }} mode=0755 state=directory
 
-# # Install app.options.cafe frontend code.
-# - name: Copying app.options.cafe frontend code to server(s)
-#   synchronize: src=../frontend/dist/ dest=/sites/optionscafe/app.options.cafe/docker/build/frontend
+# Create docker directory
+- name: Create docker directory
+  file: path={{ site_dir }}/docker owner={{ site_user }} group={{ site_user }} mode=0755 state=directory
+
+# Create docker build directory
+- name: Create docker build directory
+  file: path={{ site_dir }}/docker/build owner={{ site_user }} group={{ site_user }} mode=0755 state=directory
+
+# Install docker-compose
+- name: Install docker-compose
+  template: src=docker-compose.yml dest={{ site_dir }}/docker/docker-compose.yml owner={{ site_user }} group={{ site_user }} mode=0644
+
+# Install ENV File
+- name: Install Docker ENV File
+  template: src=docker-env dest={{ site_dir }}/docker/.env owner={{ site_user }} group={{ site_user }} mode=0644
+
+# Install Dockerfile-php File
+- name: Install Dockerfile-php ENV File
+  template: src=build/Dockerfile-php dest={{ site_dir }}/docker/build/Dockerfile-php owner={{ site_user }} group={{ site_user }} mode=0644
+
+# Install nginx-default.conf File
+- name: Install nginx-default.conf File
+  template: src=build/nginx-default.conf dest={{ site_dir }}/docker/build/nginx-default.conf owner={{ site_user }} group={{ site_user }} mode=0644
+
+# Install php.ini File
+- name: Install php.ini ENV File
+  template: src=build/php.ini dest={{ site_dir }}/docker/build/php.ini owner={{ site_user }} group={{ site_user }} mode=0644
+
+# Checkout code at github
+- name: Checkout PHP app git repo
+  git: "repo={{ git_repo }} dest={{ site_dir }}/php-app version={{ git_branch }} accept_hostkey=yes force=yes"

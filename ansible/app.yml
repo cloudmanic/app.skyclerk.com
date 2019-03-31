@@ -1,9 +1,11 @@
 ---
 
-- name: Deploys the app.options.cafe to production
-  hosts: production
+- name: Deploys the app.skyclerk.com to production
+  hosts: web-servers
+
   roles:
     - app
-    
+
   vars_files:
+    - "vars/all.yml"
     - "vars/env.yml"

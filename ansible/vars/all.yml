@@ -1,5 +1,25 @@
 ---
 
+site_domain: app.skyclerk.com
+
+site_dir: /sites/skyclerk/app.skyclerk.com
+
+site_user: skyclerk
+site_uid: 1004
+site_gid: 1004
+
+virtual_hosts: app.skyclerk.com
+
+support_email: help@skyclerk.com
+
+git_branch: master
+
+git_repo: git@github.com:cloudmanic/skyclerk.cloudmanic.com-no-accounts.git
+
+#
+# Server Config Stuff
+#
+
 spicer_uid: 1000
 spicer_gid: 1000
 
@@ -12,7 +32,7 @@ syslog_address: logs6.papertrailapp.com
 docker_mysql: yes
 
 docker_mysql_servers:
-  - { "name": "mysql55", "image": "mysql:5.5", "container_name": "mysql-5.5", "port_mapping": "127.0.0.1:3355", "password": "{{ MYSQL_ROOT_PASSWORD }}" }  
+  - { "name": "mysql55", "image": "mysql:5.5", "container_name": "mysql-5.5", "port_mapping": "127.0.0.1:3355", "password": "{{ MYSQL_ROOT_PASSWORD }}" }
 
 docker_nginx_proxy: yes
 
@@ -23,9 +43,9 @@ docker_nginx_proxy_dir: /sites/nginx-proxy
 docker_mysql_dir: /sites/mysql
 
 docker_sites:
-  - { site_slug: "cloudmanic", uid: "1003", gid: "1003" }  
-  - { site_slug: "skyclerk", uid: "1004", gid: "1004" }    
-        
+  - { site_slug: "cloudmanic", uid: "1003", gid: "1003" }
+  - { site_slug: "skyclerk", uid: "1004", gid: "1004" }
+
 core_packages:
   - git-core
   - vim
@@ -59,4 +79,4 @@ backup_db_high_size: 300000000
 backup_hours_between: 4
 backup_object_bucket: db-backups
 backup_success_ping_url: https://hc-ping.com/fece912b-5eda-4333-bc92-652947306706
-backup_site_dir: /sites/skyclerk/backup.skyclerk.com  
+backup_site_dir: /sites/skyclerk/backup.skyclerk.com

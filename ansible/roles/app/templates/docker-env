@@ -1,0 +1,7 @@
+P_UID={{ site_uid }}
+P_GID={{ site_gid }}
+RESTART=always
+VIRTUAL_HOST={{ virtual_hosts }}
+LETSENCRYPT_HOST={{ virtual_hosts }}
+LETSENCRYPT_EMAIL={{ support_email }}
+COMPOSE_PROJECT_NAME={{ site_domain }}
