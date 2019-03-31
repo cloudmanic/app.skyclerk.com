@@ -85,10 +85,10 @@ func MyCaller() string {
 	}
 
 	// Make the base of this code.
-	parts := strings.Split(file, "app.options.cafe")
+	parts := strings.Split(file, "app.skyclerk.com")
 
 	if len(parts) == 2 {
-		filePath = "app.options.cafe" + parts[1]
+		filePath = "app.skyclerk.com" + parts[1]
 	} else {
 		filePath = filepath.Base(file)
 	}

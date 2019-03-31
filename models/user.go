@@ -10,7 +10,7 @@ import (
 	"errors"
 	"time"
 
-	"bitbucket.org/api.triwou.org/library/checkmail"
+	"github.com/cloudmanic/skyclerk.com/library/checkmail"
 	"github.com/cloudmanic/skyclerk.com/library/helpers"
 	"github.com/cloudmanic/skyclerk.com/services"
 )

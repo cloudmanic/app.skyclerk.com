@@ -16,8 +16,8 @@ import (
 	"strings"
 	"time"
 
-	"bitbucket.org/api.triwou.org/library/realip"
-	"bitbucket.org/api.triwou.org/library/services"
+	"github.com/cloudmanic/skyclerk.com/library/realip"
+	"github.com/cloudmanic/skyclerk.com/services"
 	"github.com/gin-gonic/gin"
 )
 
@@ -59,7 +59,7 @@ func (t *Controller) AuthMiddleware() gin.HandlerFunc {
 		session, err := t.db.GetByAccessToken(access_token)
 
 		if err != nil {
-			services.Critical("Access Token Not Found - Unable to Authenticate via HTTP (#003)")
+			services.LogInfo("Access Token Not Found - Unable to Authenticate via HTTP (#003)")
 			c.JSON(http.StatusUnauthorized, gin.H{"error": "Authorization Failed (#003)"})
 			c.AbortWithStatus(401)
 			return
@@ -69,7 +69,7 @@ func (t *Controller) AuthMiddleware() gin.HandlerFunc {
 		user, err := t.db.GetUserById(session.UserId)
 
 		if err != nil {
-			services.Critical("User Not Found - Unable to Authenticate - UserId (HTTP) : " + fmt.Sprint(session.UserId) + " - Session Id : " + fmt.Sprint(session.Id))
+			services.LogInfo("User Not Found - Unable to Authenticate - UserId (HTTP) : " + fmt.Sprint(session.UserId) + " - Session Id : " + fmt.Sprint(session.Id))
 			c.JSON(http.StatusUnauthorized, gin.H{"error": "Authorization Failed (#004)"})
 			c.AbortWithStatus(401)
 			return
