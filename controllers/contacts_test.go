@@ -44,7 +44,7 @@ func TestGetContacts01(t *testing.T) {
 	db.Save(&models.Contact{AccountId: 33, Name: "Dope Dealer, LLC", FirstName: "", LastName: ""})
 
 	// Setup request
-	req, _ := http.NewRequest("GET", "/api/v1/33/contacts", nil)
+	req, _ := http.NewRequest("GET", "/api/v3/33/contacts", nil)
 
 	// Setup writer.
 	w := httptest.NewRecorder()
@@ -56,7 +56,7 @@ func TestGetContacts01(t *testing.T) {
 		c.Set("accountId", 33)
 		c.Set("userId", uint(109))
 	})
-	r.GET("/api/v1/:account/contacts", c.GetContacts)
+	r.GET("/api/v3/:account/contacts", c.GetContacts)
 	r.ServeHTTP(w, req)
 
 	// Grab result and convert to strut
@@ -99,7 +99,7 @@ func TestGetContacts02(t *testing.T) {
 	db.Save(&models.Contact{AccountId: 33, Name: "Dope Dealer, LLC", FirstName: "", LastName: ""})
 
 	// Setup request
-	req, _ := http.NewRequest("GET", "/api/v1/33/contacts?sort=desc", nil)
+	req, _ := http.NewRequest("GET", "/api/v3/33/contacts?sort=desc", nil)
 
 	// Setup writer.
 	w := httptest.NewRecorder()
@@ -111,7 +111,7 @@ func TestGetContacts02(t *testing.T) {
 		c.Set("accountId", 33)
 		c.Set("userId", uint(109))
 	})
-	r.GET("/api/v1/:account/contacts", c.GetContacts)
+	r.GET("/api/v3/:account/contacts", c.GetContacts)
 	r.ServeHTTP(w, req)
 
 	// Grab result and convert to strut
@@ -154,7 +154,7 @@ func TestGetContact01(t *testing.T) {
 	db.Save(&models.Contact{AccountId: 33, Name: "Dope Dealer, LLC", FirstName: "", LastName: ""})
 
 	// Setup request
-	req, _ := http.NewRequest("GET", "/api/v1/33/contacts/4", nil)
+	req, _ := http.NewRequest("GET", "/api/v3/33/contacts/4", nil)
 
 	// Setup writer.
 	w := httptest.NewRecorder()
@@ -166,7 +166,7 @@ func TestGetContact01(t *testing.T) {
 		c.Set("accountId", 33)
 		c.Set("userId", uint(109))
 	})
-	r.GET("/api/v1/:account/contacts/:id", c.GetContact)
+	r.GET("/api/v3/:account/contacts/:id", c.GetContact)
 	r.ServeHTTP(w, req)
 
 	// Grab result and convert to strut
@@ -199,7 +199,7 @@ func TestCreateContact01(t *testing.T) {
 	postStr, _ := json.Marshal(post)
 
 	// Setup request
-	req, _ := http.NewRequest("POST", "/api/v1/33/contacts", bytes.NewBuffer(postStr))
+	req, _ := http.NewRequest("POST", "/api/v3/33/contacts", bytes.NewBuffer(postStr))
 
 	// Setup writer.
 	w := httptest.NewRecorder()
@@ -211,7 +211,7 @@ func TestCreateContact01(t *testing.T) {
 		c.Set("accountId", 33)
 		c.Set("userId", 109)
 	})
-	r.POST("/api/v1/33/contacts", c.CreateContact)
+	r.POST("/api/v3/33/contacts", c.CreateContact)
 	r.ServeHTTP(w, req)
 
 	// Grab result and convert to strut
@@ -256,7 +256,7 @@ func TestCreateContact02(t *testing.T) {
 	postStr, _ := json.Marshal(post)
 
 	// Setup request
-	req, _ := http.NewRequest("POST", "/api/v1/33/contacts", bytes.NewBuffer(postStr))
+	req, _ := http.NewRequest("POST", "/api/v3/33/contacts", bytes.NewBuffer(postStr))
 
 	// Setup writer.
 	w := httptest.NewRecorder()
@@ -268,7 +268,7 @@ func TestCreateContact02(t *testing.T) {
 		c.Set("accountId", 33)
 		c.Set("userId", 109)
 	})
-	r.POST("/api/v1/33/contacts", c.CreateContact)
+	r.POST("/api/v3/33/contacts", c.CreateContact)
 	r.ServeHTTP(w, req)
 
 	// Test results
@@ -298,7 +298,7 @@ func TestCreateContact03(t *testing.T) {
 	postStr, _ := json.Marshal(post)
 
 	// Setup request
-	req, _ := http.NewRequest("POST", "/api/v1/33/contacts", bytes.NewBuffer(postStr))
+	req, _ := http.NewRequest("POST", "/api/v3/33/contacts", bytes.NewBuffer(postStr))
 
 	// Setup writer.
 	w := httptest.NewRecorder()
@@ -310,7 +310,7 @@ func TestCreateContact03(t *testing.T) {
 		c.Set("accountId", 33)
 		c.Set("userId", 109)
 	})
-	r.POST("/api/v1/33/contacts", c.CreateContact)
+	r.POST("/api/v3/33/contacts", c.CreateContact)
 	r.ServeHTTP(w, req)
 
 	// Test results
@@ -337,7 +337,7 @@ func TestCreateContact04(t *testing.T) {
 	postStr, _ := json.Marshal(post)
 
 	// Setup request
-	req, _ := http.NewRequest("POST", "/api/v1/33/contacts", bytes.NewBuffer(postStr))
+	req, _ := http.NewRequest("POST", "/api/v3/33/contacts", bytes.NewBuffer(postStr))
 
 	// Setup writer.
 	w := httptest.NewRecorder()
@@ -349,7 +349,7 @@ func TestCreateContact04(t *testing.T) {
 		c.Set("accountId", 33)
 		c.Set("userId", 109)
 	})
-	r.POST("/api/v1/33/contacts", c.CreateContact)
+	r.POST("/api/v3/33/contacts", c.CreateContact)
 	r.ServeHTTP(w, req)
 
 	// Grab result and convert to strut
@@ -408,7 +408,7 @@ func TestCreateContact05(t *testing.T) {
 	postStr, _ := json.Marshal(post)
 
 	// Setup request
-	req, _ := http.NewRequest("POST", "/api/v1/33/contacts", bytes.NewBuffer(postStr))
+	req, _ := http.NewRequest("POST", "/api/v3/33/contacts", bytes.NewBuffer(postStr))
 
 	// Setup writer.
 	w := httptest.NewRecorder()
@@ -420,7 +420,7 @@ func TestCreateContact05(t *testing.T) {
 		c.Set("accountId", 33)
 		c.Set("userId", 109)
 	})
-	r.POST("/api/v1/33/contacts", c.CreateContact)
+	r.POST("/api/v3/33/contacts", c.CreateContact)
 	r.ServeHTTP(w, req)
 
 	// Grab result and convert to strut
@@ -497,7 +497,7 @@ func TestUpdateContact01(t *testing.T) {
 	putStr, _ := json.Marshal(conPut)
 
 	// Setup request
-	req, _ := http.NewRequest("PUT", "/api/v1/33/contacts/3", bytes.NewBuffer(putStr))
+	req, _ := http.NewRequest("PUT", "/api/v3/33/contacts/3", bytes.NewBuffer(putStr))
 
 	// Setup writer.
 	w := httptest.NewRecorder()
@@ -509,7 +509,7 @@ func TestUpdateContact01(t *testing.T) {
 		c.Set("accountId", 33)
 		c.Set("userId", 109)
 	})
-	r.PUT("/api/v1/:account/contacts/:id", c.UpdateContact)
+	r.PUT("/api/v3/:account/contacts/:id", c.UpdateContact)
 	r.ServeHTTP(w, req)
 
 	// Grab result and convert to strut
@@ -560,7 +560,7 @@ func TestUpdateContact02(t *testing.T) {
 	putStr, _ := json.Marshal(conPut)
 
 	// Setup request
-	req, _ := http.NewRequest("PUT", "/api/v1/33/contacts/3", bytes.NewBuffer(putStr))
+	req, _ := http.NewRequest("PUT", "/api/v3/33/contacts/3", bytes.NewBuffer(putStr))
 
 	// Setup writer.
 	w := httptest.NewRecorder()
@@ -572,7 +572,7 @@ func TestUpdateContact02(t *testing.T) {
 		c.Set("accountId", 33)
 		c.Set("userId", 109)
 	})
-	r.PUT("/api/v1/:account/contacts/:id", c.UpdateContact)
+	r.PUT("/api/v3/:account/contacts/:id", c.UpdateContact)
 	r.ServeHTTP(w, req)
 
 	// Test results
@@ -607,7 +607,7 @@ func TestDeleteContact01(t *testing.T) {
 	st.Expect(t, con1.Id, uint(5))
 
 	// Setup request
-	req, _ := http.NewRequest("DELETE", "/api/v1/33/contacts/5", nil)
+	req, _ := http.NewRequest("DELETE", "/api/v3/33/contacts/5", nil)
 
 	// Setup writer.
 	w := httptest.NewRecorder()
@@ -619,7 +619,7 @@ func TestDeleteContact01(t *testing.T) {
 		c.Set("accountId", 33)
 		c.Set("userId", 109)
 	})
-	r.DELETE("/api/v1/:account/contacts/:id", c.DeleteContact)
+	r.DELETE("/api/v3/:account/contacts/:id", c.DeleteContact)
 	r.ServeHTTP(w, req)
 
 	// Test results
@@ -667,7 +667,7 @@ func TestDeleteContact02(t *testing.T) {
 	db.Save(&models.Ledger{AccountId: 33, ContactId: 5})
 
 	// Setup request
-	req, _ := http.NewRequest("DELETE", "/api/v1/33/contacts/5", nil)
+	req, _ := http.NewRequest("DELETE", "/api/v3/33/contacts/5", nil)
 
 	// Setup writer.
 	w := httptest.NewRecorder()
@@ -679,7 +679,7 @@ func TestDeleteContact02(t *testing.T) {
 		c.Set("accountId", 33)
 		c.Set("userId", 109)
 	})
-	r.DELETE("/api/v1/:account/contacts/:id", c.DeleteContact)
+	r.DELETE("/api/v3/:account/contacts/:id", c.DeleteContact)
 	r.ServeHTTP(w, req)
 
 	// Test results
@@ -709,7 +709,7 @@ func TestDeleteContact03(t *testing.T) {
 	db.Save(&models.Contact{AccountId: 33, Name: "Dope Dealer, LLC", FirstName: "", LastName: ""})
 
 	// Setup request
-	req, _ := http.NewRequest("DELETE", "/api/v1/33/contacts/1", nil)
+	req, _ := http.NewRequest("DELETE", "/api/v3/33/contacts/1", nil)
 
 	// Setup writer.
 	w := httptest.NewRecorder()
@@ -721,7 +721,7 @@ func TestDeleteContact03(t *testing.T) {
 		c.Set("accountId", 33)
 		c.Set("userId", 109)
 	})
-	r.DELETE("/api/v1/:account/contacts/:id", c.DeleteContact)
+	r.DELETE("/api/v3/:account/contacts/:id", c.DeleteContact)
 	r.ServeHTTP(w, req)
 
 	// Test results

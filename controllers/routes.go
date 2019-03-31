@@ -20,7 +20,7 @@ func (t *Controller) DoRoutes(r *gin.Engine) {
 
 	// --------- API V1 sub-routes ----------- //
 
-	apiV1 := r.Group("/api/v1")
+	apiV1 := r.Group("/api/v3")
 
 	apiV1.Use(t.AuthMiddleware())
 	{

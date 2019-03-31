@@ -43,7 +43,7 @@ func TestGetCategories01(t *testing.T) {
 	db.Save(&models.Category{AccountId: 33, Type: "1", Name: "Xyz"})
 
 	// Setup request
-	req, _ := http.NewRequest("GET", "/api/v1/33/categories", nil)
+	req, _ := http.NewRequest("GET", "/api/v3/33/categories", nil)
 
 	// Setup writer.
 	w := httptest.NewRecorder()
@@ -55,7 +55,7 @@ func TestGetCategories01(t *testing.T) {
 		c.Set("accountId", 33)
 		c.Set("userId", 109)
 	})
-	r.GET("/api/v1/:account/categories", c.GetCategories)
+	r.GET("/api/v3/:account/categories", c.GetCategories)
 	r.ServeHTTP(w, req)
 
 	// Grab result and convert to strut
@@ -106,7 +106,7 @@ func TestGetCategories02(t *testing.T) {
 	db.Save(&models.Category{AccountId: 33, Type: "1", Name: "Xyz"})
 
 	// Setup request
-	req, _ := http.NewRequest("GET", "/api/v1/33/categories?sort=desc", nil)
+	req, _ := http.NewRequest("GET", "/api/v3/33/categories?sort=desc", nil)
 
 	// Setup writer.
 	w := httptest.NewRecorder()
@@ -118,7 +118,7 @@ func TestGetCategories02(t *testing.T) {
 		c.Set("accountId", 33)
 		c.Set("userId", 109)
 	})
-	r.GET("/api/v1/:account/categories", c.GetCategories)
+	r.GET("/api/v3/:account/categories", c.GetCategories)
 	r.ServeHTTP(w, req)
 
 	// Grab result and convert to strut
@@ -169,7 +169,7 @@ func TestGetCategories03(t *testing.T) {
 	db.Save(&models.Category{AccountId: 33, Type: "1", Name: "Xyz"})
 
 	// Setup request
-	req, _ := http.NewRequest("GET", "/api/v1/33/categories?sort=desc&order=CategoriesId", nil)
+	req, _ := http.NewRequest("GET", "/api/v3/33/categories?sort=desc&order=CategoriesId", nil)
 
 	// Setup writer.
 	w := httptest.NewRecorder()
@@ -181,7 +181,7 @@ func TestGetCategories03(t *testing.T) {
 		c.Set("accountId", 33)
 		c.Set("userId", 109)
 	})
-	r.GET("/api/v1/:account/categories", c.GetCategories)
+	r.GET("/api/v3/:account/categories", c.GetCategories)
 	r.ServeHTTP(w, req)
 
 	// Grab result and convert to strut
@@ -226,7 +226,7 @@ func TestGetCategories04(t *testing.T) {
 	db.Save(&models.Category{AccountId: 33, Type: "1", Name: "Xyz"})
 
 	// Setup request
-	req, _ := http.NewRequest("GET", "/api/v1/33/categories?sort=desc&order=FailedId", nil)
+	req, _ := http.NewRequest("GET", "/api/v3/33/categories?sort=desc&order=FailedId", nil)
 
 	// Setup writer.
 	w := httptest.NewRecorder()
@@ -238,7 +238,7 @@ func TestGetCategories04(t *testing.T) {
 		c.Set("accountId", 33)
 		c.Set("userId", 109)
 	})
-	r.GET("/api/v1/:account/categories", c.GetCategories)
+	r.GET("/api/v3/:account/categories", c.GetCategories)
 	r.ServeHTTP(w, req)
 
 	// Test results
@@ -267,7 +267,7 @@ func TestGetCategories05(t *testing.T) {
 	db.Save(&models.Category{AccountId: 33, Type: "1", Name: "Xyz"})
 
 	// Setup request
-	req, _ := http.NewRequest("GET", "/api/v1/33/categories?type=income", nil)
+	req, _ := http.NewRequest("GET", "/api/v3/33/categories?type=income", nil)
 
 	// Setup writer.
 	w := httptest.NewRecorder()
@@ -279,7 +279,7 @@ func TestGetCategories05(t *testing.T) {
 		c.Set("accountId", 33)
 		c.Set("userId", 109)
 	})
-	r.GET("/api/v1/:account/categories", c.GetCategories)
+	r.GET("/api/v3/:account/categories", c.GetCategories)
 	r.ServeHTTP(w, req)
 
 	// Grab result and convert to strut
@@ -317,7 +317,7 @@ func TestGetCategory01(t *testing.T) {
 	db.Save(&models.Category{AccountId: 33, Type: "1", Name: "Category #3"})
 
 	// Setup request
-	req, _ := http.NewRequest("GET", "/api/v1/33/categories/2", nil)
+	req, _ := http.NewRequest("GET", "/api/v3/33/categories/2", nil)
 
 	// Setup writer.
 	w := httptest.NewRecorder()
@@ -329,7 +329,7 @@ func TestGetCategory01(t *testing.T) {
 		c.Set("accountId", 33)
 		c.Set("userId", 109)
 	})
-	r.GET("/api/v1/:account/categories/:id", c.GetCategory)
+	r.GET("/api/v3/:account/categories/:id", c.GetCategory)
 	r.ServeHTTP(w, req)
 
 	// Grab result and convert to strut
@@ -361,7 +361,7 @@ func TestGetCategory02(t *testing.T) {
 	db.Save(&models.Category{AccountId: 33, Type: "1", Name: "Category #3"})
 
 	// Setup request
-	req, _ := http.NewRequest("GET", "/api/v1/33/categories/2", nil)
+	req, _ := http.NewRequest("GET", "/api/v3/33/categories/2", nil)
 
 	// Setup writer.
 	w := httptest.NewRecorder()
@@ -373,7 +373,7 @@ func TestGetCategory02(t *testing.T) {
 		c.Set("accountId", 33)
 		c.Set("userId", 109)
 	})
-	r.GET("/api/v1/:account/categories/:id", c.GetCategory)
+	r.GET("/api/v3/:account/categories/:id", c.GetCategory)
 	r.ServeHTTP(w, req)
 
 	// Test results
@@ -400,7 +400,7 @@ func TestCreateCategory01(t *testing.T) {
 	postStr, _ := json.Marshal(catPost)
 
 	// Setup request
-	req, _ := http.NewRequest("POST", "/api/v1/33/categories", bytes.NewBuffer(postStr))
+	req, _ := http.NewRequest("POST", "/api/v3/33/categories", bytes.NewBuffer(postStr))
 
 	// Setup writer.
 	w := httptest.NewRecorder()
@@ -412,7 +412,7 @@ func TestCreateCategory01(t *testing.T) {
 		c.Set("accountId", 33)
 		c.Set("userId", 109)
 	})
-	r.POST("/api/v1/:account/categories", c.CreateCategory)
+	r.POST("/api/v3/:account/categories", c.CreateCategory)
 	r.ServeHTTP(w, req)
 
 	// Grab result and convert to strut
@@ -452,7 +452,7 @@ func TestCreateCategory02(t *testing.T) {
 	postStr, _ := json.Marshal(catPost)
 
 	// Setup request
-	req, _ := http.NewRequest("POST", "/api/v1/33/categories", bytes.NewBuffer(postStr))
+	req, _ := http.NewRequest("POST", "/api/v3/33/categories", bytes.NewBuffer(postStr))
 
 	// Setup writer.
 	w := httptest.NewRecorder()
@@ -464,7 +464,7 @@ func TestCreateCategory02(t *testing.T) {
 		c.Set("accountId", 33)
 		c.Set("userId", 109)
 	})
-	r.POST("/api/v1/:account/categories", c.CreateCategory)
+	r.POST("/api/v3/:account/categories", c.CreateCategory)
 	r.ServeHTTP(w, req)
 
 	// Grab result and convert to strut
@@ -507,7 +507,7 @@ func TestCreateCategory03(t *testing.T) {
 	postStr, _ := json.Marshal(catPost)
 
 	// Setup request
-	req, _ := http.NewRequest("POST", "/api/v1/33/categories", bytes.NewBuffer(postStr))
+	req, _ := http.NewRequest("POST", "/api/v3/33/categories", bytes.NewBuffer(postStr))
 
 	// Setup writer.
 	w := httptest.NewRecorder()
@@ -519,7 +519,7 @@ func TestCreateCategory03(t *testing.T) {
 		c.Set("accountId", 33)
 		c.Set("userId", 109)
 	})
-	r.POST("/api/v1/:account/categories", c.CreateCategory)
+	r.POST("/api/v3/:account/categories", c.CreateCategory)
 	r.ServeHTTP(w, req)
 
 	// Test results
@@ -549,7 +549,7 @@ func TestCreateCategory04(t *testing.T) {
 	postStr, _ := json.Marshal(catPost)
 
 	// Setup request
-	req, _ := http.NewRequest("POST", "/api/v1/33/categories", bytes.NewBuffer(postStr))
+	req, _ := http.NewRequest("POST", "/api/v3/33/categories", bytes.NewBuffer(postStr))
 
 	// Setup writer.
 	w := httptest.NewRecorder()
@@ -561,7 +561,7 @@ func TestCreateCategory04(t *testing.T) {
 		c.Set("accountId", 33)
 		c.Set("userId", 109)
 	})
-	r.POST("/api/v1/:account/categories", c.CreateCategory)
+	r.POST("/api/v3/:account/categories", c.CreateCategory)
 	r.ServeHTTP(w, req)
 
 	// Test results
@@ -591,7 +591,7 @@ func TestCreateCategory05(t *testing.T) {
 	postStr, _ := json.Marshal(catPost)
 
 	// Setup request
-	req, _ := http.NewRequest("POST", "/api/v1/33/categories", bytes.NewBuffer(postStr))
+	req, _ := http.NewRequest("POST", "/api/v3/33/categories", bytes.NewBuffer(postStr))
 
 	// Setup writer.
 	w := httptest.NewRecorder()
@@ -603,7 +603,7 @@ func TestCreateCategory05(t *testing.T) {
 		c.Set("accountId", 33)
 		c.Set("userId", 109)
 	})
-	r.POST("/api/v1/:account/categories", c.CreateCategory)
+	r.POST("/api/v3/:account/categories", c.CreateCategory)
 	r.ServeHTTP(w, req)
 
 	// Test results
@@ -630,7 +630,7 @@ func TestCreateCategory06(t *testing.T) {
 	postStr, _ := json.Marshal(catPost)
 
 	// Setup request
-	req, _ := http.NewRequest("POST", "/api/v1/33/categories", bytes.NewBuffer(postStr))
+	req, _ := http.NewRequest("POST", "/api/v3/33/categories", bytes.NewBuffer(postStr))
 
 	// Setup writer.
 	w := httptest.NewRecorder()
@@ -642,7 +642,7 @@ func TestCreateCategory06(t *testing.T) {
 		c.Set("accountId", 33)
 		c.Set("userId", 109)
 	})
-	r.POST("/api/v1/:account/categories", c.CreateCategory)
+	r.POST("/api/v3/:account/categories", c.CreateCategory)
 	r.ServeHTTP(w, req)
 
 	// Test results
@@ -669,7 +669,7 @@ func TestCreateCategory07(t *testing.T) {
 	postStr, _ := json.Marshal(catPost)
 
 	// Setup request
-	req, _ := http.NewRequest("POST", "/api/v1/33/categories", bytes.NewBuffer(postStr))
+	req, _ := http.NewRequest("POST", "/api/v3/33/categories", bytes.NewBuffer(postStr))
 
 	// Setup writer.
 	w := httptest.NewRecorder()
@@ -681,7 +681,7 @@ func TestCreateCategory07(t *testing.T) {
 		c.Set("accountId", 33)
 		c.Set("userId", 109)
 	})
-	r.POST("/api/v1/:account/categories", c.CreateCategory)
+	r.POST("/api/v3/:account/categories", c.CreateCategory)
 	r.ServeHTTP(w, req)
 
 	// Test results
@@ -708,7 +708,7 @@ func TestCreateCategory08(t *testing.T) {
 	postStr, _ := json.Marshal(catPost)
 
 	// Setup request
-	req, _ := http.NewRequest("POST", "/api/v1/33/categories", bytes.NewBuffer(postStr))
+	req, _ := http.NewRequest("POST", "/api/v3/33/categories", bytes.NewBuffer(postStr))
 
 	// Setup writer.
 	w := httptest.NewRecorder()
@@ -720,7 +720,7 @@ func TestCreateCategory08(t *testing.T) {
 		c.Set("accountId", 33)
 		c.Set("userId", 109)
 	})
-	r.POST("/api/v1/:account/categories", c.CreateCategory)
+	r.POST("/api/v3/:account/categories", c.CreateCategory)
 	r.ServeHTTP(w, req)
 
 	// Test results
@@ -750,7 +750,7 @@ func TestCreateCategory09(t *testing.T) {
 	postStr, _ := json.Marshal(catPost)
 
 	// Setup request
-	req, _ := http.NewRequest("POST", "/api/v1/33/categories", bytes.NewBuffer(postStr))
+	req, _ := http.NewRequest("POST", "/api/v3/33/categories", bytes.NewBuffer(postStr))
 
 	// Setup writer.
 	w := httptest.NewRecorder()
@@ -762,7 +762,7 @@ func TestCreateCategory09(t *testing.T) {
 		c.Set("accountId", 33)
 		c.Set("userId", 109)
 	})
-	r.POST("/api/v1/:account/categories", c.CreateCategory)
+	r.POST("/api/v3/:account/categories", c.CreateCategory)
 	r.ServeHTTP(w, req)
 
 	// Grab result and convert to strut
@@ -798,7 +798,7 @@ func TestUpdateCategory01(t *testing.T) {
 	putStr, _ := json.Marshal(catPut)
 
 	// Setup request
-	req, _ := http.NewRequest("PUT", "/api/v1/33/categories/1", bytes.NewBuffer(putStr))
+	req, _ := http.NewRequest("PUT", "/api/v3/33/categories/1", bytes.NewBuffer(putStr))
 
 	// Setup writer.
 	w := httptest.NewRecorder()
@@ -810,7 +810,7 @@ func TestUpdateCategory01(t *testing.T) {
 		c.Set("accountId", 33)
 		c.Set("userId", 109)
 	})
-	r.PUT("/api/v1/:account/categories/:id", c.UpdateCategory)
+	r.PUT("/api/v3/:account/categories/:id", c.UpdateCategory)
 	r.ServeHTTP(w, req)
 
 	// Grab result and convert to strut
@@ -854,7 +854,7 @@ func TestUpdateCategory02(t *testing.T) {
 	putStr, _ := json.Marshal(catPut)
 
 	// Setup request
-	req, _ := http.NewRequest("PUT", "/api/v1/33/categories/1", bytes.NewBuffer(putStr))
+	req, _ := http.NewRequest("PUT", "/api/v3/33/categories/1", bytes.NewBuffer(putStr))
 
 	// Setup writer.
 	w := httptest.NewRecorder()
@@ -866,7 +866,7 @@ func TestUpdateCategory02(t *testing.T) {
 		c.Set("accountId", 33)
 		c.Set("userId", 109)
 	})
-	r.PUT("/api/v1/:account/categories/:id", c.UpdateCategory)
+	r.PUT("/api/v3/:account/categories/:id", c.UpdateCategory)
 	r.ServeHTTP(w, req)
 
 	// Test results
@@ -897,7 +897,7 @@ func TestUpdateCategory03(t *testing.T) {
 	putStr, _ := json.Marshal(catPut)
 
 	// Setup request
-	req, _ := http.NewRequest("PUT", "/api/v1/33/categories/2", bytes.NewBuffer(putStr))
+	req, _ := http.NewRequest("PUT", "/api/v3/33/categories/2", bytes.NewBuffer(putStr))
 
 	// Setup writer.
 	w := httptest.NewRecorder()
@@ -909,7 +909,7 @@ func TestUpdateCategory03(t *testing.T) {
 		c.Set("accountId", 33)
 		c.Set("userId", 109)
 	})
-	r.PUT("/api/v1/:account/categories/:id", c.UpdateCategory)
+	r.PUT("/api/v3/:account/categories/:id", c.UpdateCategory)
 	r.ServeHTTP(w, req)
 
 	// Grab result and convert to strut
@@ -954,7 +954,7 @@ func TestUpdateCategory04(t *testing.T) {
 	putStr, _ := json.Marshal(catPut)
 
 	// Setup request
-	req, _ := http.NewRequest("PUT", "/api/v1/33/categories/2", bytes.NewBuffer(putStr))
+	req, _ := http.NewRequest("PUT", "/api/v3/33/categories/2", bytes.NewBuffer(putStr))
 
 	// Setup writer.
 	w := httptest.NewRecorder()
@@ -966,7 +966,7 @@ func TestUpdateCategory04(t *testing.T) {
 		c.Set("accountId", 33)
 		c.Set("userId", 109)
 	})
-	r.PUT("/api/v1/:account/categories/:id", c.UpdateCategory)
+	r.PUT("/api/v3/:account/categories/:id", c.UpdateCategory)
 	r.ServeHTTP(w, req)
 
 	// Grab result and convert to strut
@@ -1011,7 +1011,7 @@ func TestUpdateCategory05(t *testing.T) {
 	putStr, _ := json.Marshal(catPut)
 
 	// Setup request
-	req, _ := http.NewRequest("PUT", "/api/v1/33/categories/1", bytes.NewBuffer(putStr))
+	req, _ := http.NewRequest("PUT", "/api/v3/33/categories/1", bytes.NewBuffer(putStr))
 
 	// Setup writer.
 	w := httptest.NewRecorder()
@@ -1023,7 +1023,7 @@ func TestUpdateCategory05(t *testing.T) {
 		c.Set("accountId", 33)
 		c.Set("userId", 109)
 	})
-	r.PUT("/api/v1/:account/categories/:id", c.UpdateCategory)
+	r.PUT("/api/v3/:account/categories/:id", c.UpdateCategory)
 	r.ServeHTTP(w, req)
 
 	// Test results
@@ -1054,7 +1054,7 @@ func TestUpdateCategory06(t *testing.T) {
 	putStr, _ := json.Marshal(catPut)
 
 	// Setup request
-	req, _ := http.NewRequest("PUT", "/api/v1/33/categories/1", bytes.NewBuffer(putStr))
+	req, _ := http.NewRequest("PUT", "/api/v3/33/categories/1", bytes.NewBuffer(putStr))
 
 	// Setup writer.
 	w := httptest.NewRecorder()
@@ -1066,7 +1066,7 @@ func TestUpdateCategory06(t *testing.T) {
 		c.Set("accountId", 33)
 		c.Set("userId", 109)
 	})
-	r.PUT("/api/v1/:account/categories/:id", c.UpdateCategory)
+	r.PUT("/api/v3/:account/categories/:id", c.UpdateCategory)
 	r.ServeHTTP(w, req)
 
 	// Test results
@@ -1092,7 +1092,7 @@ func TestDeleteCategory01(t *testing.T) {
 	db.Save(&models.Category{AccountId: 33, Type: "1", Name: "Category #3"})
 
 	// Setup request
-	req, _ := http.NewRequest("DELETE", "/api/v1/33/categories/2", nil)
+	req, _ := http.NewRequest("DELETE", "/api/v3/33/categories/2", nil)
 
 	// Setup writer.
 	w := httptest.NewRecorder()
@@ -1104,7 +1104,7 @@ func TestDeleteCategory01(t *testing.T) {
 		c.Set("accountId", 33)
 		c.Set("userId", 109)
 	})
-	r.DELETE("/api/v1/:account/categories/:id", c.DeleteCategory)
+	r.DELETE("/api/v3/:account/categories/:id", c.DeleteCategory)
 	r.ServeHTTP(w, req)
 
 	// Test results
@@ -1141,7 +1141,7 @@ func TestDeleteCategory02(t *testing.T) {
 	db.Save(&models.Ledger{AccountId: 33, CategoryId: 2})
 
 	// Setup request
-	req, _ := http.NewRequest("DELETE", "/api/v1/33/categories/2", nil)
+	req, _ := http.NewRequest("DELETE", "/api/v3/33/categories/2", nil)
 
 	// Setup writer.
 	w := httptest.NewRecorder()
@@ -1153,7 +1153,7 @@ func TestDeleteCategory02(t *testing.T) {
 		c.Set("accountId", 33)
 		c.Set("userId", 109)
 	})
-	r.DELETE("/api/v1/:account/categories/:id", c.DeleteCategory)
+	r.DELETE("/api/v3/:account/categories/:id", c.DeleteCategory)
 	r.ServeHTTP(w, req)
 
 	// Test results

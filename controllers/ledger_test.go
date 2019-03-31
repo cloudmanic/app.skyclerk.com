@@ -56,7 +56,7 @@ func TestGetLedgers01(t *testing.T) {
 	}
 
 	// Setup request
-	req, _ := http.NewRequest("GET", "/api/v1/33/ledger", nil)
+	req, _ := http.NewRequest("GET", "/api/v3/33/ledger", nil)
 
 	// Setup writer.
 	w := httptest.NewRecorder()
@@ -68,7 +68,7 @@ func TestGetLedgers01(t *testing.T) {
 		c.Set("accountId", 33)
 		c.Set("userId", uint(109))
 	})
-	r.GET("/api/v1/:account/ledger", c.GetLedgers)
+	r.GET("/api/v3/:account/ledger", c.GetLedgers)
 	r.ServeHTTP(w, req)
 
 	// Grab result and convert to strut
@@ -109,7 +109,7 @@ func TestGetLedgers01(t *testing.T) {
 	// ----------- Test Paging 2 ---------- //
 
 	// Setup request
-	req2, _ := http.NewRequest("GET", "/api/v1/33/ledger?page=2", nil)
+	req2, _ := http.NewRequest("GET", "/api/v3/33/ledger?page=2", nil)
 	w2 := httptest.NewRecorder()
 	r.ServeHTTP(w2, req2)
 
@@ -129,7 +129,7 @@ func TestGetLedgers01(t *testing.T) {
 	// ----------- Test Paging 3 ---------- //
 
 	// Setup request
-	req3, _ := http.NewRequest("GET", "/api/v1/33/ledger?page=3", nil)
+	req3, _ := http.NewRequest("GET", "/api/v3/33/ledger?page=3", nil)
 	w3 := httptest.NewRecorder()
 	r.ServeHTTP(w3, req3)
 
@@ -182,7 +182,7 @@ func TestGetLedger01(t *testing.T) {
 	}
 
 	// Setup request
-	req, _ := http.NewRequest("GET", "/api/v1/33/ledger/15", nil)
+	req, _ := http.NewRequest("GET", "/api/v3/33/ledger/15", nil)
 
 	// Setup writer.
 	w := httptest.NewRecorder()
@@ -194,7 +194,7 @@ func TestGetLedger01(t *testing.T) {
 		c.Set("accountId", 33)
 		c.Set("userId", uint(109))
 	})
-	r.GET("/api/v1/:account/ledger/:id", c.GetLedger)
+	r.GET("/api/v3/:account/ledger/:id", c.GetLedger)
 	r.ServeHTTP(w, req)
 
 	// Grab result and convert to strut
@@ -250,7 +250,7 @@ func TestGetLedger02(t *testing.T) {
 	}
 
 	// Setup request
-	req, _ := http.NewRequest("GET", "/api/v1/33/ledger/5", nil)
+	req, _ := http.NewRequest("GET", "/api/v3/33/ledger/5", nil)
 
 	// Setup writer.
 	w := httptest.NewRecorder()
@@ -262,7 +262,7 @@ func TestGetLedger02(t *testing.T) {
 		c.Set("accountId", 33)
 		c.Set("userId", uint(109))
 	})
-	r.GET("/api/v1/:account/ledger/:id", c.GetLedger)
+	r.GET("/api/v3/:account/ledger/:id", c.GetLedger)
 	r.ServeHTTP(w, req)
 
 	// Test results
@@ -291,7 +291,7 @@ func TestCreateLedger01(t *testing.T) {
 	postStr, _ := json.Marshal(post)
 
 	// Setup request
-	req, _ := http.NewRequest("POST", "/api/v1/33/ledger", bytes.NewBuffer(postStr))
+	req, _ := http.NewRequest("POST", "/api/v3/33/ledger", bytes.NewBuffer(postStr))
 
 	// Setup writer.
 	w := httptest.NewRecorder()
@@ -303,7 +303,7 @@ func TestCreateLedger01(t *testing.T) {
 		c.Set("accountId", 33)
 		c.Set("userId", 109)
 	})
-	r.POST("/api/v1/33/ledger", c.CreateLedger)
+	r.POST("/api/v3/33/ledger", c.CreateLedger)
 	r.ServeHTTP(w, req)
 
 	// Grab result and convert to strut
@@ -361,7 +361,7 @@ func TestCreateLedger02(t *testing.T) {
 	postStr := []byte(`{ "amount": 88.12 }`)
 
 	// Setup request
-	req, _ := http.NewRequest("POST", "/api/v1/33/ledger", bytes.NewBuffer(postStr))
+	req, _ := http.NewRequest("POST", "/api/v3/33/ledger", bytes.NewBuffer(postStr))
 
 	// Setup writer.
 	w := httptest.NewRecorder()
@@ -373,7 +373,7 @@ func TestCreateLedger02(t *testing.T) {
 		c.Set("accountId", 33)
 		c.Set("userId", 109)
 	})
-	r.POST("/api/v1/33/ledger", c.CreateLedger)
+	r.POST("/api/v3/33/ledger", c.CreateLedger)
 	r.ServeHTTP(w, req)
 
 	// Check result
@@ -386,7 +386,7 @@ func TestCreateLedger02(t *testing.T) {
 	postStr = []byte(`{ "amount": 88.12, "date": "2018-08-02" }`)
 
 	// Setup request
-	req, _ = http.NewRequest("POST", "/api/v1/33/ledger", bytes.NewBuffer(postStr))
+	req, _ = http.NewRequest("POST", "/api/v3/33/ledger", bytes.NewBuffer(postStr))
 	w = httptest.NewRecorder()
 	r.ServeHTTP(w, req)
 
@@ -400,7 +400,7 @@ func TestCreateLedger02(t *testing.T) {
 	postStr = []byte(`{ "amount": 88.12, "date": "2018-08-02T08:18:20Z", "category": { "name": "woots" } }`)
 
 	// Setup request
-	req, _ = http.NewRequest("POST", "/api/v1/33/ledger", bytes.NewBuffer(postStr))
+	req, _ = http.NewRequest("POST", "/api/v3/33/ledger", bytes.NewBuffer(postStr))
 	w = httptest.NewRecorder()
 	r.ServeHTTP(w, req)
 
@@ -414,7 +414,7 @@ func TestCreateLedger02(t *testing.T) {
 	postStr = []byte(`{ "amount": 88.12, "date": "2018-08-02T08:18:20Z", "category": { "name": "woots" }, "contact": { "first_name": "Jane", "last_name": "Wells", "name": "ABC Inc." } }`)
 
 	// Setup request
-	req, _ = http.NewRequest("POST", "/api/v1/33/ledger", bytes.NewBuffer(postStr))
+	req, _ = http.NewRequest("POST", "/api/v3/33/ledger", bytes.NewBuffer(postStr))
 	w = httptest.NewRecorder()
 	r.ServeHTTP(w, req)
 
@@ -439,7 +439,7 @@ func TestCreateLedger03(t *testing.T) {
 	postStr := []byte(`{ "amount": 88.12, "date": "2018-08-02T08:18:20Z", "category": { "name": "  woots  ", "type": "  2  " }, "contact": { "first_name": "   Jane  ", "last_name": "  Wells  ", "name": "  ABC Inc.  " } }`)
 
 	// Setup request
-	req, _ := http.NewRequest("POST", "/api/v1/33/ledger", bytes.NewBuffer(postStr))
+	req, _ := http.NewRequest("POST", "/api/v3/33/ledger", bytes.NewBuffer(postStr))
 
 	// Setup writer.
 	w := httptest.NewRecorder()
@@ -451,7 +451,7 @@ func TestCreateLedger03(t *testing.T) {
 		c.Set("accountId", 33)
 		c.Set("userId", 109)
 	})
-	r.POST("/api/v1/33/ledger", c.CreateLedger)
+	r.POST("/api/v3/33/ledger", c.CreateLedger)
 	r.ServeHTTP(w, req)
 
 	// Check result
@@ -497,7 +497,7 @@ func TestCreateLedger04(t *testing.T) {
 	postStr := []byte(`{ "amount": 88.12, "date": "2018-08-02T08:18:20Z", "category": { "name": "` + cat.Name + `", "type": "` + cat.Type + `" }, "contact": { "first_name": "` + con.FirstName + `", "last_name": "` + con.LastName + `", "name": "` + con.Name + `", "email": "` + con.Email + `" } }`)
 
 	// Setup request
-	req, _ := http.NewRequest("POST", "/api/v1/33/ledger", bytes.NewBuffer(postStr))
+	req, _ := http.NewRequest("POST", "/api/v3/33/ledger", bytes.NewBuffer(postStr))
 
 	// Setup writer.
 	w := httptest.NewRecorder()
@@ -509,7 +509,7 @@ func TestCreateLedger04(t *testing.T) {
 		c.Set("accountId", 33)
 		c.Set("userId", 109)
 	})
-	r.POST("/api/v1/33/ledger", c.CreateLedger)
+	r.POST("/api/v3/33/ledger", c.CreateLedger)
 	r.ServeHTTP(w, req)
 
 	// Check result
@@ -566,7 +566,7 @@ func TestUpdateLedger01(t *testing.T) {
 	postStr, _ := json.Marshal(l)
 
 	// Setup request
-	req, _ := http.NewRequest("PUT", "/api/v1/33/ledger/1", bytes.NewBuffer(postStr))
+	req, _ := http.NewRequest("PUT", "/api/v3/33/ledger/1", bytes.NewBuffer(postStr))
 
 	// Setup writer.
 	w := httptest.NewRecorder()
@@ -578,7 +578,7 @@ func TestUpdateLedger01(t *testing.T) {
 		c.Set("accountId", 33)
 		c.Set("userId", 109)
 	})
-	r.PUT("/api/v1/33/ledger/:id", c.UpdateLedger)
+	r.PUT("/api/v3/33/ledger/:id", c.UpdateLedger)
 	r.ServeHTTP(w, req)
 
 	// Grab result and convert to strut
@@ -655,7 +655,7 @@ func TestUpdateLedger02(t *testing.T) {
 	postStr, _ := json.Marshal(l)
 
 	// Setup request
-	req, _ := http.NewRequest("PUT", "/api/v1/33/ledger/1", bytes.NewBuffer(postStr))
+	req, _ := http.NewRequest("PUT", "/api/v3/33/ledger/1", bytes.NewBuffer(postStr))
 
 	// Setup writer.
 	w := httptest.NewRecorder()
@@ -667,7 +667,7 @@ func TestUpdateLedger02(t *testing.T) {
 		c.Set("accountId", 33)
 		c.Set("userId", 109)
 	})
-	r.PUT("/api/v1/33/ledger/:id", c.UpdateLedger)
+	r.PUT("/api/v3/33/ledger/:id", c.UpdateLedger)
 	r.ServeHTTP(w, req)
 
 	// Test results
@@ -706,7 +706,7 @@ func TestUpdateLedger03(t *testing.T) {
 	postStr, _ := json.Marshal(l)
 
 	// Setup request
-	req, _ := http.NewRequest("PUT", "/api/v1/33/ledger/1", bytes.NewBuffer(postStr))
+	req, _ := http.NewRequest("PUT", "/api/v3/33/ledger/1", bytes.NewBuffer(postStr))
 
 	// Setup writer.
 	w := httptest.NewRecorder()
@@ -718,7 +718,7 @@ func TestUpdateLedger03(t *testing.T) {
 		c.Set("accountId", 33)
 		c.Set("userId", 109)
 	})
-	r.PUT("/api/v1/33/ledger/:id", c.UpdateLedger)
+	r.PUT("/api/v3/33/ledger/:id", c.UpdateLedger)
 	r.ServeHTTP(w, req)
 
 	// Test results
@@ -752,7 +752,7 @@ func TestDeleteLedger01(t *testing.T) {
 	st.Expect(t, l1.Id, uint(5))
 
 	// Setup request
-	req, _ := http.NewRequest("DELETE", "/api/v1/33/ledger/5", nil)
+	req, _ := http.NewRequest("DELETE", "/api/v3/33/ledger/5", nil)
 
 	// Setup writer.
 	w := httptest.NewRecorder()
@@ -764,7 +764,7 @@ func TestDeleteLedger01(t *testing.T) {
 		c.Set("accountId", 33)
 		c.Set("userId", 109)
 	})
-	r.DELETE("/api/v1/:account/ledger/:id", c.DeleteLedger)
+	r.DELETE("/api/v3/:account/ledger/:id", c.DeleteLedger)
 	r.ServeHTTP(w, req)
 
 	// Test results
@@ -812,7 +812,7 @@ func TestDeleteLedger02(t *testing.T) {
 	}
 
 	// Setup request
-	req, _ := http.NewRequest("DELETE", "/api/v1/33/ledger/5", nil)
+	req, _ := http.NewRequest("DELETE", "/api/v3/33/ledger/5", nil)
 
 	// Setup writer.
 	w := httptest.NewRecorder()
@@ -824,7 +824,7 @@ func TestDeleteLedger02(t *testing.T) {
 		c.Set("accountId", 33)
 		c.Set("userId", 109)
 	})
-	r.DELETE("/api/v1/:account/ledger/:id", c.DeleteLedger)
+	r.DELETE("/api/v3/:account/ledger/:id", c.DeleteLedger)
 	r.ServeHTTP(w, req)
 
 	// Test results

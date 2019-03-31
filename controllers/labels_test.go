@@ -43,7 +43,7 @@ func TestGetLabels01(t *testing.T) {
 	db.Save(&models.Label{AccountId: 33, Name: "Xyz"})
 
 	// Setup request
-	req, _ := http.NewRequest("GET", "/api/v1/33/labels", nil)
+	req, _ := http.NewRequest("GET", "/api/v3/33/labels", nil)
 
 	// Setup writer.
 	w := httptest.NewRecorder()
@@ -55,7 +55,7 @@ func TestGetLabels01(t *testing.T) {
 		c.Set("accountId", 33)
 		c.Set("userId", uint(109))
 	})
-	r.GET("/api/v1/:account/labels", c.GetLabels)
+	r.GET("/api/v3/:account/labels", c.GetLabels)
 	r.ServeHTTP(w, req)
 
 	// Grab result and convert to strut
@@ -98,7 +98,7 @@ func TestGetLabels02(t *testing.T) {
 	db.Save(&models.Label{AccountId: 33, Name: "Xyz"})
 
 	// Setup request
-	req, _ := http.NewRequest("GET", "/api/v1/33/labels?sort=desc", nil)
+	req, _ := http.NewRequest("GET", "/api/v3/33/labels?sort=desc", nil)
 
 	// Setup writer.
 	w := httptest.NewRecorder()
@@ -110,7 +110,7 @@ func TestGetLabels02(t *testing.T) {
 		c.Set("accountId", 33)
 		c.Set("userId", uint(109))
 	})
-	r.GET("/api/v1/:account/labels", c.GetLabels)
+	r.GET("/api/v3/:account/labels", c.GetLabels)
 	r.ServeHTTP(w, req)
 
 	// Grab result and convert to strut
@@ -153,7 +153,7 @@ func TestGetLabels03(t *testing.T) {
 	db.Save(&models.Label{AccountId: 33, Name: "Xyz"})
 
 	// Setup request
-	req, _ := http.NewRequest("GET", "/api/v1/33/labels?sort=desc&order=LabelsId", nil)
+	req, _ := http.NewRequest("GET", "/api/v3/33/labels?sort=desc&order=LabelsId", nil)
 
 	// Setup writer.
 	w := httptest.NewRecorder()
@@ -165,7 +165,7 @@ func TestGetLabels03(t *testing.T) {
 		c.Set("accountId", 33)
 		c.Set("userId", uint(109))
 	})
-	r.GET("/api/v1/:account/labels", c.GetLabels)
+	r.GET("/api/v3/:account/labels", c.GetLabels)
 	r.ServeHTTP(w, req)
 
 	// Grab result and convert to strut
@@ -208,7 +208,7 @@ func TestGetLabels04(t *testing.T) {
 	db.Save(&models.Label{AccountId: 33, Name: "Xyz"})
 
 	// Setup request
-	req, _ := http.NewRequest("GET", "/api/v1/33/labels?sort=asc&order=LabelsId", nil)
+	req, _ := http.NewRequest("GET", "/api/v3/33/labels?sort=asc&order=LabelsId", nil)
 
 	// Setup writer.
 	w := httptest.NewRecorder()
@@ -220,7 +220,7 @@ func TestGetLabels04(t *testing.T) {
 		c.Set("accountId", 33)
 		c.Set("userId", uint(109))
 	})
-	r.GET("/api/v1/:account/labels", c.GetLabels)
+	r.GET("/api/v3/:account/labels", c.GetLabels)
 	r.ServeHTTP(w, req)
 
 	// Grab result and convert to strut
@@ -263,7 +263,7 @@ func TestGetLabels05(t *testing.T) {
 	db.Save(&models.Label{AccountId: 33, Name: "Xyz"})
 
 	// Setup request
-	req, _ := http.NewRequest("GET", "/api/v1/33/labels?sort=asc&order=FailedId", nil)
+	req, _ := http.NewRequest("GET", "/api/v3/33/labels?sort=asc&order=FailedId", nil)
 
 	// Setup writer.
 	w := httptest.NewRecorder()
@@ -275,7 +275,7 @@ func TestGetLabels05(t *testing.T) {
 		c.Set("accountId", 33)
 		c.Set("userId", uint(109))
 	})
-	r.GET("/api/v1/:account/labels", c.GetLabels)
+	r.GET("/api/v3/:account/labels", c.GetLabels)
 	r.ServeHTTP(w, req)
 
 	// Test results
@@ -304,7 +304,7 @@ func TestGetLabel01(t *testing.T) {
 	db.Save(&models.Label{AccountId: 33, Name: "Xyz"})
 
 	// Setup request
-	req, _ := http.NewRequest("GET", "/api/v1/33/labels/3", nil)
+	req, _ := http.NewRequest("GET", "/api/v3/33/labels/3", nil)
 
 	// Setup writer.
 	w := httptest.NewRecorder()
@@ -316,7 +316,7 @@ func TestGetLabel01(t *testing.T) {
 		c.Set("accountId", 33)
 		c.Set("userId", 109)
 	})
-	r.GET("/api/v1/:account/labels/:id", c.GetLabel)
+	r.GET("/api/v3/:account/labels/:id", c.GetLabel)
 	r.ServeHTTP(w, req)
 
 	// Grab result and convert to strut
@@ -351,7 +351,7 @@ func TestGetLabel02(t *testing.T) {
 	db.Save(&models.Label{AccountId: 33, Name: "Xyz"})
 
 	// Setup request
-	req, _ := http.NewRequest("GET", "/api/v1/33/labels/2", nil)
+	req, _ := http.NewRequest("GET", "/api/v3/33/labels/2", nil)
 
 	// Setup writer.
 	w := httptest.NewRecorder()
@@ -363,7 +363,7 @@ func TestGetLabel02(t *testing.T) {
 		c.Set("accountId", 33)
 		c.Set("userId", 109)
 	})
-	r.GET("/api/v1/:account/labels/:id", c.GetLabel)
+	r.GET("/api/v3/:account/labels/:id", c.GetLabel)
 	r.ServeHTTP(w, req)
 
 	// Test results
@@ -390,7 +390,7 @@ func TestCreateLabel01(t *testing.T) {
 	postStr, _ := json.Marshal(lPost)
 
 	// Setup request
-	req, _ := http.NewRequest("POST", "/api/v1/33/labels", bytes.NewBuffer(postStr))
+	req, _ := http.NewRequest("POST", "/api/v3/33/labels", bytes.NewBuffer(postStr))
 
 	// Setup writer.
 	w := httptest.NewRecorder()
@@ -402,7 +402,7 @@ func TestCreateLabel01(t *testing.T) {
 		c.Set("accountId", 33)
 		c.Set("userId", 109)
 	})
-	r.POST("/api/v1/:account/labels", c.CreateLabel)
+	r.POST("/api/v3/:account/labels", c.CreateLabel)
 	r.ServeHTTP(w, req)
 
 	// Grab result and convert to strut
@@ -443,7 +443,7 @@ func TestCreateLabel02(t *testing.T) {
 	postStr, _ := json.Marshal(lPost)
 
 	// Setup request
-	req, _ := http.NewRequest("POST", "/api/v1/33/labels", bytes.NewBuffer(postStr))
+	req, _ := http.NewRequest("POST", "/api/v3/33/labels", bytes.NewBuffer(postStr))
 
 	// Setup writer.
 	w := httptest.NewRecorder()
@@ -455,7 +455,7 @@ func TestCreateLabel02(t *testing.T) {
 		c.Set("accountId", 33)
 		c.Set("userId", 109)
 	})
-	r.POST("/api/v1/:account/labels", c.CreateLabel)
+	r.POST("/api/v3/:account/labels", c.CreateLabel)
 	r.ServeHTTP(w, req)
 
 	// Test results
@@ -482,7 +482,7 @@ func TestCreateLabel03(t *testing.T) {
 	postStr, _ := json.Marshal(lPost)
 
 	// Setup request
-	req, _ := http.NewRequest("POST", "/api/v1/33/labels", bytes.NewBuffer(postStr))
+	req, _ := http.NewRequest("POST", "/api/v3/33/labels", bytes.NewBuffer(postStr))
 
 	// Setup writer.
 	w := httptest.NewRecorder()
@@ -494,7 +494,7 @@ func TestCreateLabel03(t *testing.T) {
 		c.Set("accountId", 33)
 		c.Set("userId", 109)
 	})
-	r.POST("/api/v1/:account/labels", c.CreateLabel)
+	r.POST("/api/v3/:account/labels", c.CreateLabel)
 	r.ServeHTTP(w, req)
 
 	// Grab result and convert to strut
@@ -535,7 +535,7 @@ func TestCreateLabel04(t *testing.T) {
 	postStr, _ := json.Marshal(lPost)
 
 	// Setup request
-	req, _ := http.NewRequest("POST", "/api/v1/33/labels", bytes.NewBuffer(postStr))
+	req, _ := http.NewRequest("POST", "/api/v3/33/labels", bytes.NewBuffer(postStr))
 
 	// Setup writer.
 	w := httptest.NewRecorder()
@@ -547,7 +547,7 @@ func TestCreateLabel04(t *testing.T) {
 		c.Set("accountId", 33)
 		c.Set("userId", 109)
 	})
-	r.POST("/api/v1/:account/labels", c.CreateLabel)
+	r.POST("/api/v3/:account/labels", c.CreateLabel)
 	r.ServeHTTP(w, req)
 
 	// Test results
@@ -574,7 +574,7 @@ func TestCreateLabel05(t *testing.T) {
 	postStr, _ := json.Marshal(lPost)
 
 	// Setup request
-	req, _ := http.NewRequest("POST", "/api/v1/33/labels", bytes.NewBuffer(postStr))
+	req, _ := http.NewRequest("POST", "/api/v3/33/labels", bytes.NewBuffer(postStr))
 
 	// Setup writer.
 	w := httptest.NewRecorder()
@@ -586,7 +586,7 @@ func TestCreateLabel05(t *testing.T) {
 		c.Set("accountId", 33)
 		c.Set("userId", 109)
 	})
-	r.POST("/api/v1/:account/labels", c.CreateLabel)
+	r.POST("/api/v3/:account/labels", c.CreateLabel)
 	r.ServeHTTP(w, req)
 
 	// Test results
@@ -616,7 +616,7 @@ func TestUpdateLabel01(t *testing.T) {
 	putStr, _ := json.Marshal(lbPut)
 
 	// Setup request
-	req, _ := http.NewRequest("PUT", "/api/v1/33/labels/1", bytes.NewBuffer(putStr))
+	req, _ := http.NewRequest("PUT", "/api/v3/33/labels/1", bytes.NewBuffer(putStr))
 
 	// Setup writer.
 	w := httptest.NewRecorder()
@@ -628,7 +628,7 @@ func TestUpdateLabel01(t *testing.T) {
 		c.Set("accountId", 33)
 		c.Set("userId", 109)
 	})
-	r.PUT("/api/v1/:account/labels/:id", c.UpdateLabel)
+	r.PUT("/api/v3/:account/labels/:id", c.UpdateLabel)
 	r.ServeHTTP(w, req)
 
 	// Grab result and convert to strut
@@ -670,7 +670,7 @@ func TestUpdateLabel02(t *testing.T) {
 	putStr, _ := json.Marshal(lbPut)
 
 	// Setup request
-	req, _ := http.NewRequest("PUT", "/api/v1/33/labels/1", bytes.NewBuffer(putStr))
+	req, _ := http.NewRequest("PUT", "/api/v3/33/labels/1", bytes.NewBuffer(putStr))
 
 	// Setup writer.
 	w := httptest.NewRecorder()
@@ -682,7 +682,7 @@ func TestUpdateLabel02(t *testing.T) {
 		c.Set("accountId", 33)
 		c.Set("userId", 109)
 	})
-	r.PUT("/api/v1/:account/labels/:id", c.UpdateLabel)
+	r.PUT("/api/v3/:account/labels/:id", c.UpdateLabel)
 	r.ServeHTTP(w, req)
 
 	// Test results
@@ -713,7 +713,7 @@ func TestUpdateLabel03(t *testing.T) {
 	putStr, _ := json.Marshal(lbPut)
 
 	// Setup request
-	req, _ := http.NewRequest("PUT", "/api/v1/33/labels/2", bytes.NewBuffer(putStr))
+	req, _ := http.NewRequest("PUT", "/api/v3/33/labels/2", bytes.NewBuffer(putStr))
 
 	// Setup writer.
 	w := httptest.NewRecorder()
@@ -725,7 +725,7 @@ func TestUpdateLabel03(t *testing.T) {
 		c.Set("accountId", 33)
 		c.Set("userId", 109)
 	})
-	r.PUT("/api/v1/:account/labels/:id", c.UpdateLabel)
+	r.PUT("/api/v3/:account/labels/:id", c.UpdateLabel)
 	r.ServeHTTP(w, req)
 
 	// Grab result and convert to strut
@@ -767,7 +767,7 @@ func TestUpdateLabel04(t *testing.T) {
 	putStr, _ := json.Marshal(lbPut)
 
 	// Setup request
-	req, _ := http.NewRequest("PUT", "/api/v1/33/labels/1", bytes.NewBuffer(putStr))
+	req, _ := http.NewRequest("PUT", "/api/v3/33/labels/1", bytes.NewBuffer(putStr))
 
 	// Setup writer.
 	w := httptest.NewRecorder()
@@ -779,7 +779,7 @@ func TestUpdateLabel04(t *testing.T) {
 		c.Set("accountId", 33)
 		c.Set("userId", 109)
 	})
-	r.PUT("/api/v1/:account/labels/:id", c.UpdateLabel)
+	r.PUT("/api/v3/:account/labels/:id", c.UpdateLabel)
 	r.ServeHTTP(w, req)
 
 	// Test results
@@ -809,7 +809,7 @@ func TestUpdateLabel05(t *testing.T) {
 	putStr, _ := json.Marshal(lbPut)
 
 	// Setup request
-	req, _ := http.NewRequest("PUT", "/api/v1/33/labels/1", bytes.NewBuffer(putStr))
+	req, _ := http.NewRequest("PUT", "/api/v3/33/labels/1", bytes.NewBuffer(putStr))
 
 	// Setup writer.
 	w := httptest.NewRecorder()
@@ -821,7 +821,7 @@ func TestUpdateLabel05(t *testing.T) {
 		c.Set("accountId", 33)
 		c.Set("userId", 109)
 	})
-	r.PUT("/api/v1/:account/labels/:id", c.UpdateLabel)
+	r.PUT("/api/v3/:account/labels/:id", c.UpdateLabel)
 	r.ServeHTTP(w, req)
 
 	// Grab result and convert to strut
@@ -870,7 +870,7 @@ func TestDeleteLabel01(t *testing.T) {
 	db.Save(&models.LabelsToLedger{LabelsToLedgerAccountId: 34, LabelsToLedgerLabelId: 1, LabelsToLedgerLedgerId: 4})
 
 	// Setup request
-	req, _ := http.NewRequest("DELETE", "/api/v1/33/labels/4", nil)
+	req, _ := http.NewRequest("DELETE", "/api/v3/33/labels/4", nil)
 
 	// Setup writer.
 	w := httptest.NewRecorder()
@@ -882,7 +882,7 @@ func TestDeleteLabel01(t *testing.T) {
 		c.Set("accountId", 33)
 		c.Set("userId", 109)
 	})
-	r.DELETE("/api/v1/:account/labels/:id", c.DeleteLabel)
+	r.DELETE("/api/v3/:account/labels/:id", c.DeleteLabel)
 	r.ServeHTTP(w, req)
 
 	// Test results
@@ -941,7 +941,7 @@ func TestDeleteLabel02(t *testing.T) {
 	db.Save(&models.LabelsToLedger{LabelsToLedgerAccountId: 34, LabelsToLedgerLabelId: 1, LabelsToLedgerLedgerId: 4})
 
 	// Setup request
-	req, _ := http.NewRequest("DELETE", "/api/v1/33/labels/2", nil)
+	req, _ := http.NewRequest("DELETE", "/api/v3/33/labels/2", nil)
 
 	// Setup writer.
 	w := httptest.NewRecorder()
@@ -953,7 +953,7 @@ func TestDeleteLabel02(t *testing.T) {
 		c.Set("accountId", 33)
 		c.Set("userId", 109)
 	})
-	r.DELETE("/api/v1/:account/labels/:id", c.DeleteLabel)
+	r.DELETE("/api/v3/:account/labels/:id", c.DeleteLabel)
 	r.ServeHTTP(w, req)
 
 	// Test results
