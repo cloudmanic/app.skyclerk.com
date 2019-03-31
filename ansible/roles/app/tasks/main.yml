@@ -35,3 +35,7 @@
 # Checkout code at github
 - name: Checkout PHP app git repo
   git: "repo={{ git_repo }} dest={{ site_dir }}/php-app version={{ git_branch }} accept_hostkey=yes force=yes"
+
+# Install php-app ENV File
+- name: Install php-app ENV File
+  template: src=php-env dest={{ site_dir }}/php-app/www/.env owner={{ site_user }} group={{ site_user }} mode=0644  

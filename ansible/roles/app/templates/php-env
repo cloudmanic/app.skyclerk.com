@@ -1,0 +1,10 @@
+DEBUG=0
+ENV=production
+SITE_URL=https://app.skyclerk.com
+
+MYSQL_HOST=mysql-5.5
+MYSQL_USERNAME={{ app_db_username }}
+MYSQL_PASSWORD={{ app_db_password }}
+MYSQL_DATABASE=app_skyclerk_com
+
+S3_BUCKET=skyclerk
