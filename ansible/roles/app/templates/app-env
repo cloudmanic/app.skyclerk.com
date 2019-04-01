@@ -1,0 +1,11 @@
+APP_ENV=local
+HTTP_PORT=9090
+SITE_URL=https://app.skyclerk.com
+ENCRYPTION_KEY=adf23423adfasdf1
+
+DB_HOST=tcp({{ app_db_host }}:3306)
+DB_USERNAME={{ app_db_username }}
+DB_PASSWORD={{ app_db_password }}
+DB_DATABASE={{ app_db_database }}
+
+HTTP_LOG_REQUESTS=true

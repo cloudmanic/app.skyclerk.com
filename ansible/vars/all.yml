@@ -1,5 +1,9 @@
 ---
 
+#
+# App(s) Config Stuff
+#
+
 site_domain: app.skyclerk.com
 
 site_dir: /sites/skyclerk/app.skyclerk.com
@@ -15,6 +19,11 @@ support_email: help@skyclerk.com
 git_branch: master
 
 git_repo: git@github.com:cloudmanic/skyclerk.cloudmanic.com-no-accounts.git
+
+app_db_host: mysql-5.5
+app_db_database: app_skyclerk_com
+
+s3_bucket: skyclerk
 
 #
 # Server Config Stuff

@@ -38,4 +38,27 @@
 
 # Install php-app ENV File
 - name: Install php-app ENV File
-  template: src=php-env dest={{ site_dir }}/php-app/www/.env owner={{ site_user }} group={{ site_user }} mode=0644  
+  template: src=php-env dest={{ site_dir }}/php-app/www/.env owner={{ site_user }} group={{ site_user }} mode=0644
+
+# Create docker app directory
+- name: Create docker app directory
+  file: path={{ site_dir }}/docker/app owner={{ site_user }} group={{ site_user }} mode=0755 state=directory
+
+# Install Go App ENV File
+- name: Install Go App ENV File
+  template: src=app-env dest={{ site_dir }}/docker/app/.env owner={{ site_user }} group={{ site_user }} mode=0644
+
+# Install app.skyclerk.com binary
+- name: Copying app.skyclerk.com binary to server(s)
+  copy: src=../builds/app.skyclerk.com dest={{ site_dir }}/docker/app/app.skyclerk.com owner={{ site_user }} group={{ site_user }} mode=0755
+
+#
+# # Install app.options.cafe frontend code.
+# - name: Copying app.options.cafe frontend code to server(s)
+#   synchronize: src=../frontend/dist/ dest=/sites/optionscafe/app.options.cafe/docker/build/frontend
+#
+# # Change owner of docker/build/frontend
+# - name: Change owner of docker/build/frontend
+#   file: path=/sites/optionscafe/app.options.cafe/docker/build/frontend owner=optionscafe group=optionscafe recurse=yes
+#   become: yes
+#   become_user: root

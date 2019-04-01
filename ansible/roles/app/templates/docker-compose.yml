@@ -4,6 +4,28 @@ version: '2.1'
 
 services:
 
+  # Go App
+  app:
+
+    hostname: v3.skyclerk.com
+
+    container_name: ${COMPOSE_PROJECT_NAME}
+
+    image: golang:1.11-alpine
+
+    working_dir: /go/bin
+
+    entrypoint: ./app.skyclerk.com
+
+    volumes:
+      - ./app:/go/bin
+
+    expose:
+      - "9090"
+
+    networks:
+      - shared
+
   # PHP App
   php:
 
