@@ -14,7 +14,7 @@ import (
 	"net/http"
 	"strconv"
 
-	"github.com/cloudmanic/skyclerk.com/models"
+	"github.com/cloudmanic/skyclerk.com/backend/models"
 	"github.com/gin-gonic/gin"
 )
 

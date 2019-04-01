@@ -31,7 +31,7 @@ blocks:
           - checkout
           - sem-version go 1.11
           - curl https://raw.githubusercontent.com/golang/dep/master/install.sh | sh
-          - cd $SEMAPHORE_GIT_DIR
+          - cd $SEMAPHORE_GIT_DIR/backend
           - dep ensure
           - go test ./...
           - go build -ldflags="-s -w" -o builds/skyclerk

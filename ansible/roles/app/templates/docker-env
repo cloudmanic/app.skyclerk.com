@@ -1,6 +1,7 @@
 P_UID={{ site_uid }}
 P_GID={{ site_gid }}
 RESTART=always
+SYSLOG_HOST=tcp+tls://{{ syslog_address }}:{{ syslog_port }}
 VIRTUAL_HOST={{ virtual_hosts }}
 LETSENCRYPT_HOST={{ virtual_hosts }}
 LETSENCRYPT_EMAIL={{ support_email }}

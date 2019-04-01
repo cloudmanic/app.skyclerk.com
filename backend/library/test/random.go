@@ -11,8 +11,8 @@ import (
 	"math/rand"
 	"time"
 
-	"github.com/cloudmanic/skyclerk.com/library/helpers"
-	"github.com/cloudmanic/skyclerk.com/models"
+	"github.com/cloudmanic/skyclerk.com/backend/library/helpers"
+	"github.com/cloudmanic/skyclerk.com/backend/models"
 )
 
 //

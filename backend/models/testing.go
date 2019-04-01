@@ -15,8 +15,8 @@ import (
 	"os/exec"
 	"strings"
 
-	"github.com/cloudmanic/skyclerk.com/library/helpers"
-	"github.com/cloudmanic/skyclerk.com/services"
+	"github.com/cloudmanic/skyclerk.com/backend/library/helpers"
+	"github.com/cloudmanic/skyclerk.com/backend/services"
 	"github.com/jinzhu/gorm"
 )
 

@@ -10,9 +10,9 @@ import (
 	"errors"
 	"time"
 
-	"github.com/cloudmanic/skyclerk.com/library/checkmail"
-	"github.com/cloudmanic/skyclerk.com/library/helpers"
-	"github.com/cloudmanic/skyclerk.com/services"
+	"github.com/cloudmanic/skyclerk.com/backend/library/checkmail"
+	"github.com/cloudmanic/skyclerk.com/backend/library/helpers"
+	"github.com/cloudmanic/skyclerk.com/backend/services"
 )
 
 // User struct

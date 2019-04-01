@@ -5,6 +5,7 @@
 
   roles:
     - app
+    - app-restart
 
   vars_files:
     - "vars/all.yml"
