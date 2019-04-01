@@ -107,7 +107,7 @@ func (t *Controller) AuthMiddleware() gin.HandlerFunc {
 		}
 
 		// Set Account
-		c.Set("accountId", accountId)
+		c.Set("accountId", int(accountId))
 
 		// CORS for local deve opment.
 		if os.Getenv("APP_ENV") == "local" {

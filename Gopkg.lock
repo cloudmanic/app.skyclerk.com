@@ -10,6 +10,14 @@
   revision = "262228af701ebf3932b8b8488da6781b9d585c88"
 
 [[projects]]
+  digest = "1:ffe9824d294da03b391f44e1ae8281281b4afc1bdaa9588c9097785e3af10cec"
+  name = "github.com/davecgh/go-spew"
+  packages = ["spew"]
+  pruneopts = "UT"
+  revision = "8991bc29aa16c548c550c7ff78260e27b9ab7c73"
+  version = "v1.1.1"
+
+[[projects]]
   digest = "1:2b59aca2665ff804f6606c8829eaee133ddd3aefbc841014660d961b0034f888"
   name = "github.com/gin-contrib/cors"
   packages = ["."]
@@ -201,6 +209,7 @@
   analyzer-version = 1
   input-imports = [
     "github.com/araddon/dateparse",
+    "github.com/davecgh/go-spew/spew",
     "github.com/gin-contrib/cors",
     "github.com/gin-contrib/static",
     "github.com/gin-gonic/gin",
