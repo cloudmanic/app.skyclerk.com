@@ -12,10 +12,11 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	"github.com/cloudmanic/skyclerk.com/backend/library/test"
-	"github.com/cloudmanic/skyclerk.com/backend/models"
 	"github.com/gin-gonic/gin"
 	"github.com/nbio/st"
+
+	"github.com/cloudmanic/skyclerk.com/backend/library/test"
+	"github.com/cloudmanic/skyclerk.com/backend/models"
 )
 
 //
@@ -23,7 +24,7 @@ import (
 //
 func TestGetMe01(t *testing.T) {
 	// Start the db connection.
-	db, dbName, _ := models.NewTestDB("testing_db")
+	db, dbName, _ := models.NewTestDB("")
 	defer models.TestingTearDown(db, dbName)
 
 	// Create controller
