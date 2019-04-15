@@ -56,6 +56,15 @@ func (t *Controller) DoRoutes(r *gin.Engine) {
 		apiV1.DELETE("/:account/contacts/:id", t.DeleteContact)
 	}
 
+	// --------- AUTH'ed calls Without Account ----------- //
+
+	apiNoAccount := r.Group("/api/v3")
+
+	apiNoAccount.Use(t.AuthNoAccountMiddleware())
+	{
+		apiNoAccount.GET("/me", t.GetMe)
+	}
+
 	// ------------ Non-Auth Routes ------ //
 
 	// Auth Routes

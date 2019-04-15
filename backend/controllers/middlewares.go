@@ -121,6 +121,15 @@ func (t *Controller) AuthMiddleware() gin.HandlerFunc {
 }
 
 //
+// AuthNoAccountMiddleware is used for routes that do not have accounts.
+//
+func (t *Controller) AuthNoAccountMiddleware() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		fmt.Println("asdfsdf")
+	}
+}
+
+//
 // Capture parms out of URL and save them to context. This is useful because we validate integers
 // in urls instead of passing what could be a string into an SQL function.
 //

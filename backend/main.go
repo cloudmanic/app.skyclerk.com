@@ -20,7 +20,6 @@ import (
 // Main...
 //
 func main() {
-
 	// Start the db connection.
 	db, err := models.NewDB()
 
@@ -48,7 +47,6 @@ func main() {
 
 	// Start webserver & controllers
 	c.StartWebServer()
-
 }
 
 /* End File */
