@@ -13,8 +13,8 @@ import "time"
 // Account struct
 type Account struct {
 	Id           uint      `gorm:"primary_key" json:"id"`
-	CreatedAt    time.Time `json:"created_at"`
-	UpdatedAt    time.Time `json:"updated_at"`
+	CreatedAt    time.Time `json:"-"`
+	UpdatedAt    time.Time `json:"-"`
 	OwnerId      uint      `sql:"not null" json:"owner_id"`
 	Name         string    `sql:"not null" json:"name"`
 	PlanId       uint      `sql:"not null" json:"_"`

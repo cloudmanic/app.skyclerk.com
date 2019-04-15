@@ -51,7 +51,7 @@ func TestGetMe01(t *testing.T) {
 	db.Save(&models.AcctToUsers{AcctId: account3.Id, UserId: user.Id})
 
 	// Setup request
-	req, _ := http.NewRequest("GET", "/api/v3/me", nil)
+	req, _ := http.NewRequest("GET", "/oauth/me", nil)
 
 	// Setup writer.
 	w := httptest.NewRecorder()
@@ -62,7 +62,7 @@ func TestGetMe01(t *testing.T) {
 	r.Use(func(c *gin.Context) {
 		c.Set("userId", user.Id)
 	})
-	r.GET("/api/v3/me", c.GetMe)
+	r.GET("/oauth/me", c.GetMe)
 	r.ServeHTTP(w, req)
 
 	// Grab result and convert to strut
