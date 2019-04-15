@@ -113,7 +113,11 @@ func (t *Controller) StartWebServer() {
 		ExposeHeaders:    []string{"Content-Length", "X-Last-Page", "X-Offset", "X-Limit", "X-No-Limit-Count"},
 		AllowCredentials: true,
 		AllowOriginFunc: func(origin string) bool {
-			return (origin == os.Getenv("SITE_URL")) || strings.Contains(origin, "localhost")
+			if (origin == os.Getenv("SITE_URL")) || strings.Contains(origin, "localhost") {
+				return true
+			}
+			services.LogInfo("Failed CORS request - origin: " + origin)
+			return false
 		},
 		MaxAge: 12 * time.Hour,
 	}))
