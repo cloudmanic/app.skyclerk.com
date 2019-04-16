@@ -22,7 +22,7 @@ type Category struct {
 	UpdatedAt time.Time `gorm:"column:CategoriesUpdatedAt" sql:"not null" json:"_"`
 	CreatedAt time.Time `gorm:"column:CategoriesCreatedAt" sql:"not null" json:"_"`
 	Name      string    `gorm:"column:CategoriesName" sql:"not null;" json:"name"`
-	Type      string    `gorm:"column:CategoriesType" sql:"not null" json:"type"`
+	Type      string    `gorm:"column:CategoriesType" sql:"not null" json:"type"` // 1 = expense, 2 = income
 	Irs       string    `gorm:"column:CategoriesIrs" sql:"not null" json:"_"`
 	Show      string    `gorm:"column:CategoriesShow" sql:"not null" json:"_"`
 }
