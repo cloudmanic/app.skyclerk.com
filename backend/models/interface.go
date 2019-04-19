@@ -59,7 +59,9 @@ type Datastore interface {
 	LoginUserByEmailPass(email string, password string, appId uint, userAgent string, ipAddress string) (User, Session, error)
 
 	// File
+	GetSignedFileUrl(path string) string
 	CleanFileName(fileName string) string
+	StoreFile(accountId uint, filePath string) (File, error)
 }
 
 /* End File */

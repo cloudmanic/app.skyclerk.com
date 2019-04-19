@@ -14,11 +14,8 @@ import (
 	"os"
 	"path/filepath"
 
+	"app.skyclerk.com/backend/library/response"
 	"github.com/gin-gonic/gin"
-
-	"app.skyclerk.com/backend/library/files"
-	"app.skyclerk.com/backend/library/store/object"
-	"app.skyclerk.com/backend/models"
 )
 
 //
@@ -26,8 +23,8 @@ import (
 //
 func (t *Controller) CreateFile(c *gin.Context) {
 	// Options fields that can be included in the post for later assignment.
-	id := c.PostForm("id")
-	table := c.PostForm("object")
+	// id := c.PostForm("id")
+	// table := c.PostForm("object")
 
 	// Get user id.
 	//userId := uint(c.MustGet("userId").(int))
@@ -57,58 +54,71 @@ func (t *Controller) CreateFile(c *gin.Context) {
 		return
 	}
 
-	// SafeFilename returns a cleaned-up filename that is safe to use.
-	cleanedFileName := t.db.CleanFileName(file.Filename)
-
-	c.String(http.StatusOK, fmt.Sprintf("File %s uploaded successfully with fields name=%s and email=%s.", file.Filename, table, id))
-
-	// Get MD5 of the file.
-	hash, err := files.Md5WithError(filePath)
-
+	// Store the file with S3 and create Files entry.
+	o, err := t.db.StoreFile(accountId, filePath)
 	if err != nil {
-		c.String(http.StatusBadRequest, fmt.Sprintf("upload file err: %s", err.Error()))
+		c.String(http.StatusBadRequest, fmt.Sprintf("get form err: %s", err.Error()))
 		return
 	}
 
-	// Get the file size.
-	size, err := files.SizeWithError(filePath)
+	// Add in a signed URL
+	o.Url = t.db.GetSignedFileUrl(o.Path)
 
-	if err != nil {
-		c.String(http.StatusBadRequest, fmt.Sprintf("upload file err: %s", err.Error()))
-		return
-	}
+	// Return happy.
+	response.RespondCreated(c, o, nil)
 
-	// Get the file type
-	fileType, err := files.FileContentTypeWithError(filePath)
+	// // SafeFilename returns a cleaned-up filename that is safe to use.
+	// cleanedFileName := t.db.CleanFileName(file.Filename)
+	//
+	// c.String(http.StatusOK, fmt.Sprintf("File %s uploaded successfully with fields name=%s and email=%s.", file.Filename, table, id))
+	//
+	// // Get MD5 of the file.
+	// hash, err := files.Md5WithError(filePath)
+	//
+	// if err != nil {
+	// 	c.String(http.StatusBadRequest, fmt.Sprintf("upload file err: %s", err.Error()))
+	// 	return
+	// }
+	//
+	// // Get the file size.
+	// size, err := files.SizeWithError(filePath)
+	//
+	// if err != nil {
+	// 	c.String(http.StatusBadRequest, fmt.Sprintf("upload file err: %s", err.Error()))
+	// 	return
+	// }
+	//
+	// // Get the file type
+	// fileType, err := files.FileContentTypeWithError(filePath)
+	//
+	// if err != nil {
+	// 	c.String(http.StatusBadRequest, fmt.Sprintf("upload file err: %s", err.Error()))
+	// 	return
+	// }
+	//
+	// // Now that we have the file safely stored in our tmp directory time to process it.
+	// // First we create an entry in our files table so we know the ID.
+	// fileModel := models.File{}
+	// fileModel.Type = fileType
+	// fileModel.Size = size
+	// fileModel.Hash = hash
+	// fileModel.Host = "amazon-s3"
+	// fileModel.Name = cleanedFileName
+	// fileModel.AccountId = accountId
+	// t.db.New().Save(&fileModel)
+	//
+	// // Update the file path now that we have an id
+	// fileModel.Path = fmt.Sprintf("accounts/%d/%d_%s", accountId, fileModel.Id, cleanedFileName)
+	// t.db.New().Save(&fileModel)
+	//
+	// // Upload file to our S3 store
+	// err = object.UploadObject(filePath, fileModel.Path)
+	//
+	// if err != nil {
+	// 	panic(err)
+	// }
 
-	if err != nil {
-		c.String(http.StatusBadRequest, fmt.Sprintf("upload file err: %s", err.Error()))
-		return
-	}
-
-	// Now that we have the file safely stored in our tmp directory time to process it.
-	// First we create an entry in our files table so we know the ID.
-	fileModel := models.File{}
-	fileModel.Type = fileType
-	fileModel.Size = size
-	fileModel.Hash = hash
-	fileModel.Host = "amazon-s3"
-	fileModel.Name = cleanedFileName
-	fileModel.AccountId = accountId
-	t.db.New().Save(&fileModel)
-
-	// Update the file path now that we have an id
-	fileModel.Path = fmt.Sprintf("accounts/%d/%d_%s", accountId, fileModel.Id, cleanedFileName)
-	t.db.New().Save(&fileModel)
-
-	// Upload file to our S3 store
-	err = object.UploadObject(filePath, fileModel.Path)
-
-	if err != nil {
-		panic(err)
-	}
-
-	// TODO(spicer): Create thumbnail image.
+	// TODO(spicer): See if we should assign this file to a ledger entry.
 
 	// // Setup Label obj
 	// o := models.Label{}
