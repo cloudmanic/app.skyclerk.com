@@ -11,12 +11,12 @@ services:
 
     image: golang:1.11-alpine
 
-    working_dir: /go/src/github.com/cloudmanic/skyclerk.com
+    working_dir: /go/src/backend
 
     entrypoint: go run main.go
 
     volumes:
-      - ../:/go/src/github.com/cloudmanic/skyclerk.com
+      - ../:/go/src/backend
 
     expose:
       - "9090"

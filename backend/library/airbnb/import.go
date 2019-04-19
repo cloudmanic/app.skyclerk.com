@@ -16,8 +16,8 @@ import (
 	"strconv"
 
 	"github.com/araddon/dateparse"
-	"github.com/cloudmanic/skyclerk.com/backend/models"
-	"github.com/cloudmanic/skyclerk.com/backend/services"
+	"github.com/cloudmanic/app.skyclerk.com/backend/models"
+	"github.com/cloudmanic/app.skyclerk.com/backend/services"
 )
 
 //

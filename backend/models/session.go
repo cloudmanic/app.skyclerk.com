@@ -4,8 +4,8 @@ import (
 	"errors"
 	"time"
 
-	"github.com/cloudmanic/skyclerk.com/backend/library/helpers"
-	"github.com/cloudmanic/skyclerk.com/backend/services"
+	"github.com/cloudmanic/app.skyclerk.com/backend/library/helpers"
+	"github.com/cloudmanic/app.skyclerk.com/backend/services"
 )
 
 // Session struct

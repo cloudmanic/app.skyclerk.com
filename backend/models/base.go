@@ -22,7 +22,7 @@ import (
 // Start up the controller.
 //
 func init() {
-	env.ReadEnv(build.Default.GOPATH + "/src/github.com/cloudmanic/skyclerk.com/backend/.env")
+	env.ReadEnv(build.Default.GOPATH + "/src/backend/backend/.env")
 }
 
 //

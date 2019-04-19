@@ -54,6 +54,9 @@ func (t *Controller) DoRoutes(r *gin.Engine) {
 		apiV1.POST("/:account/contacts", t.CreateContact)
 		apiV1.PUT("/:account/contacts/:id", t.UpdateContact)
 		apiV1.DELETE("/:account/contacts/:id", t.DeleteContact)
+
+		// Files
+		apiV1.POST("/:account/files", t.CreateFile)
 	}
 
 	// ------------ Non-API Routes ------ //

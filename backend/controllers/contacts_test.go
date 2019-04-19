@@ -19,7 +19,7 @@ import (
 	"github.com/nbio/st"
 	"github.com/tidwall/gjson"
 
-	"github.com/cloudmanic/skyclerk.com/backend/models"
+	"github.com/cloudmanic/app.skyclerk.com/backend/models"
 )
 
 //

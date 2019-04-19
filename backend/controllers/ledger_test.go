@@ -15,8 +15,8 @@ import (
 	"testing"
 	"time"
 
-	"github.com/cloudmanic/skyclerk.com/backend/library/test"
-	"github.com/cloudmanic/skyclerk.com/backend/models"
+	"github.com/cloudmanic/app.skyclerk.com/backend/library/test"
+	"github.com/cloudmanic/app.skyclerk.com/backend/models"
 	"github.com/gin-gonic/gin"
 	"github.com/nbio/st"
 )

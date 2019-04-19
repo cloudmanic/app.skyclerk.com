@@ -15,9 +15,9 @@ import (
 
 	"github.com/gin-gonic/gin"
 
-	"github.com/cloudmanic/skyclerk.com/backend/library/request"
-	"github.com/cloudmanic/skyclerk.com/backend/library/response"
-	"github.com/cloudmanic/skyclerk.com/backend/models"
+	"github.com/cloudmanic/app.skyclerk.com/backend/library/request"
+	"github.com/cloudmanic/app.skyclerk.com/backend/library/response"
+	"github.com/cloudmanic/app.skyclerk.com/backend/models"
 )
 
 //
