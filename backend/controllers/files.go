@@ -15,6 +15,8 @@ import (
 
 	"github.com/davecgh/go-spew/spew"
 	"github.com/gin-gonic/gin"
+
+	"github.com/cloudmanic/app.skyclerk.com/backend/library/store/object"
 )
 
 //
@@ -23,7 +25,7 @@ import (
 func (t *Controller) CreateFile(c *gin.Context) {
 	// Options fields that can be included in the post for later assignment.
 	id := c.PostForm("id")
-	object := c.PostForm("object")
+	table := c.PostForm("object")
 
 	// This is the file we are uploading.
 	file, err := c.FormFile("file")
@@ -39,11 +41,11 @@ func (t *Controller) CreateFile(c *gin.Context) {
 		return
 	}
 
-	c.String(http.StatusOK, fmt.Sprintf("File %s uploaded successfully with fields name=%s and email=%s.", file.Filename, object, id))
+	c.String(http.StatusOK, fmt.Sprintf("File %s uploaded successfully with fields name=%s and email=%s.", file.Filename, table, id))
 
 	// Now that we have the file safely stored in our tmp directory time to process it.
 
-	list, err := object.ListObjects("/")
+	list, err := object.ListObjects("")
 
 	if err != nil {
 		panic(err)
