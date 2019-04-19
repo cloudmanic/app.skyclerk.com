@@ -26,7 +26,7 @@ func (t *Controller) CreateFile(c *gin.Context) {
 	// id := c.PostForm("id")
 	// table := c.PostForm("object")
 
-	// Get user id.
+	// Get user id. f
 	//userId := uint(c.MustGet("userId").(int))
 
 	// AccountId.
