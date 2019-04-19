@@ -29,14 +29,14 @@ blocks:
           value: 44C2N8dX2fx+xcFXlXziQImtTuZkdD7qgMVSQWhR
         - name: OBJECT_ENDPOINT
           value: s3.amazonaws.com
-                            
+
       jobs:
       - name: Get app code, get packages, test and build
         commands:
           - env
           - export "GOPATH=$(go env GOPATH)"
           - export "GOBIN=$(go env GOPATH)/bin"
-          - export "SEMAPHORE_GIT_DIR=$(go env GOPATH)/src/github.com/cloudmanic/${SEMAPHORE_PROJECT_NAME}"
+          - export "SEMAPHORE_GIT_DIR=$(go env GOPATH)/src/${SEMAPHORE_PROJECT_NAME}"
           - export "PATH=$GOBIN:${PATH}"
           - mkdir -vp "${SEMAPHORE_GIT_DIR}" "$(go env GOPATH)/bin"
           - docker run --name skyclerk_com_testing -e MYSQL_ROOT_PASSWORD=foobar --tmpfs /var/lib/mysql -p 127.0.0.1:9907:3306 -d mariadb:10.2
