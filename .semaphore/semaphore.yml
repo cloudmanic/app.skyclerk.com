@@ -17,7 +17,19 @@ blocks:
           value: http://localhost:9090
         - name: ENCRYPTION_KEY
           value: adf23423adfasdf1
-
+        - name: CACHE_DIR
+          value: /tmp
+        - name: OBJECT_REGION
+          value: us-west-2
+        - name: OBJECT_BUCKET
+          value: app.skyclerk.test
+        - name: OBJECT_ACCESS_KEY_ID
+          value: AKIA54ZFL43BLTGRESRI
+        - name: OBJECT_SECRET_ACCESS_KEY
+          value: 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
+        - name: OBJECT_ENDPOINT
+          value: s3.amazonaws.com
+                            
       jobs:
       - name: Get app code, get packages, test and build
         commands:

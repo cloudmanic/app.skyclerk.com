@@ -2,10 +2,12 @@ package models
 
 import (
 	"fmt"
+	"os"
 	"time"
 
 	"app.skyclerk.com/backend/library/files"
 	"app.skyclerk.com/backend/library/store/object"
+	"app.skyclerk.com/backend/services"
 	"github.com/asaskevich/govalidator"
 )
 
@@ -36,9 +38,6 @@ func (File) TableName() string {
 // StoreFile - Store the file with our s3 file storage provider
 //
 func (t *DB) StoreFile(accountId uint, filePath string) (File, error) {
-
-	fmt.Println(filePath)
-
 	// SafeFilename returns a cleaned-up filename that is safe to use.
 	cleanedFileName := t.CleanFileName(filePath)
 
@@ -86,6 +85,13 @@ func (t *DB) StoreFile(accountId uint, filePath string) (File, error) {
 	}
 
 	// TODO(spicer): Create thumbnail image.
+
+	// Delete uploaded file
+	err = os.Remove(filePath)
+
+	if err != nil {
+		services.Info(err)
+	}
 
 	// Return happy
 	return o, nil

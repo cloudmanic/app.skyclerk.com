@@ -10,7 +10,8 @@ package controllers
 
 import (
 	"bytes"
-	"fmt"
+	"encoding/json"
+	"go/build"
 	"io"
 	"mime/multipart"
 	"net/http"
@@ -30,7 +31,8 @@ import (
 // Test create File 01
 //
 func TestCreateFiles01(t *testing.T) {
-	const testFile = "/Users/spicer/Dropbox/Documents/StockPhotos/Boston City Flow.jpg"
+	// test file.
+	testFile := build.Default.GOPATH + "/src/app.skyclerk.com/backend/library/test/files/Boston City Flow.jpg"
 
 	// Start the db connection.
 	db, dbName, _ := models.NewTestDB("testing_db")
@@ -62,28 +64,19 @@ func TestCreateFiles01(t *testing.T) {
 	r.POST("/api/v3/:account/files", c.CreateFile)
 	r.ServeHTTP(w, req)
 
-	// resp := w.Result()
-	// buf, err := ioutil.ReadAll(resp.Body) // ReadAll closes the body.
-	// if err != nil {
-	// 	t.Fatal(err)
-	// }
+	// Grab result and convert to strut
+	result := models.File{}
+	err := json.Unmarshal([]byte(w.Body.String()), &result)
 
-	fmt.Println(w.Body.String())
-
-	// // Grab result and convert to strut
-	// result := models.Label{}
-	// err := json.Unmarshal([]byte(w.Body.String()), &result)
-	//
-	// // Test results
-	// st.Expect(t, err, nil)
-	// st.Expect(t, w.Code, 201)
-	// st.Expect(t, result.Name, "Label #1")
-	//
-	// // Double check the db.
-	// lb := models.Label{}
-	// db.First(&lb, 1)
-	// st.Expect(t, lb.Id, uint(1))
-	// st.Expect(t, lb.Name, "Label #1")
+	// Test results
+	st.Expect(t, err, nil)
+	st.Expect(t, w.Code, 201)
+	st.Expect(t, result.Id, uint(1))
+	st.Expect(t, result.AccountId, uint(33))
+	st.Expect(t, result.Name, "boston-city-flow.jpg")
+	st.Expect(t, result.Type, "image/jpeg")
+	st.Expect(t, result.Size, int64(339773))
+	st.Expect(t, result.Url, "https://app.skyclerk.com/accounts/33/1_boston-city-flow.jpg")
 }
 
 //

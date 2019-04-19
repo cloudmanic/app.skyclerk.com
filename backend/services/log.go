@@ -9,6 +9,7 @@
 package services
 
 import (
+	"errors"
 	"fmt"
 	"log"
 	"path/filepath"
@@ -17,6 +18,36 @@ import (
 
 	"github.com/mgutz/ansi"
 )
+
+//
+// Info Log. Used to log inportant information but a human does not need to review unless they are debugging something.
+//
+func Info(err error) {
+	log.Println("[App:Info] " + MyCaller() + " : " + ansi.Color(err.Error(), "magenta"))
+}
+
+//
+// Allow us to pass in just text instead of an error. Not always do we have a err to pass in.
+//
+func InfoMsg(msg string) {
+	Info(errors.New(msg))
+}
+
+//
+// Critical - We used this when we want to make splash. All Critical errors should be reviewed by a human.
+//
+func Critical(err error) {
+	log.Println(ansi.Color("[App:Critical] "+MyCaller()+" : "+err.Error(), "yellow"))
+}
+
+//
+// Fatal Log. We use this wehn the app should die and not continue running.
+//
+func Fatal(err error) {
+	log.Fatal(ansi.Color("[App:Fatal] "+MyCaller()+" : "+err.Error(), "red"))
+}
+
+// ----- TODO(spicer): Get rid of functions below --- //
 
 //
 // Normal Log.
