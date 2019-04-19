@@ -66,9 +66,9 @@ core_packages:
   - docker-compose
 
 # S3 Storage Stuff
-object_region: us-east-1
-object_bucket: skyclerk.com
-object_endpoint: s3.wasabisys.com
+object_region: us-west-2
+object_bucket: app.skyclerk.com
+object_endpoint: s3.amazonaws.com
 
 # Backup configs
 backup_uid: 1004

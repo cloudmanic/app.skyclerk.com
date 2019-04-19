@@ -57,6 +57,9 @@ type Datastore interface {
 	ValidateEmailAddress(email string) error
 	ValidateUserLogin(email string, password string) error
 	LoginUserByEmailPass(email string, password string, appId uint, userAgent string, ipAddress string) (User, Session, error)
+
+	// File
+	CleanFileName(fileName string) string
 }
 
 /* End File */

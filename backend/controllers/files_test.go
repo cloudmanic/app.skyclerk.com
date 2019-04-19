@@ -30,10 +30,10 @@ import (
 // Test create File 01
 //
 func TestCreateFiles01(t *testing.T) {
-	const testFile = "/Users/spicer/Dropbox/Documents/StockPhotos/autumn-2353873_1920.jpg"
+	const testFile = "/Users/spicer/Dropbox/Documents/StockPhotos/Boston City Flow.jpg"
 
 	// Start the db connection.
-	db, dbName, _ := models.NewTestDB("")
+	db, dbName, _ := models.NewTestDB("testing_db")
 	defer models.TestingTearDown(db, dbName)
 
 	// Create controller

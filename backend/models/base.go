@@ -19,10 +19,10 @@ import (
 )
 
 //
-// Start up the controller.
+// Start up the model.
 //
 func init() {
-	env.ReadEnv(build.Default.GOPATH + "/src/backend/backend/.env")
+	env.ReadEnv(build.Default.GOPATH + "/src/app.skyclerk.com/backend/.env")
 }
 
 //
@@ -63,6 +63,7 @@ func doMigrations(db *gorm.DB) {
 	db.AutoMigrate(&AcctToUsers{})
 	db.AutoMigrate(&Account{})
 	db.AutoMigrate(&User{})
+	db.AutoMigrate(&File{})
 	db.AutoMigrate(&Session{})
 	db.AutoMigrate(&Application{})
 	db.AutoMigrate(&Label{})

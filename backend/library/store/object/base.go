@@ -8,15 +8,24 @@
 package object
 
 import (
+	"go/build"
 	"io"
 	"os"
 	"path/filepath"
 
+	env "github.com/jpfuentes2/go-env"
 	minio "github.com/minio/minio-go"
 )
 
 //
-// List files at object store.
+// Start up the config.
+//
+func init() {
+	env.ReadEnv(build.Default.GOPATH + "/src/app.skyclerk.com/backend/.env")
+}
+
+//
+// ListObjects - List files at object store.
 //
 func ListObjects(prefix string) ([]minio.ObjectInfo, error) {
 	var objects []minio.ObjectInfo
@@ -51,10 +60,9 @@ func ListObjects(prefix string) ([]minio.ObjectInfo, error) {
 }
 
 //
-// Upload to object store.
+// UploadObject - Upload to object store.
 //
 func UploadObject(filePath string, storePath string) error {
-
 	// New returns an Amazon S3 compatible client object.
 	minioClient, err := minio.New(os.Getenv("OBJECT_ENDPOINT"), os.Getenv("OBJECT_ACCESS_KEY_ID"), os.Getenv("OBJECT_SECRET_ACCESS_KEY"), true)
 
@@ -74,10 +82,9 @@ func UploadObject(filePath string, storePath string) error {
 }
 
 //
-// Download an object to our cache directory.
+// DownloadObject - Download an object to our cache directory.
 //
 func DownloadObject(objectPath string) (string, error) {
-
 	// Set the cache dir.
 	cacheDir := os.Getenv("CACHE_DIR") + "/object-store/" + filepath.Dir(objectPath) + "/"
 

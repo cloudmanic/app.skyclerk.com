@@ -11,12 +11,14 @@ package controllers
 import (
 	"fmt"
 	"net/http"
+	"os"
 	"path/filepath"
 
-	"github.com/davecgh/go-spew/spew"
 	"github.com/gin-gonic/gin"
 
+	"app.skyclerk.com/backend/library/files"
 	"app.skyclerk.com/backend/library/store/object"
+	"app.skyclerk.com/backend/models"
 )
 
 //
@@ -27,6 +29,20 @@ func (t *Controller) CreateFile(c *gin.Context) {
 	id := c.PostForm("id")
 	table := c.PostForm("object")
 
+	// Get user id.
+	//userId := uint(c.MustGet("userId").(int))
+
+	// AccountId.
+	accountId := uint(c.MustGet("accountId").(int))
+
+	// File cache dir.
+	cacheDir := fmt.Sprintf("%s/uploads/%d", os.Getenv("CACHE_DIR"), accountId)
+
+	// Make the directory we store this file to
+	if _, err := os.Stat(cacheDir); os.IsNotExist(err) {
+		os.MkdirAll(cacheDir, 0755)
+	}
+
 	// This is the file we are uploading.
 	file, err := c.FormFile("file")
 	if err != nil {
@@ -35,23 +51,64 @@ func (t *Controller) CreateFile(c *gin.Context) {
 	}
 
 	// Save the uploaded file. Store file in tmp directory
-	filename := "/tmp/" + filepath.Base(file.Filename)
-	if err := c.SaveUploadedFile(file, filename); err != nil {
+	filePath := fmt.Sprintf("%s/%s", cacheDir, filepath.Base(file.Filename))
+	if err := c.SaveUploadedFile(file, filePath); err != nil {
 		c.String(http.StatusBadRequest, fmt.Sprintf("upload file err: %s", err.Error()))
 		return
 	}
 
+	// SafeFilename returns a cleaned-up filename that is safe to use.
+	cleanedFileName := t.db.CleanFileName(file.Filename)
+
 	c.String(http.StatusOK, fmt.Sprintf("File %s uploaded successfully with fields name=%s and email=%s.", file.Filename, table, id))
 
-	// Now that we have the file safely stored in our tmp directory time to process it.
+	// Get MD5 of the file.
+	hash, err := files.Md5WithError(filePath)
 
-	list, err := object.ListObjects("")
+	if err != nil {
+		c.String(http.StatusBadRequest, fmt.Sprintf("upload file err: %s", err.Error()))
+		return
+	}
+
+	// Get the file size.
+	size, err := files.SizeWithError(filePath)
+
+	if err != nil {
+		c.String(http.StatusBadRequest, fmt.Sprintf("upload file err: %s", err.Error()))
+		return
+	}
+
+	// Get the file type
+	fileType, err := files.FileContentTypeWithError(filePath)
+
+	if err != nil {
+		c.String(http.StatusBadRequest, fmt.Sprintf("upload file err: %s", err.Error()))
+		return
+	}
+
+	// Now that we have the file safely stored in our tmp directory time to process it.
+	// First we create an entry in our files table so we know the ID.
+	fileModel := models.File{}
+	fileModel.Type = fileType
+	fileModel.Size = size
+	fileModel.Hash = hash
+	fileModel.Host = "amazon-s3"
+	fileModel.Name = cleanedFileName
+	fileModel.AccountId = accountId
+	t.db.New().Save(&fileModel)
+
+	// Update the file path now that we have an id
+	fileModel.Path = fmt.Sprintf("accounts/%d/%d_%s", accountId, fileModel.Id, cleanedFileName)
+	t.db.New().Save(&fileModel)
+
+	// Upload file to our S3 store
+	err = object.UploadObject(filePath, fileModel.Path)
 
 	if err != nil {
 		panic(err)
 	}
 
-	spew.Dump(list)
+	// TODO(spicer): Create thumbnail image.
 
 	// // Setup Label obj
 	// o := models.Label{}
