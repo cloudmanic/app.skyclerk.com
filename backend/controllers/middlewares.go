@@ -18,9 +18,9 @@ import (
 
 	"github.com/gin-gonic/gin"
 
-	"github.com/cloudmanic/app.skyclerk.com/backend/library/realip"
-	"github.com/cloudmanic/app.skyclerk.com/backend/models"
-	"github.com/cloudmanic/app.skyclerk.com/backend/services"
+	"app.skyclerk.com/backend/library/realip"
+	"app.skyclerk.com/backend/models"
+	"app.skyclerk.com/backend/services"
 )
 
 //

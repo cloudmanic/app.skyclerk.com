@@ -13,8 +13,8 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	"github.com/cloudmanic/app.skyclerk.com/backend/library/test"
-	"github.com/cloudmanic/app.skyclerk.com/backend/models"
+	"app.skyclerk.com/backend/library/test"
+	"app.skyclerk.com/backend/models"
 	"github.com/gin-gonic/gin"
 	"github.com/nbio/st"
 	"github.com/tidwall/gjson"

@@ -16,7 +16,7 @@ import (
 	"github.com/davecgh/go-spew/spew"
 	"github.com/gin-gonic/gin"
 
-	"github.com/cloudmanic/app.skyclerk.com/backend/library/store/object"
+	"app.skyclerk.com/backend/library/store/object"
 )
 
 //

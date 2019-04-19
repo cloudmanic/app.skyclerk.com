@@ -11,8 +11,8 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/cloudmanic/app.skyclerk.com/backend/library/realip"
-	"github.com/cloudmanic/app.skyclerk.com/backend/services"
+	"app.skyclerk.com/backend/library/realip"
+	"app.skyclerk.com/backend/services"
 	"github.com/gin-gonic/gin"
 	"github.com/tidwall/gjson"
 )

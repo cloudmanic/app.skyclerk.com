@@ -9,10 +9,10 @@
 package main
 
 import (
-	"github.com/cloudmanic/app.skyclerk.com/backend/cmd"
-	"github.com/cloudmanic/app.skyclerk.com/backend/controllers"
-	"github.com/cloudmanic/app.skyclerk.com/backend/models"
-	"github.com/cloudmanic/app.skyclerk.com/backend/services"
+	"app.skyclerk.com/backend/cmd"
+	"app.skyclerk.com/backend/controllers"
+	"app.skyclerk.com/backend/models"
+	"app.skyclerk.com/backend/services"
 	_ "github.com/jpfuentes2/go-env/autoload"
 )
 

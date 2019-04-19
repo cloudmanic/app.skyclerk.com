@@ -15,7 +15,7 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	"github.com/cloudmanic/app.skyclerk.com/backend/models"
+	"app.skyclerk.com/backend/models"
 	"github.com/gin-gonic/gin"
 	"github.com/nbio/st"
 	"github.com/tidwall/gjson"

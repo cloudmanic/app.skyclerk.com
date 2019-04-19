@@ -11,8 +11,8 @@ package actions
 import (
 	"fmt"
 
-	"github.com/cloudmanic/app.skyclerk.com/backend/library/airbnb"
-	"github.com/cloudmanic/app.skyclerk.com/backend/models"
+	"app.skyclerk.com/backend/library/airbnb"
+	"app.skyclerk.com/backend/models"
 )
 
 //

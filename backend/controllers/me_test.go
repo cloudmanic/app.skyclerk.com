@@ -15,8 +15,8 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/nbio/st"
 
-	"github.com/cloudmanic/app.skyclerk.com/backend/library/test"
-	"github.com/cloudmanic/app.skyclerk.com/backend/models"
+	"app.skyclerk.com/backend/library/test"
+	"app.skyclerk.com/backend/models"
 )
 
 //

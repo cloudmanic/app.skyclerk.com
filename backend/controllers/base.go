@@ -19,8 +19,8 @@ import (
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 
-	"github.com/cloudmanic/app.skyclerk.com/backend/models"
-	"github.com/cloudmanic/app.skyclerk.com/backend/services"
+	"app.skyclerk.com/backend/models"
+	"app.skyclerk.com/backend/services"
 )
 
 var (

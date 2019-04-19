@@ -12,8 +12,8 @@ import (
 	"flag"
 	"fmt"
 
-	"github.com/cloudmanic/app.skyclerk.com/backend/cmd/actions"
-	"github.com/cloudmanic/app.skyclerk.com/backend/models"
+	"app.skyclerk.com/backend/cmd/actions"
+	"app.skyclerk.com/backend/models"
 )
 
 //
