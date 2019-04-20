@@ -35,7 +35,7 @@ func TestCreateFiles01(t *testing.T) {
 	testFile := build.Default.GOPATH + "/src/app.skyclerk.com/backend/library/test/files/Boston City Flow.jpg"
 
 	// Start the db connection.
-	db, dbName, _ := models.NewTestDB("testing_db")
+	db, dbName, _ := models.NewTestDB("")
 	defer models.TestingTearDown(db, dbName)
 
 	// Create controller
@@ -77,6 +77,194 @@ func TestCreateFiles01(t *testing.T) {
 	st.Expect(t, result.Type, "image/jpeg")
 	st.Expect(t, result.Size, int64(339773))
 	st.Expect(t, result.Url, "https://app.skyclerk.com/accounts/33/1_boston-city-flow.jpg")
+}
+
+//
+// Test create File 02 - File too big.
+//
+func TestCreateFiles02(t *testing.T) {
+	// test file.
+	testFile := build.Default.GOPATH + "/src/app.skyclerk.com/backend/library/test/files/529-2712-1-PB.pdf"
+
+	// Start the db connection.
+	db, dbName, _ := models.NewTestDB("")
+	defer models.TestingTearDown(db, dbName)
+
+	// Create controller
+	c := &Controller{}
+	c.SetDB(db)
+
+	// Build file to post
+	buffer, writer := buildLedgerFileform(t, testFile, "ledger", uint(88))
+
+	// Setup request
+	req, _ := http.NewRequest("POST", "/api/v3/33/files", buffer)
+
+	// Set content type header
+	req.Header.Set("Content-Type", writer.FormDataContentType())
+
+	// Setup writer.
+	w := httptest.NewRecorder()
+	gin.SetMode("release")
+	gin.DisableConsoleColor()
+
+	r := gin.New()
+	r.Use(func(c *gin.Context) {
+		c.Set("accountId", 33)
+		c.Set("userId", 109)
+	})
+	r.POST("/api/v3/:account/files", c.CreateFile)
+	r.ServeHTTP(w, req)
+
+	// Test results
+	st.Expect(t, w.Code, 400)
+	st.Expect(t, w.Body.String(), `{"error":"We have a 50MB upload limit."}`)
+}
+
+//
+// Test create File 03 - Mime not supported.
+//
+func TestCreateFiles03(t *testing.T) {
+	// test file.
+	testFile := build.Default.GOPATH + "/src/app.skyclerk.com/backend/library/test/files/test01.txt"
+
+	// Start the db connection.
+	db, dbName, _ := models.NewTestDB("")
+	defer models.TestingTearDown(db, dbName)
+
+	// Create controller
+	c := &Controller{}
+	c.SetDB(db)
+
+	// Build file to post
+	buffer, writer := buildLedgerFileform(t, testFile, "ledger", uint(88))
+
+	// Setup request
+	req, _ := http.NewRequest("POST", "/api/v3/33/files", buffer)
+
+	// Set content type header
+	req.Header.Set("Content-Type", writer.FormDataContentType())
+
+	// Setup writer.
+	w := httptest.NewRecorder()
+	gin.SetMode("release")
+	gin.DisableConsoleColor()
+
+	r := gin.New()
+	r.Use(func(c *gin.Context) {
+		c.Set("accountId", 33)
+		c.Set("userId", 109)
+	})
+	r.POST("/api/v3/:account/files", c.CreateFile)
+	r.ServeHTTP(w, req)
+
+	// Test results
+	st.Expect(t, w.Code, 400)
+	st.Expect(t, w.Body.String(), `{"error":"We only allow image and pdf files to be uploaded."}`)
+}
+
+//
+// Test create File 04 - Small PDF file with cases and spaces
+//
+func TestCreateFiles04(t *testing.T) {
+	// test file.
+	testFile := build.Default.GOPATH + "/src/app.skyclerk.com/backend/library/test/files/Income Statement copy.pdf"
+
+	// Start the db connection.
+	db, dbName, _ := models.NewTestDB("testing_db")
+	defer models.TestingTearDown(db, dbName)
+
+	// Create controller
+	c := &Controller{}
+	c.SetDB(db)
+
+	// Build file to post
+	buffer, writer := buildLedgerFileform(t, testFile, "ledger", uint(88))
+
+	// Setup request
+	req, _ := http.NewRequest("POST", "/api/v3/33/files", buffer)
+
+	// Set content type header
+	req.Header.Set("Content-Type", writer.FormDataContentType())
+
+	// Setup writer.
+	w := httptest.NewRecorder()
+	gin.SetMode("release")
+	gin.DisableConsoleColor()
+
+	r := gin.New()
+	r.Use(func(c *gin.Context) {
+		c.Set("accountId", 33)
+		c.Set("userId", 109)
+	})
+	r.POST("/api/v3/:account/files", c.CreateFile)
+	r.ServeHTTP(w, req)
+
+	// Grab result and convert to strut
+	result := models.File{}
+	err := json.Unmarshal([]byte(w.Body.String()), &result)
+
+	// Test results
+	st.Expect(t, err, nil)
+	st.Expect(t, w.Code, 201)
+	st.Expect(t, result.Id, uint(1))
+	st.Expect(t, result.AccountId, uint(33))
+	st.Expect(t, result.Name, "income-statement-copy.pdf")
+	st.Expect(t, result.Type, "application/pdf")
+	st.Expect(t, result.Size, int64(72689))
+	st.Expect(t, result.Url, "https://app.skyclerk.com/accounts/33/1_income-statement-copy.pdf")
+}
+
+//
+// Test create File 05 - Small PDF file
+//
+func TestCreateFiles05(t *testing.T) {
+	// test file.
+	testFile := build.Default.GOPATH + "/src/app.skyclerk.com/backend/library/test/files/apple.pdf"
+
+	// Start the db connection.
+	db, dbName, _ := models.NewTestDB("testing_db")
+	defer models.TestingTearDown(db, dbName)
+
+	// Create controller
+	c := &Controller{}
+	c.SetDB(db)
+
+	// Build file to post
+	buffer, writer := buildLedgerFileform(t, testFile, "ledger", uint(88))
+
+	// Setup request
+	req, _ := http.NewRequest("POST", "/api/v3/33/files", buffer)
+
+	// Set content type header
+	req.Header.Set("Content-Type", writer.FormDataContentType())
+
+	// Setup writer.
+	w := httptest.NewRecorder()
+	gin.SetMode("release")
+	gin.DisableConsoleColor()
+
+	r := gin.New()
+	r.Use(func(c *gin.Context) {
+		c.Set("accountId", 33)
+		c.Set("userId", 109)
+	})
+	r.POST("/api/v3/:account/files", c.CreateFile)
+	r.ServeHTTP(w, req)
+
+	// Grab result and convert to strut
+	result := models.File{}
+	err := json.Unmarshal([]byte(w.Body.String()), &result)
+
+	// Test results
+	st.Expect(t, err, nil)
+	st.Expect(t, w.Code, 201)
+	st.Expect(t, result.Id, uint(1))
+	st.Expect(t, result.AccountId, uint(33))
+	st.Expect(t, result.Name, "apple.pdf")
+	st.Expect(t, result.Type, "application/pdf")
+	st.Expect(t, result.Size, int64(95512))
+	st.Expect(t, result.Url, "https://app.skyclerk.com/accounts/33/1_apple.pdf")
 }
 
 //

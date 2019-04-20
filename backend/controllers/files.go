@@ -14,14 +14,13 @@ import (
 	"os"
 	"path/filepath"
 
-	"app.skyclerk.com/backend/library/files"
+	"github.com/adelowo/filer"
+	"github.com/adelowo/filer/validator"
+	"github.com/gin-gonic/gin"
+
 	"app.skyclerk.com/backend/library/response"
 	"app.skyclerk.com/backend/services"
-	"github.com/gin-gonic/gin"
 )
-
-// MaxFileUploadSize in bytes
-const maxFileUploadSize int64 = 50000000 // 50 Megabytes
 
 //
 // CreateFile - Upload a file to the account.
@@ -60,17 +59,27 @@ func (t *Controller) CreateFile(c *gin.Context) {
 		return
 	}
 
-	// TODO(spicer): Validate max file size.
-	size, err := files.SizeWithError(filePath)
+	// Setup validators
+	max, _ := filer.LengthInBytes("50MB")
+	min, _ := filer.LengthInBytes("1B")
+	val := validator.NewSizeValidator(max, min)
+	val2 := validator.NewMimeTypeValidator([]string{"image/jpeg", "image/png", "image/gif", "application/pdf"})
 
-	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "An error happend when uploading file (#002). Please contact help@skyclerk.com."})
+	// Open file so we can validate
+	vf, _ := os.Open(filePath)
+
+	// Validate max size
+	if _, err := val.Validate(vf); err != nil {
+		// TODO(spicer): Validate max file size.
+		c.JSON(http.StatusBadRequest, gin.H{"error": "We have a 50MB upload limit."})
 		return
 	}
 
-	if size > maxFileUploadSize {
+	// Validate file type
+	if _, err := val2.Validate(vf); err != nil {
 		// TODO(spicer): Validate max file size.
-		c.JSON(http.StatusBadRequest, gin.H{"error": fmt.Sprintf("We have a %d megabyte upload limit.", maxFileUploadSize)})
+		c.JSON(http.StatusBadRequest, gin.H{"error": "We only allow image and pdf files to be uploaded."})
+		return
 	}
 
 	// Store the file with S3 and create Files entry.
