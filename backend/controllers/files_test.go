@@ -84,7 +84,7 @@ func TestCreateFiles01(t *testing.T) {
 //
 func TestCreateFiles02(t *testing.T) {
 	// test file.
-	testFile := build.Default.GOPATH + "/src/app.skyclerk.com/backend/library/test/files/529-2712-1-PB.pdf"
+	testFile := build.Default.GOPATH + "/src/app.skyclerk.com/backend/library/test/files/mr_93_e.pdf"
 
 	// Start the db connection.
 	db, dbName, _ := models.NewTestDB("")

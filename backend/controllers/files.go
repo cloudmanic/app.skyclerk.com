@@ -19,6 +19,7 @@ import (
 	"github.com/gin-gonic/gin"
 
 	"app.skyclerk.com/backend/library/response"
+	"app.skyclerk.com/backend/models"
 	"app.skyclerk.com/backend/services"
 )
 
@@ -59,6 +60,23 @@ func (t *Controller) CreateFile(c *gin.Context) {
 		return
 	}
 
+	// Validate file we are uploading. JSON error set in function.
+	o, err := t.validateUploadedFile(c, filePath, accountId)
+	if err != nil {
+		return
+	}
+
+	// Add in a signed URL
+	o.Url = t.db.GetSignedFileUrl(o.Path)
+
+	// Return happy.
+	response.RespondCreated(c, o, nil)
+}
+
+//
+// validateUploadedFile - Validate a file we are uploading.
+//
+func (t *Controller) validateUploadedFile(c *gin.Context, filePath string, accountId uint) (models.File, error) {
 	// Setup validators
 	max, _ := filer.LengthInBytes("50MB")
 	min, _ := filer.LengthInBytes("1B")
@@ -72,14 +90,14 @@ func (t *Controller) CreateFile(c *gin.Context) {
 	if _, err := val.Validate(vf); err != nil {
 		// TODO(spicer): Validate max file size.
 		c.JSON(http.StatusBadRequest, gin.H{"error": "We have a 50MB upload limit."})
-		return
+		return models.File{}, err
 	}
 
 	// Validate file type
 	if _, err := val2.Validate(vf); err != nil {
 		// TODO(spicer): Validate max file size.
 		c.JSON(http.StatusBadRequest, gin.H{"error": "We only allow image and pdf files to be uploaded."})
-		return
+		return models.File{}, err
 	}
 
 	// Store the file with S3 and create Files entry.
@@ -87,14 +105,11 @@ func (t *Controller) CreateFile(c *gin.Context) {
 	if err != nil {
 		services.Info(err)
 		c.JSON(http.StatusBadRequest, gin.H{"error": "An error happend when uploading file (#003). Please contact help@skyclerk.com."})
-		return
+		return models.File{}, err
 	}
 
-	// Add in a signed URL
-	o.Url = t.db.GetSignedFileUrl(o.Path)
-
-	// Return happy.
-	response.RespondCreated(c, o, nil)
+	// Return happy
+	return o, nil
 }
 
 /* End File */
