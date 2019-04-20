@@ -14,10 +14,14 @@ import (
 	"os"
 	"path/filepath"
 
+	"app.skyclerk.com/backend/library/files"
 	"app.skyclerk.com/backend/library/response"
 	"app.skyclerk.com/backend/services"
 	"github.com/gin-gonic/gin"
 )
+
+// MaxFileUploadSize in bytes
+const maxFileUploadSize int64 = 50000000 // 50 Megabytes
 
 //
 // CreateFile - Upload a file to the account.
@@ -49,8 +53,6 @@ func (t *Controller) CreateFile(c *gin.Context) {
 		return
 	}
 
-	// TODO(spicer): Validate max file size.
-
 	// Save the uploaded file. Store file in tmp directory
 	filePath := fmt.Sprintf("%s/%s", cacheDir, filepath.Base(file.Filename))
 	if err := c.SaveUploadedFile(file, filePath); err != nil {
@@ -58,11 +60,24 @@ func (t *Controller) CreateFile(c *gin.Context) {
 		return
 	}
 
+	// TODO(spicer): Validate max file size.
+	size, err := files.SizeWithError(filePath)
+
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "An error happend when uploading file (#002). Please contact help@skyclerk.com."})
+		return
+	}
+
+	if size > maxFileUploadSize {
+		// TODO(spicer): Validate max file size.
+		c.JSON(http.StatusBadRequest, gin.H{"error": fmt.Sprintf("We have a %d megabyte upload limit.", maxFileUploadSize)})
+	}
+
 	// Store the file with S3 and create Files entry.
 	o, err := t.db.StoreFile(accountId, filePath)
 	if err != nil {
 		services.Info(err)
-		c.JSON(http.StatusBadRequest, gin.H{"error": "An error happend when uploading file (#002). Please contact help@skyclerk.com."})
+		c.JSON(http.StatusBadRequest, gin.H{"error": "An error happend when uploading file (#003). Please contact help@skyclerk.com."})
 		return
 	}
 
