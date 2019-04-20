@@ -1,6 +1,7 @@
 package models
 
 import (
+	"errors"
 	"fmt"
 	"os"
 	"time"
@@ -52,6 +53,7 @@ func (t *DB) StoreFile(accountId uint, filePath string) (File, error) {
 	size, err := files.SizeWithError(filePath)
 
 	if err != nil {
+		services.Info(err)
 		return File{}, err
 	}
 
@@ -81,6 +83,7 @@ func (t *DB) StoreFile(accountId uint, filePath string) (File, error) {
 	err = object.UploadObject(filePath, o.Path)
 
 	if err != nil {
+		services.Critical(errors.New(fmt.Sprintf("FileId: %d, AccountId: %d Error: %s", o.Id, accountId, err.Error())))
 		return File{}, err
 	}
 

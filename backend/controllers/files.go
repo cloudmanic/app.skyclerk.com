@@ -15,6 +15,7 @@ import (
 	"path/filepath"
 
 	"app.skyclerk.com/backend/library/response"
+	"app.skyclerk.com/backend/services"
 	"github.com/gin-gonic/gin"
 )
 
@@ -43,7 +44,8 @@ func (t *Controller) CreateFile(c *gin.Context) {
 	// This is the file we are uploading.
 	file, err := c.FormFile("file")
 	if err != nil {
-		c.String(http.StatusBadRequest, fmt.Sprintf("get form err: %s", err.Error()))
+		// TODO(spicer): Validate max file size.
+		c.JSON(http.StatusBadRequest, gin.H{"error": "A file is required."})
 		return
 	}
 
@@ -52,14 +54,15 @@ func (t *Controller) CreateFile(c *gin.Context) {
 	// Save the uploaded file. Store file in tmp directory
 	filePath := fmt.Sprintf("%s/%s", cacheDir, filepath.Base(file.Filename))
 	if err := c.SaveUploadedFile(file, filePath); err != nil {
-		c.String(http.StatusBadRequest, fmt.Sprintf("upload file err: %s", err.Error()))
+		c.JSON(http.StatusBadRequest, gin.H{"error": "An error happend when uploading file (#001). Please contact help@skyclerk.com."})
 		return
 	}
 
 	// Store the file with S3 and create Files entry.
 	o, err := t.db.StoreFile(accountId, filePath)
 	if err != nil {
-		c.String(http.StatusBadRequest, fmt.Sprintf("get form err: %s", err.Error()))
+		services.Info(err)
+		c.JSON(http.StatusBadRequest, gin.H{"error": "An error happend when uploading file (#002). Please contact help@skyclerk.com."})
 		return
 	}
 
