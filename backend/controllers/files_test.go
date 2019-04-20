@@ -66,6 +66,8 @@ func TestCreateFiles01(t *testing.T) {
 	r.POST("/api/v3/:account/files", c.CreateFile)
 	r.ServeHTTP(w, req)
 
+	//fmt.Println(w.Body.String())
+
 	// Grab result and convert to strut
 	result := models.File{}
 	err := json.Unmarshal([]byte(w.Body.String()), &result)
@@ -79,6 +81,7 @@ func TestCreateFiles01(t *testing.T) {
 	st.Expect(t, result.Type, "image/jpeg")
 	st.Expect(t, result.Size, int64(339773))
 	st.Expect(t, true, strings.Contains(result.Url, "https://cdn-dev.skyclerk.com/accounts/33/1_boston-city-flow.jpg?Expires="))
+	st.Expect(t, true, strings.Contains(result.Thumb800By800Url, "https://cdn-dev.skyclerk.com/accounts/33/1_thumb_800_800_boston-city-flow.jpg?Expires="))
 
 	// If we are testing locally (not on CI) we test to see if the file is on AWS with our signed key
 	if len(os.Getenv("AWS_CLOUDFRONT_PRIVATE_SIGN_KEY")) > 0 {
@@ -106,6 +109,19 @@ func TestCreateFiles01(t *testing.T) {
 
 		err = os.Remove("/tmp/1_boston-city-flow.jpg")
 		st.Expect(t, err, nil)
+
+		// ---- Test the thumb nail
+
+		// Make sure the file is not already there.
+		os.Remove("/tmp/1_thumb_800_800_boston-city-flow.jpg")
+
+		err = downloadFile("/tmp/1_thumb_800_800_boston-city-flow.jpg", result.Thumb800By800Url)
+		st.Expect(t, err, nil)
+		st.Expect(t, "0df429bc378af194df8e824f75e5de7b", files.Md5("/tmp/1_thumb_800_800_boston-city-flow.jpg"))
+
+		err = os.Remove("/tmp/1_thumb_800_800_boston-city-flow.jpg")
+		st.Expect(t, err, nil)
+
 	}
 }
 
@@ -201,7 +217,7 @@ func TestCreateFiles04(t *testing.T) {
 	testFile := build.Default.GOPATH + "/src/app.skyclerk.com/backend/library/test/files/Income Statement copy.pdf"
 
 	// Start the db connection.
-	db, dbName, _ := models.NewTestDB("testing_db")
+	db, dbName, _ := models.NewTestDB("")
 	defer models.TestingTearDown(db, dbName)
 
 	// Create controller
@@ -254,7 +270,7 @@ func TestCreateFiles05(t *testing.T) {
 	testFile := build.Default.GOPATH + "/src/app.skyclerk.com/backend/library/test/files/apple.pdf"
 
 	// Start the db connection.
-	db, dbName, _ := models.NewTestDB("testing_db")
+	db, dbName, _ := models.NewTestDB("")
 	defer models.TestingTearDown(db, dbName)
 
 	// Create controller

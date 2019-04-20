@@ -68,6 +68,7 @@ func (t *Controller) CreateFile(c *gin.Context) {
 
 	// Add in a signed URL
 	o.Url = t.db.GetSignedFileUrl(o.Path)
+	o.Thumb800By800Url = t.db.GetSignedFileUrl(o.ThumbPath)
 
 	// Return happy.
 	response.RespondCreated(c, o, nil)

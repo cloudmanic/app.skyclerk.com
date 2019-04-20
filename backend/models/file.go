@@ -11,6 +11,7 @@ import (
 
 	"github.com/asaskevich/govalidator"
 	"github.com/aws/aws-sdk-go/service/cloudfront/sign"
+	"github.com/disintegration/imaging"
 
 	"app.skyclerk.com/backend/library/files"
 	"app.skyclerk.com/backend/library/store/object"
@@ -19,18 +20,19 @@ import (
 
 // File struct
 type File struct {
-	Id        uint      `gorm:"primary_key;column:FilesId" json:"id"`
-	AccountId uint      `gorm:"column:FilesAccountId" sql:"not null" json:"account_id"`
-	UpdatedAt time.Time `gorm:"column:FilesUpdatedAt" sql:"not null" json:"_"`
-	CreatedAt time.Time `gorm:"column:FilesCreatedAt" sql:"not null" json:"_"`
-	Host      string    `gorm:"column:FilesHost" sql:"not null" json:"_"`
-	Name      string    `gorm:"column:FilesName" sql:"not null" json:"name"`
-	Path      string    `gorm:"column:FilesPath" sql:"not null" json:"_"`
-	ThumbPath string    `gorm:"column:FilesThumbPath" sql:"not null" json:"_"`
-	Type      string    `gorm:"column:FilesType" sql:"not null" json:"type"`
-	Hash      string    `gorm:"column:FilesHash" sql:"not null" json:"_"`
-	Size      int64     `gorm:"column:FilesSize" sql:"not null" json:"size"`
-	Url       string    `gorm:"-" json:"url"` // Not stored in DB.
+	Id               uint      `gorm:"primary_key;column:FilesId" json:"id"`
+	AccountId        uint      `gorm:"column:FilesAccountId" sql:"not null" json:"account_id"`
+	UpdatedAt        time.Time `gorm:"column:FilesUpdatedAt" sql:"not null" json:"_"`
+	CreatedAt        time.Time `gorm:"column:FilesCreatedAt" sql:"not null" json:"_"`
+	Host             string    `gorm:"column:FilesHost" sql:"not null" json:"_"`
+	Name             string    `gorm:"column:FilesName" sql:"not null" json:"name"`
+	Path             string    `gorm:"column:FilesPath" sql:"not null" json:"_"`
+	ThumbPath        string    `gorm:"column:FilesThumbPath" sql:"not null" json:"_"` // TODO(spicer): rename this Thumb800x800
+	Type             string    `gorm:"column:FilesType" sql:"not null" json:"type"`
+	Hash             string    `gorm:"column:FilesHash" sql:"not null" json:"_"`
+	Size             int64     `gorm:"column:FilesSize" sql:"not null" json:"size"`
+	Url              string    `gorm:"-" json:"url"`                  // Not stored in DB.
+	Thumb800By800Url string    `gorm:"-" json:"thumb_800_by_800_url"` // Not stored in DB.
 }
 
 //
@@ -80,19 +82,27 @@ func (t *DB) StoreFile(accountId uint, filePath string) (File, error) {
 	o.AccountId = accountId
 	t.New().Save(&o)
 
-	// Update the file path now that we have an id
-	o.Path = fmt.Sprintf("accounts/%d/%d_%s", accountId, o.Id, cleanedFileName)
-	t.New().Save(&o)
+	// Set upload path
+	up := fmt.Sprintf("accounts/%d/%d_%s", accountId, o.Id, cleanedFileName)
 
 	// Upload file to our S3 store
-	err = object.UploadObject(filePath, o.Path)
+	err = object.UploadObject(filePath, up)
 
 	if err != nil {
 		services.Critical(errors.New(fmt.Sprintf("FileId: %d, AccountId: %d Error: %s", o.Id, accountId, err.Error())))
 		return File{}, err
 	}
 
-	// TODO(spicer): Create thumbnail image.
+	// Update the file path now that we have an id
+	o.Path = up
+	t.New().Save(&o)
+
+	// Create and store at S3 the thumbnail image.
+	err = t.CreateAndStoreThumbnailImage(&o, cleanedFileName, filePath)
+
+	if err != nil {
+		services.Critical(err)
+	}
 
 	// Delete uploaded file
 	err = os.Remove(filePath)
@@ -143,6 +153,67 @@ func (t *DB) GetSignedFileUrl(path string) string {
 func (t *DB) CleanFileName(fileName string) string {
 	// This already checks for ";" so that ";;DROP TABLE x;" can't be part of the name.
 	return govalidator.SafeFileName(fileName)
+}
+
+//
+// Create thumbnail image
+//
+func (t *DB) CreateAndStoreThumbnailImage(file *File, cleanedFileName string, filePath string) error {
+	// Thumb base name
+	tbn := fmt.Sprintf("%d_thumb_800_800_%s", file.Id, cleanedFileName)
+
+	// File cache dir.
+	cacheDir := fmt.Sprintf("%s/thumbs/%d", os.Getenv("CACHE_DIR"), file.AccountId)
+
+	// Make the directory we store this file to
+	if _, err := os.Stat(cacheDir); os.IsNotExist(err) {
+		os.MkdirAll(cacheDir, 0755)
+	}
+
+	// TODO(spicer): Create thumbnail of PDF types
+
+	// Open a test image.
+	src, err := imaging.Open(filePath)
+	if err != nil {
+		return err
+	}
+
+	// Resize and crop the srcImage to fill the 100x100px area.
+	dst := imaging.Fill(src, 800, 800, imaging.Center, imaging.Lanczos)
+
+	// Saved thumbe file path
+	tbfp := cacheDir + "/" + tbn
+
+	// Save the resulting image as JPEG.
+	err = imaging.Save(dst, tbfp)
+	if err != nil {
+		return err
+	}
+
+	// Set thumb path
+	tp := fmt.Sprintf("accounts/%d/%d_thumb_800_800_%s", file.AccountId, file.Id, cleanedFileName)
+
+	// Upload file to S3
+	err = object.UploadObject(tbfp, tp)
+
+	if err != nil {
+		services.Critical(errors.New(fmt.Sprintf("Thumbnail FileId: %d, AccountId: %d Error: %s", file.Id, file.AccountId, err.Error())))
+		return err
+	}
+
+	// Update the file path now that we have an id
+	file.ThumbPath = tp
+	t.New().Save(&file)
+
+	// Delete thumb file
+	err = os.Remove(tbfp)
+
+	if err != nil {
+		services.Info(err)
+	}
+
+	// Return  happy
+	return nil
 }
 
 /* End File */
