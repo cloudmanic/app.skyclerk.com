@@ -19,11 +19,13 @@ import (
 	"os"
 	"path/filepath"
 	"strconv"
+	"strings"
 	"testing"
 
 	"github.com/gin-gonic/gin"
 	"github.com/nbio/st"
 
+	"app.skyclerk.com/backend/library/files"
 	"app.skyclerk.com/backend/models"
 )
 
@@ -76,7 +78,35 @@ func TestCreateFiles01(t *testing.T) {
 	st.Expect(t, result.Name, "boston-city-flow.jpg")
 	st.Expect(t, result.Type, "image/jpeg")
 	st.Expect(t, result.Size, int64(339773))
-	st.Expect(t, result.Url, "https://app.skyclerk.com/accounts/33/1_boston-city-flow.jpg")
+	st.Expect(t, true, strings.Contains(result.Url, "https://cdn-dev.skyclerk.com/accounts/33/1_boston-city-flow.jpg?Expires="))
+
+	// If we are testing locally (not on CI) we test to see if the file is on AWS with our signed key
+	if len(os.Getenv("AWS_CLOUDFRONT_PRIVATE_SIGN_KEY")) > 0 {
+		// Make sure the file is not already there.
+		os.Remove("/tmp/1_boston-city-flow.jpg")
+
+		err := downloadFile("/tmp/1_boston-city-flow.jpg", result.Url)
+		st.Expect(t, err, nil)
+
+		// Get the MD5 hash from the DB and compare
+		ff := models.File{}
+		db.New().Find(&ff, result.Id)
+		st.Expect(t, ff.Hash, files.Md5("/tmp/1_boston-city-flow.jpg"))
+
+		err = os.Remove("/tmp/1_boston-city-flow.jpg")
+		st.Expect(t, err, nil)
+
+		// --- here we chnage the key. We are just verifying AWS is honoring the singing
+
+		err = downloadFile("/tmp/1_boston-city-flow.jpg", result.Url+"blah")
+		st.Expect(t, err, nil)
+
+		// Hash should be of "unauthorized"
+		st.Expect(t, "b741482e554b40fd711a012fa74461cd", files.Md5("/tmp/1_boston-city-flow.jpg"))
+
+		err = os.Remove("/tmp/1_boston-city-flow.jpg")
+		st.Expect(t, err, nil)
+	}
 }
 
 //
@@ -212,7 +242,8 @@ func TestCreateFiles04(t *testing.T) {
 	st.Expect(t, result.Name, "income-statement-copy.pdf")
 	st.Expect(t, result.Type, "application/pdf")
 	st.Expect(t, result.Size, int64(72689))
-	st.Expect(t, result.Url, "https://app.skyclerk.com/accounts/33/1_income-statement-copy.pdf")
+	st.Expect(t, true, strings.Contains(result.Url, "https://cdn-dev.skyclerk.com/accounts/33/1_income-statement-copy.pdf?Expires="))
+
 }
 
 //
@@ -264,7 +295,7 @@ func TestCreateFiles05(t *testing.T) {
 	st.Expect(t, result.Name, "apple.pdf")
 	st.Expect(t, result.Type, "application/pdf")
 	st.Expect(t, result.Size, int64(95512))
-	st.Expect(t, result.Url, "https://app.skyclerk.com/accounts/33/1_apple.pdf")
+	st.Expect(t, true, strings.Contains(result.Url, "https://cdn-dev.skyclerk.com/accounts/33/1_apple.pdf?Expires="))
 }
 
 //
@@ -301,6 +332,30 @@ func buildLedgerFileform(t *testing.T, filePath string, object string, id uint) 
 	st.Expect(t, err, nil)
 
 	return body, writer
+}
+
+//
+// downloadFile will download a url to a local file. It's efficient because it will
+// write as it downloads and not load the whole file into memory.
+//
+func downloadFile(filepath string, url string) error {
+	// Get the data
+	resp, err := http.Get(url)
+	if err != nil {
+		return err
+	}
+	defer resp.Body.Close()
+
+	// Create the file
+	out, err := os.Create(filepath)
+	if err != nil {
+		return err
+	}
+	defer out.Close()
+
+	// Write the body to file
+	_, err = io.Copy(out, resp.Body)
+	return err
 }
 
 /* End File */

@@ -1,15 +1,20 @@
 package models
 
 import (
+	"crypto/x509"
+	"encoding/base64"
+	"encoding/pem"
 	"errors"
 	"fmt"
 	"os"
 	"time"
 
+	"github.com/asaskevich/govalidator"
+	"github.com/aws/aws-sdk-go/service/cloudfront/sign"
+
 	"app.skyclerk.com/backend/library/files"
 	"app.skyclerk.com/backend/library/store/object"
 	"app.skyclerk.com/backend/services"
-	"github.com/asaskevich/govalidator"
 )
 
 // File struct
@@ -102,11 +107,34 @@ func (t *DB) StoreFile(accountId uint, filePath string) (File, error) {
 
 //
 // GetSignedFileUrl - Pass in a path and get back a full url that is signed.
+// This url is good for 5 mins.
 //
 func (t *DB) GetSignedFileUrl(path string) string {
-	//TODO(spicer): make this work
+	// RUL we need to sign.
+	rawURL := os.Getenv("OBJECT_BASE_URL") + "/" + path
 
-	return os.Getenv("OBJECT_BASE_URL") + "/" + path
+	// This is a small hack for testing. This is because we do not want to share our keys with CI
+	if len(os.Getenv("AWS_CLOUDFRONT_PRIVATE_SIGN_KEY")) == 0 {
+		return rawURL + "?Expires="
+	}
+
+	// Decode the base64 and pass in a real private key
+	sDec, _ := base64.StdEncoding.DecodeString(os.Getenv("AWS_CLOUDFRONT_PRIVATE_SIGN_KEY"))
+
+	// Build the private key obj
+	block, _ := pem.Decode(sDec)
+	key, _ := x509.ParsePKCS1PrivateKey(block.Bytes)
+
+	// Sign URL to be valid for 5 mins from now.
+	signer := sign.NewURLSigner(os.Getenv("AWS_CLOUDFRONT_KEY_ID"), key)
+	signedURL, err := signer.Sign(rawURL, time.Now().Add(5*time.Minute))
+
+	if err != nil {
+		services.Info(err)
+	}
+
+	// Return happy
+	return signedURL
 }
 
 //
