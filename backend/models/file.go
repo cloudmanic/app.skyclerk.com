@@ -106,7 +106,7 @@ func (t *DB) StoreFile(accountId uint, filePath string) (File, error) {
 func (t *DB) GetSignedFileUrl(path string) string {
 	//TODO(spicer): make this work
 
-	return "https://app.skyclerk.com/" + path
+	return os.Getenv("OBJECT_BASE_URL") + "/" + path
 }
 
 //
