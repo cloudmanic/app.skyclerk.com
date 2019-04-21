@@ -38,7 +38,7 @@ func TestCreateFiles01(t *testing.T) {
 	testFile := build.Default.GOPATH + "/src/app.skyclerk.com/backend/library/test/files/Boston City Flow.jpg"
 
 	// Start the db connection.
-	db, dbName, _ := models.NewTestDB("testing_db")
+	db, dbName, _ := models.NewTestDB("")
 	defer models.TestingTearDown(db, dbName)
 
 	// Create controller
@@ -378,7 +378,7 @@ func TestCreateFiles05(t *testing.T) {
 // 	testFile := build.Default.GOPATH + "/src/app.skyclerk.com/backend/library/test/files/Smiling-cowboy-standing-and-holding-lasso-519719714_7360x4912.jpeg"
 //
 // 	// Start the db connection.
-// 	db, dbName, _ := models.NewTestDB("testing_db")
+// 	db, dbName, _ := models.NewTestDB("")
 // 	defer models.TestingTearDown(db, dbName)
 //
 // 	// Create controller
