@@ -34,6 +34,23 @@ func (t *Controller) CreateFile(c *gin.Context) {
 	// Get user id. f
 	//userId := uint(c.MustGet("userId").(int))
 
+	// Do a file upload and return a file model object. Errors
+	// are written to the response within this function.
+	// Because of this if we have errors we simply return.
+	o, err := t.DoFileUpload(c)
+
+	if err != nil {
+		return
+	}
+
+	// Return happy.
+	response.RespondCreated(c, o, nil)
+}
+
+//
+// DoFileUpload - We assume a multi-part upload where "file" is the variable
+//
+func (t *Controller) DoFileUpload(c *gin.Context) (models.File, error) {
 	// AccountId.
 	accountId := uint(c.MustGet("accountId").(int))
 
@@ -48,36 +65,35 @@ func (t *Controller) CreateFile(c *gin.Context) {
 	// This is the file we are uploading.
 	file, err := c.FormFile("file")
 	if err != nil {
-		// TODO(spicer): Validate max file size.
 		c.JSON(http.StatusBadRequest, gin.H{"error": "A file is required."})
-		return
+		return models.File{}, err
 	}
 
 	// Save the uploaded file. Store file in tmp directory
 	filePath := fmt.Sprintf("%s/%s", cacheDir, filepath.Base(file.Filename))
 	if err := c.SaveUploadedFile(file, filePath); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "An error happend when uploading file (#001). Please contact help@skyclerk.com."})
-		return
+		return models.File{}, err
 	}
 
 	// Validate file we are uploading. JSON error set in function.
-	o, err := t.validateUploadedFile(c, filePath, accountId)
+	o, err := t.ValidateUploadedFile(c, filePath, accountId)
 	if err != nil {
-		return
+		return models.File{}, err
 	}
 
 	// Add in a signed URL
 	o.Url = t.db.GetSignedFileUrl(o.Path)
 	o.Thumb600By600Url = t.db.GetSignedFileUrl(o.ThumbPath)
 
-	// Return happy.
-	response.RespondCreated(c, o, nil)
+	// Return happy
+	return o, nil
 }
 
 //
-// validateUploadedFile - Validate a file we are uploading.
+// ValidateUploadedFile - Validate a file we are uploading.
 //
-func (t *Controller) validateUploadedFile(c *gin.Context, filePath string, accountId uint) (models.File, error) {
+func (t *Controller) ValidateUploadedFile(c *gin.Context, filePath string, accountId uint) (models.File, error) {
 	// Setup validators
 	max, _ := filer.LengthInBytes("50MB")
 	min, _ := filer.LengthInBytes("1B")
