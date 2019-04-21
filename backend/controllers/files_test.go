@@ -11,6 +11,7 @@ package controllers
 import (
 	"bytes"
 	"encoding/json"
+	"fmt"
 	"go/build"
 	"io"
 	"mime/multipart"
@@ -18,7 +19,6 @@ import (
 	"net/http/httptest"
 	"os"
 	"path/filepath"
-	"strconv"
 	"strings"
 	"testing"
 
@@ -45,7 +45,11 @@ func TestCreateFiles01(t *testing.T) {
 	c.SetDB(db)
 
 	// Build file to post
-	buffer, writer := buildLedgerFileform(t, testFile, "ledger", uint(88))
+	buffer, writer := buildLedgerFileform(t, testFile)
+
+	// Attach a ledger  to add this file to.
+	err := writer.WriteField("ledger_id", "55")
+	st.Expect(t, err, nil)
 
 	// Setup request
 	req, _ := http.NewRequest("POST", "/api/v3/33/files", buffer)
@@ -66,11 +70,9 @@ func TestCreateFiles01(t *testing.T) {
 	r.POST("/api/v3/:account/files", c.CreateFile)
 	r.ServeHTTP(w, req)
 
-	//fmt.Println(w.Body.String())
-
 	// Grab result and convert to strut
 	result := models.File{}
-	err := json.Unmarshal([]byte(w.Body.String()), &result)
+	err = json.Unmarshal([]byte(w.Body.String()), &result)
 
 	// Test results
 	st.Expect(t, err, nil)
@@ -82,6 +84,8 @@ func TestCreateFiles01(t *testing.T) {
 	st.Expect(t, result.Size, int64(339773))
 	st.Expect(t, true, strings.Contains(result.Url, "https://cdn-dev.skyclerk.com/accounts/33/1_boston-city-flow.jpg?Expires="))
 	st.Expect(t, true, strings.Contains(result.Thumb800By800Url, "https://cdn-dev.skyclerk.com/accounts/33/1_thumb_800_800_boston-city-flow.jpg?Expires="))
+
+	fmt.Println(result.Url)
 
 	// If we are testing locally (not on CI) we test to see if the file is on AWS with our signed key
 	if len(os.Getenv("AWS_CLOUDFRONT_PRIVATE_SIGN_KEY")) > 0 {
@@ -141,7 +145,7 @@ func TestCreateFiles02(t *testing.T) {
 	c.SetDB(db)
 
 	// Build file to post
-	buffer, writer := buildLedgerFileform(t, testFile, "ledger", uint(88))
+	buffer, writer := buildLedgerFileform(t, testFile)
 
 	// Setup request
 	req, _ := http.NewRequest("POST", "/api/v3/33/files", buffer)
@@ -183,7 +187,7 @@ func TestCreateFiles03(t *testing.T) {
 	c.SetDB(db)
 
 	// Build file to post
-	buffer, writer := buildLedgerFileform(t, testFile, "ledger", uint(88))
+	buffer, writer := buildLedgerFileform(t, testFile)
 
 	// Setup request
 	req, _ := http.NewRequest("POST", "/api/v3/33/files", buffer)
@@ -225,7 +229,7 @@ func TestCreateFiles04(t *testing.T) {
 	c.SetDB(db)
 
 	// Build file to post
-	buffer, writer := buildLedgerFileform(t, testFile, "ledger", uint(88))
+	buffer, writer := buildLedgerFileform(t, testFile)
 
 	// Setup request
 	req, _ := http.NewRequest("POST", "/api/v3/33/files", buffer)
@@ -278,7 +282,7 @@ func TestCreateFiles05(t *testing.T) {
 	c.SetDB(db)
 
 	// Build file to post
-	buffer, writer := buildLedgerFileform(t, testFile, "ledger", uint(88))
+	buffer, writer := buildLedgerFileform(t, testFile)
 
 	// Setup request
 	req, _ := http.NewRequest("POST", "/api/v3/33/files", buffer)
@@ -317,7 +321,7 @@ func TestCreateFiles05(t *testing.T) {
 //
 // buildLedgerFileform so we can pust a file.
 //
-func buildLedgerFileform(t *testing.T, filePath string, object string, id uint) (*bytes.Buffer, *multipart.Writer) {
+func buildLedgerFileform(t *testing.T, filePath string) (*bytes.Buffer, *multipart.Writer) {
 	// Build buffer for file to upload.
 	body := &bytes.Buffer{}
 	writer := multipart.NewWriter(body)
@@ -333,14 +337,6 @@ func buildLedgerFileform(t *testing.T, filePath string, object string, id uint) 
 
 	// Copy file data to form body.
 	_, err = io.Copy(part, fh)
-	st.Expect(t, err, nil)
-
-	// Add in a field to tell which object this should be attached to.
-	err = writer.WriteField("object", object)
-	st.Expect(t, err, nil)
-
-	// Add in a field to tell the id of the object
-	err = writer.WriteField("id", strconv.Itoa(int(id)))
 	st.Expect(t, err, nil)
 
 	// Close writer

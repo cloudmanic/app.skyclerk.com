@@ -13,6 +13,8 @@ services:
 
     image: golang:1.11-alpine
 
+    restart: always    
+
     working_dir: /go/bin
 
     entrypoint: ./app.skyclerk.com

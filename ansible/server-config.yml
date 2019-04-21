@@ -1,11 +1,11 @@
 ---
 
-- name: Deploys the server config for skyclerk.com to production
-  
+- name: Deploys the server config for skyclerk.com to production (and imaginary.skyclerk.com)
+
   hosts: web-servers
-  
+
   become: yes
-  
+
   become_user: root
 
   roles:
@@ -14,7 +14,8 @@
     - docker-sites
     - docker-mysql
     - docker-nginx-proxy
-    
+    - imaginary
+
   vars_files:
     - "vars/env.yml"
-    - "vars/all.yml"    
+    - "vars/all.yml"

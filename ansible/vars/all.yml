@@ -65,6 +65,10 @@ core_packages:
   - docker.io
   - docker-compose
 
+# imaginary stuff (https://github.com/h2non/imaginary)
+imaginary_virtual_hosts: imaginary.skyclerk.com
+imaginary_site_dir: /sites/skyclerk/imaginary.skyclerk.com
+
 # S3 Storage Stuff
 object_region: us-west-2
 object_bucket: app.skyclerk.com

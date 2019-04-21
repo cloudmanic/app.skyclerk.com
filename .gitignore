@@ -9,3 +9,4 @@ server.retry
 backups.retry
 bootstrap.retry
 server-config.retry
+imaginary.retry
