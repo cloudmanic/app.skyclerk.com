@@ -354,6 +354,63 @@ func TestCreateFiles05(t *testing.T) {
 	st.Expect(t, true, strings.Contains(result.Url, "https://cdn-dev.skyclerk.com/accounts/33/1_apple.pdf?Expires="))
 }
 
+// //
+// // Test create File 06 - 35meg file. NOTE: this is commented out as it takes 30 seconds to run.
+// //
+// func TestCreateFiles06(t *testing.T) {
+// 	// test file.
+// 	testFile := build.Default.GOPATH + "/src/app.skyclerk.com/backend/library/test/files/Smiling-cowboy-standing-and-holding-lasso-519719714_7360x4912.jpeg"
+//
+// 	// Start the db connection.
+// 	db, dbName, _ := models.NewTestDB("testing_db")
+// 	defer models.TestingTearDown(db, dbName)
+//
+// 	// Create controller
+// 	c := &Controller{}
+// 	c.SetDB(db)
+//
+// 	// Build file to post
+// 	buffer, writer := buildLedgerFileform(t, testFile)
+//
+// 	// Attach a ledger  to add this file to.
+// 	err := writer.WriteField("ledger_id", "55")
+// 	st.Expect(t, err, nil)
+//
+// 	// Setup request
+// 	req, _ := http.NewRequest("POST", "/api/v3/33/files", buffer)
+//
+// 	// Set content type header
+// 	req.Header.Set("Content-Type", writer.FormDataContentType())
+//
+// 	// Setup writer.
+// 	w := httptest.NewRecorder()
+// 	gin.SetMode("release")
+// 	gin.DisableConsoleColor()
+//
+// 	r := gin.New()
+// 	r.Use(func(c *gin.Context) {
+// 		c.Set("accountId", 33)
+// 		c.Set("userId", 109)
+// 	})
+// 	r.POST("/api/v3/:account/files", c.CreateFile)
+// 	r.ServeHTTP(w, req)
+//
+// 	// Grab result and convert to strut
+// 	result := models.File{}
+// 	err = json.Unmarshal([]byte(w.Body.String()), &result)
+//
+// 	// Test results
+// 	st.Expect(t, err, nil)
+// 	st.Expect(t, w.Code, 201)
+// 	st.Expect(t, result.Id, uint(1))
+// 	st.Expect(t, result.AccountId, uint(33))
+// 	st.Expect(t, result.Name, "smiling-cowboy-standing-and-holding-lasso-519719714-7360x4912.jpeg")
+// 	st.Expect(t, result.Type, "image/jpeg")
+// 	st.Expect(t, result.Size, int64(38737343))
+// 	st.Expect(t, true, strings.Contains(result.Url, "https://cdn-dev.skyclerk.com/accounts/33/1_smiling-cowboy-standing-and-holding-lasso-519719714-7360x4912.jpeg?Expires="))
+// 	st.Expect(t, true, strings.Contains(result.Thumb600By600Url, "https://cdn-dev.skyclerk.com/accounts/33/1_thumb_600_600_smiling-cowboy-standing-and-holding-lasso-519719714-7360x4912.jpeg?Expires="))
+// }
+
 //
 // buildLedgerFileform so we can pust a file.
 //

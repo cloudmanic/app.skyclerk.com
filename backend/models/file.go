@@ -36,6 +36,7 @@ type File struct {
 	Type             string    `gorm:"column:FilesType" sql:"not null" json:"type"`
 	Hash             string    `gorm:"column:FilesHash" sql:"not null" json:"_"`
 	Size             int64     `gorm:"column:FilesSize" sql:"not null" json:"size"`
+	Assigned         int       `gorm:"column:FilesAssigned" sql:"not null" json:"_"`
 	Url              string    `gorm:"-" json:"url"`                  // Not stored in DB.
 	Thumb600By600Url string    `gorm:"-" json:"thumb_600_by_600_url"` // Not stored in DB.
 }
@@ -85,6 +86,7 @@ func (t *DB) StoreFile(accountId uint, filePath string) (File, error) {
 	o.Host = "amazon-s3"
 	o.Name = cleanedFileName
 	o.AccountId = accountId
+	o.Assigned = 1 // TODO(spicer): kill this after we kill PHP
 	t.New().Save(&o)
 
 	// Set upload path
