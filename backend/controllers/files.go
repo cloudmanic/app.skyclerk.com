@@ -9,10 +9,12 @@
 package controllers
 
 import (
+	"errors"
 	"fmt"
 	"net/http"
 	"os"
 	"path/filepath"
+	"strconv"
 
 	"github.com/adelowo/filer"
 	"github.com/adelowo/filer/validator"
@@ -27,12 +29,11 @@ import (
 // CreateFile - Upload a file to the account.
 //
 func (t *Controller) CreateFile(c *gin.Context) {
-	// Options fields that can be included in the post for later assignment.
-	// id := c.PostForm("id")
-	// table := c.PostForm("object")
+	// Options field - ledger_id - (defaults to zero if not included)
+	ledgerId, _ := strconv.ParseInt(c.PostForm("ledger_id"), 0, 64)
 
-	// Get user id. f
-	//userId := uint(c.MustGet("userId").(int))
+	// AccountId.
+	accountId := uint(c.MustGet("accountId").(int))
 
 	// Do a file upload and return a file model object. Errors
 	// are written to the response within this function.
@@ -41,6 +42,16 @@ func (t *Controller) CreateFile(c *gin.Context) {
 
 	if err != nil {
 		return
+	}
+
+	// Did we attach a ledger id to this upload?
+	if ledgerId > 0 {
+		err := t.db.AddFileToLedgerEntry(accountId, uint(ledgerId), o.Id)
+
+		if err != nil {
+			services.Info(errors.New(fmt.Sprintf("Files.CreateFile() - AccountId: %d LedgerId: %d - %s", accountId, ledgerId, err.Error())))
+			c.JSON(http.StatusBadRequest, gin.H{"error": "Your ledger_id is not found."})
+		}
 	}
 
 	// Return happy.

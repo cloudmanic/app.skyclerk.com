@@ -49,6 +49,26 @@ func (File) TableName() string {
 }
 
 //
+// GetFileByAccountAndId by account and id.
+//
+func (db *DB) GetFileByAccountAndId(accountId uint, id uint) (File, error) {
+	// File to return
+	c := File{}
+
+	// Make query
+	if db.New().Where("FilesAccountId = ? AND FilesId = ?", accountId, id).First(&c).RecordNotFound() {
+		return File{}, errors.New("File entry not found.")
+	}
+
+	// Add in a signed URL
+	c.Url = db.GetSignedFileUrl(c.Path)
+	c.Thumb600By600Url = db.GetSignedFileUrl(c.ThumbPath)
+
+	// Return result
+	return c, nil
+}
+
+//
 // StoreFile - Store the file with our s3 file storage provider
 //
 func (t *DB) StoreFile(accountId uint, filePath string) (File, error) {

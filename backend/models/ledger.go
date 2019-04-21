@@ -36,6 +36,7 @@ type Ledger struct {
 	AuthGatewayToken string    `gorm:"column:LedgerAuthGatewayToken" sql:"not null" json:"_"`
 	StripeId         string    `gorm:"column:LedgerStripeId" sql:"not null" json:"_"`
 	Labels           []Label   `gorm:"many2many:LabelsToLedger;association_foreignkey:LabelsId;foreignkey:LedgerId;association_jointable_foreignkey:LabelsToLedgerLabelId;jointable_foreignkey:LabelsToLedgerLedgerId" sql:"not null" json:"labels"`
+	Files            []File    `gorm:"many2many:FilesToLedger;association_foreignkey:FilesId;foreignkey:LedgerId;association_jointable_foreignkey:FilesToLedgerFileId;jointable_foreignkey:FilesToLedgerLedgerId" sql:"not null" json:"files"`
 }
 
 //
@@ -120,6 +121,9 @@ func (db *DB) LedgerCreate(ledger *Ledger) error {
 	// Add additional data to lookups TODO: remove this once we retire PHP app.
 	db.Model(LabelsToLedger{}).Where("LabelsToLedgerLedgerId = ?", ledger.Id).Updates(LabelsToLedger{LabelsToLedgerAccountId: ledger.AccountId, LabelsToLedgerCreatedAt: time.Now()})
 
+	// (files) Add additional data to lookups TODO: remove this once we retire PHP app.
+	db.Model(FilesToLedger{}).Where("FilesToLedgerLedgerId = ?", ledger.Id).Updates(FilesToLedger{FilesToLedgerAccountId: ledger.AccountId, FilesToLedgerCreatedAt: time.Now()})
+
 	return nil
 }
 
@@ -136,8 +140,11 @@ func (db *DB) LedgerUpdate(ledger *Ledger) error {
 	// Update this ledger entry.
 	db.Save(&ledger)
 
-	// Add additional data to lookups TODO: remove this once we retire PHP app.
+	// (labels) Add additional data to lookups TODO: remove this once we retire PHP app.
 	db.Model(LabelsToLedger{}).Where("LabelsToLedgerLedgerId = ?", ledger.Id).Updates(LabelsToLedger{LabelsToLedgerAccountId: ledger.AccountId, LabelsToLedgerCreatedAt: time.Now()})
+
+	// (files) Add additional data to lookups TODO: remove this once we retire PHP app.
+	db.Model(FilesToLedger{}).Where("FilesToLedgerLedgerId = ?", ledger.Id).Updates(FilesToLedger{FilesToLedgerAccountId: ledger.AccountId, FilesToLedgerCreatedAt: time.Now()})
 
 	return nil
 }
@@ -150,8 +157,14 @@ func (db *DB) GetLedgerByAccountAndId(accountId uint, id uint) (Ledger, error) {
 	c := Ledger{}
 
 	// Make query
-	if db.New().Preload("Contact").Preload("Category").Preload("Labels").Where("LedgerAccountId = ? AND LedgerId = ?", accountId, id).First(&c).RecordNotFound() {
+	if db.New().Preload("Contact").Preload("Category").Preload("Labels").Preload("Files").Where("LedgerAccountId = ? AND LedgerId = ?", accountId, id).First(&c).RecordNotFound() {
 		return Ledger{}, errors.New("Ledger entry not found.")
+	}
+
+	// Loop through and add the signed URLs to the files
+	for key, row := range c.Files {
+		c.Files[key].Url = db.GetSignedFileUrl(row.Path)
+		c.Files[key].Thumb600By600Url = db.GetSignedFileUrl(row.ThumbPath)
 	}
 
 	// Return result
@@ -165,10 +178,44 @@ func (db *DB) DeleteLedgerByAccountAndId(accountId uint, id uint) error {
 	// Make query to delete
 	db.New().Where("LedgerAccountId = ? AND LedgerId = ?", accountId, id).Delete(Ledger{})
 
-	// Delete from look up table.
+	// Delete from look up table. - Labels
 	db.New().Where("LabelsToLedgerAccountId = ? AND LabelsToLedgerLedgerId = ?", accountId, id).Delete(LabelsToLedger{})
 
+	// Delete from look up table. - Files
+	db.New().Where("FilesToLedgerAccountId = ? AND FilesToLedgerLedgerId = ?", accountId, id).Delete(FilesToLedger{})
+
 	// Return result
+	return nil
+}
+
+//
+// AddFileToLedgerEntry takes a ledger id and a file id. It then assigns
+// this file id to a ledger entry. This is mostly used when we upload a file
+// via the /api/v3/files and we include a ledger entry to include this to.
+//
+func (db *DB) AddFileToLedgerEntry(accountId uint, ledgerId uint, fileId uint) error {
+	// First get the ledger entry. Make sure it is a real ledger entry.
+	ledger, err := db.GetLedgerByAccountAndId(accountId, ledgerId)
+
+	if err != nil {
+		return err
+	}
+
+	// Validate the fileId is real
+	file, err := db.GetFileByAccountAndId(accountId, fileId)
+
+	if err != nil {
+		return err
+	}
+
+	// Lets add the new file to the ledger object
+	ledger.Files = append(ledger.Files, file)
+	db.Save(&ledger)
+
+	// Add additional data to lookups TODO: remove this once we retire PHP app.
+	db.Model(FilesToLedger{}).Where("FilesToLedgerLedgerId = ?", ledger.Id).Updates(FilesToLedger{FilesToLedgerAccountId: ledger.AccountId, FilesToLedgerCreatedAt: time.Now()})
+
+	// Return happy
 	return nil
 }
 

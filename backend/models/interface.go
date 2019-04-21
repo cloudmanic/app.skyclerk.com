@@ -32,6 +32,7 @@ type Datastore interface {
 	LedgerUpdate(ledger *Ledger) error
 	DeleteLedgerByAccountAndId(accountId uint, id uint) error
 	GetLedgerByAccountAndId(accountId uint, id uint) (Ledger, error)
+	AddFileToLedgerEntry(accountId uint, ledgerId uint, fileId uint) error
 	ValidateLedgerContact(ledger Ledger, accountId uint, objId uint, action string) error
 	ValidateLedgerCategory(ledger Ledger, accountId uint, objId uint, action string) error
 
@@ -62,6 +63,7 @@ type Datastore interface {
 	GetSignedFileUrl(path string) string
 	CleanFileName(fileName string) string
 	StoreFile(accountId uint, filePath string) (File, error)
+	GetFileByAccountAndId(accountId uint, id uint) (File, error)
 	GetImageThumbNail(file *File, filePath string, width int, height int, cleanedFileName string) (string, error)
 	GetPdfThumbNail(file *File, width int, height int, cleanedFileName string) (string, error)
 	CreateAndStoreThumbnailImage(file *File, cleanedFileName string, filePath string, fileType string) error
