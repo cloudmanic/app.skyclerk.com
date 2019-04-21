@@ -37,7 +37,7 @@ func (t *Controller) GetLedgers(c *gin.Context) {
 		Limit:            50,
 		Page:             page,
 		Debug:            false,
-		PreLoads:         []string{"Category", "Contact", "Labels"},
+		PreLoads:         []string{"Category", "Contact", "Labels", "Files"},
 		AllowedOrderCols: []string{"LedgerId", "LedgerDate"},
 		Wheres: []models.KeyValue{
 			{Key: "LedgerAccountId", ValueInt: c.MustGet("accountId").(int)},
@@ -46,6 +46,14 @@ func (t *Controller) GetLedgers(c *gin.Context) {
 
 	// Run the query
 	meta, err := t.db.QueryMeta(&results, params)
+
+	// Loop through and add signed urls to files TODO(spicer): clean this up. Maybe move all this into the model.
+	for key, row := range results {
+		for key2, row2 := range row.Files {
+			results[key].Files[key2].Url = t.db.GetSignedFileUrl(row2.Path)
+			results[key].Files[key2].Thumb600By600Url = t.db.GetSignedFileUrl(row2.ThumbPath)
+		}
+	}
 
 	// Return json based on if this was a good result or not.
 	response.ResultsMeta(c, results, err, meta)
