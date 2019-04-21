@@ -275,10 +275,12 @@ func TestCreateFiles04(t *testing.T) {
 	st.Expect(t, result.Type, "application/pdf")
 	st.Expect(t, result.Size, int64(72689))
 	st.Expect(t, true, strings.Contains(result.Url, "https://cdn-dev.skyclerk.com/accounts/33/1_income-statement-copy.pdf?Expires="))
-	st.Expect(t, true, strings.Contains(result.Thumb600By600Url, "https://cdn-dev.skyclerk.com/accounts/33/1_thumb_600_600_income-statement-copy.jpeg?Expires="))
 
 	// If we are testing locally (not on CI) we test to see if the file is on AWS with our signed key
 	if len(os.Getenv("AWS_CLOUDFRONT_PRIVATE_SIGN_KEY")) > 0 {
+		// We only make thumbs if we have a AWS Cloudfront key
+		st.Expect(t, true, strings.Contains(result.Thumb600By600Url, "https://cdn-dev.skyclerk.com/accounts/33/1_thumb_600_600_income-statement-copy.jpeg?Expires="))
+
 		// Make sure the file is not already there.
 		os.Remove("/tmp/1_income-statement-copy.pdf")
 

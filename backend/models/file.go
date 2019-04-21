@@ -200,12 +200,11 @@ func (t *DB) CreateAndStoreThumbnailImage(file *File, cleanedFileName string, fi
 	// The path to the thumb nail we are going to upload.
 	var tbfp string
 
-	// If this is a PDF we use imaginary.skyclerk.com to create the thumbnail
-	if fileType == "application/pdf" {
+	// If this is a PDF we use imaginary.skyclerk.com to create the thumbnail - This is hacky to support testing.
+	if fileType == "application/pdf" && (len(os.Getenv("AWS_CLOUDFRONT_PRIVATE_SIGN_KEY")) > 0) {
 		t, err := t.GetPdfThumbNail(file, width, height, cleanedFileName)
 
 		if err != nil {
-			services.Critical(err)
 			return err
 		}
 
@@ -217,11 +216,16 @@ func (t *DB) CreateAndStoreThumbnailImage(file *File, cleanedFileName string, fi
 		t, err2 := t.GetImageThumbNail(file, filePath, width, height, cleanedFileName)
 
 		if err2 != nil {
-			services.Critical(err2)
 			return err2
 		}
 
 		tbfp = t
+	}
+
+	// If we do not have a thumbnail no need to go on.
+	if len(tbfp) == 0 {
+		err := errors.New(fmt.Sprintf("Thumbnail Failed to create FileId: %d, AccountId: %d Error: %s", file.Id, file.AccountId, "Unable to create thumbnail."))
+		return err
 	}
 
 	// Set thumb path
@@ -231,8 +235,7 @@ func (t *DB) CreateAndStoreThumbnailImage(file *File, cleanedFileName string, fi
 	err := object.UploadObject(tbfp, tp)
 
 	if err != nil {
-		services.Critical(errors.New(fmt.Sprintf("Thumbnail FileId: %d, AccountId: %d Error: %s", file.Id, file.AccountId, err.Error())))
-		return err
+		return errors.New(fmt.Sprintf("Thumbnail FileId: %d, AccountId: %d Error: %s", file.Id, file.AccountId, err.Error()))
 	}
 
 	// Update the file path now that we have an id
