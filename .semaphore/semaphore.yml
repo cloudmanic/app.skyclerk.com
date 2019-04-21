@@ -31,6 +31,10 @@ blocks:
           value: s3.amazonaws.com
         - name: OBJECT_BASE_URL
           value: https://cdn-dev.skyclerk.com
+        - name: IMAGINARY_HOST
+          value: https://imaginary.skyclerk.com
+        - name: IMAGINARY_KEY
+          value: AVpirXv4guOH3Q2PKrzKdVzvh
 
       jobs:
       - name: Get app code, get packages, test and build

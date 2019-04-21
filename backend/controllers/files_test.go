@@ -11,7 +11,6 @@ package controllers
 import (
 	"bytes"
 	"encoding/json"
-	"fmt"
 	"go/build"
 	"io"
 	"mime/multipart"
@@ -83,9 +82,7 @@ func TestCreateFiles01(t *testing.T) {
 	st.Expect(t, result.Type, "image/jpeg")
 	st.Expect(t, result.Size, int64(339773))
 	st.Expect(t, true, strings.Contains(result.Url, "https://cdn-dev.skyclerk.com/accounts/33/1_boston-city-flow.jpg?Expires="))
-	st.Expect(t, true, strings.Contains(result.Thumb800By800Url, "https://cdn-dev.skyclerk.com/accounts/33/1_thumb_800_800_boston-city-flow.jpg?Expires="))
-
-	fmt.Println(result.Url)
+	st.Expect(t, true, strings.Contains(result.Thumb600By600Url, "https://cdn-dev.skyclerk.com/accounts/33/1_thumb_600_600_boston-city-flow.jpg?Expires="))
 
 	// If we are testing locally (not on CI) we test to see if the file is on AWS with our signed key
 	if len(os.Getenv("AWS_CLOUDFRONT_PRIVATE_SIGN_KEY")) > 0 {
@@ -119,13 +116,12 @@ func TestCreateFiles01(t *testing.T) {
 		// Make sure the file is not already there.
 		os.Remove("/tmp/1_thumb_800_800_boston-city-flow.jpg")
 
-		err = downloadFile("/tmp/1_thumb_800_800_boston-city-flow.jpg", result.Thumb800By800Url)
+		err = downloadFile("/tmp/1_thumb_600_600_boston-city-flow.jpg", result.Thumb600By600Url)
 		st.Expect(t, err, nil)
-		st.Expect(t, "0df429bc378af194df8e824f75e5de7b", files.Md5("/tmp/1_thumb_800_800_boston-city-flow.jpg"))
+		st.Expect(t, "ef6363908d9bdd27c9b1737ad26afbc6", files.Md5("/tmp/1_thumb_600_600_boston-city-flow.jpg"))
 
-		err = os.Remove("/tmp/1_thumb_800_800_boston-city-flow.jpg")
+		err = os.Remove("/tmp/1_thumb_600_600_boston-city-flow.jpg")
 		st.Expect(t, err, nil)
-
 	}
 }
 
@@ -263,7 +259,47 @@ func TestCreateFiles04(t *testing.T) {
 	st.Expect(t, result.Type, "application/pdf")
 	st.Expect(t, result.Size, int64(72689))
 	st.Expect(t, true, strings.Contains(result.Url, "https://cdn-dev.skyclerk.com/accounts/33/1_income-statement-copy.pdf?Expires="))
+	st.Expect(t, true, strings.Contains(result.Thumb600By600Url, "https://cdn-dev.skyclerk.com/accounts/33/1_thumb_600_600_income-statement-copy.jpeg?Expires="))
 
+	// If we are testing locally (not on CI) we test to see if the file is on AWS with our signed key
+	if len(os.Getenv("AWS_CLOUDFRONT_PRIVATE_SIGN_KEY")) > 0 {
+		// Make sure the file is not already there.
+		os.Remove("/tmp/1_income-statement-copy.pdf")
+
+		err := downloadFile("/tmp/1_income-statement-copy.pdf", result.Url)
+		st.Expect(t, err, nil)
+
+		// Get the MD5 hash from the DB and compare
+		ff := models.File{}
+		db.New().Find(&ff, result.Id)
+		st.Expect(t, ff.Hash, files.Md5("/tmp/1_income-statement-copy.pdf"))
+
+		err = os.Remove("/tmp/1_income-statement-copy.pdf")
+		st.Expect(t, err, nil)
+
+		// --- here we chnage the key. We are just verifying AWS is honoring the singing
+
+		err = downloadFile("/tmp/1_income-statement-copy.pdf", result.Url+"blah")
+		st.Expect(t, err, nil)
+
+		// Hash should be of "unauthorized"
+		st.Expect(t, "b741482e554b40fd711a012fa74461cd", files.Md5("/tmp/1_income-statement-copy.pdf"))
+
+		err = os.Remove("/tmp/1_income-statement-copy.pdf")
+		st.Expect(t, err, nil)
+
+		// ---- Test the thumb nail
+
+		// Make sure the file is not already there.
+		os.Remove("/tmp/1_thumb_600_600_income-statement-copy.jpeg")
+
+		err = downloadFile("/tmp/1_thumb_600_600_income-statement-copy.jpeg", result.Thumb600By600Url)
+		st.Expect(t, err, nil)
+		st.Expect(t, "935cc90c4185d671c5f97fdb7d516baf", files.Md5("/tmp/1_thumb_600_600_income-statement-copy.jpeg"))
+
+		err = os.Remove("/tmp/1_thumb_600_600_income-statement-copy.jpeg")
+		st.Expect(t, err, nil)
+	}
 }
 
 //

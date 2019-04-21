@@ -62,7 +62,9 @@ type Datastore interface {
 	GetSignedFileUrl(path string) string
 	CleanFileName(fileName string) string
 	StoreFile(accountId uint, filePath string) (File, error)
-	CreateAndStoreThumbnailImage(file *File, cleanedFileName string, filePath string) error
+	GetImageThumbNail(file *File, filePath string, width int, height int, cleanedFileName string) (string, error)
+	GetPdfThumbNail(file *File, width int, height int, cleanedFileName string) (string, error)
+	CreateAndStoreThumbnailImage(file *File, cleanedFileName string, filePath string, fileType string) error
 }
 
 /* End File */
