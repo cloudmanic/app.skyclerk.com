@@ -63,7 +63,7 @@ func (t *Controller) GetLedgers(c *gin.Context) {
 // GetLedger by id
 //
 func (t *Controller) GetLedger(c *gin.Context) {
-
+	// Set id
 	id, err := strconv.ParseInt(c.Param("id"), 10, 32)
 
 	if err != nil {
@@ -87,7 +87,6 @@ func (t *Controller) GetLedger(c *gin.Context) {
 // CreateLedger - Create a ledger within the account.
 //
 func (t *Controller) CreateLedger(c *gin.Context) {
-
 	// Setup Contact obj
 	o := models.Ledger{}
 

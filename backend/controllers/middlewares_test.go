@@ -88,7 +88,7 @@ func TestAuthMiddleware02(t *testing.T) {
 	r.ServeHTTP(w, req)
 
 	// Validate results
-	st.Expect(t, w.Body.String(), `{"error":"Authorization Failed (#003)"}`)
+	st.Expect(t, w.Body.String(), `{"errors":{"system":"Authorization Failed (#003)"}}`)
 }
 
 //
@@ -125,7 +125,7 @@ func TestAuthMiddleware03(t *testing.T) {
 	r.ServeHTTP(w, req)
 
 	// Validate results
-	st.Expect(t, w.Body.String(), `{"error":"Account Not Found - Unable to Authenticate (#006)"}`)
+	st.Expect(t, w.Body.String(), `{"errors":{"system":"Account Not Found - Unable to Authenticate (#006)"}}`)
 }
 
 //
@@ -161,7 +161,7 @@ func TestAuthMiddleware04(t *testing.T) {
 	r.ServeHTTP(w, req)
 
 	// Validate results
-	st.Expect(t, w.Body.String(), `{"error":"Authorization Failed (#001)"}`)
+	st.Expect(t, w.Body.String(), `{"errors":{"system":"Authorization Failed (#001)"}}`)
 }
 
 //
@@ -235,7 +235,7 @@ func TestAuthNoAccountMiddleware02(t *testing.T) {
 	r.ServeHTTP(w, req)
 
 	// Validate results
-	st.Expect(t, w.Body.String(), `{"error":"Authorization Failed (#003)"}`)
+	st.Expect(t, w.Body.String(), `{"errors":{"system":"Authorization Failed (#003)"}}`)
 }
 
 //
@@ -271,7 +271,7 @@ func TestAuthNoAccountMiddleware03(t *testing.T) {
 	r.ServeHTTP(w, req)
 
 	// Validate results
-	st.Expect(t, w.Body.String(), `{"error":"Authorization Failed (#001)"}`)
+	st.Expect(t, w.Body.String(), `{"errors":{"system":"Authorization Failed (#001)"}}`)
 }
 
 /* End File */

@@ -39,7 +39,7 @@ func (t *Controller) AuthMiddleware() gin.HandlerFunc {
 		accountId, err := strconv.ParseInt(c.Param("account"), 10, 32)
 
 		if err != nil {
-			c.JSON(http.StatusUnauthorized, gin.H{"error": "Account Not Found - Unable to Authenticate (#005)"})
+			c.JSON(http.StatusUnauthorized, gin.H{"errors": gin.H{"system": "Account Not Found - Unable to Authenticate (#005)"}})
 			c.AbortWithStatus(401)
 			return
 		}
@@ -54,7 +54,7 @@ func (t *Controller) AuthMiddleware() gin.HandlerFunc {
 		}
 
 		if !found {
-			c.JSON(http.StatusUnauthorized, gin.H{"error": "Account Not Found - Unable to Authenticate (#006)"})
+			c.JSON(http.StatusUnauthorized, gin.H{"errors": gin.H{"system": "Account Not Found - Unable to Authenticate (#006)"}})
 			c.AbortWithStatus(401)
 			return
 		}
@@ -104,13 +104,13 @@ func (t *Controller) AuthUser(c *gin.Context) models.User {
 			access_token = c.Query("access_token")
 
 			if len(access_token) <= 0 {
-				c.JSON(http.StatusUnauthorized, gin.H{"error": "Authorization Failed (#001)"})
+				c.JSON(http.StatusUnauthorized, gin.H{"errors": gin.H{"system": "Authorization Failed (#001)"}})
 				c.AbortWithStatus(401)
 				return models.User{}
 			}
 
 		} else {
-			c.JSON(http.StatusUnauthorized, gin.H{"error": "Authorization Failed (#002)"})
+			c.JSON(http.StatusUnauthorized, gin.H{"errors": gin.H{"system": "Authorization Failed (#002)"}})
 			c.AbortWithStatus(401)
 			return models.User{}
 		}
@@ -124,7 +124,7 @@ func (t *Controller) AuthUser(c *gin.Context) models.User {
 
 	if err != nil {
 		services.LogInfo("Access Token Not Found - Unable to Authenticate via HTTP (#003)")
-		c.JSON(http.StatusUnauthorized, gin.H{"error": "Authorization Failed (#003)"})
+		c.JSON(http.StatusUnauthorized, gin.H{"errors": gin.H{"system": "Authorization Failed (#003)"}})
 		c.AbortWithStatus(401)
 		return models.User{}
 	}
@@ -134,7 +134,7 @@ func (t *Controller) AuthUser(c *gin.Context) models.User {
 
 	if err != nil {
 		services.LogInfo("User Not Found - Unable to Authenticate - UserId (HTTP) : " + fmt.Sprint(session.UserId) + " - Session Id : " + fmt.Sprint(session.Id))
-		c.JSON(http.StatusUnauthorized, gin.H{"error": "Authorization Failed (#004)"})
+		c.JSON(http.StatusUnauthorized, gin.H{"errors": gin.H{"system": "Authorization Failed (#004)"}})
 		c.AbortWithStatus(401)
 		return models.User{}
 	}
@@ -145,7 +145,7 @@ func (t *Controller) AuthUser(c *gin.Context) models.User {
 	t.db.New().Save(&session)
 
 	// Add this user to the context
-	c.Set("userId", user.Id)
+	c.Set("userId", int(user.Id))
 
 	// Return happy
 	return user
@@ -175,7 +175,7 @@ func (t *Controller) ParamValidateMiddleware() gin.HandlerFunc {
 			id, err := strconv.ParseInt(c.Param("id"), 10, 32)
 
 			if err != nil {
-				c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": "The id passed in via the URL is not an integer."})
+				c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"errors": gin.H{"system": "The id passed in via the URL is not an integer."}})
 				return
 			}
 

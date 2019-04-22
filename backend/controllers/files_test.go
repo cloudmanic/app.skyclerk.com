@@ -180,7 +180,7 @@ func TestCreateFiles02(t *testing.T) {
 
 	// Test results
 	st.Expect(t, w.Code, 400)
-	st.Expect(t, w.Body.String(), `{"error":"We have a 50MB upload limit."}`)
+	st.Expect(t, w.Body.String(), `{"errors":{"file":"We have a 50MB upload limit."}}`)
 }
 
 //
@@ -222,7 +222,7 @@ func TestCreateFiles03(t *testing.T) {
 
 	// Test results
 	st.Expect(t, w.Code, 400)
-	st.Expect(t, w.Body.String(), `{"error":"We only allow image and pdf files to be uploaded."}`)
+	st.Expect(t, w.Body.String(), `{"errors":{"file":"We only allow image and pdf files to be uploaded."}}`)
 }
 
 //
