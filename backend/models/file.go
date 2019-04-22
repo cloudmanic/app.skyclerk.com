@@ -151,6 +151,7 @@ func (t *DB) GetSignedFileUrl(path string) string {
 	rawURL := os.Getenv("OBJECT_BASE_URL") + "/" + path
 
 	// This is a small hack for testing. This is because we do not want to share our keys with CI
+	// TODO(spicer): If we do not have a cloudfront key we revert to using S3 bucket signing (good for testing)
 	if len(os.Getenv("AWS_CLOUDFRONT_PRIVATE_SIGN_KEY")) == 0 {
 		return rawURL + "?Expires="
 	}
