@@ -1,11 +1,25 @@
-APP_ENV=local
-HTTP_PORT=9090
-SITE_URL=https://app.skyclerk.com
-ENCRYPTION_KEY=adf23423adfasdf1
+APP_ENV={{ app_env }}
+HTTP_PORT={{ http_port }}
+SITE_URL={{ site_url }}
+ENCRYPTION_KEY={{ encryption_key }}
 
 DB_HOST=tcp({{ app_db_host }}:3306)
 DB_USERNAME={{ app_db_username }}
 DB_PASSWORD={{ app_db_password }}
 DB_DATABASE={{ app_db_database }}
+
+OBJECT_REGION={{ object_region }}
+OBJECT_BUCKET={{ object_bucket }}
+OBJECT_ACCESS_KEY_ID={{ object_access_key }}
+OBJECT_SECRET_ACCESS_KEY={{ object_secret_key }}
+OBJECT_ENDPOINT={{ object_endpoint }}
+OBJECT_BASE_URL={{ object_base_url }}
+
+AWS_CLOUDFRONT_KEY_ID={{ aws_cloudfront_key_id }}
+AWS_CLOUDFRONT_PRIVATE_SIGN_KEY={{ aws_cloudfront_private_sign_key }}
+
+IMAGINARY_HOST={{ imaginary_host }}
+IMAGINARY_KEY={{ imaginary_api_key }}
+
 
 HTTP_LOG_REQUESTS=true
