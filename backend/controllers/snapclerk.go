@@ -41,20 +41,22 @@ func (t *Controller) CreateSnapClerk(c *gin.Context) {
 
 	// Build skyclerk obj from optional fields.
 	sc := models.SnapClerk{
-		Amount:    amount,
-		AccountId: accountId,
-		AddedById: userId,
-		Contact:   c.PostForm("contact"),
-		Category:  c.PostForm("category"),
-		Labels:    c.PostForm("labels"),
-		Note:      c.PostForm("note"),
-		Lat:       c.PostForm("lat"),
-		Lon:       c.PostForm("lon"),
-		Status:    "Pending",
-		FileId:    o.Id,
-		File:      o,
-		UpdatedAt: time.Now(),
-		CreatedAt: time.Now(),
+		Amount:       amount,
+		AccountId:    accountId,
+		AddedById:    userId,
+		Contact:      c.PostForm("contact"),
+		Category:     c.PostForm("category"),
+		Labels:       c.PostForm("labels"),
+		Note:         c.PostForm("note"),
+		Lat:          c.PostForm("lat"),
+		Lon:          c.PostForm("lon"),
+		Status:       "Pending",
+		FileId:       o.Id,
+		File:         o,
+		LedgerId:     0,
+		ReviewedById: 0,
+		UpdatedAt:    time.Now(),
+		CreatedAt:    time.Now(),
 	}
 
 	// Store in DB
