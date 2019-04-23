@@ -20,7 +20,7 @@ type SnapClerk struct {
 	ReviewedById uint      `gorm:"column:SnapClerkReviewedById" sql:"not null" json:"_"`
 	Status       string    `gorm:"column:SnapClerkStatus" sql:"not null;type:ENUM('Pending','Processed','Rejected');default:'Pending'" json:"status"`
 	FileId       uint      `gorm:"column:SnapClerkFileId" sql:"not null" json:"_"`
-	File         File      `gorm:"foreignkey:SnapClerkFileId" json:"File"`
+	File         File      `gorm:"foreignkey:SnapClerkFileId" json:"file"`
 	LedgerId     uint      `gorm:"column:SnapClerkLedgerId;index:SnapClerkLedgerId" sql:"not null" json:"ledger_id"`
 	Amount       float64   `gorm:"column:SnapClerkAmount" sql:"not null;type:DECIMAL(12,2)" json:"amount"`
 	Contact      string    `gorm:"column:SnapClerkContact" sql:"not null" json:"contact"`
@@ -29,7 +29,7 @@ type SnapClerk struct {
 	Note         string    `gorm:"column:SnapClerkNote" sql:"not null;type:TEXT" json:"note"`
 	Lat          string    `gorm:"column:SnapClerkLat" sql:"not null;type:TEXT" json:"lat"`
 	Lon          string    `gorm:"column:SnapClerkLon" sql:"not null;type:TEXT" json:"lon"`
-	UpdatedAt    time.Time `gorm:"column:SnapClerkUpdatedAt" sql:"not null" json:"updated_at"`
+	UpdatedAt    time.Time `gorm:"column:SnapClerkUpdatedAt" sql:"not null" json:"_"`
 	CreatedAt    time.Time `gorm:"column:SnapClerkCreatedAt" sql:"not null" json:"created_at"`
 	ProcessedAt  time.Time `gorm:"column:SnapClerkProcessedAt" sql:"not null" json:"processed_at"` // This has to be at the end GORM (auto update stuff)
 }
