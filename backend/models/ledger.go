@@ -25,7 +25,7 @@ type Ledger struct {
 	Contact          Contact   `gorm:"foreignkey:LedgerContactId" json:"contact"`
 	Date             time.Time `gorm:"column:LedgerDate" sql:"not null" json:"date"`
 	AddedById        uint      `gorm:"column:LedgerAddedById" sql:"not null" json:"added_by_id"`
-	Amount           float64   `gorm:"column:LedgerAmount" sql:"type:DECIMAL(12,2)" json:"amount"`
+	Amount           float64   `gorm:"column:LedgerAmount" sql:"not null;type:DECIMAL(12,2)" json:"amount"`
 	CategoryId       uint      `gorm:"column:LedgerCategoryId" sql:"not null" json:"category_id"`
 	Category         Category  `gorm:"foreignkey:LedgerCategoryId" json:"category"`
 	Note             string    `gorm:"column:LedgerNote" sql:"not null;type:TEXT" json:"note"`

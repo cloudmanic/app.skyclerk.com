@@ -71,6 +71,7 @@ func doMigrations(db *gorm.DB) {
 	db.AutoMigrate(&Ledger{})
 	db.AutoMigrate(&Contact{})
 	db.AutoMigrate(&Category{})
+	db.AutoMigrate(&SnapClerk{})
 }
 
 /* End File */
