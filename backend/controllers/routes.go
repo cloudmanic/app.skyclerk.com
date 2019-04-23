@@ -57,6 +57,9 @@ func (t *Controller) DoRoutes(r *gin.Engine) {
 
 		// Files
 		apiV1.POST("/:account/files", t.CreateFile)
+
+		// Snapclerk
+		apiV1.POST("/:account/snapclerk", t.CreateSnapClerk)
 	}
 
 	// ------------ Non-API Routes ------ //

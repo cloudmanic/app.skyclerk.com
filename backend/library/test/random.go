@@ -175,4 +175,40 @@ func GetRandomLabel(accountId int64) models.Label {
 	return label
 }
 
+// //
+// // GetRandomSnapClerk returns a random SnapClerk.
+// //
+// func GetRandomSnapClerk(accountId int64) models.SnapClerk {
+// 	rand.Seed(time.Now().UnixNano())
+//
+// 	dates := []time.Time{
+// 		time.Now(),
+// 		time.Date(2017, 10, 29, 17, 20, 01, 507451, time.UTC),
+// 		time.Date(2018, 8, 19, 17, 20, 01, 507451, time.UTC),
+// 		time.Date(2019, 1, 10, 17, 20, 01, 507451, time.UTC),
+// 	}
+//
+// 	amounts := []float64{1234.56, 33.44, 99.00, 555.32, 4583.01, 3.01, 0.20, 3429.34, 823.19}
+//
+// 	sc := models.SnapClerk{
+// 		AccountId: uint(accountId),
+// 		Status: "Pending",
+// 		FileId:
+// 		File:
+//
+//
+// 		Date:      dates[rand.Intn(len(dates))],
+// 		Amount:    amounts[rand.Intn(len(amounts))],
+// 		Note:      "Test Note - " + helpers.RandStr(16),
+// 		Contact:   GetRandomContact(accountId),
+// 		Category:  GetRandomCategory(accountId),
+// 		Labels:    []models.Label{GetRandomLabel(accountId), GetRandomLabel(accountId), GetRandomLabel(accountId)},
+//
+// 		UpdatedAt: time.Now(),
+// 		CreatedAt: time.Now(),
+// 	}
+//
+// 	return sc
+// }
+
 /* End File */

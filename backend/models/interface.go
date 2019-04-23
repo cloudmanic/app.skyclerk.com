@@ -67,6 +67,9 @@ type Datastore interface {
 	GetImageThumbNail(file *File, filePath string, width int, height int, cleanedFileName string) (string, error)
 	GetPdfThumbNail(file *File, width int, height int, cleanedFileName string) (string, error)
 	CreateAndStoreThumbnailImage(file *File, cleanedFileName string, filePath string, fileType string) error
+
+	// SnapClerk
+	SnapClerkCreate(sc *SnapClerk) error
 }
 
 /* End File */
