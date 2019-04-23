@@ -35,7 +35,7 @@ func TestCreateSnapClerk01(t *testing.T) {
 	testFile := build.Default.GOPATH + "/src/app.skyclerk.com/backend/library/test/files/Image 2019-04-19 at 10.10.22 AM.png"
 
 	// Start the db connection.
-	db, dbName, _ := models.NewTestDB("testing_db")
+	db, dbName, _ := models.NewTestDB("")
 	defer models.TestingTearDown(db, dbName)
 
 	// Create controller
@@ -119,6 +119,92 @@ func TestCreateSnapClerk01(t *testing.T) {
 	st.Expect(t, l.File.Size, int64(861591))
 	st.Expect(t, true, strings.Contains(l.File.Url, "https://cdn-dev.skyclerk.com/accounts/44/1_image-2019-04-19-at-10.10.22-am.png?Expires="))
 	st.Expect(t, true, strings.Contains(l.File.Thumb600By600Url, "https://cdn-dev.skyclerk.com/accounts/44/1_thumb_600_600_image-2019-04-19-at-10.10.22-am.png?Expires="))
+}
+
+//
+// TestGetSnapClerk01 - Get SnapClerk entries.
+//
+func TestGetSnapClerk01(t *testing.T) {
+	// Data map
+	dMap := make(map[uint]models.SnapClerk)
+
+	// Start the db connection.
+	db, dbName, _ := models.NewTestDB("testing_db")
+	defer models.TestingTearDown(db, dbName)
+
+	// Create controller
+	c := &Controller{}
+	c.SetDB(db)
+
+	// Create like 10 snapclerk entries. Diffent account.
+	for i := 0; i < 10; i++ {
+		l := test.GetRandomSnapClerk(23)
+		db.New().Save(&l)
+	}
+
+	// Create like 105 snapclerk entries.
+	for i := 0; i < 105; i++ {
+		l := test.GetRandomSnapClerk(33)
+		db.New().Save(&l)
+		dMap[l.Id] = l
+	}
+
+	// Create like 10 snapclerk entries. Diffent account.
+	for i := 0; i < 10; i++ {
+		l := test.GetRandomSnapClerk(43)
+		db.New().Save(&l)
+	}
+
+	// Setup request
+	req, _ := http.NewRequest("GET", "/api/v3/33/snapclerk", nil)
+
+	// Setup writer.
+	w := httptest.NewRecorder()
+	gin.SetMode("release")
+	gin.DisableConsoleColor()
+
+	r := gin.New()
+	r.Use(func(c *gin.Context) {
+		c.Set("accountId", 33)
+		c.Set("userId", uint(109))
+	})
+	r.GET("/api/v3/:account/snapclerk", c.GetSnapClerk)
+	r.ServeHTTP(w, req)
+
+	// Grab result and convert to strut
+	results := []models.SnapClerk{}
+	err := json.Unmarshal([]byte(w.Body.String()), &results)
+
+	// Test results
+	st.Expect(t, err, nil)
+	st.Expect(t, w.Code, 200)
+	st.Expect(t, len(results), 50)
+	st.Expect(t, w.HeaderMap["X-Offset"][0], "0")
+	st.Expect(t, w.HeaderMap["X-Limit"][0], "50")
+	st.Expect(t, w.HeaderMap["X-No-Limit-Count"][0], "105")
+	st.Expect(t, w.HeaderMap["X-Last-Page"][0], "false")
+
+	for key, row := range results {
+		st.Expect(t, row.Id, dMap[row.Id].Id)
+		st.Expect(t, row.AccountId, uint(33))
+		st.Expect(t, row.Amount, dMap[row.Id].Amount)
+		st.Expect(t, row.Contact, dMap[row.Id].Contact)
+		st.Expect(t, row.Lat, dMap[row.Id].Lat)
+		st.Expect(t, row.Lon, dMap[row.Id].Lon)
+		st.Expect(t, row.Amount, dMap[row.Id].Amount)
+		st.Expect(t, row.Note, dMap[row.Id].Note)
+		st.Expect(t, row.File.Name, dMap[row.Id].File.Name)
+		st.Expect(t, row.File.Type, dMap[row.Id].File.Type)
+		st.Expect(t, true, strings.Contains(row.File.Url, "?Expires="))
+		st.Expect(t, true, strings.Contains(row.File.Thumb600By600Url, "?Expires="))
+		st.Expect(t, true, strings.Contains(row.File.Url, "https://cdn-dev.skyclerk.com/accounts/33"))
+		st.Expect(t, true, strings.Contains(row.File.Thumb600By600Url, "https://cdn-dev.skyclerk.com/accounts/33"))
+
+		// Verfiy default Order
+		if key > 0 {
+			st.Expect(t, (results[key-1].Id < row.Id), true)
+		}
+	}
 }
 
 //

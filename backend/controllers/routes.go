@@ -59,6 +59,7 @@ func (t *Controller) DoRoutes(r *gin.Engine) {
 		apiV1.POST("/:account/files", t.CreateFile)
 
 		// Snapclerk
+		apiV1.GET("/:account/snapclerk", t.GetSnapClerk)
 		apiV1.POST("/:account/snapclerk", t.CreateSnapClerk)
 	}
 

@@ -187,8 +187,9 @@ func GetRandomSnapClerk(accountId int64) models.SnapClerk {
 	sc := models.SnapClerk{
 		AccountId: uint(accountId),
 		Status:    "Pending",
-		AddedById: 0, // TODO(spicer): Add a user.
-		FileId:    0, // TODO(spicer): Add a file.
+		AddedById: 1,
+		FileId:    0,
+		File:      GetRandomFile(accountId),
 		Amount:    amounts[rand.Intn(len(amounts))],
 		Contact:   helpers.RandStr(10),
 		Category:  helpers.RandStr(5),
@@ -202,6 +203,33 @@ func GetRandomSnapClerk(accountId int64) models.SnapClerk {
 
 	// Return Happy
 	return sc
+}
+
+//
+// GetRandomFile - We do not really upload a file to S3
+//
+func GetRandomFile(accountId int64) models.File {
+	rand.Seed(time.Now().UnixNano())
+
+	name := helpers.RandStr(10) + ".jpeg"
+
+	f := models.File{
+		AccountId:        uint(accountId),
+		UpdatedAt:        time.Now(),
+		CreatedAt:        time.Now(),
+		Host:             "amazon-s3",
+		Name:             name,
+		Path:             fmt.Sprintf("accounts/%d/55_%s", accountId, name),
+		ThumbPath:        fmt.Sprintf("accounts/%d/55_thumb_%s", accountId, name),
+		Type:             "image/jpeg",
+		Hash:             "6f27495962c7e17bcf5352cdc142b26a",
+		Size:             1368944,
+		Url:              "",
+		Thumb600By600Url: "",
+	}
+
+	// Return Happy
+	return f
 }
 
 /* End File */

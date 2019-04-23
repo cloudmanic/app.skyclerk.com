@@ -13,6 +13,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 
+	"app.skyclerk.com/backend/library/request"
 	"app.skyclerk.com/backend/library/response"
 	"app.skyclerk.com/backend/models"
 )
@@ -64,6 +65,44 @@ func (t *Controller) CreateSnapClerk(c *gin.Context) {
 
 	// Return happy.
 	response.RespondCreated(c, sc, nil)
+}
+
+//
+// GetSnapClerk - Return a list of snapclerk. We limit to 50 mainly so we do not overload the
+// system, but enough so the front-end does not have to page
+//
+func (t *Controller) GetSnapClerk(c *gin.Context) {
+	// Place to store the results.
+	var results = []models.SnapClerk{}
+
+	// Get limits and pages
+	page, _, _ := request.GetSetPagingParms(c)
+
+	// Set the query parms
+	params := models.QueryParam{
+		Order:            c.DefaultQuery("order", "SnapClerkId"),
+		Sort:             c.DefaultQuery("sort", "ASC"),
+		Limit:            50,
+		Page:             page,
+		Debug:            false,
+		PreLoads:         []string{"File"},
+		AllowedOrderCols: []string{"SnapClerkId"},
+		Wheres: []models.KeyValue{
+			{Key: "SnapClerkAccountId", ValueInt: c.MustGet("accountId").(int)},
+		},
+	}
+
+	// Run the query
+	meta, err := t.db.QueryMeta(&results, params)
+
+	// Loop through and add signed urls to files TODO(spicer): clean this up. Maybe move all this into the model.
+	for key, row := range results {
+		results[key].File.Url = t.db.GetSignedFileUrl(row.File.Path)
+		results[key].File.Thumb600By600Url = t.db.GetSignedFileUrl(row.File.ThumbPath)
+	}
+
+	// Return json based on if this was a good result or not.
+	response.ResultsMeta(c, results, err, meta)
 }
 
 /* End File */
