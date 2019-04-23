@@ -17,10 +17,10 @@ import (
 //
 func (t *Controller) GetMe(c *gin.Context) {
 	// Make sure the UserId is correct.
-	userId := c.MustGet("userId").(uint)
+	userId := c.MustGet("userId").(int)
 
 	// Get the full user
-	user, err := t.db.GetUserById(userId)
+	user, err := t.db.GetUserById(uint(userId))
 
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "User not found."})

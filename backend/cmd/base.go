@@ -11,6 +11,7 @@ package cmd
 import (
 	"flag"
 	"fmt"
+	"strings"
 
 	"app.skyclerk.com/backend/cmd/actions"
 	"app.skyclerk.com/backend/models"
@@ -35,6 +36,12 @@ func Run(db *models.DB) bool {
 		return true
 		break
 
+	// Loop through the accounts table and append "accounts" to the file name.
+	case "files-add-account-prefix":
+		FileAddAccountPrefix(db)
+		return true
+		break
+
 	// Just a test
 	case "test":
 		fmt.Println("CMD Works....")
@@ -44,6 +51,34 @@ func Run(db *models.DB) bool {
 	}
 
 	return false
+}
+
+//
+// FileAddAccountPrefix - Once we deploy GO based skyclerk we can deleted this function.
+//
+func FileAddAccountPrefix(db *models.DB) {
+	// Query and get files.
+	files := []models.File{}
+	db.New().Find(&files)
+
+	// Loop through files and append
+	for key, row := range files {
+		if strings.Contains(row.Path, "accounts/") {
+			continue
+		}
+
+		if row.Host != "amazon-s3" {
+			continue
+		}
+
+		// Append accounts and save to DB.
+		fmt.Println(row.Id, " - ", key, " - ", row.Path)
+
+		row.Path = "accounts/" + row.Path
+		row.ThumbPath = "accounts/" + row.ThumbPath
+		db.New().Save(&row)
+	}
+
 }
 
 /* End File */

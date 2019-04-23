@@ -29,6 +29,22 @@
   version = "v9"
 
 [[projects]]
+  digest = "1:71305661c292cf5f56c94ad11e51ed40188d7605d0295c5aeb8885be29393699"
+  name = "github.com/aws/aws-sdk-go"
+  packages = ["service/cloudfront/sign"]
+  pruneopts = "UT"
+  revision = "ca6d5f771b63df153f02fe5b117434d5ebafeeda"
+  version = "v1.19.15"
+
+[[projects]]
+  digest = "1:47cebe27e59e4e0c239d0bf2419d6a46f0364a56efc43be702c32b82710b6ecf"
+  name = "github.com/disintegration/imaging"
+  packages = ["."]
+  pruneopts = "UT"
+  revision = "5362c131d56305ce787e79a5b94ffc956df00d62"
+  version = "v1.6.0"
+
+[[projects]]
   digest = "1:6f9339c912bbdda81302633ad7e99a28dfa5a639c864061f1929510a9a64aa74"
   name = "github.com/dustin/go-humanize"
   packages = ["."]
@@ -263,6 +279,18 @@
 
 [[projects]]
   branch = "master"
+  digest = "1:4c5fae3d31eb72f59429f9218ff258128ef37edcae9785f93bb9f1609b392c51"
+  name = "golang.org/x/image"
+  packages = [
+    "bmp",
+    "tiff",
+    "tiff/lzw",
+  ]
+  pruneopts = "UT"
+  revision = "4e30a6eb7d9a7fbd8f97e1d47806f810d86cfc6e"
+
+[[projects]]
+  branch = "master"
   digest = "1:9bcb806d8141fa6f87a79d76023892f510bcb247e3eb4a0049de4123080ee45a"
   name = "golang.org/x/net"
   packages = [
@@ -349,6 +377,8 @@
     "github.com/adelowo/filer/validator",
     "github.com/araddon/dateparse",
     "github.com/asaskevich/govalidator",
+    "github.com/aws/aws-sdk-go/service/cloudfront/sign",
+    "github.com/disintegration/imaging",
     "github.com/gin-contrib/cors",
     "github.com/gin-contrib/static",
     "github.com/gin-gonic/gin",
