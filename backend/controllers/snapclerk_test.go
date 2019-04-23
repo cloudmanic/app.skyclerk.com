@@ -95,12 +95,12 @@ func TestCreateSnapClerk01(t *testing.T) {
 	st.Expect(t, result.Note, "This is a test note for snapclerk.")
 	st.Expect(t, result.Lat, "1233.2342")
 	st.Expect(t, result.Lon, "4234.3242")
-	st.Expect(t, result.File.Id, uint(1))
+	st.Expect(t, result.File.Id, uint(4))
 	st.Expect(t, result.File.Name, "image-2019-04-19-at-10.10.22-am.png")
 	st.Expect(t, result.File.Type, "image/png")
 	st.Expect(t, result.File.Size, int64(861591))
-	st.Expect(t, true, strings.Contains(result.File.Url, "https://cdn-dev.skyclerk.com/accounts/44/1_image-2019-04-19-at-10.10.22-am.png?Expires="))
-	st.Expect(t, true, strings.Contains(result.File.Thumb600By600Url, "https://cdn-dev.skyclerk.com/accounts/44/1_thumb_600_600_image-2019-04-19-at-10.10.22-am.png?Expires="))
+	st.Expect(t, true, strings.Contains(result.File.Url, "https://cdn-dev.skyclerk.com/accounts/44/4_image-2019-04-19-at-10.10.22-am.png?Expires="))
+	st.Expect(t, true, strings.Contains(result.File.Thumb600By600Url, "https://cdn-dev.skyclerk.com/accounts/44/4_thumb_600_600_image-2019-04-19-at-10.10.22-am.png?Expires="))
 
 	// Test SnapClerk DB to file reults
 	st.Expect(t, l.Id, uint(4))
@@ -113,12 +113,12 @@ func TestCreateSnapClerk01(t *testing.T) {
 	st.Expect(t, l.Note, "This is a test note for snapclerk.")
 	st.Expect(t, l.Lat, "1233.2342")
 	st.Expect(t, l.Lon, "4234.3242")
-	st.Expect(t, l.File.Id, uint(1))
+	st.Expect(t, l.File.Id, uint(4))
 	st.Expect(t, l.File.Name, "image-2019-04-19-at-10.10.22-am.png")
 	st.Expect(t, l.File.Type, "image/png")
 	st.Expect(t, l.File.Size, int64(861591))
-	st.Expect(t, true, strings.Contains(l.File.Url, "https://cdn-dev.skyclerk.com/accounts/44/1_image-2019-04-19-at-10.10.22-am.png?Expires="))
-	st.Expect(t, true, strings.Contains(l.File.Thumb600By600Url, "https://cdn-dev.skyclerk.com/accounts/44/1_thumb_600_600_image-2019-04-19-at-10.10.22-am.png?Expires="))
+	st.Expect(t, true, strings.Contains(l.File.Url, "https://cdn-dev.skyclerk.com/accounts/44/4_image-2019-04-19-at-10.10.22-am.png?Expires="))
+	st.Expect(t, true, strings.Contains(l.File.Thumb600By600Url, "https://cdn-dev.skyclerk.com/accounts/44/4_thumb_600_600_image-2019-04-19-at-10.10.22-am.png?Expires="))
 }
 
 //

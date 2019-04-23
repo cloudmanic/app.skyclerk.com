@@ -60,7 +60,7 @@ func TestGetMe01(t *testing.T) {
 
 	r := gin.New()
 	r.Use(func(c *gin.Context) {
-		c.Set("userId", user.Id)
+		c.Set("userId", int(user.Id))
 	})
 	r.GET("/oauth/me", c.GetMe)
 	r.ServeHTTP(w, req)
