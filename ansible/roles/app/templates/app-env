@@ -1,7 +1,12 @@
 APP_ENV={{ app_env }}
-HTTP_PORT={{ http_port }}
+
+# Ignored in production
+HTTP_PORT=9090
+
 SITE_URL={{ site_url }}
+SITE_DOMAIN={{ site_domain }}
 ENCRYPTION_KEY={{ encryption_key }}
+CACHE_DIR=/cache
 
 DB_HOST=tcp({{ app_db_host }}:3306)
 DB_USERNAME={{ app_db_username }}

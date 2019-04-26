@@ -21,9 +21,12 @@ services:
 
     volumes:
       - ./app:/go/bin
+      - ./cache:/cache:rw
+      - ./letsencrypt:/letsencrypt:rw
 
-    expose:
-      - "9090"
+    ports:
+      - "80:80"
+      - "443:443"
 
     logging:
       driver: "syslog"

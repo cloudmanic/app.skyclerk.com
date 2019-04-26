@@ -77,6 +77,14 @@
   revision = "ed515893e96b74525d7bf020cfc8f519c68707bc"
 
 [[projects]]
+  digest = "1:23a13d0570f5f5913598ed715496e583f6c1508b89965a51cd5bd6abfb8b3bff"
+  name = "github.com/gin-gonic/autotls"
+  packages = ["."]
+  pruneopts = "UT"
+  revision = "0b5f4fc15768a919a40d099fab9c397a704dcecd"
+  version = "0.0.2"
+
+[[projects]]
   digest = "1:d5083934eb25e45d17f72ffa86cae3814f4a9d6c073c4f16b64147169b245606"
   name = "github.com/gin-gonic/gin"
   packages = [
@@ -268,9 +276,11 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:d4df67cef5e20015feb306724296fde6155f2451e87ec3152d8d4963bf841c06"
+  digest = "1:7f5fdd408a4606cfaae349b17fb1f3b873038b0543bd651cc391dc05f9f82e9b"
   name = "golang.org/x/crypto"
   packages = [
+    "acme",
+    "acme/autocert",
     "argon2",
     "blake2b",
   ]
@@ -381,6 +391,7 @@
     "github.com/disintegration/imaging",
     "github.com/gin-contrib/cors",
     "github.com/gin-contrib/static",
+    "github.com/gin-gonic/autotls",
     "github.com/gin-gonic/gin",
     "github.com/go-ozzo/ozzo-validation",
     "github.com/go-sql-driver/mysql",
@@ -391,6 +402,7 @@
     "github.com/minio/minio-go",
     "github.com/nbio/st",
     "github.com/tidwall/gjson",
+    "golang.org/x/crypto/acme/autocert",
   ]
   solver-name = "gps-cdcl"
   solver-version = 1

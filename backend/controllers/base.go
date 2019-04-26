@@ -17,7 +17,9 @@ import (
 	"time"
 
 	"github.com/gin-contrib/cors"
+	"github.com/gin-gonic/autotls"
 	"github.com/gin-gonic/gin"
+	"golang.org/x/crypto/acme/autocert"
 
 	"app.skyclerk.com/backend/models"
 	"app.skyclerk.com/backend/services"
@@ -129,18 +131,32 @@ func (t *Controller) StartWebServer() {
 	t.DoRoutes(router)
 
 	// Setup http server
-	srv := &http.Server{
-		Handler:      router,
-		Addr:         ":" + os.Getenv("HTTP_PORT"),
-		ReadTimeout:  120 * time.Second,
-		WriteTimeout: 120 * time.Second,
+	if os.Getenv("APP_ENV") == "local" {
+		srv := &http.Server{
+			Handler:      router,
+			Addr:         ":" + os.Getenv("HTTP_PORT"),
+			ReadTimeout:  120 * time.Second,
+			WriteTimeout: 120 * time.Second,
+		}
+
+		// Log this start.
+		services.LogInfo("Starting web server at " + os.Getenv("SITE_URL"))
+
+		// Start server and log if fails
+		log.Fatal(srv.ListenAndServe())
+	} else {
+		m := &autocert.Manager{
+			Prompt:     autocert.AcceptTOS,
+			Cache:      autocert.DirCache("/letsencrypt/"),
+			Email:      "help@skyclerk.com",
+			HostPolicy: autocert.HostWhitelist(os.Getenv("SITE_DOMAIN")),
+		}
+
+		log.Printf("Starting secure server at " + os.Getenv("SITE_URL"))
+
+		log.Fatal(autotls.RunWithManager(router, m))
 	}
 
-	// Log this start.
-	services.LogInfo("Starting web server at http://localhost:" + os.Getenv("HTTP_PORT"))
-
-	// Start server and log if fails
-	log.Fatal(srv.ListenAndServe())
 }
 
 /* End File */

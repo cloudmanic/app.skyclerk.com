@@ -5,7 +5,7 @@
 #
 
 app_env: production
-http_port: 9090
+site_domain: app.skyclerk.com
 site_url: https://app.skyclerk.com
 
 site_domain: app.skyclerk.com

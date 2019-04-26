@@ -20,8 +20,11 @@ services:
 
     command: -concurrency 50 -enable-url-source  -key "${API_KEY}"
 
-    expose:
-      - "9000"
+    # We do not do https because the core app connects via docker urls.
+    # Also we do not have a proxy in front so https is hard. We just use
+    # this publicly for unit testing.
+    ports:
+      - "9000:9000"
 
     restart: ${RESTART}
 
