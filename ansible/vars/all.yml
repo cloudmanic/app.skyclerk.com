@@ -45,9 +45,9 @@ syslog_address: logs6.papertrailapp.com
 docker_mysql: yes
 
 docker_mysql_servers:
-  - { "name": "mysql55", "image": "mysql:5.5", "container_name": "mysql-5.5", "port_mapping": "127.0.0.1:3355", "password": "{{ MYSQL_ROOT_PASSWORD }}" }
+  - { "name": "mysql55", "image": "mysql:5.5", "container_name": "mysql-5.5", "port_mapping": "127.0.0.1:3355", "password": "{{ mysql_root_password }}" }
 
-docker_nginx_proxy: yes
+docker_nginx_proxy: no
 
 docker_site_dir: /sites
 
@@ -56,7 +56,6 @@ docker_nginx_proxy_dir: /sites/nginx-proxy
 docker_mysql_dir: /sites/mysql
 
 docker_sites:
-  - { site_slug: "cloudmanic", uid: "1003", gid: "1003" }
   - { site_slug: "skyclerk", uid: "1004", gid: "1004" }
 
 core_packages:

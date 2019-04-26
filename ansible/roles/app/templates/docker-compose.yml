@@ -13,7 +13,7 @@ services:
 
     image: golang:1.11-alpine
 
-    restart: always    
+    restart: always
 
     working_dir: /go/bin
 
@@ -30,42 +30,6 @@ services:
       options:
         syslog-address: ${SYSLOG_HOST}
         tag: app.skyclerk.com
-
-    networks:
-      - shared
-
-  # PHP App
-  php:
-
-    hostname: php.skyclerk.com
-
-    container_name: php.skyclerk.com
-
-    build:
-      context: ./build
-      dockerfile: Dockerfile-php
-      args:
-        P_UID: ${P_UID}
-        P_GID: ${P_GID}
-
-    image: ${COMPOSE_PROJECT_NAME}/nginx-php56
-
-    restart: always
-
-    environment:
-      VIRTUAL_HOST: ${VIRTUAL_HOST}
-      LETSENCRYPT_HOST: ${LETSENCRYPT_HOST}
-      LETSENCRYPT_EMAIL: ${LETSENCRYPT_EMAIL}
-
-    volumes:
-      - ../php-app/www:/www:ro
-      - ../php-app/www/app/storage:/www/app/storage:rw
-
-    logging:
-      driver: "syslog"
-      options:
-        syslog-address: ${SYSLOG_HOST}
-        tag: php.skyclerk.com
 
     networks:
       - shared
