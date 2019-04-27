@@ -9,7 +9,12 @@ package models
 
 import (
 	"errors"
+	"fmt"
+	"os"
 	"time"
+
+	"app.skyclerk.com/backend/library/slack"
+	"app.skyclerk.com/backend/services"
 )
 
 // SnapClerk struct
@@ -52,7 +57,11 @@ func (db *DB) SnapClerkCreate(sc *SnapClerk) error {
 
 	// TODO(spicer): Send email to customer
 
-	// TODO(spicer): Send Slack hook
+	// Send Slack hook TODO(spicer): Add more information like email.
+	slack.Notify("#events", fmt.Sprintf("(%s) New Snap!Clerk submission. Account: %d, Id: %d", os.Getenv("APP_ENV"), sc.AccountId, sc.Id))
+
+	// Some logging
+	services.Info(errors.New(fmt.Sprintf("New Snap!Clerk received. Account: %d, Id: %d", sc.AccountId, sc.Id)))
 
 	return nil
 }

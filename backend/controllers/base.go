@@ -135,8 +135,8 @@ func (t *Controller) StartWebServer() {
 		srv := &http.Server{
 			Handler:      router,
 			Addr:         ":" + os.Getenv("HTTP_PORT"),
-			ReadTimeout:  120 * time.Second,
-			WriteTimeout: 120 * time.Second,
+			ReadTimeout:  300 * time.Second,
+			WriteTimeout: 300 * time.Second,
 		}
 
 		// Log this start.

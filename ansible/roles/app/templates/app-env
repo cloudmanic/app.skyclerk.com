@@ -26,5 +26,6 @@ AWS_CLOUDFRONT_PRIVATE_SIGN_KEY={{ aws_cloudfront_private_sign_key }}
 IMAGINARY_HOST={{ imaginary_host }}
 IMAGINARY_KEY={{ imaginary_api_key }}
 
+SLACK_HOOK={{ slack_hook }}
 
 HTTP_LOG_REQUESTS=true
