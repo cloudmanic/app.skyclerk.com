@@ -10,6 +10,7 @@ package controllers
 import (
 	"bytes"
 	"encoding/json"
+	"fmt"
 	"net/http"
 	"net/http/httptest"
 	"testing"
@@ -145,6 +146,177 @@ func TestGetLedgers01(t *testing.T) {
 	st.Expect(t, w3.HeaderMap["X-Limit"][0], "50")
 	st.Expect(t, w3.HeaderMap["X-No-Limit-Count"][0], "105")
 	st.Expect(t, w3.HeaderMap["X-Last-Page"][0], "true")
+}
+
+//
+// TestGetLedgers02 Test type filters
+//
+func TestGetLedgers02(t *testing.T) {
+	// Data map
+	dMap := make(map[uint]models.Ledger)
+
+	// Start the db connection.
+	db, dbName, _ := models.NewTestDB("")
+	defer models.TestingTearDown(db, dbName)
+
+	// Create controller
+	c := &Controller{}
+	c.SetDB(db)
+
+	// Create like 10 ledger entries. Diffent account.
+	for i := 0; i < 10; i++ {
+		l := test.GetRandomLedger(23)
+		db.LedgerCreate(&l)
+	}
+
+	// Create like 105 ledger entries.
+	for i := 0; i < 105; i++ {
+		l := test.GetRandomLedger(33)
+		db.LedgerCreate(&l)
+		dMap[l.Id] = l
+	}
+
+	// Create like 10 ledger entries. Diffent account.
+	for i := 0; i < 10; i++ {
+		l := test.GetRandomLedger(43)
+		db.LedgerCreate(&l)
+	}
+
+	// Setup request
+	req, _ := http.NewRequest("GET", "/api/v3/33/ledger?type=income", nil)
+
+	// Setup writer.
+	w := httptest.NewRecorder()
+	gin.SetMode("release")
+	gin.DisableConsoleColor()
+
+	r := gin.New()
+	r.Use(func(c *gin.Context) {
+		c.Set("accountId", 33)
+		c.Set("userId", uint(109))
+	})
+	r.GET("/api/v3/:account/ledger", c.GetLedgers)
+	r.ServeHTTP(w, req)
+
+	// Grab result and convert to strut
+	results := []models.Ledger{}
+	err := json.Unmarshal([]byte(w.Body.String()), &results)
+
+	// Test results
+	st.Expect(t, err, nil)
+	st.Expect(t, w.Code, 200)
+	st.Expect(t, w.HeaderMap["X-Offset"][0], "0")
+	st.Expect(t, w.HeaderMap["X-Limit"][0], "50")
+	st.Expect(t, w.HeaderMap["X-Last-Page"][0], "false")
+
+	for key, row := range results {
+		st.Expect(t, (row.Amount > 0), true)
+
+		// Verfiy default Order
+		if key > 0 {
+			diff := row.Date.Sub(results[key-1].Date)
+			st.Expect(t, (diff <= 0), true)
+		}
+	}
+
+	// ----------- Test expense ---------- //
+
+	// Setup request
+	req2, _ := http.NewRequest("GET", "/api/v3/33/ledger?type=expense", nil)
+	w2 := httptest.NewRecorder()
+	r.ServeHTTP(w2, req2)
+
+	// Grab result and convert to strut
+	results2 := []models.Ledger{}
+	err = json.Unmarshal([]byte(w2.Body.String()), &results2)
+
+	// Test results
+	st.Expect(t, err, nil)
+	st.Expect(t, w.Code, 200)
+	st.Expect(t, w.HeaderMap["X-Offset"][0], "0")
+	st.Expect(t, w.HeaderMap["X-Limit"][0], "50")
+	st.Expect(t, w.HeaderMap["X-Last-Page"][0], "false")
+
+	for key, row := range results2 {
+		st.Expect(t, (row.Amount < 0), true)
+
+		// Verfiy default Order
+		if key > 0 {
+			diff := row.Date.Sub(results2[key-1].Date)
+			st.Expect(t, (diff <= 0), true)
+		}
+	}
+}
+
+//
+// TestGetLedgers03 Test type filters
+//
+func TestGetLedgers03(t *testing.T) {
+	// Data map
+	dMap := make(map[uint]models.Ledger)
+
+	// Start the db connection.
+	db, dbName, _ := models.NewTestDB("")
+	defer models.TestingTearDown(db, dbName)
+
+	// Create controller
+	c := &Controller{}
+	c.SetDB(db)
+
+	// Create like 10 ledger entries. Diffent account.
+	for i := 0; i < 10; i++ {
+		l := test.GetRandomLedger(23)
+		db.LedgerCreate(&l)
+	}
+
+	// Create like 105 ledger entries.
+	for i := 0; i < 105; i++ {
+		l := test.GetRandomLedger(33)
+		db.LedgerCreate(&l)
+		dMap[l.Id] = l
+	}
+
+	// Create like 10 ledger entries. Diffent account.
+	for i := 0; i < 10; i++ {
+		l := test.GetRandomLedger(43)
+		db.LedgerCreate(&l)
+	}
+
+	// Setup request
+	req, _ := http.NewRequest("GET", fmt.Sprintf("/api/v3/33/ledger?category_id=%d", dMap[106].CategoryId), nil)
+
+	// Setup writer.
+	w := httptest.NewRecorder()
+	gin.SetMode("release")
+	gin.DisableConsoleColor()
+
+	r := gin.New()
+	r.Use(func(c *gin.Context) {
+		c.Set("accountId", 33)
+		c.Set("userId", uint(109))
+	})
+	r.GET("/api/v3/:account/ledger", c.GetLedgers)
+	r.ServeHTTP(w, req)
+
+	// Grab result and convert to strut
+	results := []models.Ledger{}
+	err := json.Unmarshal([]byte(w.Body.String()), &results)
+
+	// Test results
+	st.Expect(t, err, nil)
+	st.Expect(t, w.Code, 200)
+	st.Expect(t, w.HeaderMap["X-Offset"][0], "0")
+	st.Expect(t, w.HeaderMap["X-Limit"][0], "50")
+
+	for key, row := range results {
+		st.Expect(t, (dMap[106].CategoryId == row.Category.Id), true)
+
+		// Verfiy default Order
+		if key > 0 {
+			diff := row.Date.Sub(results[key-1].Date)
+			st.Expect(t, (diff <= 0), true)
+		}
+	}
 }
 
 //

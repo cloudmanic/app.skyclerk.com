@@ -40,7 +40,7 @@ func (t *Controller) GetLabels(c *gin.Context) {
 		Page:             page,
 		AllowedOrderCols: []string{"LabelsId", "LabelsName"},
 		Wheres: []models.KeyValue{
-			{Key: "LabelsAccountId", ValueInt: c.MustGet("accountId").(int)},
+			{Key: "LabelsAccountId", Compare: "=", ValueInt: c.MustGet("accountId").(int)},
 		},
 	}
 

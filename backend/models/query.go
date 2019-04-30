@@ -31,9 +31,11 @@ type QueryParam struct {
 }
 
 type KeyValue struct {
-	Key      string
-	Value    string
-	ValueInt int
+	Key        string
+	Value      string
+	ValueInt   int
+	ValueFloat float64
+	Compare    string
 }
 
 type QueryMetaData struct {
@@ -219,11 +221,15 @@ func (t *DB) buildGenericQuery(params QueryParam) (*gorm.DB, error) {
 	// Add in Where clauses
 	for _, row := range params.Wheres {
 		if len(row.Value) > 0 {
-			query = query.Where(row.Key+" = ?", row.Value)
+			query = query.Where(row.Key+" "+row.Compare+" ?", row.Value)
 		}
 
-		if row.ValueInt > 0 {
-			query = query.Where(row.Key+" = ?", row.ValueInt)
+		if row.ValueInt != 0 {
+			query = query.Where(row.Key+" "+row.Compare+" ?", row.ValueInt)
+		}
+
+		if row.ValueFloat != 0 {
+			query = query.Where(row.Key+" "+row.Compare+" ?", row.ValueFloat)
 		}
 	}
 

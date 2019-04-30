@@ -40,7 +40,7 @@ func (t *Controller) GetContacts(c *gin.Context) {
 		Page:             page,
 		AllowedOrderCols: []string{"ContactsId", "ContactsName"},
 		Wheres: []models.KeyValue{
-			{Key: "ContactsAccountId", ValueInt: c.MustGet("accountId").(int)},
+			{Key: "ContactsAccountId", Compare: "=", ValueInt: c.MustGet("accountId").(int)},
 		},
 	}
 

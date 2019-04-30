@@ -17,6 +17,7 @@ import (
 	"app.skyclerk.com/backend/library/request"
 	"app.skyclerk.com/backend/library/response"
 	"app.skyclerk.com/backend/models"
+	"app.skyclerk.com/backend/services"
 )
 
 //
@@ -40,8 +41,45 @@ func (t *Controller) GetLedgers(c *gin.Context) {
 		PreLoads:         []string{"Category", "Contact", "Labels", "Files"},
 		AllowedOrderCols: []string{"LedgerId", "LedgerDate"},
 		Wheres: []models.KeyValue{
-			{Key: "LedgerAccountId", ValueInt: c.MustGet("accountId").(int)},
+			{Key: "LedgerAccountId", Compare: "=", ValueInt: c.MustGet("accountId").(int)},
 		},
+	}
+
+	// Add type filter - income
+	if c.DefaultQuery("type", "") == "income" {
+		params.Wheres = append(params.Wheres, models.KeyValue{
+			Key:        "LedgerAmount",
+			Compare:    ">=",
+			ValueFloat: 0.01, // because of the lib we can't use 0
+		})
+	}
+
+	// Add type filter - expense
+	if c.DefaultQuery("type", "") == "expense" {
+		params.Wheres = append(params.Wheres, models.KeyValue{
+			Key:        "LedgerAmount",
+			Compare:    "<=",
+			ValueFloat: -0.01, // because of the lib we can't use 0
+		})
+	}
+
+	// Add type filter - category_id
+	if len(c.DefaultQuery("category_id", "")) > 0 {
+		// Convert cat id
+		cat_id, err := strconv.Atoi(c.DefaultQuery("category_id", ""))
+
+		if err != nil {
+			services.Info(err)
+			c.JSON(http.StatusBadRequest, gin.H{"error": "Error with category_id"})
+			return
+		}
+
+		// Update query.
+		params.Wheres = append(params.Wheres, models.KeyValue{
+			Key:      "LedgerCategoryId",
+			Compare:  "=",
+			ValueInt: cat_id,
+		})
 	}
 
 	// Run the query

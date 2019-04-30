@@ -88,7 +88,7 @@ func (t *Controller) GetSnapClerk(c *gin.Context) {
 		PreLoads:         []string{"File"},
 		AllowedOrderCols: []string{"SnapClerkId"},
 		Wheres: []models.KeyValue{
-			{Key: "SnapClerkAccountId", ValueInt: c.MustGet("accountId").(int)},
+			{Key: "SnapClerkAccountId", Compare: "=", ValueInt: c.MustGet("accountId").(int)},
 		},
 	}
 

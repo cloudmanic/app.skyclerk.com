@@ -38,20 +38,21 @@ func (t *Controller) GetCategories(c *gin.Context) {
 		Sort:             c.DefaultQuery("sort", "ASC"),
 		Limit:            500,
 		Page:             page,
+		Debug:            false,
 		AllowedOrderCols: []string{"CategoriesId", "CategoriesName"},
 		Wheres: []models.KeyValue{
-			{Key: "CategoriesAccountId", ValueInt: c.MustGet("accountId").(int)},
+			{Key: "CategoriesAccountId", Compare: "=", ValueInt: c.MustGet("accountId").(int)},
 		},
 	}
 
 	// Did we pass in a type of income?
 	if c.Query("type") == "income" {
-		params.Wheres = append(params.Wheres, models.KeyValue{Key: "CategoriesType", Value: "2"})
+		params.Wheres = append(params.Wheres, models.KeyValue{Key: "CategoriesType", Compare: "=", Value: "2"})
 	}
 
 	// Did we pass in a type of expense?
 	if c.Query("type") == "expense" {
-		params.Wheres = append(params.Wheres, models.KeyValue{Key: "CategoriesType", Value: "1"})
+		params.Wheres = append(params.Wheres, models.KeyValue{Key: "CategoriesType", Compare: "=", Value: "1"})
 	}
 
 	// Run the query
