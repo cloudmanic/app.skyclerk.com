@@ -91,7 +91,7 @@ func (t *DB) StoreFile(accountId uint, filePath string) (File, error) {
 	}
 
 	// Get the file type
-	fileType, err := files.FileContentTypeWithError(filePath)
+	fileType, _, err := files.FileContentTypeWithError(filePath)
 
 	if err != nil {
 		return File{}, err
@@ -201,7 +201,8 @@ func (t *DB) CreateAndStoreThumbnailImage(file *File, cleanedFileName string, fi
 	// The path to the thumb nail we are going to upload.
 	var tbfp string
 
-	// If this is a PDF we use imaginary.skyclerk.com to create the thumbnail - This is hacky to support testing.
+	// If this is a PDF we use imaginary.skyclerk.com to create the thumbnail.
+	// AWS_CLOUDFRONT_PRIVATE_SIGN_KEY part is hacky to support testing.
 	if fileType == "application/pdf" && (len(os.Getenv("AWS_CLOUDFRONT_PRIVATE_SIGN_KEY")) > 0) {
 		t, err := t.GetPdfThumbNail(file, width, height, cleanedFileName)
 

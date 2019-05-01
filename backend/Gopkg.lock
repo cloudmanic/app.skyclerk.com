@@ -122,6 +122,27 @@
   version = "v1.3.1"
 
 [[projects]]
+  digest = "1:4442692c7525ec403b23a5b3e169a089bb1e6ed3b69795be877d39578744bf7a"
+  name = "github.com/h2non/filetype"
+  packages = [
+    ".",
+    "matchers",
+    "matchers/isobmff",
+    "types",
+  ]
+  pruneopts = "UT"
+  revision = "2248f2e2f77cd8cf9694216e3f9589d71005de37"
+  version = "v1.0.8"
+
+[[projects]]
+  digest = "1:574f4e0c57e045c9d109d23c60c586b2198eaead53daa97ed5f65c616e22a9b0"
+  name = "github.com/h2non/parth"
+  packages = ["."]
+  pruneopts = "UT"
+  revision = "b4df798d65426f8c8ab5ca5f9987aec5575d26c9"
+  version = "v2.0.1"
+
+[[projects]]
   digest = "1:1dcc17305b836342d265756c7fbf5617b114d8a5a0756e8f2606262ceeae11cb"
   name = "github.com/jinzhu/gorm"
   packages = ["."]
@@ -364,6 +385,14 @@
   version = "v8.18.2"
 
 [[projects]]
+  digest = "1:fb332c4b0e1944eb132e2075ea0447873a1081ecdabb140ff9696327ac8b947b"
+  name = "gopkg.in/h2non/gock.v1"
+  packages = ["."]
+  pruneopts = "UT"
+  revision = "ba88c4862a27596539531ce469478a91bc5a0511"
+  version = "v1.0.14"
+
+[[projects]]
   digest = "1:d37c61a335d13bc49b3f90e9e13c8686e4548839b69c58549e727afb2245c454"
   name = "gopkg.in/ini.v1"
   packages = ["."]
@@ -395,6 +424,7 @@
     "github.com/gin-gonic/gin",
     "github.com/go-ozzo/ozzo-validation",
     "github.com/go-sql-driver/mysql",
+    "github.com/h2non/filetype",
     "github.com/jinzhu/gorm",
     "github.com/jpfuentes2/go-env",
     "github.com/jpfuentes2/go-env/autoload",
@@ -403,6 +433,7 @@
     "github.com/nbio/st",
     "github.com/tidwall/gjson",
     "golang.org/x/crypto/acme/autocert",
+    "gopkg.in/h2non/gock.v1",
   ]
   solver-name = "gps-cdcl"
   solver-version = 1

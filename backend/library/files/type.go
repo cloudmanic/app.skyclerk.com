@@ -8,38 +8,26 @@
 package files
 
 import (
-	"net/http"
-	"os"
+	"io/ioutil"
+
+	"github.com/h2non/filetype"
 )
 
 //
 // FileContentTypeWithError - Return type filt hash of a file with error.
 //
-func FileContentTypeWithError(path string) (string, error) {
-	// Open File
-	f, err := os.Open(path)
+func FileContentTypeWithError(path string) (string, string, error) {
+	// Read file
+	buf, _ := ioutil.ReadFile(path)
 
-	if err != nil {
-		return "", err
+	// Get kind
+	kind, err := filetype.Match(buf)
+	if kind == filetype.Unknown {
+		return "", "", err
 	}
-
-	defer f.Close()
-
-	// Only the first 512 bytes are used to sniff the content type.
-	buffer := make([]byte, 512)
-
-	_, err2 := f.Read(buffer)
-
-	if err2 != nil {
-		return "", err2
-	}
-
-	// Use the net/http package's handy DectectContentType function. Always returns a valid
-	// content-type by returning "application/octet-stream" if no others seemed to match.
-	contentType := http.DetectContentType(buffer)
 
 	// Return happy
-	return contentType, nil
+	return kind.MIME.Value, kind.Extension, nil
 }
 
 /* End File */

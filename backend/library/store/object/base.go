@@ -13,6 +13,7 @@ import (
 	"os"
 	"path/filepath"
 
+	"app.skyclerk.com/backend/library/files"
 	env "github.com/jpfuentes2/go-env"
 	minio "github.com/minio/minio-go"
 )
@@ -70,8 +71,17 @@ func UploadObject(filePath string, storePath string) error {
 		return err
 	}
 
+	// Get the file type
+	fileType, _, err := files.FileContentTypeWithError(filePath)
+
+	if err != nil {
+		return err
+	}
+
 	// Upload file.
-	_, err = minioClient.FPutObject(os.Getenv("OBJECT_BUCKET"), storePath, filePath, minio.PutObjectOptions{})
+	_, err = minioClient.FPutObject(os.Getenv("OBJECT_BUCKET"), storePath, filePath, minio.PutObjectOptions{
+		ContentType: fileType,
+	})
 
 	if err != nil {
 		return err
