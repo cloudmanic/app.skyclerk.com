@@ -166,7 +166,7 @@ func GetRandomCategory(accountId int64) models.Category {
 func GetRandomLabel(accountId int64) models.Label {
 	rand.Seed(time.Now().UnixNano())
 
-	name := []string{"Options Cafe", "Skyclerk", "Clients", "Refund", "Non-Taxable"}
+	name := []string{"Options Cafe", "Skyclerk", "Clients", "Refund", "Non-Taxable", "Marketing", "1099", "Deposit", "125 Main Street"}
 
 	label := models.Label{
 		AccountId: uint(accountId),

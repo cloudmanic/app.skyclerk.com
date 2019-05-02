@@ -11,6 +11,7 @@ package controllers
 import (
 	"net/http"
 	"strconv"
+	"strings"
 
 	"github.com/gin-gonic/gin"
 
@@ -28,6 +29,9 @@ func (t *Controller) GetLedgers(c *gin.Context) {
 	// Place to store the results.
 	var results = []models.Ledger{}
 
+	// Get account
+	accountId := c.MustGet("accountId").(int)
+
 	// Get limits and pages
 	page, _, _ := request.GetSetPagingParms(c)
 
@@ -41,7 +45,7 @@ func (t *Controller) GetLedgers(c *gin.Context) {
 		PreLoads:         []string{"Category", "Contact", "Labels", "Files"},
 		AllowedOrderCols: []string{"LedgerId", "LedgerDate"},
 		Wheres: []models.KeyValue{
-			{Key: "LedgerAccountId", Compare: "=", ValueInt: c.MustGet("accountId").(int)},
+			{Key: "LedgerAccountId", Compare: "=", ValueInt: accountId},
 		},
 	}
 
@@ -79,6 +83,31 @@ func (t *Controller) GetLedgers(c *gin.Context) {
 			Key:      "LedgerCategoryId",
 			Compare:  "=",
 			ValueInt: cat_id,
+		})
+	}
+
+	// Get ledger ids from lables we want to filter from.
+	if len(c.DefaultQuery("label_ids", "")) > 0 {
+		// Get Ids from url
+		ids := strings.Split(c.DefaultQuery("label_ids", ""), ",")
+
+		// Array of ledger ids
+		whereIn := []int{}
+
+		// Run query
+		l := []models.LabelsToLedger{}
+		t.db.New().Where("LabelsToLedgerLabelId IN (?) AND LabelsToLedgerAccountId = ?", ids, accountId).Find(&l)
+
+		// Build id array.
+		for _, row := range l {
+			whereIn = append(whereIn, int(row.LabelsToLedgerLedgerId))
+		}
+
+		// Update query.
+		params.Wheres = append(params.Wheres, models.KeyValue{
+			Key:          "LedgerId",
+			Compare:      "IN",
+			ValueIntList: whereIn,
 		})
 	}
 
