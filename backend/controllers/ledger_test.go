@@ -468,6 +468,77 @@ func TestGetLedgers05(t *testing.T) {
 }
 
 //
+// TestGetLedgers06 Test start / end dates
+//
+func TestGetLedgers06(t *testing.T) {
+	// Data map
+	dMap := make(map[uint]models.Ledger)
+
+	// Start the db connection.
+	db, dbName, _ := models.NewTestDB("testing_db")
+	defer models.TestingTearDown(db, dbName)
+
+	// Create controller
+	c := &Controller{}
+	c.SetDB(db)
+
+	// Create like 10 ledger entries. Diffent account.
+	for i := 0; i < 10; i++ {
+		l := test.GetRandomLedger(23)
+		db.LedgerCreate(&l)
+	}
+
+	// Create like 105 ledger entries.
+	for i := 0; i < 105; i++ {
+		l := test.GetRandomLedger(33)
+		db.LedgerCreate(&l)
+		dMap[l.Id] = l
+	}
+
+	// Create like 10 ledger entries. Diffent account.
+	for i := 0; i < 10; i++ {
+		l := test.GetRandomLedger(43)
+		db.LedgerCreate(&l)
+	}
+
+	// Setup request
+	req, _ := http.NewRequest("GET", fmt.Sprintf("/api/v3/33/ledger?start_date=2017-01-01&end_date=2018-12-31"), nil)
+
+	// Setup writer.
+	w := httptest.NewRecorder()
+	gin.SetMode("release")
+	gin.DisableConsoleColor()
+
+	r := gin.New()
+	r.Use(func(c *gin.Context) {
+		c.Set("accountId", 33)
+		c.Set("userId", uint(109))
+	})
+	r.GET("/api/v3/:account/ledger", c.GetLedgers)
+	r.ServeHTTP(w, req)
+
+	// Grab result and convert to strut
+	results := []models.Ledger{}
+	err := json.Unmarshal([]byte(w.Body.String()), &results)
+
+	// Test results
+	st.Expect(t, err, nil)
+	st.Expect(t, w.Code, 200)
+	st.Expect(t, w.HeaderMap["X-Offset"][0], "0")
+	st.Expect(t, w.HeaderMap["X-Limit"][0], "50")
+
+	for key, row := range results {
+		st.Expect(t, (row.Date.Format("2006") == "2017") || (row.Date.Format("2006") == "2018"), true)
+
+		// Verfiy default Order
+		if key > 0 {
+			diff := row.Date.Sub(results[key-1].Date)
+			st.Expect(t, (diff <= 0), true)
+		}
+	}
+}
+
+//
 // TestGetLedger01 Test get ledger 01
 //
 func TestGetLedger01(t *testing.T) {

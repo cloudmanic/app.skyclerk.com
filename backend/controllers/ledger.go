@@ -101,6 +101,24 @@ func (t *Controller) GetLedgers(c *gin.Context) {
 		})
 	}
 
+	// Add type filter - start date
+	if len(c.DefaultQuery("start_date", "")) > 0 {
+		params.Wheres = append(params.Wheres, models.KeyValue{
+			Key:     "LedgerDate",
+			Compare: ">=",
+			Value:   c.DefaultQuery("start_date", ""),
+		})
+	}
+
+	// Add type filter - end date
+	if len(c.DefaultQuery("end_date", "")) > 0 {
+		params.Wheres = append(params.Wheres, models.KeyValue{
+			Key:     "LedgerDate",
+			Compare: "<=",
+			Value:   c.DefaultQuery("end_date", ""),
+		})
+	}
+
 	// Get ledger ids from lables we want to filter from.
 	if len(c.DefaultQuery("label_ids", "")) > 0 {
 		// Get Ids from url
