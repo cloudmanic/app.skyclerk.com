@@ -144,6 +144,31 @@ func (t *Controller) GetLedgers(c *gin.Context) {
 		})
 	}
 
+	// Manage a search query
+	if len(c.DefaultQuery("search", "")) > 0 {
+		// Query term
+		search := c.DefaultQuery("search", "")
+
+		// Array of contact ids
+		contactWhereIn := []int{}
+
+		// Get contacts
+		c := []models.Contact{}
+		t.db.New().Where("(ContactsName LIKE ? OR ContactsFirstName LIKE ? OR ContactsLastName LIKE ?) AND ContactsAccountId = ?", "%"+search+"%", "%"+search+"%", "%"+search+"%", accountId).Find(&c)
+
+		// Build id array.
+		for _, row := range c {
+			contactWhereIn = append(contactWhereIn, int(row.Id))
+		}
+
+		// Update query.
+		params.Wheres = append(params.Wheres, models.KeyValue{
+			Key:          "LedgerContactId",
+			Compare:      "IN",
+			ValueIntList: contactWhereIn,
+		})
+	}
+
 	// Run the query
 	meta, err := t.db.QueryMeta(&results, params)
 
