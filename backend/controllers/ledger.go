@@ -86,6 +86,21 @@ func (t *Controller) GetLedgers(c *gin.Context) {
 		})
 	}
 
+	// Add type filter - year
+	if len(c.DefaultQuery("year", "")) > 0 {
+		params.Wheres = append(params.Wheres, models.KeyValue{
+			Key:     "LedgerDate",
+			Compare: ">=",
+			Value:   c.DefaultQuery("year", "") + "-01-01",
+		})
+
+		params.Wheres = append(params.Wheres, models.KeyValue{
+			Key:     "LedgerDate",
+			Compare: "<=",
+			Value:   c.DefaultQuery("year", "") + "-12-31",
+		})
+	}
+
 	// Get ledger ids from lables we want to filter from.
 	if len(c.DefaultQuery("label_ids", "")) > 0 {
 		// Get Ids from url
