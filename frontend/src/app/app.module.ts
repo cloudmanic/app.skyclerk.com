@@ -13,6 +13,7 @@ import { LoginComponent } from './auth/login/login.component';
 import { AuthComponent as LayoutAuthComponent } from './layouts/auth/auth.component';
 import { AppComponent as LayoutAppComponent } from './layouts/app/app.component';
 import { LandingComponent as DashboardLandingComponent } from './dashboard/landing/landing.component';
+import { SidebarComponent } from './layouts/sidebar/sidebar.component';
 
 @NgModule({
 	declarations: [
@@ -20,7 +21,8 @@ import { LandingComponent as DashboardLandingComponent } from './dashboard/landi
 		LoginComponent,
 		LayoutAuthComponent,
 		LayoutAppComponent,
-		DashboardLandingComponent
+		DashboardLandingComponent,
+		SidebarComponent
 	],
 	imports: [
 		FormsModule,
