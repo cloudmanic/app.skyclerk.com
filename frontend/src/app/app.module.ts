@@ -14,6 +14,7 @@ import { AuthComponent as LayoutAuthComponent } from './layouts/auth/auth.compon
 import { AppComponent as LayoutAppComponent } from './layouts/app/app.component';
 import { LandingComponent as DashboardLandingComponent } from './dashboard/landing/landing.component';
 import { SidebarComponent } from './layouts/sidebar/sidebar.component';
+import { LandingComponent as LedgerLandingComponent } from './ledger/landing/landing.component';
 
 @NgModule({
 	declarations: [
@@ -22,7 +23,8 @@ import { SidebarComponent } from './layouts/sidebar/sidebar.component';
 		LayoutAuthComponent,
 		LayoutAppComponent,
 		DashboardLandingComponent,
-		SidebarComponent
+		SidebarComponent,
+		LedgerLandingComponent
 	],
 	imports: [
 		FormsModule,

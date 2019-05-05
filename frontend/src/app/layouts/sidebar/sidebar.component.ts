@@ -5,13 +5,14 @@
 // Copyright: 2019 Cloudmanic Labs, LLC. All rights reserved.
 //
 
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
 
 @Component({
 	selector: 'app-layouts-sidebar',
 	templateUrl: './sidebar.component.html'
 })
 export class SidebarComponent implements OnInit {
+	@Input() current: string = "";
 
 	//
 	// Constructor

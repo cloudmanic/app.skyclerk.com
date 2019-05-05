@@ -16,6 +16,7 @@ import { LoginComponent } from './auth/login/login.component';
 import { AuthComponent as LayoutAuthComponent } from './layouts/auth/auth.component';
 import { AppComponent as LayoutAppComponent } from './layouts/app/app.component';
 import { LandingComponent as DashboardLandingComponent } from './dashboard/landing/landing.component';
+import { LandingComponent as LedgerLandingComponent } from './ledger/landing/landing.component';
 
 const routes: Routes = [
 
@@ -25,6 +26,9 @@ const routes: Routes = [
 
 			// dashboard
 			{ path: '', component: DashboardLandingComponent, canActivate: [SessionGuard] },
+
+			// ledger
+			{ path: 'ledger', component: LedgerLandingComponent, canActivate: [SessionGuard] },
 
 		]
 	},
