@@ -1,46 +1,52 @@
 <div class="login">
   <div class="login-head">
     <h2>Login to Your Account</h2>
-    <a href="#">Forgot Password?</a>
+    <a routerLink="/forget-password">Forgot Password?</a>
   </div>
 
   <div class="login-body">
     <div class="form-login">
-      <form action="#" method="post">
+      <form (submit)="doLogin()">
+
         <div class="form-head">
-          <h4 class="form-login-title">Welcome to your Skyclerk account. Please login or <a href="#">register a new account.</a></h4>
-        </div><!-- /.form-head -->
+          <h4 class="form-login-title">
+            Welcome to your Skyclerk account. Please login or
+            <a routerLink="/register">register a new account.</a>
+          </h4>
+
+          <strong class="error-message" *ngIf="errMsg">{{ errMsg }}</strong>
+        </div>
 
         <div class="form-body">
           <div class="form-row">
             <div class="form-col form-col1of2">
               <label for="field-email-login" class="form-label">Email Adress</label>
-            </div><!-- /.form-col form-col1of2 -->
+            </div>
 
             <div class="form-col form-col1of2">
               <div class="form-controls">
-                <input type="email" class="field" name="field-email-login" id="field-email-login" value="">
-              </div><!-- /.form-controls -->
-            </div><!-- /.form-col form-col1of2 -->
-          </div><!-- /.form-row -->
+                <input type="text" class="field" name="email" id="field-email-login" value="" [(ngModel)]="email" />
+              </div>
+            </div>
+          </div>
 
           <div class="form-row">
             <div class="form-col form-col1of2">
               <label for="field-password-login" class="form-label">Password</label>
-            </div><!-- /.form-col form-col1of2 -->
+            </div>
 
             <div class="form-col form-col1of2">
               <div class="form-controls">
-                <input type="password" class="field" name="field-password-login" id="field-password-login" value="">
-              </div><!-- /.form-controls -->
-            </div><!-- /.form-col form-col1of2 -->
-          </div><!-- /.form-row -->
-        </div><!-- /.form-body -->
+                <input type="password" class="field" name="password" id="field-password-login" value="" [(ngModel)]="password" />
+              </div>
+            </div>
+          </div>
+        </div>
 
         <div class="form-actions">
           <button type="submit" value="Submit" class="form-btn btn btn-yellow">SIGN IN</button>
-        </div><!-- /.form-actions -->
+        </div>
       </form>
-    </div><!-- /.form-login -->
-  </div><!-- /.login-body -->
-</div><!-- /.login -->
+    </div>
+  </div>
+</div>

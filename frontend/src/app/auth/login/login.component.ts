@@ -6,6 +6,9 @@
 //
 
 import { Component, OnInit } from '@angular/core';
+import { AuthService } from 'src/app/services/auth.service';
+import { Router } from '@angular/router';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
 	selector: 'app-auth-login',
@@ -13,10 +16,39 @@ import { Component, OnInit } from '@angular/core';
 })
 
 export class LoginComponent implements OnInit {
+	errMsg: string = "";
+	email: string = "";
+	password: string = "";
 
-	constructor() { }
+	//
+	// Construct.
+	//
+	constructor(public authService: AuthService, public router: Router) { }
 
-	ngOnInit() {
+	//
+	// OnInit...
+	//
+	ngOnInit() { }
+
+	//
+	// Submit login request
+	//
+	doLogin() {
+		// Clear old error
+		this.errMsg = "";
+
+		// Make the the HTTP request:
+		this.authService.login(this.email, this.password).subscribe(
+			// Success - Redirect to dashboard.
+			() => {
+				this.router.navigate(['/']);
+			},
+
+			// Error
+			(err: HttpErrorResponse) => {
+				this.errMsg = err.error.error;
+			}
+		);
 	}
 
 }
