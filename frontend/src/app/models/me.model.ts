@@ -13,7 +13,7 @@ export class Me implements Serializable {
 	Email: string;
 	FirstName: string;
 	LastName: string;
-	Accounts: Account[];
+	Accounts: Account[] = [];
 
 	//
 	// Json to Object.

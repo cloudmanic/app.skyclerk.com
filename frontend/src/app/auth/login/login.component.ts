@@ -9,6 +9,7 @@ import { Component, OnInit } from '@angular/core';
 import { AuthService } from 'src/app/services/auth.service';
 import { Router } from '@angular/router';
 import { HttpErrorResponse } from '@angular/common/http';
+import { MeService } from 'src/app/services/me.service';
 
 @Component({
 	selector: 'app-auth-login',
@@ -23,7 +24,7 @@ export class LoginComponent implements OnInit {
 	//
 	// Construct.
 	//
-	constructor(public authService: AuthService, public router: Router) { }
+	constructor(public authService: AuthService, public meService: MeService, public router: Router) { }
 
 	//
 	// OnInit...
@@ -41,7 +42,11 @@ export class LoginComponent implements OnInit {
 		this.authService.login(this.email, this.password).subscribe(
 			// Success - Redirect to dashboard.
 			() => {
-				this.router.navigate(['/']);
+				// Get the user so we can set the default account id
+				this.meService.get().subscribe(res => {
+					localStorage.setItem('account_id', res.Accounts[0].Id.toString());
+					this.router.navigate(['/']);
+				});
 			},
 
 			// Error

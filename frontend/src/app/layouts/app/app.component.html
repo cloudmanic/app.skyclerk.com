@@ -4,9 +4,9 @@
 			<a routerLink="/" class="logo">SkyClerk</a>
 			<div class="nav-account">
 				<ul>
-					<li class="user-welcome">Hi, <strong>Spicer!</strong></li>
+					<li class="user-welcome">Hi, <strong>{{ me.FirstName }}!</strong></li>
 					<li><a routerLink="settings/users" class="btn btn-darkgray btn-xsmall">SETTINGS</a></li>
-					<li><a href="#" class="link-logout">LOGOUT</a></li>
+					<li><a class="link-logout" (click)="doLogOut()">LOGOUT</a></li>
 				</ul>
 			</div>
 		</div>
@@ -22,32 +22,17 @@
 				</div>
 
 				<div class="status-title">
-					Temple Consulting
+					{{ account.Name}}
 				</div>
 
-				<div class="switch-account">
-					<a href="#" class="dd-toggle">Switch Account</a>
+				<div class="switch-account show-dd" [ngClass]="{ 'show-dd': accountToggle }" *ngIf="me.Accounts.length > 1">
+					<a class="dd-toggle" (click)="doAccountToggle()">Switch Account</a>
 
 					<div class="dd-white">
 						<ul>
-							<li><a href="#">1824 SE Tenino</a></li>
-							<li><a href="#">1824 SE Tenino</a></li>
-							<li><a href="#">1824 SE Tenino</a></li>
-							<li><a href="#">1824 SE Tenino</a></li>
-							<li><a href="#">1824 SE Tenino</a></li>
-							<li><a href="#">1824 SE Tenino</a></li>
-							<li><a href="#">1824 SE Tenino</a></li>
-							<li><a href="#">1824 SE Tenino</a></li>
-							<li><a href="#">1824 SE Tenino</a></li>
-							<li><a href="#">1824 SE Tenino</a></li>
-							<li><a href="#">1824 SE Tenino</a></li>
-							<li><a href="#">1824 SE Tenino</a></li>
-							<li><a href="#">1824 SE Tenino</a></li>
-							<li><a href="#">1824 SE Tenino</a></li>
-							<li><a href="#">1824 SE Tenino</a></li>
-							<li><a href="#">1824 SE Tenino</a></li>
-							<li><a href="#">1824 SE Tenino</a></li>
-							<li><a href="#">1824 SE Tenino</a></li>
+							<li *ngFor="let row of me.Accounts">
+								<a (click)="doSelectAccount(row)">{{ row.Name }}</a>
+							</li>
 						</ul>
 					</div>
 				</div>
