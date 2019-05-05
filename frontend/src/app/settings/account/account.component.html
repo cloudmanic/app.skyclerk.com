@@ -1,0 +1,312 @@
+<!--#include virtual="ssi-header.shtml" -->
+
+<div class="main">
+  <div class="shell clearfix">
+    <div class="content">
+
+      <div class="contentbox">
+        <div class="overview">
+          <div class="overview-head">
+            <div class="overview-label">
+              <h4>Company Settings</h4>
+            </div><!-- /.overview-label -->
+          </div><!-- /.overview-head -->
+
+          <div class="overview-body">
+            <div class="tabs">
+
+              <app-settings-sub-nav current="account"></app-settings-sub-nav>
+
+              <div class="tabs-body">
+                <div class="tab" id="tab1">
+                  <div class="section-secondary">
+                    <div class="section-head">
+                      <h1>Manage Users</h1>
+
+                      <a href="#" class="add-link" data-popout="add-contact">
+                        <span class="plus-box"></span>
+
+                        New User
+                      </a>
+                    </div><!-- /.section-head -->
+
+                    <div class="section-body">
+                      <div class="table-users">
+                        <table>
+                          <tr>
+                            <th>First Name</th>
+
+                            <th>Last Name</th>
+
+                            <th>Email Address</th>
+
+                            <th>Actions</th>
+                          </tr>
+
+                          <tr>
+                            <td>Spicer</td>
+
+                            <td>Matthews</td>
+
+                            <td><a href="mailto:spicermatthews@cloudmanic.com">spicermatthews@cloudmanic.com</a></td>
+
+                            <td>&nbsp;</td>
+                          </tr>
+
+                          <tr>
+                            <td>Matthew</td>
+
+                            <td>Dabrowiak</td>
+
+                            <td><a href="mailto:mattdabrowiak@gmail.com">mattdabrowiak@gmail.com</a></td>
+
+                            <td><a href="#" class="remove-user">Remove User</a></td>
+                          </tr>
+                        </table>
+                      </div><!-- /.table-users -->
+                    </div><!-- /.section-body -->
+                  </div><!-- /.section-secondary -->
+                </div><!-- /.tab -->
+
+                <div class="tab current" id="tab2">
+                  <section class="section-plan">
+                    <ul class="charts">
+                      <li class="chart">
+                        <h3>Free</h3>
+
+                        <p>Curreent Plan</p>
+                      </li><!-- /.chart -->
+
+                      <li class="chart">
+                        <h4>7MB/14MB</h4>
+
+                        <small>Storage</small>
+
+                        <div class="chart-progress">
+                          <div class="chart-progress-line" style="width: 77px"></div><!-- /.chart-progress-line -->
+                        </div><!-- /.chart-progress -->
+                      </li><!-- /.chart -->
+
+                      <li class="chart">
+                        <h4>2/5</h4>
+
+                        <small>Transactions</small>
+
+                        <div class="chart-progress">
+                          <div class="chart-progress-line" style="width: 57px"></div><!-- /.chart-progress-line -->
+                        </div><!-- /.chart-progress -->
+                      </li><!-- /.chart -->
+
+                      <li class="chart">
+                        <h4>
+                          <span>10</span>
+                          /10
+                        </h4>
+
+                        <small>Contacts</small>
+
+                        <div class="chart-progress">
+                          <div class="chart-progress-line chart-progress-line-red"></div><!-- /.chart-progress-line -->
+                        </div><!-- /.chart-progress -->
+                      </li><!-- /.chart -->
+
+                      <li class="chart">
+                        <h4>2/5</h4>
+
+                        <small>Scans</small>
+
+
+                        <div class="chart-progress">
+                          <div class="chart-progress-line" style="width: 75px"></div><!-- /.chart-progress-line -->
+                        </div><!-- /.chart-progress -->
+                      </li><!-- /.chart -->
+                    </ul><!-- /.charts -->
+                  </section><!-- /.section-plan -->
+
+                  <section class="section-secondary">
+                    <div class="section-head">
+                      <h1>Account Plan</h1>
+
+                      <a href="#" class="btn-primary">Update Credit Card</a>
+                    </div><!-- /.section-head -->
+
+                    <div class="section-body section-widgets-plans">
+                      <div class="widgets-plans">
+                        <div class="widget-plan">
+                          <div class="widget-head">
+                            <h2>
+                              <span>Premium</span> Plan
+
+                              <span>$15/</span>
+
+                              <small>mo</small>
+                            </h2>
+                          </div><!-- /.widget-head -->
+
+                          <div class="widget-body">
+                            <ul class="list-checks">
+                              <li>Unlimited Transactions</li>
+
+                              <li>Unlimited Contacts</li>
+
+                              <li>Unlimited Storage</li>
+
+                              <li>50 Scans / mo</li>
+                            </ul><!-- /.list-checks -->
+                          </div><!-- /.widget-body -->
+
+                          <div class="widget-actions">
+                            <a href="#" class="btn btn-yellow">SELECT THIS PLAN</a>
+                          </div><!-- /.widget-actions -->
+                        </div><!-- /.widget-plan -->
+
+                        <div class="widget-plan">
+                          <div class="widget-head">
+                            <h2>
+                              <span>Free</span> Plan
+
+                              <span>$0/</span>
+                            </h2>
+                          </div><!-- /.widget-head -->
+
+                          <div class="widget-body">
+                            <ul class="list-checks">
+                              <li>5 Transactions / mo</li>
+
+                              <li>10 Contacts</li>
+
+                              <li>15 MB Storage</li>
+
+                              <li>5 Scans / mo</li>
+                            </ul><!-- /.list-checks -->
+                          </div><!-- /.widget-body -->
+
+                          <div class="widget-actions">
+                            <a href="#" class="btn">YOUR PLAN</a>
+                          </div><!-- /.widget-actions -->
+                        </div><!-- /.widget-plan -->
+                      </div><!-- /.widgets-plans -->
+                    </div><!-- /.section-body -->
+                  </section><!-- /.section-secondary -->
+
+                  <section class="section-group">
+                    <div class="section-group-content">
+                      <section class="section-secondary">
+                        <div class="section-head">
+                          <h1>Change Account Owner</h1>
+                        </div><!-- /.section-head -->
+
+                        <div class="form-account-owner">
+                          <form action="#" method="post">
+
+                            <div class="form-body">
+                              <div class="form-row">
+                                <label class="form-label">Account Owner:</label>
+
+                                <div class="select">
+                                  <select>
+                                    <option>Option 1</option>
+                                    <option>Option 2</option>
+                                    <option>Option 3</option>
+                                    <option>Option 4</option>
+                                  </select>
+                                  <span class="select-value">Spicer Matthews</span>
+                                </div><!-- /.select -->
+
+                                <input type="submit" value="CHANGE" class="btn form-btn">
+                              </div>
+                            </div><!-- /.form-body -->
+                          </form>
+                        </div><!-- /.form-account-owner -->
+
+                        <p>The account owner is the user responsible for billing and changing account plans. This is the user that signed up for the service. If you would like to hand the account over to someone else you can change below. Once you
+                          change it you will no longer have access to this area of the site. </p>
+                      </section><!-- /.section-secondary -->
+
+                      <section class="section-secondary">
+                        <div class="section-head">
+                          <h1>Shutdown Account</h1>
+                        </div><!-- /.section-head -->
+
+                        <div class="section-body">
+                          <p>We’ll be sorry to see you go. Once your account is shut down all of your information will be immediately and permanently delated. If you have a paid account you won’t be charged again after your official cancellation
+                            date. Please familiarize yourself with our refund policy.</p>
+                        </div><!-- /.section-body -->
+
+                        <div class="section-actions">
+                          <a href="#" class="btn btn-shutdown">SHUTDOWN MY ACCOUNT</a>
+                        </div><!-- /.section-actions -->
+                      </section><!-- /.section-secondary -->
+                    </div><!-- /.section-group-content -->
+
+                    <div class="section-group-aside">
+                      <section class="section-credits-card">
+                        <h4>What happens if we upgrade, downgrade, or cancel in the middle of a billing cycle?</h4>
+
+                        <p>If you upgrade or downgrade you’ll be charged the new rate for your new plan starting on your next billing cycle. If you cancel, you’ll be cancelled immediately and won’t be charged again.</p>
+
+                        <h4>What kinds of payment to you accept?</h4>
+
+                        <ul class="list-credits-card">
+                          <li>
+                            <a href="#">
+                              <img src="css/images/cart1.png" alt="">
+                            </a>
+                          </li>
+
+                          <li>
+                            <a href="#">
+                              <img src="css/images/cart2.png" alt="">
+                            </a>
+                          </li>
+
+                          <li>
+                            <a href="#">
+                              <img src="css/images/cart3.png" alt="">
+                            </a>
+                          </li>
+
+                          <li>
+                            <a href="#">
+                              <img src="css/images/cart4.png" alt="">
+                            </a>
+                          </li>
+                        </ul><!-- /.list-credits-card -->
+
+                        <p>Currently we accept Visa, Mastercard, American Express, and Discover. We do not accept PayPal, checks, or POs. Sorry for any inconvenience.</p>
+                      </section><!-- /.section-credits-card -->
+
+                      <section class="section-secondary">
+                        <div class="section-head">
+                          <h1>Clear Account</h1>
+                        </div><!-- /.section-head -->
+
+                        <div class="section-body">
+                          <p>Sometimes it is nice just to start over. By clicking the button below you will clear your entire account of all data and restore it to the state when you first signed up. All data will be deleted forever. <a href="#">Click
+                              here to clear all account data.</a></p>
+                        </div><!-- /.section-body -->
+                      </section><!-- /.section-secondary -->
+                    </div><!-- /.section-group-aside -->
+                  </section><!-- /.section-group -->
+
+
+                </div><!-- /.tab -->
+
+                <div class="tab" id="tab3">
+
+                </div><!-- /.tab -->
+              </div><!-- /.tabs-body -->
+            </div><!-- /.tabs -->
+          </div><!-- /.overview-body -->
+        </div><!-- /.overview -->
+
+      </div><!-- /.contentbox -->
+
+    </div><!-- /.content -->
+
+    <app-layouts-sidebar></app-layouts-sidebar>
+
+  </div>
+</div><!-- /.main -->
+
+<!--#include virtual="ssi-footer.shtml" -->

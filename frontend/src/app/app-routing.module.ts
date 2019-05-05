@@ -18,6 +18,8 @@ import { AppComponent as LayoutAppComponent } from './layouts/app/app.component'
 import { LandingComponent as DashboardLandingComponent } from './dashboard/landing/landing.component';
 import { LandingComponent as LedgerLandingComponent } from './ledger/landing/landing.component';
 import { LandingComponent as SnapclerkLandingComponent } from './snapclerk/landing/landing.component';
+import { UsersComponent as SettingsUsersComponent } from './settings/users/users.component';
+import { AccountComponent as SettingsAccountComponent } from './settings/account/account.component';
 
 const routes: Routes = [
 
@@ -34,6 +36,9 @@ const routes: Routes = [
 			// snapclerk
 			{ path: 'snapclerk', component: SnapclerkLandingComponent, canActivate: [SessionGuard] },
 
+			// settings
+			{ path: 'settings/users', component: SettingsUsersComponent, canActivate: [SessionGuard] },
+			{ path: 'settings/account', component: SettingsAccountComponent, canActivate: [SessionGuard] },
 		]
 	},
 

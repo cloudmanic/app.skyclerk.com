@@ -1,0 +1,13 @@
+<div class="tabs-head">
+  <nav class="tabs-nav">
+    <ul>
+      <li [ngClass]="{ current: (current == 'users') }">
+        <a routerLink="/settings/users">Users</a>
+      </li>
+
+      <li [ngClass]="{ current: (current == 'account') }">
+        <a routerLink="/settings/account">Account</a>
+      </li>
+    </ul>
+  </nav>
+</div>

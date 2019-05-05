@@ -16,6 +16,9 @@ import { LandingComponent as DashboardLandingComponent } from './dashboard/landi
 import { SidebarComponent } from './layouts/sidebar/sidebar.component';
 import { LandingComponent as LedgerLandingComponent } from './ledger/landing/landing.component';
 import { LandingComponent as SnapclerkLandingComponent } from './snapclerk/landing/landing.component';
+import { UsersComponent as SettingsUsersComponent } from './settings/users/users.component';
+import { SubNavComponent as SettingsSubNavComponent } from './settings/sub-nav/sub-nav.component';
+import { AccountComponent as SettingsAccountComponent } from './settings/account/account.component';
 
 @NgModule({
 	declarations: [
@@ -26,7 +29,10 @@ import { LandingComponent as SnapclerkLandingComponent } from './snapclerk/landi
 		DashboardLandingComponent,
 		SidebarComponent,
 		LedgerLandingComponent,
-		SnapclerkLandingComponent
+		SnapclerkLandingComponent,
+		SettingsUsersComponent,
+		SettingsSubNavComponent,
+		SettingsAccountComponent
 	],
 	imports: [
 		FormsModule,
