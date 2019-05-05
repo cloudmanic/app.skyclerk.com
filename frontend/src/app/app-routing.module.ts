@@ -17,6 +17,7 @@ import { AuthComponent as LayoutAuthComponent } from './layouts/auth/auth.compon
 import { AppComponent as LayoutAppComponent } from './layouts/app/app.component';
 import { LandingComponent as DashboardLandingComponent } from './dashboard/landing/landing.component';
 import { LandingComponent as LedgerLandingComponent } from './ledger/landing/landing.component';
+import { LandingComponent as SnapclerkLandingComponent } from './snapclerk/landing/landing.component';
 
 const routes: Routes = [
 
@@ -29,6 +30,9 @@ const routes: Routes = [
 
 			// ledger
 			{ path: 'ledger', component: LedgerLandingComponent, canActivate: [SessionGuard] },
+
+			// snapclerk
+			{ path: 'snapclerk', component: SnapclerkLandingComponent, canActivate: [SessionGuard] },
 
 		]
 	},
