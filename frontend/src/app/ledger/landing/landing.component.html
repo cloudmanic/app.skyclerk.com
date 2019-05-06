@@ -130,19 +130,19 @@
             <ul class="widgets">
               <li class="widget widget-nav">
                 <ul>
-                  <li class="current">
-                    <a href="#">ALL</a>
+                  <li>
+                    <a (click)="doTypeClick('')" [ngClass]="{ current: (type == '') }">ALL</a>
                   </li>
 
                   <li>
-                    <a href="#">INCOME</a>
+                    <a (click)="doTypeClick('income')" [ngClass]="{ current: (type == 'income') }">INCOME</a>
                   </li>
 
                   <li>
-                    <a href="#">EXPENSE</a>
+                    <a (click)="doTypeClick('expense')" [ngClass]="{ current: (type == 'expense') }">EXPENSE</a>
                   </li>
                 </ul>
-              </li><!-- /.widget widget-nav -->
+              </li>
 
               <li class="widget-primary widget-entries">
                 <div class="widget-primary-head">

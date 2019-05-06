@@ -43,6 +43,15 @@ export class LandingComponent implements OnInit {
 	}
 
 	//
+	// Change the type we are filtring by
+	//
+	doTypeClick(type: string) {
+		this.type = type;
+		this.page = 1;
+		this.loadLedgerData()
+	}
+
+	//
 	// Return the page list for ledger
 	//
 	getPageRange() {
