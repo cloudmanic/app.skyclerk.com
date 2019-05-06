@@ -7,6 +7,7 @@
 
 import { Component, OnInit } from '@angular/core';
 import { LedgerService, LedgerResponse } from 'src/app/services/ledger.service';
+import { MeService } from 'src/app/services/me.service';
 
 @Component({
 	selector: 'app-landing',
@@ -23,12 +24,32 @@ export class LandingComponent implements OnInit {
 	//
 	// Construct
 	//
-	constructor(public ledgerService: LedgerService) { }
+	constructor(public ledgerService: LedgerService, public meService: MeService) { }
 
 	//
 	// ngOnInit
 	//
 	ngOnInit() {
+		// Load starting data
+		this.loadPageData();
+
+		// Listen for account changes.
+		this.meService.accountChange.subscribe(() => {
+			this.loadPageData();
+		});
+	}
+
+	//
+	// Load page data
+	//
+	loadPageData() {
+		// Reset filters, and such.
+		this.page = 1;
+		this.type = "";
+		this.search = "";
+		this.pageRangeSelect = 1;
+
+		// Load ledger data
 		this.loadLedgerData();
 	}
 

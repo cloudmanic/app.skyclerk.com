@@ -40,6 +40,9 @@ export class AppComponent implements OnInit {
 		localStorage.setItem('account_id', account.Id.toString());
 		this.account = account;
 		this.accountToggle = false;
+
+		// Tell the rest of the app the account switched.
+		this.meService.accountChange.emit(account.Id);
 	}
 
 	//
