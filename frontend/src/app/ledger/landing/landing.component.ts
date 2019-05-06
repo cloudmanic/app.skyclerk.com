@@ -43,6 +43,14 @@ export class LandingComponent implements OnInit {
 	}
 
 	//
+	// Do search.
+	//
+	doSearch() {
+		this.page = 1;
+		this.loadLedgerData();
+	}
+
+	//
 	// Change the type we are filtring by
 	//
 	doTypeClick(type: string) {
