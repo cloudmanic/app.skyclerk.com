@@ -6,7 +6,7 @@
 //
 
 import { Component, OnInit } from '@angular/core';
-import { LedgerService, LedgerResponse } from 'src/app/services/ledger.service';
+import { LedgerService, LedgerResponse, LedgerSummaryResponse } from 'src/app/services/ledger.service';
 import { MeService } from 'src/app/services/me.service';
 
 @Component({
@@ -19,6 +19,7 @@ export class LandingComponent implements OnInit {
 	type: string = "";
 	search: string = "";
 	pageRangeSelect: number = 1;
+	ledgerSummary: LedgerSummaryResponse = new LedgerSummaryResponse([], [], []);
 	ledgers: LedgerResponse = new LedgerResponse(false, 0, 50, 0, []);
 
 	//
@@ -57,9 +58,22 @@ export class LandingComponent implements OnInit {
 	// Load ledger data.
 	//
 	loadLedgerData() {
+		// Load ledger summary
+		this.getLedgerSummary();
+
+		// Load ledger entries
 		this.ledgerService.get(this.page, this.type, this.search).subscribe(res => {
 			this.ledgers = res;
 			this.pageRangeSelect = this.page;
+		});
+	}
+
+	//
+	// Get ledger summary
+	//
+	getLedgerSummary() {
+		this.ledgerService.getLedgerSummary(this.type).subscribe(res => {
+			this.ledgerSummary = res;
 		});
 	}
 

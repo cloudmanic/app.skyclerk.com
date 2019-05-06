@@ -48,6 +48,39 @@ export class LedgerService {
 			return new LedgerResponse(lastPage, Number(res.headers.get('X-Offset')), Number(res.headers.get('X-Limit')), Number(res.headers.get('X-No-Limit-Count')), data);
 		}));
 	}
+
+	//
+	// Get me
+	//
+	getLedgerSummary(type: string): Observable<LedgerSummaryResponse> {
+		let accountId = localStorage.getItem('account_id');
+		let url = environment.app_server + '/api/v3/' + accountId + '/ledger-summary?type=' + type;
+
+		return this.http.get<LedgerSummaryResponse[]>(url, { observe: 'response' }).pipe(map((res) => {
+			// Response object
+			let ls = new LedgerSummaryResponse([], [], []);
+
+			// Add in years
+			for (let i = 0; i < res.body["years"].length; i++) {
+				let r = res.body["years"][i];
+				ls.Years.push(new LedgerYearSummaryResult(r["year"], r["count"]));
+			}
+
+			// Add in labels
+			for (let i = 0; i < res.body["labels"].length; i++) {
+				let r = res.body["labels"][i];
+				ls.Labels.push(new LedgerSummaryResult(r["id"], r["name"], r["count"]));
+			}
+
+			// Add in Categories
+			for (let i = 0; i < res.body["categories"].length; i++) {
+				let r = res.body["categories"][i];
+				ls.Categories.push(new LedgerSummaryResult(r["id"], r["name"], r["count"]));
+			}
+
+			return ls;
+		}));
+	}
 }
 
 //
@@ -60,6 +93,38 @@ export class LedgerResponse {
 		public Limit: number,
 		public NoLimitCount: number,
 		public Data: Ledger[]
+	) { }
+}
+
+//
+// Ledger Summary Response
+//
+export class LedgerSummaryResponse {
+	constructor(
+		public Years: LedgerYearSummaryResult[],
+		public Labels: LedgerSummaryResult[],
+		public Categories: LedgerSummaryResult[]
+	) { }
+}
+
+//
+// LedgerSummaryResult
+//
+export class LedgerSummaryResult {
+	constructor(
+		public Id: number,
+		public Name: string,
+		public Count: number
+	) { }
+}
+
+//
+// LedgerYearSummaryResult
+//
+export class LedgerYearSummaryResult {
+	constructor(
+		public Year: number,
+		public Count: number
 	) { }
 }
 

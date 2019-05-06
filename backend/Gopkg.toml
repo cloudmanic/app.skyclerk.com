@@ -51,7 +51,7 @@
 
 [[constraint]]
   name = "github.com/jinzhu/gorm"
-  revision = "32455088f24d6b1e9a502fb8e40fdc16139dbea8"
+  revision = "5c0f6716ad1e3a6b6a8afa56afeff747032a6926"
 
 [[constraint]]
   branch = "master"

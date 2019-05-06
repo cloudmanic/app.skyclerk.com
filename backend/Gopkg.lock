@@ -14,11 +14,11 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:6b3d10a2121486de00ad96b4b6c89f5c72be527a494981ca619d870694adbe25"
+  digest = "1:214518d7d8af755027e4271707e130f73624200f3df2048f00bec66b3dec79b3"
   name = "github.com/araddon/dateparse"
   packages = ["."]
   pruneopts = "UT"
-  revision = "74dc0e29b01ffe39f7eac02f22b80260d0645e24"
+  revision = "0d74ffceef83c568c4c47a6e74de8ee5c5955048"
 
 [[projects]]
   digest = "1:320e7ead93de9fd2b0e59b50fd92a4d50c1f8ab455d96bc2eb083267453a9709"
@@ -33,8 +33,16 @@
   name = "github.com/aws/aws-sdk-go"
   packages = ["service/cloudfront/sign"]
   pruneopts = "UT"
-  revision = "ca6d5f771b63df153f02fe5b117434d5ebafeeda"
-  version = "v1.19.15"
+  revision = "86dc5d0ebe9f30ac9e939da21c240a98519343f2"
+  version = "v1.19.24"
+
+[[projects]]
+  digest = "1:ffe9824d294da03b391f44e1ae8281281b4afc1bdaa9588c9097785e3af10cec"
+  name = "github.com/davecgh/go-spew"
+  packages = ["spew"]
+  pruneopts = "UT"
+  revision = "8991bc29aa16c548c550c7ff78260e27b9ab7c73"
+  version = "v1.1.1"
 
 [[projects]]
   digest = "1:47cebe27e59e4e0c239d0bf2419d6a46f0364a56efc43be702c32b82710b6ecf"
@@ -143,11 +151,11 @@
   version = "v2.0.1"
 
 [[projects]]
-  digest = "1:1dcc17305b836342d265756c7fbf5617b114d8a5a0756e8f2606262ceeae11cb"
+  digest = "1:31b65f911cf8556fbcd7f95f7b36d554209d98eb5b6c94229a8d099dc6faa574"
   name = "github.com/jinzhu/gorm"
   packages = ["."]
   pruneopts = "UT"
-  revision = "32455088f24d6b1e9a502fb8e40fdc16139dbea8"
+  revision = "5c0f6716ad1e3a6b6a8afa56afeff747032a6926"
 
 [[projects]]
   branch = "master"
@@ -209,7 +217,7 @@
   revision = "9520e82c474b0a04dd04f8a40959027271bab992"
 
 [[projects]]
-  digest = "1:664d72d015ba58e2dfb6a195b87c546412e3a0f5c3c533ecdfe13e6b0967ee79"
+  digest = "1:a6bd51dbb8312bfe7ea1609dc4edd00b46e9328b878644e7b110a7cfe8bceb89"
   name = "github.com/minio/minio-go"
   packages = [
     ".",
@@ -220,8 +228,8 @@
     "pkg/set",
   ]
   pruneopts = "UT"
-  revision = "b6091056d7c591c791974489ca13b8f8ba2b47e9"
-  version = "v6.0.22"
+  revision = "10b3660b8f09a1c25db63da7bf2d4f7449acc366"
+  version = "v6.0.24"
 
 [[projects]]
   digest = "1:5d231480e1c64a726869bc4142d270184c419749d34f167646baa21008eb0a79"
@@ -297,7 +305,7 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:7f5fdd408a4606cfaae349b17fb1f3b873038b0543bd651cc391dc05f9f82e9b"
+  digest = "1:184e02939af866d2c32a33d43768c4e1234ace3de028447fe918ac9828d299c8"
   name = "golang.org/x/crypto"
   packages = [
     "acme",
@@ -306,7 +314,7 @@
     "blake2b",
   ]
   pruneopts = "UT"
-  revision = "df01cb2cc480549d72034218dd98bf97671450ac"
+  revision = "a29dc8fdc73485234dbef99ebedb95d2eced08de"
 
 [[projects]]
   branch = "master"
@@ -318,11 +326,11 @@
     "tiff/lzw",
   ]
   pruneopts = "UT"
-  revision = "4e30a6eb7d9a7fbd8f97e1d47806f810d86cfc6e"
+  revision = "6d32002ffd7577f23673706728e1c510698cecb1"
 
 [[projects]]
   branch = "master"
-  digest = "1:9bcb806d8141fa6f87a79d76023892f510bcb247e3eb4a0049de4123080ee45a"
+  digest = "1:c8d0a0ba4d9c8de3a51e3661a06b9f77ea1e2c9ecd8b8450b997e8908c8d105f"
   name = "golang.org/x/net"
   packages = [
     "http/httpguts",
@@ -332,27 +340,29 @@
     "publicsuffix",
   ]
   pruneopts = "UT"
-  revision = "1f3472d942ba824034fb77cab6a6cfc1bc8a2c3c"
+  revision = "f4e77d36d62c17c2336347bb2670ddbd02d092b7"
 
 [[projects]]
   branch = "master"
-  digest = "1:c391c9a5dd4ee0c11962f64f8b9a9c31225699866b8013043fa5849aa1655e79"
+  digest = "1:76eb085408ed50effcb126e51935c2f5150974c607dcff34e9f0d647104cce72"
   name = "golang.org/x/sys"
   packages = [
     "cpu",
     "unix",
   ]
   pruneopts = "UT"
-  revision = "e8e3143a4f4a00f1fafef0dd82ba78223281b01b"
+  revision = "a43fa875dd822b81eb6d2ad538bc1f4caba169bd"
 
 [[projects]]
-  digest = "1:a2ab62866c75542dd18d2b069fec854577a20211d7c0ea6ae746072a1dccdd18"
+  digest = "1:8d8faad6b12a3a4c819a3f9618cb6ee1fa1cfc33253abeeea8b55336721e3405"
   name = "golang.org/x/text"
   packages = [
     "collate",
     "collate/build",
     "internal/colltab",
     "internal/gen",
+    "internal/language",
+    "internal/language/compact",
     "internal/tag",
     "internal/triegen",
     "internal/ucd",
@@ -365,8 +375,8 @@
     "unicode/rangetable",
   ]
   pruneopts = "UT"
-  revision = "f21a4dfb5e38f5895301dc265a8def02365cc3d0"
-  version = "v0.3.0"
+  revision = "342b2e1fbaa52c93f31447ad2c6abc048c63e475"
+  version = "v0.3.2"
 
 [[projects]]
   digest = "1:c25289f43ac4a68d88b02245742347c94f1e108c534dda442188015ff80669b3"
@@ -417,6 +427,7 @@
     "github.com/araddon/dateparse",
     "github.com/asaskevich/govalidator",
     "github.com/aws/aws-sdk-go/service/cloudfront/sign",
+    "github.com/davecgh/go-spew/spew",
     "github.com/disintegration/imaging",
     "github.com/gin-contrib/cors",
     "github.com/gin-contrib/static",

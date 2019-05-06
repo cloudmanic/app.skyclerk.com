@@ -208,190 +208,59 @@
 
               <li class="widget-primary">
                 <div class="widget-primary-head">
-                  <h3 class="widget-primary-title">Categories</h3><!-- /.widget-primary-title -->
-                </div><!-- /.widget-primary-head -->
+                  <h3 class="widget-primary-title">Categories</h3>
+                </div>
 
                 <div class="widget-primary-body">
                   <ul class="list-links">
-                    <li>
+                    <li *ngFor="let row of ledgerSummary.Categories">
                       <a href="#">
-                        Insurance
-
-                        <span>(36)</span>
+                        {{ row.Name }}
+                        <span>({{ row.Count }})</span>
                       </a>
                     </li>
-
-                    <li>
-                      <a href="#">
-                        Internet
-
-                        <span>(12)</span>
-                      </a>
-                    </li>
-
-                    <li>
-                      <a href="#">
-                        Rent
-
-                        <span>(2)</span>
-                      </a>
-                    </li>
-
-                    <li>
-                      <a href="#">
-                        Salary
-
-                        <span>(3)</span>
-                      </a>
-                    </li>
-
-                    <li>
-                      <a href="#">
-                        Sales
-
-                        <span>(3)</span>
-                      </a>
-                    </li>
-                  </ul><!-- /.list-links -->
-                </div><!-- /.widget-primary-body -->
-              </li><!-- /.widget-primary -->
+                  </ul>
+                </div>
+              </li>
 
               <li class="widget-primary">
                 <div class="widget-primary-head">
-                  <h3 class="widget-primary-title">Labels</h3><!-- /.widget-primary-title -->
-                </div><!-- /.widget-primary-head -->
+                  <h3 class="widget-primary-title">Labels</h3>
+                </div>
 
                 <div class="widget-primary-body">
                   <ul class="list-links">
-                    <li>
+                    <li *ngFor="let row of ledgerSummary.Labels">
                       <a href="#">
-
-                        Insurance
-
-                        <span>(36)</span>
+                        {{ row.Name }}
+                        <span>({{ row.Count }})</span>
                       </a>
                     </li>
-
-                    <li>
-                      <a href="#">
-
-                        Internet
-
-                        <span>(12)</span>
-                      </a>
-                    </li>
-
-                    <li>
-                      <a href="#">
-
-                        Rent
-
-                        <span> (2)</span>
-                      </a>
-                    </li>
-
-                    <li>
-                      <a href="#">
-
-                        Salary
-
-                        <span> (3)</span>
-                      </a>
-                    </li>
-
-                    <li>
-                      <a href="#">
-
-                        Sales
-
-                        <span> (3)</span>
-                      </a>
-                    </li>
-
-                    <li>
-                      <a href="#">
-
-                        Telecom
-
-                        <span> (2)</span>
-                      </a>
-                    </li>
-
-                    <li>
-                      <a href="#">
-
-                        Unit 1
-
-                        <span> (3)</span>
-                      </a>
-                    </li>
-
-                    <li>
-                      <a href="#">
-
-                        Unit 2
-
-                        <span> (3)</span>
-                      </a>
-                    </li>
-                  </ul><!-- /.list-links -->
-                </div><!-- /.widget-primary-body -->
-              </li><!-- /.widget-primary -->
+                  </ul>
+                </div>
+              </li>
 
               <li class="widget-primary">
                 <div class="widget-primary-head">
-                  <h3 class="widget-primary-title">Year</h3><!-- /.widget-primary-title -->
-                </div><!-- /.widget-primary-head -->
+                  <h3 class="widget-primary-title">Year</h3>
+                </div>
 
                 <div class="widget-primary-body">
                   <ul class="list-links">
-                    <li>
+                    <li *ngFor="let row of ledgerSummary.Years">
                       <a href="#">
-                        2015
-
-                        <span>(36)</span>
+                        {{ row.Year }}
+                        <span>({{ row.Count }})</span>
                       </a>
                     </li>
-
-                    <li>
-                      <a href="#">
-                        2014
-
-                        <span>(12)</span>
-                      </a>
-                    </li>
-
-                    <li>
-                      <a href="#">
-                        2013
-
-                        <span> (2)</span>
-                      </a>
-                    </li>
-
-                    <li>
-                      <a href="#">
-                        2012
-
-                        <span> (3)</span>
-                      </a>
-                    </li>
-
-                    <li>
-                      <a href="#">
-                        2011
-
-                        <span> (3)</span>
-                      </a>
-                    </li>
-                  </ul><!-- /.list-links -->
-                </div><!-- /.widget-primary-body -->
-              </li><!-- /.widget-primary -->
+                  </ul>
+                </div>
+              </li>
 
               <li class="widget-primary">
                 <div class="widget-primary-head">
-                  <h3 class="widget-primary-title">Import &amp; Export</h3><!-- /.widget-primary-title -->
-                </div><!-- /.widget-primary-head -->
+                  <h3 class="widget-primary-title">Import &amp; Export</h3>
+                </div>
 
                 <div class="widget-primary-body">
                   <ul class="list-actions">
@@ -427,4 +296,4 @@
     <app-layouts-sidebar current="ledger"></app-layouts-sidebar>
 
   </div>
-</div><!-- /.main -->
+</div>

@@ -30,6 +30,7 @@ func (t *Controller) DoRoutes(r *gin.Engine) {
 		// Ledger
 		apiV1.GET("/:account/ledger", t.GetLedgers)
 		apiV1.GET("/:account/ledger/:id", t.GetLedger)
+		apiV1.GET("/:account/ledger-summary", t.GetLedgerSummary)
 		apiV1.POST("/:account/ledger", t.CreateLedger)
 		apiV1.PUT("/:account/ledger/:id", t.UpdateLedger)
 		apiV1.DELETE("/:account/ledger/:id", t.DeleteLedger)

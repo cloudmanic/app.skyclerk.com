@@ -21,156 +21,38 @@ import (
 	"app.skyclerk.com/backend/services"
 )
 
+// Summary results
+type LedgerSummary struct {
+	Years      []LedgerYearSummaryResult `json:"years"`
+	Labels     []LedgerSummaryResult     `json:"labels"`
+	Categories []LedgerSummaryResult     `json:"categories"`
+}
+
+// LedgerSummaryResult
+type LedgerSummaryResult struct {
+	Id    uint   `json:"id"`
+	Name  string `json:"name"`
+	Count int    `json:"count"`
+}
+
+// LedgerYearSummaryResult
+type LedgerYearSummaryResult struct {
+	Year  int `json:"year"`
+	Count int `json:"count"`
+}
+
 //
 // GetLedgers - Return a list of ledgers. We limit to 50 mainly so we do not overload the
 // system, but enough so the front-end does not have to page
 //
 func (t *Controller) GetLedgers(c *gin.Context) {
-	// Place to store the results.
-	var results = []models.Ledger{}
+	// Query database based on url parms.
+	results, meta, err := t.QueryLedgers(c, 50, []string{"Category", "Contact", "Labels", "Files"})
 
-	// Get account
-	accountId := c.MustGet("accountId").(int)
-
-	// Get limits and pages
-	page, _, _ := request.GetSetPagingParms(c)
-
-	// Set the query parms
-	params := models.QueryParam{
-		Order:            c.DefaultQuery("order", "LedgerDate"),
-		Sort:             c.DefaultQuery("sort", "DESC"),
-		Limit:            50,
-		Page:             page,
-		Debug:            false,
-		PreLoads:         []string{"Category", "Contact", "Labels", "Files"},
-		AllowedOrderCols: []string{"LedgerId", "LedgerDate"},
-		Wheres: []models.KeyValue{
-			{Key: "LedgerAccountId", Compare: "=", ValueInt: accountId},
-		},
+	// Error responses were already set in QueryLedgers
+	if err != nil {
+		return
 	}
-
-	// Add type filter - income
-	if c.DefaultQuery("type", "") == "income" {
-		params.Wheres = append(params.Wheres, models.KeyValue{
-			Key:        "LedgerAmount",
-			Compare:    ">=",
-			ValueFloat: 0.01, // because of the lib we can't use 0
-		})
-	}
-
-	// Add type filter - expense
-	if c.DefaultQuery("type", "") == "expense" {
-		params.Wheres = append(params.Wheres, models.KeyValue{
-			Key:        "LedgerAmount",
-			Compare:    "<=",
-			ValueFloat: -0.01, // because of the lib we can't use 0
-		})
-	}
-
-	// Add type filter - category_id
-	if len(c.DefaultQuery("category_id", "")) > 0 {
-		// Convert cat id
-		cat_id, err := strconv.Atoi(c.DefaultQuery("category_id", ""))
-
-		if err != nil {
-			services.Info(err)
-			c.JSON(http.StatusBadRequest, gin.H{"error": "Error with category_id"})
-			return
-		}
-
-		// Update query.
-		params.Wheres = append(params.Wheres, models.KeyValue{
-			Key:      "LedgerCategoryId",
-			Compare:  "=",
-			ValueInt: cat_id,
-		})
-	}
-
-	// Add type filter - year
-	if len(c.DefaultQuery("year", "")) > 0 {
-		params.Wheres = append(params.Wheres, models.KeyValue{
-			Key:     "LedgerDate",
-			Compare: ">=",
-			Value:   c.DefaultQuery("year", "") + "-01-01",
-		})
-
-		params.Wheres = append(params.Wheres, models.KeyValue{
-			Key:     "LedgerDate",
-			Compare: "<=",
-			Value:   c.DefaultQuery("year", "") + "-12-31",
-		})
-	}
-
-	// Add type filter - start date
-	if len(c.DefaultQuery("start_date", "")) > 0 {
-		params.Wheres = append(params.Wheres, models.KeyValue{
-			Key:     "LedgerDate",
-			Compare: ">=",
-			Value:   c.DefaultQuery("start_date", ""),
-		})
-	}
-
-	// Add type filter - end date
-	if len(c.DefaultQuery("end_date", "")) > 0 {
-		params.Wheres = append(params.Wheres, models.KeyValue{
-			Key:     "LedgerDate",
-			Compare: "<=",
-			Value:   c.DefaultQuery("end_date", ""),
-		})
-	}
-
-	// Get ledger ids from lables we want to filter from.
-	if len(c.DefaultQuery("label_ids", "")) > 0 {
-		// Get Ids from url
-		ids := strings.Split(c.DefaultQuery("label_ids", ""), ",")
-
-		// Array of ledger ids
-		whereIn := []int{}
-
-		// Run query
-		l := []models.LabelsToLedger{}
-		t.db.New().Where("LabelsToLedgerLabelId IN (?) AND LabelsToLedgerAccountId = ?", ids, accountId).Find(&l)
-
-		// Build id array.
-		for _, row := range l {
-			whereIn = append(whereIn, int(row.LabelsToLedgerLedgerId))
-		}
-
-		// Update query.
-		params.Wheres = append(params.Wheres, models.KeyValue{
-			Key:          "LedgerId",
-			Compare:      "IN",
-			ValueIntList: whereIn,
-		})
-	}
-
-	// Manage a search query
-	if len(c.DefaultQuery("search", "")) > 0 {
-		// Query term
-		search := c.DefaultQuery("search", "")
-
-		// Array of contact ids
-		contactWhereIn := []int{}
-
-		// Get contacts
-		c := []models.Contact{}
-		t.db.New().Where("(ContactsName LIKE ? OR ContactsFirstName LIKE ? OR ContactsLastName LIKE ?) AND ContactsAccountId = ?", "%"+search+"%", "%"+search+"%", "%"+search+"%", accountId).Find(&c)
-
-		// Build id array.
-		for _, row := range c {
-			contactWhereIn = append(contactWhereIn, int(row.Id))
-		}
-
-		// Update query.
-		params.Wheres = append(params.Wheres, models.KeyValue{
-			Key:          "LedgerContactId",
-			Compare:      "IN",
-			ValueIntList: contactWhereIn,
-		})
-	}
-
-	// Run the query
-	meta, err := t.db.QueryMeta(&results, params)
 
 	// Loop through and add signed urls to files TODO(spicer): clean this up. Maybe move all this into the model.
 	for key, row := range results {
@@ -306,6 +188,220 @@ func (t *Controller) DeleteLedger(c *gin.Context) {
 
 	// Return happy.
 	response.RespondDeleted(c, nil)
+}
+
+//
+// GetLedgerSummary get a smmary of the ledger
+//
+func (t *Controller) GetLedgerSummary(c *gin.Context) {
+	// Get account
+	accountId := c.MustGet("accountId").(int)
+
+	// Setup return object
+	ls := LedgerSummary{}
+
+	// Build SQL for category (Notice: lower case column names)
+	catSql := "SELECT CategoriesId AS id, CategoriesName AS name, COUNT(CategoriesId) AS count FROM Ledger INNER JOIN Categories ON Categories.CategoriesId = Ledger.LedgerCategoryId WHERE (LedgerAccountId = ?)"
+
+	// Build SQL for labels (Notice: lower case column names)
+	lbsSql := "SELECT LabelsToLedgerLabelId AS id, LabelsName AS name, COUNT(LabelsToLedgerLabelId) AS count FROM `LabelsToLedger` INNER JOIN `Ledger` ON `LabelsToLedger`.`LabelsToLedgerLedgerId` = `Ledger`.`LedgerId` INNER JOIN `Labels` ON `LabelsToLedger`.`LabelsToLedgerLabelId` = `Labels`.`LabelsId` WHERE (LedgerAccountId = ?)"
+
+	// Build SQL for years (Notice: lower case column names)
+	yrsSql := "SELECT YEAR(LedgerDate) as year, COUNT(LedgerId) as count FROM Ledger WHERE (LedgerAccountId = ?)"
+
+	// Add type filter - income
+	if c.DefaultQuery("type", "") == "income" {
+		catSql = catSql + " AND (LedgerAmount >= 0.00)"
+		lbsSql = lbsSql + " AND (LedgerAmount >= 0.00)"
+		yrsSql = yrsSql + " AND (LedgerAmount >= 0.00)"
+	}
+
+	// Add type filter - expense
+	if c.DefaultQuery("type", "") == "expense" {
+		catSql = catSql + " AND (LedgerAmount < 0.00)"
+		lbsSql = lbsSql + " AND (LedgerAmount < 0.00)"
+		yrsSql = yrsSql + " AND (LedgerAmount < 0.00)"
+	}
+
+	// Add Group
+	catSql = catSql + " GROUP BY CategoriesName ORDER BY CategoriesName ASC"
+	lbsSql = lbsSql + " GROUP BY LabelsToLedgerLabelId ORDER BY LabelsName ASC"
+	yrsSql = yrsSql + " GROUP BY YEAR(LedgerDate) ORDER BY LedgerDate DESC"
+
+	// Run query.
+	t.db.New().Raw(yrsSql, accountId).Scan(&ls.Years)
+	t.db.New().Raw(lbsSql, accountId).Scan(&ls.Labels)
+	t.db.New().Raw(catSql, accountId).Scan(&ls.Categories)
+
+	// Return happy.
+	response.Results(c, ls, nil)
+}
+
+// -------------- Private Helper Functions ------------------ //
+
+//
+// QueryLedgers is shared between a few functions so we break it out.
+// This function is not a route function. We pass in preloads to make for
+// less queries if we don't need them.
+//
+func (t *Controller) QueryLedgers(c *gin.Context, limit int, preloads []string) ([]models.Ledger, models.QueryMetaData, error) {
+	// Place to store the results.
+	var results = []models.Ledger{}
+
+	// Get account
+	accountId := c.MustGet("accountId").(int)
+
+	// Get limits and pages
+	page, _, _ := request.GetSetPagingParms(c)
+
+	// Set the query parms
+	params := models.QueryParam{
+		Order:            c.DefaultQuery("order", "LedgerDate"),
+		Sort:             c.DefaultQuery("sort", "DESC"),
+		Page:             page,
+		Debug:            false,
+		PreLoads:         preloads,
+		AllowedOrderCols: []string{"LedgerId", "LedgerDate"},
+		Wheres: []models.KeyValue{
+			{Key: "LedgerAccountId", Compare: "=", ValueInt: accountId},
+		},
+	}
+
+	// Set limit
+	if limit > 0 {
+		params.Limit = limit
+	}
+
+	// Add type filter - income
+	if c.DefaultQuery("type", "") == "income" {
+		params.Wheres = append(params.Wheres, models.KeyValue{
+			Key:        "LedgerAmount",
+			Compare:    ">=",
+			ValueFloat: 0.01, // because of the lib we can't use 0
+		})
+	}
+
+	// Add type filter - expense
+	if c.DefaultQuery("type", "") == "expense" {
+		params.Wheres = append(params.Wheres, models.KeyValue{
+			Key:        "LedgerAmount",
+			Compare:    "<=",
+			ValueFloat: -0.01, // because of the lib we can't use 0
+		})
+	}
+
+	// Add type filter - category_id
+	if len(c.DefaultQuery("category_id", "")) > 0 {
+		// Convert cat id
+		cat_id, err := strconv.Atoi(c.DefaultQuery("category_id", ""))
+
+		if err != nil {
+			services.Info(err)
+			c.JSON(http.StatusBadRequest, gin.H{"error": "Error with category_id"})
+			return results, models.QueryMetaData{}, err
+		}
+
+		// Update query.
+		params.Wheres = append(params.Wheres, models.KeyValue{
+			Key:      "LedgerCategoryId",
+			Compare:  "=",
+			ValueInt: cat_id,
+		})
+	}
+
+	// Add type filter - year
+	if len(c.DefaultQuery("year", "")) > 0 {
+		params.Wheres = append(params.Wheres, models.KeyValue{
+			Key:     "LedgerDate",
+			Compare: ">=",
+			Value:   c.DefaultQuery("year", "") + "-01-01",
+		})
+
+		params.Wheres = append(params.Wheres, models.KeyValue{
+			Key:     "LedgerDate",
+			Compare: "<=",
+			Value:   c.DefaultQuery("year", "") + "-12-31",
+		})
+	}
+
+	// Add type filter - start date
+	if len(c.DefaultQuery("start_date", "")) > 0 {
+		params.Wheres = append(params.Wheres, models.KeyValue{
+			Key:     "LedgerDate",
+			Compare: ">=",
+			Value:   c.DefaultQuery("start_date", ""),
+		})
+	}
+
+	// Add type filter - end date
+	if len(c.DefaultQuery("end_date", "")) > 0 {
+		params.Wheres = append(params.Wheres, models.KeyValue{
+			Key:     "LedgerDate",
+			Compare: "<=",
+			Value:   c.DefaultQuery("end_date", ""),
+		})
+	}
+
+	// Get ledger ids from lables we want to filter from.
+	if len(c.DefaultQuery("label_ids", "")) > 0 {
+		// Get Ids from url
+		ids := strings.Split(c.DefaultQuery("label_ids", ""), ",")
+
+		// Array of ledger ids
+		whereIn := []int{}
+
+		// Run query
+		l := []models.LabelsToLedger{}
+		t.db.New().Where("LabelsToLedgerLabelId IN (?) AND LabelsToLedgerAccountId = ?", ids, accountId).Find(&l)
+
+		// Build id array.
+		for _, row := range l {
+			whereIn = append(whereIn, int(row.LabelsToLedgerLedgerId))
+		}
+
+		// Update query.
+		params.Wheres = append(params.Wheres, models.KeyValue{
+			Key:          "LedgerId",
+			Compare:      "IN",
+			ValueIntList: whereIn,
+		})
+	}
+
+	// Manage a search query
+	if len(c.DefaultQuery("search", "")) > 0 {
+		// Query term
+		search := c.DefaultQuery("search", "")
+
+		// Array of contact ids
+		contactWhereIn := []int{}
+
+		// Get contacts
+		c := []models.Contact{}
+		t.db.New().Where("(ContactsName LIKE ? OR ContactsFirstName LIKE ? OR ContactsLastName LIKE ?) AND ContactsAccountId = ?", "%"+search+"%", "%"+search+"%", "%"+search+"%", accountId).Find(&c)
+
+		// Build id array.
+		for _, row := range c {
+			contactWhereIn = append(contactWhereIn, int(row.Id))
+		}
+
+		// Update query.
+		params.Wheres = append(params.Wheres, models.KeyValue{
+			Key:          "LedgerContactId",
+			Compare:      "IN",
+			ValueIntList: contactWhereIn,
+		})
+	}
+
+	// Run the query
+	meta, err := t.db.QueryMeta(&results, params)
+
+	if err != nil {
+		services.Info(err)
+		return results, meta, err
+	}
+
+	// Return happy
+	return results, meta, nil
 }
 
 /* End File */

@@ -1294,4 +1294,65 @@ func TestDeleteLedger02(t *testing.T) {
 	st.Expect(t, w.Body.String(), `{"error":"Ledger entry not found."}`)
 }
 
+//
+// TestGetLedgerSummary01
+//
+func TestGetLedgerSummary01(t *testing.T) {
+	// Data map
+	dMap := make(map[uint]models.Ledger)
+
+	// Start the db connection.
+	db, dbName, _ := models.NewTestDB("")
+	defer models.TestingTearDown(db, dbName)
+
+	// Create controller
+	c := &Controller{}
+	c.SetDB(db)
+
+	// Create like 10 ledger entries. Diffent account.
+	for i := 0; i < 10; i++ {
+		l := test.GetRandomLedger(23)
+		db.LedgerCreate(&l)
+	}
+
+	// Create like 105 ledger entries.
+	for i := 0; i < 105; i++ {
+		l := test.GetRandomLedger(33)
+		db.LedgerCreate(&l)
+		dMap[l.Id] = l
+	}
+
+	// Create like 10 ledger entries. Diffent account.
+	for i := 0; i < 10; i++ {
+		l := test.GetRandomLedger(43)
+		db.LedgerCreate(&l)
+	}
+
+	// Setup request
+	req, _ := http.NewRequest("GET", "/api/v3/33/ledger-summary", nil)
+
+	// Setup writer.
+	w := httptest.NewRecorder()
+	gin.SetMode("release")
+	gin.DisableConsoleColor()
+
+	r := gin.New()
+	r.Use(func(c *gin.Context) {
+		c.Set("accountId", 33)
+		c.Set("userId", uint(109))
+	})
+	r.GET("/api/v3/:account/ledger-summary", c.GetLedgerSummary)
+	r.ServeHTTP(w, req)
+
+	// Grab result and convert to strut
+	results := LedgerSummary{}
+	err := json.Unmarshal([]byte(w.Body.String()), &results)
+
+	// Test results
+	st.Expect(t, err, nil)
+	st.Expect(t, w.Code, 200)
+
+	// TODO(spicer): better testing.
+}
+
 /* End File */
