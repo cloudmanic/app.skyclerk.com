@@ -63,37 +63,33 @@
                     <th colspan="2">Amount</th>
                   </tr>
 
-                  <tr>
+                  <tr *ngFor="let row of ledgers.Data">
                     <td>
                       <div class="checkbox">
-                        <input type="checkbox" name="field" id="field">
-
-                        <label class="hidden" for="field">1#</label>
-                      </div><!-- /.checkbox -->
+                        <input type="checkbox" name="field" id="field" />
+                        <label class="hidden" for="field">{{ row.Id }}#</label>
+                      </div>
                     </td>
 
-                    <td>2/23/2014</td>
+                    <td>{{ row.Date | date:'mediumDate' }}</td>
 
                     <td>
-                      <img src="css/images/image1.jpg" alt="">
+                      <img src="/images/image1.jpg" alt="" />
                     </td>
 
                     <td>
-                      <strong>The Mac Store</strong>
+                      <strong *ngIf="row.Contact.Name">{{ row.Contact.Name }}</strong>
 
                       <p>
                         Categories &amp; Labels:
-
-                        <a href="#">Business,</a>
-
-                        <a href="#">Office Expense,</a>
-
-                        <a href="#">Food</a>
+                        <a href="#" *ngIf="row.Labels.length == 0">{{ row.Category.Name }}</a>
+                        <a href="#" *ngIf="row.Labels.length > 0">{{ row.Category.Name }}, </a>
+                        <a href="#" *ngFor="let row2 of row.Labels; let last = last;">{{ row2.Name }} <span *ngIf="! last">,</span></a>
                       </p>
                     </td>
 
                     <td>
-                      <small>$9,999.99</small>
+                      <small [ngClass]="{ green: (row.Amount > 0) }">{{ row.Amount | currency }}</small>
                     </td>
 
                     <td>
@@ -101,368 +97,34 @@
                     </td>
                   </tr>
 
-                  <tr>
-                    <td>
-                      <div class="checkbox">
-                        <input type="checkbox" name="field" id="field">
-
-                        <label class="hidden" for="field">1#</label>
-                      </div><!-- /.checkbox -->
-                    </td>
-
-                    <td>2/23/2014</td>
-
-                    <td>
-                      <img src="css/images/image2.jpg" alt="">
-                    </td>
-
-                    <td>
-                      <strong>Firestone Tires</strong>
-
-                      <p>
-                        Categories &amp; Labels:
-
-                        <a href="#">Business,</a>
-
-                        <a href="#">Office Expense,</a>
-
-                        <a href="#">Food</a>
-                      </p>
-                    </td>
-
-                    <td>
-                      <small class="green">$31.82</small>
-                    </td>
-
-                    <td>
-                      <a href="#">View &gt;</a>
-                    </td>
-                  </tr>
-
-                  <tr>
-                    <td>
-                      <div class="checkbox">
-                        <input type="checkbox" name="field" id="field">
-
-                        <label class="hidden" for="field">1#</label>
-                      </div><!-- /.checkbox -->
-                    </td>
-
-                    <td>2/23/2014</td>
-
-                    <td>
-                      <img src="css/images/image3.jpg" alt="">
-                    </td>
-
-                    <td>
-                      <strong>Ned Ludd</strong>
-
-                      <p>
-                        Categories &amp; Labels:
-
-                        <a href="#">Business,</a>
-
-                        <a href="#">Office Expense,</a>
-
-                        <a href="#">Food</a>
-                      </p>
-                    </td>
-
-                    <td>
-                      <small class="green">$56.92</small>
-                    </td>
-
-                    <td>
-                      <a href="#">View &gt;</a>
-                    </td>
-                  </tr>
-
-                  <tr>
-                    <td>
-                      <div class="checkbox">
-                        <input type="checkbox" name="field" id="field">
-
-                        <label class="hidden" for="field">1#</label>
-                      </div><!-- /.checkbox -->
-                    </td>
-
-                    <td>01/06/13</td>
-
-                    <td>
-                      <img src="css/images/image4.jpg" alt="">
-                    </td>
-
-                    <td>
-                      <strong>Firestone Tires</strong>
-
-                      <p>
-                        Categories &amp; Labels:
-
-                        <a href="#">Business,</a>
-
-                        <a href="#">Office Expense,</a>
-
-                        <a href="#">Food</a>
-                      </p>
-                    </td>
-
-                    <td>
-                      <small>$31.82</small>
-                    </td>
-
-                    <td>
-                      <a href="#">View &gt;</a>
-                    </td>
-                  </tr>
-
-                  <tr>
-                    <td>
-                      <div class="checkbox">
-                        <input type="checkbox" name="field" id="field">
-
-                        <label class="hidden" for="field">1#</label>
-                      </div><!-- /.checkbox -->
-                    </td>
-
-                    <td>01/06/13</td>
-
-                    <td>
-                      <img src="css/images/image5.jpg" alt="">
-                    </td>
-
-                    <td>
-                      <strong>Ned Ludd</strong>
-
-                      <p>
-                        Categories &amp; Labels:
-
-                        <a href="#">Business,</a>
-
-                        <a href="#">Office Expense,</a>
-
-                        <a href="#">Food</a>
-                      </p>
-                    </td>
-
-                    <td>
-                      <small>$56.92</small>
-                    </td>
-
-                    <td>
-                      <a href="#">View &gt;</a>
-                    </td>
-                  </tr>
-
-                  <tr>
-                    <td>
-                      <div class="checkbox">
-                        <input type="checkbox" name="field" id="field">
-
-                        <label class="hidden" for="field">1#</label>
-                      </div><!-- /.checkbox -->
-                    </td>
-
-                    <td>01/06/13</td>
-
-                    <td>
-                      <img src="css/images/image5.jpg" alt="">
-                    </td>
-
-                    <td>
-                      <strong>Fred Meyer</strong>
-
-                      <p>
-                        Categories &amp; Labels:
-
-                        <a href="#">Business,</a>
-
-                        <a href="#">Office Expense,</a>
-
-                        <a href="#">Food</a>
-                      </p>
-                    </td>
-
-                    <td>
-                      <small class="green">$456.99</small>
-                    </td>
-
-                    <td>
-                      <a href="#">View &gt;</a>
-                    </td>
-                  </tr>
-
-                  <tr>
-                    <td>
-                      <div class="checkbox">
-                        <input type="checkbox" name="field" id="field">
-
-                        <label class="hidden" for="field">1#</label>
-                      </div><!-- /.checkbox -->
-                    </td>
-
-                    <td>01/06/13</td>
-
-                    <td>
-                      <img src="css/images/image5.jpg" alt="">
-                    </td>
-
-                    <td>
-                      <strong>Ned Ludd</strong>
-
-                      <p>
-                        Categories &amp; Labels:
-
-                        <a href="#">Business,</a>
-
-                        <a href="#">Office Expense,</a>
-
-                        <a href="#">Food</a>
-                      </p>
-                    </td>
-
-                    <td>
-                      <small>$56.92</small>
-                    </td>
-
-                    <td>
-                      <a href="#">View &gt;</a>
-                    </td>
-                  </tr>
-
-                  <tr>
-                    <td>
-                      <div class="checkbox">
-                        <input type="checkbox" name="field" id="field">
-
-                        <label class="hidden" for="field">1#</label>
-                      </div><!-- /.checkbox -->
-                    </td>
-
-                    <td>01/06/13</td>
-
-                    <td>
-                      <img src="css/images/image5.jpg" alt="">
-                    </td>
-
-                    <td>
-                      <strong>Firestone Tires</strong>
-
-                      <p>
-                        Categories &amp; Labels:
-
-                        <a href="#">Business,</a>
-
-                        <a href="#">Office Expense,</a>
-
-                        <a href="#">Food</a>
-                      </p>
-                    </td>
-
-                    <td>
-                      <small class="green">$31.82</small>
-                    </td>
-
-                    <td>
-                      <a href="#">View &gt;</a>
-                    </td>
-                  </tr>
-
-                  <tr>
-                    <td>
-                      <div class="checkbox">
-                        <input type="checkbox" name="field" id="field">
-
-                        <label class="hidden" for="field">1#</label>
-                      </div><!-- /.checkbox -->
-                    </td>
-
-                    <td>01/06/13</td>
-
-                    <td>
-                      <img src="css/images/image5.jpg" alt="">
-                    </td>
-
-                    <td>
-                      <strong>Ned Ludd</strong>
-
-                      <p>
-                        Categories &amp; Labels:
-
-                        <a href="#">Business,</a>
-
-                        <a href="#">Office Expense,</a>
-
-                        <a href="#">Food</a>
-                      </p>
-                    </td>
-
-                    <td>
-                      <small class="green">$56.92</small>
-                    </td>
-
-                    <td>
-                      <a href="#">View &gt;</a>
-                    </td>
-                  </tr>
-
-                  <tr>
-                    <td>
-                      <div class="checkbox">
-                        <input type="checkbox" name="field" id="field">
-
-                        <label class="hidden" for="field">1#</label>
-                      </div><!-- /.checkbox -->
-                    </td>
-
-                    <td>01/06/13</td>
-
-                    <td>
-                      <img src="css/images/image5.jpg" alt="">
-                    </td>
-
-                    <td>
-                      <strong>Fred Meyer</strong>
-
-                      <p>
-                        Categories &amp; Labels:
-
-                        <a href="#">Business,</a>
-
-                        <a href="#">Office Expense,</a>
-
-                        <a href="#">Food</a>
-                      </p>
-                    </td>
-
-                    <td>
-                      <small>$31.82</small>
-                    </td>
-
-                    <td>
-                      <a href="#">View &gt;</a>
-                    </td>
-                  </tr>
                 </table>
-              </div><!-- /.table table-prices-->
+              </div>
+
+
 
               <div class="pagination">
                 <div class="pagination-controls">
-                  <a href="#" class="pagination-prev-primary">Previous</a>
+                  <a (click)="doPrevClick()" class="pagination-prev-primary" *ngIf="(ledgers.Offset > 0)">Prev</a>
 
                   <div class="pagination-select">
-                    <select name="field-1#" class="select" id="field-1#">
-                      <option value="">156</option>
+                    <select name="pageRangeSelect" class="select" id="pageRangeSelect" (change)="doPageSelectChange()" [(ngModel)]="pageRangeSelect">
+                      <option value="{{ row }}" *ngFor="let row of getPageRange()">{{ row }}</option>
                     </select>
-                  </div><!-- /.pagination-select-->
+                  </div>
 
-                  <a href="#" class="pagination-next-primary">Next</a>
+                  <a (click)="doNextClick()" class="pagination-next-primary" *ngIf="! ledgers.LastPage">Next</a>
                 </div>
 
-                <p>Viewing 1556-1566 of 2560</p>
-              </div><!-- /.pagination -->
+                <p>Viewing {{ (ledgers.Offset + 1) }}-{{ ledgers.Offset + ledgers.Limit }} of {{ ledgers.NoLimitCount }}</p>
+              </div>
 
-            </div><!-- /.ledger -->
-          </div><!-- /.contentbox-center -->
+            </div>
+          </div>
+
+
+
+
+
 
           <div class="contentbox-aside">
             <ul class="widgets">

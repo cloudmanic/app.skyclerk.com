@@ -9,6 +9,7 @@ import * as moment from 'moment';
 import { Serializable } from './serializable.model';
 import { Contact } from './contact.model';
 import { Category } from './category.model';
+import { Label } from './label.model';
 
 export class Ledger implements Serializable {
 	Id: number;
@@ -18,6 +19,7 @@ export class Ledger implements Serializable {
 	Note: string;
 	Contact: Contact;
 	Category: Category;
+	Labels = [];
 
 	//
 	// Json to Object.
@@ -30,6 +32,15 @@ export class Ledger implements Serializable {
 		this.Note = json["note"];
 		this.Contact = new Contact().deserialize(json["contact"]);
 		this.Category = new Category().deserialize(json["category"]);
+		this.Labels = [];
+
+		// Deal with labels.
+		if (json["labels"]) {
+			for (let i = 0; i < json["labels"].length; i++) {
+				this.Labels.push(new Label().deserialize(json["labels"][i]));
+			}
+		}
+
 		return this;
 	}
 
@@ -44,8 +55,15 @@ export class Ledger implements Serializable {
 			amount: obj.Amount,
 			note: obj.Note,
 			contact: new Contact().serialize(obj.Contact),
-			category: new Category().serialize(obj.Category)
+			category: new Category().serialize(obj.Category),
+			labels: []
 		}
+
+		// Deal with labels.
+		for (let i = 0; i < obj.Labels.length; i++) {
+			rt.labels.push(new Label().serialize(obj.Labels[i]));
+		}
+
 		return rt;
 	}
 }
