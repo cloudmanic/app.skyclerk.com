@@ -32,12 +32,20 @@ export class LandingComponent implements OnInit {
 	//
 	ngOnInit() {
 		// Load starting data
-		this.loadPageData();
+		this.refreshLedger();
 
 		// Listen for account changes.
 		this.meService.accountChange.subscribe(() => {
-			this.loadPageData();
+			this.refreshLedger();
 		});
+	}
+
+	//
+	// Refresh ledger.
+	//
+	refreshLedger() {
+		this.loadLedgerData();
+		this.getLedgerSummary();
 	}
 
 	//
@@ -51,16 +59,13 @@ export class LandingComponent implements OnInit {
 		this.pageRangeSelect = 1;
 
 		// Load ledger data
-		this.loadLedgerData();
+		this.refreshLedger();
 	}
 
 	//
 	// Load ledger data.
 	//
 	loadLedgerData() {
-		// Load ledger summary
-		this.getLedgerSummary();
-
 		// Load ledger entries
 		this.ledgerService.get(this.page, this.type, this.search).subscribe(res => {
 			this.ledgers = res;
@@ -82,7 +87,7 @@ export class LandingComponent implements OnInit {
 	//
 	doSearch() {
 		this.page = 1;
-		this.loadLedgerData();
+		this.refreshLedger();
 	}
 
 	//
@@ -91,7 +96,7 @@ export class LandingComponent implements OnInit {
 	doTypeClick(type: string) {
 		this.type = type;
 		this.page = 1;
-		this.loadLedgerData()
+		this.refreshLedger();
 	}
 
 	//
@@ -118,7 +123,7 @@ export class LandingComponent implements OnInit {
 	//
 	doPageSelectChange() {
 		this.page = this.pageRangeSelect;
-		this.loadLedgerData();
+		this.refreshLedger();
 	}
 
 	//
@@ -126,7 +131,7 @@ export class LandingComponent implements OnInit {
 	//
 	doNextClick() {
 		this.page++;
-		this.loadLedgerData();
+		this.refreshLedger();
 	}
 
 	//
@@ -134,7 +139,7 @@ export class LandingComponent implements OnInit {
 	//
 	doPrevClick() {
 		this.page--;
-		this.loadLedgerData();
+		this.refreshLedger();
 	}
 }
 
