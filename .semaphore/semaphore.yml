@@ -35,6 +35,9 @@ blocks:
           value: https://imaginary.skyclerk.com
         - name: IMAGINARY_KEY
           value: AVpirXv4guOH3Q2PKrzKdVzvh
+        - name: FONT_PATH
+          value: /Users/spicer/Development/go/src/app.skyclerk.com/fonts
+
 
       jobs:
       - name: Get app code, get packages, test and build
@@ -47,6 +50,7 @@ blocks:
           - mkdir -vp "${SEMAPHORE_GIT_DIR}" "$(go env GOPATH)/bin"
           - docker run --name skyclerk_com_testing -e MYSQL_ROOT_PASSWORD=foobar --tmpfs /var/lib/mysql -p 127.0.0.1:9907:3306 -d mariadb:10.2
           - checkout
+          - pwd
           - sem-version go 1.11
           - curl https://raw.githubusercontent.com/golang/dep/master/install.sh | sh
           - cd $SEMAPHORE_GIT_DIR/backend

@@ -18,6 +18,7 @@ import (
 	"app.skyclerk.com/backend/library/request"
 	"app.skyclerk.com/backend/library/response"
 	"app.skyclerk.com/backend/models"
+	"app.skyclerk.com/backend/services"
 )
 
 //
@@ -46,6 +47,15 @@ func (t *Controller) GetContacts(c *gin.Context) {
 
 	// Run the query
 	meta, err := t.db.QueryMeta(&results, params)
+
+	// TODO(spicer): Move this into the model maybe.
+	for key, row := range results {
+		// Double check the contact has an avatar. This is just to double check.
+		t.db.ConfirmContactAvatar(&row)
+
+		// Add a signed avatar path
+		results[key].AvatarUrl = t.db.GetSignedFileUrl(row.Avatar)
+	}
 
 	// Return json based on if this was a good result or not.
 	response.ResultsMeta(c, results, err, meta)
@@ -97,7 +107,13 @@ func (t *Controller) CreateContact(c *gin.Context) {
 	o.LastName = strings.Trim(o.LastName, " ")
 
 	// Create category
-	t.db.New().Create(&o)
+	err := t.db.CreateContact(&o)
+
+	if err != nil {
+		services.Critical(err)
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Something went wrong creating your contact. Please contact help@skyclerk.com"})
+		return
+	}
 
 	// Return happy.
 	response.RespondCreated(c, o, nil)

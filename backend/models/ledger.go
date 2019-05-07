@@ -249,6 +249,20 @@ func prepLedgerVars(db *DB, ledger *Ledger) {
 		} else {
 			db.Where("ContactsAccountId = ? AND ContactsName = ?", ledger.AccountId, ledger.Contact.Name).FirstOrCreate(&ledger.Contact)
 		}
+	} else {
+		// we only allow uodating certain fields
+		contact := Contact{}
+		db.Find(&contact, ledger.Contact.Id)
+
+		// Override the allowed updated fields.
+		contact.Type = ledger.Contact.Type
+		contact.Name = ledger.Contact.Name
+		contact.FirstName = ledger.Contact.FirstName
+		contact.LastName = ledger.Contact.LastName
+		contact.Email = ledger.Contact.Email
+
+		// Reset ledger contact with db contact replacing the allowed updated fields.
+		ledger.Contact = contact
 	}
 
 	// Setup the category. Add the Id if we do not pass one in.

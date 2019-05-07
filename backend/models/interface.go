@@ -42,6 +42,8 @@ type Datastore interface {
 	GetCategoryByAccountAndId(accountId uint, categoryId uint) (Category, error)
 
 	// Contact
+	CreateContact(contact *Contact) error
+	ConfirmContactAvatar(contact *Contact) error
 	DeleteContactByAccountAndId(accountId uint, contactId uint) error
 	GetContactByAccountAndId(accountId uint, conId uint) (Contact, error)
 	ValidateContactNameOrFirstLast(contact Contact, accountId uint, objId uint, action string) error
