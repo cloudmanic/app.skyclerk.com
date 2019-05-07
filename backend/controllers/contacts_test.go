@@ -13,6 +13,7 @@ import (
 	"encoding/json"
 	"net/http"
 	"net/http/httptest"
+	"os"
 	"strings"
 	"testing"
 
@@ -20,6 +21,7 @@ import (
 	"github.com/nbio/st"
 	"github.com/tidwall/gjson"
 
+	"app.skyclerk.com/backend/library/files"
 	"app.skyclerk.com/backend/models"
 )
 
@@ -135,11 +137,11 @@ func TestGetContacts02(t *testing.T) {
 }
 
 //
-// TestGetContact0 Test get contacts 01
+// TestGetContact01 Test get contacts 01
 //
 func TestGetContact01(t *testing.T) {
 	// Start the db connection.
-	db, dbName, _ := models.NewTestDB("")
+	db, dbName, _ := models.NewTestDB("testing_db")
 	defer models.TestingTearDown(db, dbName)
 
 	// Create controller
@@ -150,9 +152,9 @@ func TestGetContact01(t *testing.T) {
 	db.Save(&models.Contact{AccountId: 34, Name: "Apple Inc.", FirstName: "", LastName: ""})
 	db.Save(&models.Contact{AccountId: 34, Name: "Matthews Etc. LLC", FirstName: "Spicer", LastName: "Matthews"})
 	db.Save(&models.Contact{AccountId: 33, Name: "", FirstName: "Jane", LastName: "Wells"})
-	db.Save(&models.Contact{AccountId: 33, Name: "", FirstName: "Mike", LastName: "Rosso"})
-	db.Save(&models.Contact{AccountId: 33, Name: "Zoo Inc.", FirstName: "", LastName: ""})
-	db.Save(&models.Contact{AccountId: 33, Name: "Abc Inc.", FirstName: "Katie", LastName: "Matthews"})
+	db.Save(&models.Contact{AccountId: 33, Name: "", FirstName: "Mike", LastName: "Rosso", Email: "spicer@cloudmanic.com"})
+	db.Save(&models.Contact{AccountId: 33, Name: "Zoo Inc.", FirstName: "", LastName: "", Email: "spicer@cloudmanic.com"})
+	db.Save(&models.Contact{AccountId: 33, Name: "Abc Inc.", FirstName: "Katie", LastName: "Matthews", Email: "booo@cloudmanic.com"})
 	db.Save(&models.Contact{AccountId: 33, Name: "Dope Dealer, LLC", FirstName: "", LastName: ""})
 
 	// Setup request
@@ -180,7 +182,19 @@ func TestGetContact01(t *testing.T) {
 	st.Expect(t, result.Id, uint(4))
 	st.Expect(t, result.FirstName, "Mike")
 	st.Expect(t, result.LastName, "Rosso")
-	st.Expect(t, true, strings.Contains(result.AvatarUrl, "https://cdn-dev.skyclerk.com/accounts/33/avatars/4.png?Expires="))
+	st.Expect(t, true, strings.Contains(result.AvatarUrl, "https://cdn-dev.skyclerk.com/accounts/33/avatars/4.jpg?Expires="))
+
+	// If we are testing locally (not on CI) we test to see if the file is on AWS with our signed key
+	if len(os.Getenv("AWS_CLOUDFRONT_PRIVATE_SIGN_KEY")) > 0 {
+		// From files_test.go
+		err := downloadFile("/tmp/4.jpg", result.AvatarUrl)
+		st.Expect(t, err, nil)
+		st.Expect(t, "449669b9704e1d73894b13a882606bd2", files.Md5("/tmp/4.jpg"))
+
+		// Remove test file
+		err = os.Remove("/tmp/4.jpg")
+		st.Expect(t, err, nil)
+	}
 }
 
 //

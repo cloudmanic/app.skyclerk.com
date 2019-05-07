@@ -46,7 +46,7 @@ func defaultColor(initial string) image.Uniform {
 	case "F", "5":
 		return Purple
 	case "G", "6":
-		return Lime
+		return Brown
 	case "H", "7":
 		return Magenta
 	case "I", "8":
@@ -56,7 +56,7 @@ func defaultColor(initial string) image.Uniform {
 	case "K":
 		return Teal
 	case "L":
-		return Lavender
+		return Grey
 	case "M":
 		return Brown
 	case "N":
@@ -68,7 +68,7 @@ func defaultColor(initial string) image.Uniform {
 	case "Q":
 		return Olive
 	case "R":
-		return Coral
+		return Orange
 	case "S":
 		return Navy
 	case "T":

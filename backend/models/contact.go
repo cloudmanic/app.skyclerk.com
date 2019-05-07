@@ -16,9 +16,11 @@ import (
 	"time"
 
 	"app.skyclerk.com/backend/library/avatar"
+	"app.skyclerk.com/backend/library/files"
 	"app.skyclerk.com/backend/library/store/object"
 	"app.skyclerk.com/backend/services"
 
+	"github.com/eefret/gravatar"
 	validation "github.com/go-ozzo/ozzo-validation"
 )
 
@@ -95,7 +97,7 @@ func (db *DB) CreateContact(contact *Contact) error {
 	}
 
 	// Generate and Store avatar
-	avatarPath, err := GenerateAndStoreAvatar(contact.AccountId, contact.Id, name)
+	avatarPath, err := GenerateAndStoreAvatar(contact.AccountId, contact.Id, name, contact.Email)
 
 	if err != nil {
 		return err
@@ -232,7 +234,7 @@ func (db *DB) ConfirmContactAvatar(contact *Contact) error {
 	}
 
 	// Guess we do not have an avatar.... create one.
-	avatarPath, err := GenerateAndStoreAvatar(contact.AccountId, contact.Id, name)
+	avatarPath, err := GenerateAndStoreAvatar(contact.AccountId, contact.Id, name, contact.Email)
 
 	if err != nil {
 		return err
@@ -246,12 +248,16 @@ func (db *DB) ConfirmContactAvatar(contact *Contact) error {
 	return nil
 }
 
-// ------------- Private hekper Functions ------------------ //
+// ------------- Private helper Functions ------------------ //
 
 //
 // GenerateAndStoreAvatar - Generate avatar
 //
-func GenerateAndStoreAvatar(accountId uint, contactId uint, name string) (string, error) {
+func GenerateAndStoreAvatar(accountId uint, contactId uint, name string, email string) (string, error) {
+	// Wehre we store before upload to S3
+	up := ""
+	filePath := ""
+
 	// File cache dir.
 	cacheDir := fmt.Sprintf("%s/avatars/%d", os.Getenv("CACHE_DIR"), accountId)
 
@@ -260,19 +266,52 @@ func GenerateAndStoreAvatar(accountId uint, contactId uint, name string) (string
 		os.MkdirAll(cacheDir, 0755)
 	}
 
-	// Which is the same as
-	filePath := fmt.Sprintf("%s/%d.png", cacheDir, contactId)
-	err := avatar.ToDisk(name, filePath)
+	// First we check gravatar
+	if len(email) > 0 {
+		g, err := gravatar.New()
 
-	if err != nil {
-		return "", err
+		if err != nil {
+			return "", err
+		}
+
+		// Set file file path
+		filePath = fmt.Sprintf("%s/%d.jpg", cacheDir, contactId)
+
+		// Get image from gravatar
+		g.SetSize(uint(600))
+		g.DownloadToDisk(email, filePath)
+
+		// Set upload path
+		up = fmt.Sprintf("accounts/%d/avatars/%d.jpg", accountId, contactId)
+
+		// Check the hash of the gravatar to make sure it is not just the default image.
+		if files.Md5(filePath) == "f26fffbc0d97cfbe47702676eb7ef799" {
+			// Delete uploaded file
+			err = os.Remove(filePath)
+
+			if err != nil {
+				services.Info(err)
+			}
+
+			filePath = ""
+		}
 	}
 
-	// Set upload path
-	up := fmt.Sprintf("accounts/%d/avatars/%d.png", accountId, contactId)
+	// Build default Avatar
+	if len(filePath) == 0 {
+		filePath = fmt.Sprintf("%s/%d.png", cacheDir, contactId)
+		err := avatar.ToDisk(name, filePath)
+
+		if err != nil {
+			return "", err
+		}
+
+		// Set upload path
+		up = fmt.Sprintf("accounts/%d/avatars/%d.png", accountId, contactId)
+	}
 
 	// Upload file to our S3 store
-	err = object.UploadObject(filePath, up)
+	err := object.UploadObject(filePath, up)
 
 	if err != nil {
 		return "", fmt.Errorf("generateAndStoreAvatar: ContactId: %d, AccountId: %d Error: %s", contactId, accountId, err.Error())
