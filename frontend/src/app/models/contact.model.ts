@@ -14,6 +14,7 @@ export class Contact implements Serializable {
 	FirstName: string;
 	LastName: string;
 	Email: string;
+	AvatarUrl: string;
 
 	//
 	// Json to Object.
@@ -25,6 +26,7 @@ export class Contact implements Serializable {
 		this.FirstName = json["first_name"];
 		this.LastName = json["last_name"];
 		this.Email = json["email"];
+		this.AvatarUrl = json["avatar_url"];
 		return this;
 	}
 
