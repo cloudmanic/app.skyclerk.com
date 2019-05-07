@@ -13,6 +13,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/http/httptest"
+	"strings"
 	"testing"
 	"time"
 
@@ -30,7 +31,7 @@ func TestGetLedgers01(t *testing.T) {
 	dMap := make(map[uint]models.Ledger)
 
 	// Start the db connection.
-	db, dbName, _ := models.NewTestDB("")
+	db, dbName, _ := models.NewTestDB("testing_db")
 	defer models.TestingTearDown(db, dbName)
 
 	// Create controller
@@ -99,6 +100,7 @@ func TestGetLedgers01(t *testing.T) {
 		st.Expect(t, row.Category.AccountId, uint(33))
 		st.Expect(t, row.Category.Name, dMap[row.Id].Category.Name)
 		st.Expect(t, row.Labels[0].AccountId, uint(33))
+		st.Expect(t, true, strings.Contains(row.Contact.AvatarUrl, "https://cdn-dev.skyclerk.com/accounts/33/avatars/5.png?Expires="))
 
 		// Verfiy default Order
 		if key > 0 {

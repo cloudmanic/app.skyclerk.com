@@ -62,6 +62,15 @@ func (t *Controller) GetLedgers(c *gin.Context) {
 		}
 	}
 
+	// TODO(spicer): Move this into the model maybe.
+	for key, row := range results {
+		// Double check the contact has an avatar. This is just to double check.
+		t.db.ConfirmContactAvatar(&row.Contact)
+
+		// Add a signed avatar path
+		results[key].Contact.AvatarUrl = t.db.GetSignedFileUrl(row.Contact.Avatar)
+	}
+
 	// Return json based on if this was a good result or not.
 	response.ResultsMeta(c, results, err, meta)
 }

@@ -137,6 +137,7 @@ func GetRandomContact(accountId int64) models.Contact {
 		FirstName: first[rand.Intn(len(first))],
 		LastName:  last[rand.Intn(len(last))],
 		Email:     helpers.RandStr(16) + "@example.com",
+		Avatar:    fmt.Sprintf("accounts/%d/avatars/5.png", accountId),
 	}
 
 	return contact
