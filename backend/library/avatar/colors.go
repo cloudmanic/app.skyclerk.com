@@ -60,11 +60,11 @@ func defaultColor(initial string) image.Uniform {
 	case "M":
 		return Brown
 	case "N":
-		return Beige
+		return Brown
 	case "O":
 		return Maroon
 	case "P":
-		return Mint
+		return Orange
 	case "Q":
 		return Olive
 	case "R":
