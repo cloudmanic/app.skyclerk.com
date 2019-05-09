@@ -62,6 +62,9 @@ func (t *Controller) DoRoutes(r *gin.Engine) {
 		// Snapclerk
 		apiV1.GET("/:account/snapclerk", t.GetSnapClerk)
 		apiV1.POST("/:account/snapclerk", t.CreateSnapClerk)
+
+		// Reports
+		apiV1.GET("/:account/reports/pnl-current-year", t.ReportsCurrentPnl)
 	}
 
 	// ------------ Non-API Routes ------ //
