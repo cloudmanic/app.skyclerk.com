@@ -24,6 +24,7 @@ import (
 	validation "github.com/go-ozzo/ozzo-validation"
 )
 
+// Conact struct
 type Contact struct {
 	Id            uint      `gorm:"primary_key;column:ContactsId" json:"id"`
 	AccountId     uint      `gorm:"column:ContactsAccountId" sql:"not null" json:"account_id"`
@@ -55,6 +56,14 @@ type Contact struct {
 	CardType      string    `gorm:"column:ContactsCardType" sql:"not null" json:"_"`
 	CardExpire    string    `gorm:"column:ContactsCardExpire" sql:"not null" json:"_"`
 	Country       string    `gorm:"column:ContactsCountry" sql:"not null" json:"country"`
+}
+
+// generateAvatarsWorkerJob struct
+type generateAvatarsWorkerJob struct {
+	name     string
+	count    int
+	rowCount int
+	contact  Contact
 }
 
 //
@@ -248,7 +257,104 @@ func (db *DB) ConfirmContactAvatar(contact *Contact) error {
 	return nil
 }
 
-// ------------- Private helper Functions ------------------ //
+// -------------  helper Functions ------------------ //
+
+//
+// GenerateAvatarsForAllMissing - run through all accounts and build an avatar for each contact. That does not have one.
+// Currently this is called from the CLI.
+//
+// go run main.go --cmd=contacts-build-missing-avatars
+//
+func (db *DB) GenerateAvatarsForAllMissing() error {
+	// Worker vars.
+	jobs := make(chan generateAvatarsWorkerJob, 100000000)
+	results := make(chan int, 100000000)
+
+	// Build our our workers
+	for w := 1; w <= 10; w++ {
+		go db.GenerateAvatarsForAllMissingWoker(jobs, results)
+	}
+
+	// Contact var
+	c := []Contact{}
+
+	// Run query.
+	db.New().Where("ContactsAvatar = ''").Find(&c)
+
+	// Loop through results and make avatar
+	for key, row := range c {
+		// Figure out name
+		name := row.Name
+
+		if len(row.Name) == 0 {
+			name = fmt.Sprintf("%s %s", row.FirstName, row.LastName)
+		}
+
+		// Test for no name, no contact.
+		if len(row.Name) == 0 {
+			name = "UnKnown Contact"
+		}
+
+		// Insert job so worker can run with it.
+		jobs <- generateAvatarsWorkerJob{
+			name:     name,
+			count:    len(c),
+			rowCount: (key + 1),
+			contact:  row,
+		}
+
+		// // Guess we do not have an avatar.... create one.
+		// avatarPath, err := GenerateAndStoreAvatar(row.AccountId, row.Id, name, row.Email)
+		//
+		// if err != nil {
+		// 	return err
+		// }
+		//
+		// // Update DB with the new path of avatar
+		// row.Avatar = avatarPath
+		// db.Save(&row)
+		//
+		// // Log progress
+		// services.Info(fmt.Errorf("Creating avatar for contact AccountId: %d, Id: %d - (%d/%d)", row.AccountId, row.Id, (key + 1), len(c)))
+	}
+
+	// Close our jobs channel
+	close(jobs)
+
+	// Just pull in the jobs as they are done.
+	for i := 1; i <= len(c); i++ {
+		<-results
+	}
+
+	// Return happy.
+	return nil
+}
+
+//
+// GenerateAvatarsForAllMissingWoker - Worker to create avatar
+//
+func (db *DB) GenerateAvatarsForAllMissingWoker(jobs <-chan generateAvatarsWorkerJob, results chan<- int) {
+	// Loop through the jobs in the queue.
+	for j := range jobs {
+		// Guess we do not have an avatar.... create one.
+		avatarPath, err := GenerateAndStoreAvatar(j.contact.AccountId, j.contact.Id, j.name, j.contact.Email)
+
+		if err != nil {
+			services.Critical(err)
+			continue
+		}
+
+		// Update DB with the new path of avatar
+		j.contact.Avatar = avatarPath
+		db.Save(&j.contact)
+
+		// Log progress
+		services.Info(fmt.Errorf("Creating avatar for contact AccountId: %d, Id: %d - (%d/%d)", j.contact.AccountId, j.contact.Id, j.rowCount, j.count))
+
+		// Return the job as done.
+		results <- j.rowCount
+	}
+}
 
 //
 // GenerateAndStoreAvatar - Generate avatar

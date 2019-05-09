@@ -20,7 +20,7 @@ import (
 //
 // go run main.go -cmd=airbnb-import -file=/Users/spicer/Downloads/airbnb_.csv -account_id=4992
 //
-func AirBnbImport(db *models.DB, accountId uint, file string) {
+func AirBnbImport(db models.Datastore, accountId uint, file string) {
 
 	importCount := airbnb.CSVImport(db, accountId, file)
 	fmt.Println(importCount, "New Ledger Entries Successfully Imported")

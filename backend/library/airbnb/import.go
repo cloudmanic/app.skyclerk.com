@@ -15,15 +15,15 @@ import (
 	"os"
 	"strconv"
 
-	"github.com/araddon/dateparse"
 	"app.skyclerk.com/backend/models"
 	"app.skyclerk.com/backend/services"
+	"github.com/araddon/dateparse"
 )
 
 //
 // Import CSV Ledger Entries
 //
-func CSVImport(db *models.DB, accountId uint, file string) int {
+func CSVImport(db models.Datastore, accountId uint, file string) int {
 
 	var count int = 0
 
@@ -49,7 +49,7 @@ func CSVImport(db *models.DB, accountId uint, file string) int {
 
 		// Check to see if we already have this confirmation code in our system.
 		l := models.Ledger{}
-		db.Where("LedgerAirBnbHash = ?", line[2]).First(&l)
+		db.New().Where("LedgerAirBnbHash = ?", line[2]).First(&l)
 
 		if l.Id > 0 {
 			continue

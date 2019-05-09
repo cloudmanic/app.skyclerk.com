@@ -20,7 +20,7 @@ import (
 //
 // Run this and see if we have any commands to run.
 //
-func Run(db *models.DB) bool {
+func Run(db models.Datastore) bool {
 
 	// Grab flags
 	action := flag.String("cmd", "none", "")
@@ -42,6 +42,15 @@ func Run(db *models.DB) bool {
 		return true
 		break
 
+	// Loop through the contacts table and build an avatar for every contact
+	case "contacts-build-missing-avatars":
+		err := db.GenerateAvatarsForAllMissing()
+		if err != nil {
+			panic(err)
+		}
+		return true
+		break
+
 	// Just a test
 	case "test":
 		fmt.Println("CMD Works....")
@@ -56,7 +65,7 @@ func Run(db *models.DB) bool {
 //
 // FileAddAccountPrefix - Once we deploy GO based skyclerk we can deleted this function.
 //
-func FileAddAccountPrefix(db *models.DB) {
+func FileAddAccountPrefix(db models.Datastore) {
 	// Query and get files.
 	files := []models.File{}
 	db.New().Find(&files)
