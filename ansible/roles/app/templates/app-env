@@ -3,6 +3,8 @@ APP_ENV={{ app_env }}
 # Ignored in production
 HTTP_PORT=9090
 
+FONT_PATH=/fonts
+
 SITE_URL={{ site_url }}
 SITE_DOMAIN={{ site_domain }}
 ENCRYPTION_KEY={{ encryption_key }}

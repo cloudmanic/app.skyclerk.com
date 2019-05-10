@@ -22,6 +22,7 @@ services:
     volumes:
       - ./app:/go/bin
       - ./cache:/cache:rw
+      - ./fonts:/fonts:ro
       - ./letsencrypt:/letsencrypt:rw
 
     ports:

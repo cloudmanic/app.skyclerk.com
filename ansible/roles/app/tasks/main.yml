@@ -28,6 +28,10 @@
 - name: Copying app.skyclerk.com binary to server(s)
   copy: src=../backend/builds/app.skyclerk.com dest={{ site_dir }}/docker/app/app.skyclerk.com owner={{ site_user }} group={{ site_user }} mode=0755
 
+# Install fonts
+- name: Copying fonts to app directory.
+  synchronize: src=../fonts/ dest={{ site_dir }}/docker/fonts
+
 #
 # # Install app.options.cafe frontend code.
 # - name: Copying app.options.cafe frontend code to server(s)
