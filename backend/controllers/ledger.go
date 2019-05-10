@@ -15,6 +15,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 
+	"app.skyclerk.com/backend/library/helpers"
 	"app.skyclerk.com/backend/library/request"
 	"app.skyclerk.com/backend/library/response"
 	"app.skyclerk.com/backend/models"
@@ -197,6 +198,38 @@ func (t *Controller) DeleteLedger(c *gin.Context) {
 
 	// Return happy.
 	response.RespondDeleted(c, nil)
+}
+
+//
+// GetLedgerPlSummary return the P&L for the ledger via parms passed in.
+//
+func (t *Controller) GetLedgerPlSummary(c *gin.Context) {
+	// Values we track.
+	income := 0.00
+	expense := 0.00
+
+	// Query database based on url parms.
+	results, _, err := t.QueryLedgers(c, 0, []string{})
+
+	// Error responses were already set in QueryLedgers
+	if err != nil {
+		return
+	}
+
+	// Add up the values we track
+	for _, row := range results {
+		if row.Amount > 0 {
+			income = income + row.Amount
+		} else {
+			expense = expense + (row.Amount * -1)
+		}
+	}
+
+	// set profit
+	profit := (income - expense)
+
+	//Return success json.
+	c.JSON(200, gin.H{"income": helpers.Round(income, 2), "expense": helpers.Round((expense * -1), 2), "profit": helpers.Round(profit, 2)})
 }
 
 //

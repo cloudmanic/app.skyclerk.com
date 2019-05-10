@@ -50,7 +50,7 @@ export class LedgerService {
 	}
 
 	//
-	// Get me
+	// Get getLedgerSummary
 	//
 	getLedgerSummary(type: string): Observable<LedgerSummaryResponse> {
 		let accountId = localStorage.getItem('account_id');
@@ -80,6 +80,17 @@ export class LedgerService {
 
 			return ls;
 		}));
+	}
+
+	//
+	// Get getLedgerPnlSummary
+	//
+	getLedgerPnlSummary(type: string, search: string): Observable<LedgerPnlSummary> {
+		let accountId = localStorage.getItem('account_id');
+		let url = environment.app_server + '/api/v3/' + accountId + '/ledger-pl-summary?type=' + type + '&search=' + search;
+
+		return this.http.get<LedgerPnlSummary>(url)
+			.pipe(map(res => { return new LedgerPnlSummary(res["income"], res["expense"], res["profit"]) }));
 	}
 }
 
@@ -125,6 +136,17 @@ export class LedgerYearSummaryResult {
 	constructor(
 		public Year: number,
 		public Count: number
+	) { }
+}
+
+//
+// LedgerPnlSummary
+//
+export class LedgerPnlSummary {
+	constructor(
+		public Income: number,
+		public Expense: number,
+		public Profit: number
 	) { }
 }
 

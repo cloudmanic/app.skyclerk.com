@@ -7,4 +7,4 @@
 # Start a docker image just for unit testing OC databases.
 #
 
-docker run --name skyclerk_com_testing -e MYSQL_ROOT_PASSWORD=foobar --tmpfs /var/lib/mysql -p 127.0.0.1:9907:3306 -d mariadb:10.2
+docker run --name skyclerk_com_testing --restart always -e MYSQL_ROOT_PASSWORD=foobar --tmpfs /var/lib/mysql -p 127.0.0.1:9907:3306 -d mariadb:10.2 

@@ -28,22 +28,19 @@
               <ul class="prices">
                 <li class="price">
                   <p>Profit &amp; Loss</p>
-
-                  <strong>$79,885</strong>
-                </li><!-- /.price -->
+                  <strong>{{ plSummary.Profit | currency:'USD':true:'1.0-0' }}</strong>
+                </li>
 
                 <li class="price price-green">
                   <p>Total Income</p>
-
-                  <strong>$105,200</strong>
-                </li><!-- /.price price-green-->
+                  <strong>{{ plSummary.Income | currency:'USD':true:'1.0-0' }}</strong>
+                </li>
 
                 <li class="price price-red">
                   <p>Total Expense</p>
-
-                  <strong>$-20,966</strong>
-                </li><!-- /.price price-red-->
-              </ul><!-- /.list-prices -->
+                  <strong>{{ plSummary.Expense | currency:'USD':true:'1.0-0' }}</strong>
+                </li>
+              </ul>
 
               <div class="table table-prices">
                 <table>

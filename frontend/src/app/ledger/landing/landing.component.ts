@@ -6,7 +6,7 @@
 //
 
 import { Component, OnInit } from '@angular/core';
-import { LedgerService, LedgerResponse, LedgerSummaryResponse } from 'src/app/services/ledger.service';
+import { LedgerService, LedgerResponse, LedgerSummaryResponse, LedgerPnlSummary } from 'src/app/services/ledger.service';
 import { MeService } from 'src/app/services/me.service';
 
 @Component({
@@ -18,6 +18,7 @@ export class LandingComponent implements OnInit {
 	page: number = 1;
 	type: string = "";
 	search: string = "";
+	plSummary: LedgerPnlSummary = new LedgerPnlSummary(0, 0, 0);
 	pageRangeSelect: number = 1;
 	ledgerSummary: LedgerSummaryResponse = new LedgerSummaryResponse([], [], []);
 	ledgers: LedgerResponse = new LedgerResponse(false, 0, 50, 0, []);
@@ -46,6 +47,7 @@ export class LandingComponent implements OnInit {
 	refreshLedger() {
 		this.loadLedgerData();
 		this.getLedgerSummary();
+		this.getLedgerPnlSummary();
 	}
 
 	//
@@ -72,6 +74,17 @@ export class LandingComponent implements OnInit {
 			this.pageRangeSelect = this.page;
 		});
 	}
+
+	//
+	// getLedgerPnlSummary data.
+	//
+	getLedgerPnlSummary() {
+		this.ledgerService.getLedgerPnlSummary(this.type, this.search).subscribe(res => {
+			this.plSummary = res;
+		});
+	}
+
+
 
 	//
 	// Get ledger summary

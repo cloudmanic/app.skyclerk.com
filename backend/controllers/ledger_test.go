@@ -17,6 +17,7 @@ import (
 	"testing"
 	"time"
 
+	"app.skyclerk.com/backend/library/helpers"
 	"app.skyclerk.com/backend/library/test"
 	"app.skyclerk.com/backend/models"
 	"github.com/gin-gonic/gin"
@@ -1355,6 +1356,86 @@ func TestGetLedgerSummary01(t *testing.T) {
 	st.Expect(t, w.Code, 200)
 
 	// TODO(spicer): better testing.
+}
+
+//
+// TestGetLedgerPlSummary01
+//
+func TestGetLedgerPlSummary01(t *testing.T) {
+	income := 0.00
+	expense := 0.00
+
+	// Data map
+	dMap := make(map[uint]models.Ledger)
+
+	// Start the db connection.
+	db, dbName, _ := models.NewTestDB("")
+	defer models.TestingTearDown(db, dbName)
+
+	// Create controller
+	c := &Controller{}
+	c.SetDB(db)
+
+	// Create like 10 ledger entries. Diffent account.
+	for i := 0; i < 10; i++ {
+		l := test.GetRandomLedger(23)
+		db.LedgerCreate(&l)
+	}
+
+	// Create like 105 ledger entries.
+	for i := 0; i < 105; i++ {
+		l := test.GetRandomLedger(33)
+		db.LedgerCreate(&l)
+		dMap[l.Id] = l
+
+		if l.Amount > 0 {
+			income = income + l.Amount
+		} else {
+			expense = expense + (l.Amount * -1)
+		}
+	}
+
+	// Create like 10 ledger entries. Diffent account.
+	for i := 0; i < 10; i++ {
+		l := test.GetRandomLedger(43)
+		db.LedgerCreate(&l)
+	}
+
+	// Setup request
+	req, _ := http.NewRequest("GET", "/api/v3/33/ledger-pl-summary", nil)
+
+	// Setup writer.
+	w := httptest.NewRecorder()
+	gin.SetMode("release")
+	gin.DisableConsoleColor()
+
+	r := gin.New()
+	r.Use(func(c *gin.Context) {
+		c.Set("accountId", 33)
+		c.Set("userId", uint(109))
+	})
+	r.GET("/api/v3/:account/ledger-pl-summary", c.GetLedgerPlSummary)
+	r.ServeHTTP(w, req)
+
+	// Struct to bind.
+	type pl struct {
+		Income  float64 `json:"income"`
+		Expense float64 `json:"expense"`
+		Profit  float64 `json:"profit"`
+	}
+
+	// Grab result and convert to strut
+	result := pl{}
+	err := json.Unmarshal([]byte(w.Body.String()), &result)
+
+	// Test results
+	st.Expect(t, err, nil)
+	st.Expect(t, w.Code, 200)
+	st.Expect(t, result.Income, helpers.Round(income, 2))
+	st.Expect(t, result.Expense, helpers.Round((expense*-1), 2))
+	st.Expect(t, result.Profit, helpers.Round((income-expense), 2))
+
+	// TODO(spicer): better testing. Like add in more filters.
 }
 
 /* End File */
