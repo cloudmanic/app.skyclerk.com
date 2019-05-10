@@ -10,6 +10,7 @@ import { MeService } from 'src/app/services/me.service';
 import { Me } from 'src/app/models/me.model';
 import { Router } from '@angular/router';
 import { Account } from 'src/app/models/account.model';
+import { ReportService, PnlCurrentYear } from 'src/app/services/report.service';
 
 @Component({
 	selector: 'app-layouts-app',
@@ -17,20 +18,46 @@ import { Account } from 'src/app/models/account.model';
 })
 export class AppComponent implements OnInit {
 	me: Me = new Me();
+	pnl: PnlCurrentYear = { Year: 0, Value: 0 };
 	account: Account = new Account();
 	accountToggle: boolean = false;
 
 	//
 	// Constructor.
 	//
-	constructor(public meService: MeService, public router: Router) { }
+	constructor(public meService: MeService, public router: Router, public reportService: ReportService) { }
 
 	//
 	// NgOnInit
 	//
 	ngOnInit() {
+		// Load data for page
+		this.loadPageData();
+
+		// Listen for account changes.
+		this.meService.accountChange.subscribe(() => {
+			this.loadPageData();
+		});
+	}
+
+	//
+	// loadPageData
+	//
+	loadPageData() {
 		// Load the logged in user.
 		this.getLoggedInUser();
+
+		//  Load PnL
+		this.getPnL();
+	}
+
+	//
+	// Get the Year PNL
+	//
+	getPnL() {
+		this.reportService.getPnlCurrentYear().subscribe(res => {
+			this.pnl = res;
+		});
 	}
 
 	//

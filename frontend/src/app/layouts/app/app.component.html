@@ -16,9 +16,9 @@
 		<div class="shell">
 
 			<div class="status">
-				<div class="status-right">
-					<span class="status-label">2013 PROFIT &amp; LOSS:</span>
-					<span class="status-total"><span>+</span>$5,000.00</span>
+				<div class="status-right" *ngIf="pnl.Year > 0">
+					<span class="status-label">{{ pnl.Year }} PROFIT &amp; LOSS:</span>
+					<span class="status-total"><span *ngIf="pnl.Value > 0">+</span>{{ pnl.Value | currency:'USD':true:'1.0-0' }}</span>
 				</div>
 
 				<div class="status-title">

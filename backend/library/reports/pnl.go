@@ -29,6 +29,11 @@ func GetCurrentYearPnL(db models.Datastore, accountId uint, year int) YearPnL {
 	// Run query
 	db.New().Raw(sql, accountId, year).Scan(&rt)
 
+	// If we have no values we just add in this year.
+	if rt.Year == 0 {
+		rt.Year = year
+	}
+
 	// Return happy.
 	return rt
 }

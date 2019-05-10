@@ -60,4 +60,13 @@ func TestGetCurrentYearPnL01(t *testing.T) {
 	// Test results
 	st.Expect(t, pl.Year, 2019)
 	st.Expect(t, pl.Value, helpers.Round(total, 2))
+
+	// ---------- Test empty year ------------- //
+
+	// Run test function
+	pl2 := GetCurrentYearPnL(db, 33, 2005)
+
+	// Test results
+	st.Expect(t, pl2.Year, 2005)
+	st.Expect(t, pl2.Value, 0.00)
 }

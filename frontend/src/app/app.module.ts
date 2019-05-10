@@ -8,6 +8,7 @@ import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { MeService } from './services/me.service';
 import { AuthService } from './services/auth.service';
 import { TokenInterceptor } from './services/token.interceptor';
+import { ReportService } from './services/report.service';
 
 // Components
 import { AppComponent } from './app.component';
@@ -21,7 +22,6 @@ import { LandingComponent as SnapclerkLandingComponent } from './snapclerk/landi
 import { UsersComponent as SettingsUsersComponent } from './settings/users/users.component';
 import { SubNavComponent as SettingsSubNavComponent } from './settings/sub-nav/sub-nav.component';
 import { AccountComponent as SettingsAccountComponent } from './settings/account/account.component';
-
 
 @NgModule({
 	declarations: [
@@ -46,6 +46,7 @@ import { AccountComponent as SettingsAccountComponent } from './settings/account
 	providers: [
 		MeService,
 		AuthService,
+		ReportService,
 		{ provide: HTTP_INTERCEPTORS, useClass: TokenInterceptor, multi: true },
 	],
 	bootstrap: [AppComponent]
