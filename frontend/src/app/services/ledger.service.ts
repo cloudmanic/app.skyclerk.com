@@ -27,7 +27,7 @@ export class LedgerService {
 	//
 	// Get me
 	//
-	get(page: number, type: string, search: string, category: Category, labels: Label[]): Observable<LedgerResponse> {
+	get(page: number, type: string, search: string, category: Category, labels: Label[], year: number): Observable<LedgerResponse> {
 		let accountId = localStorage.getItem('account_id');
 		let url = `${environment.app_server}/api/v3/${accountId}/ledger?page=${page}&type=${type}&search=${search}`;
 
@@ -37,7 +37,7 @@ export class LedgerService {
 		}
 
 		// Do we have a labels?
-		if (labels) {
+		if (labels.length > 0) {
 			let ll = [];
 
 			for (let i = 0; i < labels.length; i++) {
@@ -45,6 +45,11 @@ export class LedgerService {
 			}
 
 			url = url + `&label_ids=${ll.join(",")}`
+		}
+
+		// Do we have a year?
+		if (year) {
+			url = url + `&year=${year}`
 		}
 
 		return this.http.get<Ledger[]>(url, { observe: 'response' }).pipe(map((res) => {
@@ -103,7 +108,7 @@ export class LedgerService {
 	//
 	// Get getLedgerPnlSummary
 	//
-	getLedgerPnlSummary(type: string, search: string, category: Category, labels: Label[]): Observable<LedgerPnlSummary> {
+	getLedgerPnlSummary(type: string, search: string, category: Category, labels: Label[], year: number): Observable<LedgerPnlSummary> {
 		let accountId = localStorage.getItem('account_id');
 		let url = `${environment.app_server}/api/v3/${accountId}/ledger-pl-summary?type=${type}&search=${search}`;
 
@@ -113,7 +118,7 @@ export class LedgerService {
 		}
 
 		// Do we have a labels?
-		if (labels) {
+		if (labels.length > 0) {
 			let ll = [];
 
 			for (let i = 0; i < labels.length; i++) {
@@ -121,6 +126,11 @@ export class LedgerService {
 			}
 
 			url = url + `&label_ids=${ll.join(",")} `
+		}
+
+		// Do we have a year?
+		if (year) {
+			url = url + `&year=${year}`
 		}
 
 		return this.http.get<LedgerPnlSummary>(url)

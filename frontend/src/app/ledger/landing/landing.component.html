@@ -148,6 +148,17 @@
 
                 <div class="widget-primary-body">
                   <ul class="list-entries">
+                    <li *ngIf="activeYear">
+                      <a>
+                        {{ activeYear }}
+                        <span>({{ filterGetYearCount(activeYear) }})</span>
+                      </a>
+
+                      <a (click)="setYearFilter(null)">
+                        <i class="ico-x"></i>
+                      </a>
+                    </li>
+
                     <li *ngIf="activeCategory">
                       <a>
                         {{ activeCategory.Name }}
@@ -219,7 +230,7 @@
                 <div class="widget-primary-body">
                   <ul class="list-links">
                     <li *ngFor="let row of ledgerSummary.Years">
-                      <a href="#">
+                      <a (click)="setYearFilter(row.Year)">
                         {{ row.Year }}
                         <span>({{ row.Count }})</span>
                       </a>

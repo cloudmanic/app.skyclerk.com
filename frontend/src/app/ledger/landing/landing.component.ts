@@ -26,6 +26,7 @@ export class LandingComponent implements OnInit {
 	// Active filters
 	type: string = "";
 	search: string = "";
+	activeYear: number = null;
 	activeLabels: Label[] = [];
 	activeCategory: Category = null;
 
@@ -76,7 +77,7 @@ export class LandingComponent implements OnInit {
 	//
 	loadLedgerData() {
 		// Load ledger entries
-		this.ledgerService.get(this.page, this.type, this.search, this.activeCategory, this.activeLabels).subscribe(res => {
+		this.ledgerService.get(this.page, this.type, this.search, this.activeCategory, this.activeLabels, this.activeYear).subscribe(res => {
 			this.ledgers = res;
 			this.pageRangeSelect = this.page;
 		});
@@ -86,7 +87,7 @@ export class LandingComponent implements OnInit {
 	// getLedgerPnlSummary data.
 	//
 	getLedgerPnlSummary() {
-		this.ledgerService.getLedgerPnlSummary(this.type, this.search, this.activeCategory, this.activeLabels).subscribe(res => {
+		this.ledgerService.getLedgerPnlSummary(this.type, this.search, this.activeCategory, this.activeLabels, this.activeYear).subscribe(res => {
 			this.plSummary = res;
 		});
 	}
@@ -149,6 +150,10 @@ export class LandingComponent implements OnInit {
 	// Do we show filters
 	//
 	doWeShowFilters() {
+		if (this.activeYear) {
+			return true;
+		}
+
 		if (this.activeCategory) {
 			return true;
 		}
@@ -176,6 +181,16 @@ export class LandingComponent implements OnInit {
 	removeLabelFilter(lb: Label) {
 		this.page = 1;
 		this.activeLabels = this.activeLabels.filter(obj => obj !== lb);
+		this.refreshLedger();
+		this.getLedgerPnlSummary();
+	}
+
+	//
+	// Set year filter
+	//
+	setYearFilter(year: number) {
+		this.page = 1;
+		this.activeYear = year;
 		this.refreshLedger();
 		this.getLedgerPnlSummary();
 	}
@@ -218,6 +233,20 @@ export class LandingComponent implements OnInit {
 		this.page = 1;
 		this.refreshLedger();
 		this.getLedgerPnlSummary();
+	}
+
+	//
+	// Return the count of a year
+	//
+	filterGetYearCount(year: number) {
+		// Match up the label
+		for (let i = 0; i < this.ledgerSummary.Years.length; i++) {
+			if (this.ledgerSummary.Years[i].Year == year) {
+				return this.ledgerSummary.Years[i].Count;
+			}
+		}
+		// Should never get here.
+		return 0;
 	}
 
 	//
