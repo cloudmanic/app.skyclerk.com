@@ -23,7 +23,6 @@ export class SidebarComponent implements OnInit {
 	// NgOnInit
 	//
 	ngOnInit() { }
-
 }
 
 /* End File */

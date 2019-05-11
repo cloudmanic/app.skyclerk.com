@@ -22,6 +22,8 @@ import { LandingComponent as SnapclerkLandingComponent } from './snapclerk/landi
 import { UsersComponent as SettingsUsersComponent } from './settings/users/users.component';
 import { SubNavComponent as SettingsSubNavComponent } from './settings/sub-nav/sub-nav.component';
 import { AccountComponent as SettingsAccountComponent } from './settings/account/account.component';
+import { AddEditComponent } from './ledger/add-edit/add-edit.component';
+import { AddEditPopOutComponent } from './contacts/add-edit-pop-out/add-edit-pop-out.component';
 
 @NgModule({
 	declarations: [
@@ -35,7 +37,9 @@ import { AccountComponent as SettingsAccountComponent } from './settings/account
 		SnapclerkLandingComponent,
 		SettingsUsersComponent,
 		SettingsSubNavComponent,
-		SettingsAccountComponent
+		SettingsAccountComponent,
+		AddEditComponent,
+		AddEditPopOutComponent
 	],
 	imports: [
 		FormsModule,

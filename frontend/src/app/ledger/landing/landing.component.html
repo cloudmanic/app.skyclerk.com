@@ -25,6 +25,10 @@
                 </div>
               </div>
 
+              <div *ngIf="showAddEditLedger">
+                <app-ledger-add-edit [type]="showAddEditType"></app-ledger-add-edit>
+              </div>
+
               <ul class="prices">
                 <li class="price">
                   <p>Profit &amp; Loss</p>

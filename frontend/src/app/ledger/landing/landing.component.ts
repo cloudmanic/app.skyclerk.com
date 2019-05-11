@@ -10,6 +10,7 @@ import { LedgerService, LedgerResponse, LedgerSummaryResponse, LedgerPnlSummary 
 import { MeService } from 'src/app/services/me.service';
 import { Category } from 'src/app/models/category.model';
 import { Label } from 'src/app/models/label.model';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
 	selector: 'app-landing',
@@ -30,11 +31,15 @@ export class LandingComponent implements OnInit {
 	activeLabels: Label[] = [];
 	activeCategory: Category = null;
 
+	// Add / Edit ledger stuff.
+	showAddEditType: string = "income";
+	showAddEditLedger: boolean = false;
+
 
 	//
 	// Construct
 	//
-	constructor(public ledgerService: LedgerService, public meService: MeService) { }
+	constructor(public ledgerService: LedgerService, public meService: MeService, public activeRoute: ActivatedRoute) { }
 
 	//
 	// ngOnInit
@@ -46,6 +51,17 @@ export class LandingComponent implements OnInit {
 		// Listen for account changes.
 		this.meService.accountChange.subscribe(() => {
 			this.refreshLedger();
+		});
+
+		// Listen for GET parm changes
+		this.activeRoute.queryParams.subscribe(params => {
+			if (typeof params['add'] == "undefined") {
+				this.showAddEditLedger = false;
+				return;
+			}
+
+			this.showAddEditType = params['add'];
+			this.showAddEditLedger = true;
 		});
 	}
 
