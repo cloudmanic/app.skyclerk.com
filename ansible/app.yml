@@ -3,6 +3,10 @@
 - name: Deploys the app.skyclerk.com to production
   hosts: web-servers
 
+  become: yes
+
+  become_user: skyclerk
+
   roles:
     - app
     - app-restart

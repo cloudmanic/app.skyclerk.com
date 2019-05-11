@@ -37,14 +37,6 @@
   version = "v1.19.24"
 
 [[projects]]
-  digest = "1:ffe9824d294da03b391f44e1ae8281281b4afc1bdaa9588c9097785e3af10cec"
-  name = "github.com/davecgh/go-spew"
-  packages = ["spew"]
-  pruneopts = "UT"
-  revision = "8991bc29aa16c548c550c7ff78260e27b9ab7c73"
-  version = "v1.1.1"
-
-[[projects]]
   digest = "1:47cebe27e59e4e0c239d0bf2419d6a46f0364a56efc43be702c32b82710b6ecf"
   name = "github.com/disintegration/imaging"
   packages = ["."]
@@ -59,6 +51,18 @@
   pruneopts = "UT"
   revision = "9f541cc9db5d55bce703bd99987c9d5cb8eea45e"
   version = "v1.0.0"
+
+[[projects]]
+  branch = "master"
+  digest = "1:2ffd6b143d16d476176662363e27aea8c3e6c1dfc2ae94c9d44e9616c7e96cb4"
+  name = "github.com/eefret/gravatar"
+  packages = [
+    ".",
+    "default_img",
+    "rating",
+  ]
+  pruneopts = "UT"
+  revision = "2163a437cdca653509d81e2d2586cb20d21bd33f"
 
 [[projects]]
   digest = "1:2b59aca2665ff804f6606c8829eaee133ddd3aefbc841014660d961b0034f888"
@@ -93,17 +97,17 @@
   version = "0.0.2"
 
 [[projects]]
-  digest = "1:d5083934eb25e45d17f72ffa86cae3814f4a9d6c073c4f16b64147169b245606"
+  digest = "1:d8bd2a337f6ff2188e08f72c614f2f3f0fd48e6a7b37a071b197e427d77d3a47"
   name = "github.com/gin-gonic/gin"
   packages = [
     ".",
     "binding",
-    "json",
+    "internal/json",
     "render",
   ]
   pruneopts = "UT"
-  revision = "b869fe1415e4b9eb52f247441830d502aece2d4d"
-  version = "v1.3.0"
+  revision = "b75d67cd51eb53c3c3a2fc406524c940021ffbda"
+  version = "v1.4.0"
 
 [[projects]]
   digest = "1:c116114869f44c711fa5baf9e019fa327101c82ddc4dcc1de84db1f6c43a2d36"
@@ -120,6 +124,18 @@
   pruneopts = "UT"
   revision = "72cd26f257d44c1114970e19afddcd812016007e"
   version = "v1.4.1"
+
+[[projects]]
+  branch = "master"
+  digest = "1:7a6377256f670508711c56c25556d639e673c0fa0f519c5a758fdcbfc8af9ac8"
+  name = "github.com/golang/freetype"
+  packages = [
+    ".",
+    "raster",
+    "truetype",
+  ]
+  pruneopts = "UT"
+  revision = "e2365dfdc4a05e4b8299a783240d4a7d5a65d4e4"
 
 [[projects]]
   digest = "1:318f1c959a8a740366fce4b1e1eb2fd914036b4af58fbd0a003349b305f118ad"
@@ -318,10 +334,12 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:4c5fae3d31eb72f59429f9218ff258128ef37edcae9785f93bb9f1609b392c51"
+  digest = "1:da804bdf430613219aa06f92ed5f96bea2698ee16339254a979a8d90dfdd07bc"
   name = "golang.org/x/image"
   packages = [
     "bmp",
+    "font",
+    "math/fixed",
     "tiff",
     "tiff/lzw",
   ]
@@ -427,14 +445,16 @@
     "github.com/araddon/dateparse",
     "github.com/asaskevich/govalidator",
     "github.com/aws/aws-sdk-go/service/cloudfront/sign",
-    "github.com/davecgh/go-spew/spew",
     "github.com/disintegration/imaging",
+    "github.com/eefret/gravatar",
     "github.com/gin-contrib/cors",
     "github.com/gin-contrib/static",
     "github.com/gin-gonic/autotls",
     "github.com/gin-gonic/gin",
     "github.com/go-ozzo/ozzo-validation",
     "github.com/go-sql-driver/mysql",
+    "github.com/golang/freetype",
+    "github.com/golang/freetype/truetype",
     "github.com/h2non/filetype",
     "github.com/jinzhu/gorm",
     "github.com/jpfuentes2/go-env",
@@ -444,6 +464,7 @@
     "github.com/nbio/st",
     "github.com/tidwall/gjson",
     "golang.org/x/crypto/acme/autocert",
+    "golang.org/x/image/font",
     "gopkg.in/h2non/gock.v1",
   ]
   solver-name = "gps-cdcl"

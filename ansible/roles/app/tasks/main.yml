@@ -4,41 +4,42 @@
 - name: Setup {{ site_dir }} as base directory
   file: path={{ site_dir }} owner={{ site_user }} group={{ site_user }} mode=0755 state=directory
 
-# Create docker directory
-- name: Create docker directory
-  file: path={{ site_dir }}/docker owner={{ site_user }} group={{ site_user }} mode=0755 state=directory
-
 # Install docker-compose
 - name: Install docker-compose
-  template: src=docker-compose.yml dest={{ site_dir }}/docker/docker-compose.yml owner={{ site_user }} group={{ site_user }} mode=0644
+  template: src=docker-compose.yml dest={{ site_dir }}/docker-compose.yml owner={{ site_user }} group={{ site_user }} mode=0644
 
 # Install ENV File
 - name: Install Docker ENV File
-  template: src=docker-env dest={{ site_dir }}/docker/.env owner={{ site_user }} group={{ site_user }} mode=0644
+  template: src=docker-env dest={{ site_dir }}/.env owner={{ site_user }} group={{ site_user }} mode=0644
 
 # Create docker app directory
 - name: Create docker app directory
-  file: path={{ site_dir }}/docker/app owner={{ site_user }} group={{ site_user }} mode=0755 state=directory
+  file: path={{ site_dir }}/app owner={{ site_user }} group={{ site_user }} mode=0755 state=directory
 
 # Install Go App ENV File
 - name: Install Go App ENV File
-  template: src=app-env dest={{ site_dir }}/docker/app/.env owner={{ site_user }} group={{ site_user }} mode=0644
+  template: src=app-env dest={{ site_dir }}/app/.env owner={{ site_user }} group={{ site_user }} mode=0644
 
 # Install app.skyclerk.com binary
 - name: Copying app.skyclerk.com binary to server(s)
-  copy: src=../backend/builds/app.skyclerk.com dest={{ site_dir }}/docker/app/app.skyclerk.com owner={{ site_user }} group={{ site_user }} mode=0755
+  copy: src=../backend/builds/app.skyclerk.com dest={{ site_dir }}/app/app.skyclerk.com owner={{ site_user }} group={{ site_user }} mode=0755
 
 # Install fonts
 - name: Copying fonts to app directory.
-  synchronize: src=../fonts/ dest={{ site_dir }}/docker/fonts
+  synchronize: src=../fonts/ dest={{ site_dir }}/fonts
 
-#
-# # Install app.options.cafe frontend code.
-# - name: Copying app.options.cafe frontend code to server(s)
-#   synchronize: src=../frontend/dist/ dest=/sites/optionscafe/app.options.cafe/docker/build/frontend
-#
-# # Change owner of docker/build/frontend
-# - name: Change owner of docker/build/frontend
-#   file: path=/sites/optionscafe/app.options.cafe/docker/build/frontend owner=optionscafe group=optionscafe recurse=yes
-#   become: yes
-#   become_user: root
+# Install app.skyclerk.com frontend code.
+- name: Copying app.skyclerk.com frontend code to server(s)
+  synchronize: src=../frontend/dist/frontend/ dest={{ site_dir }}/frontend/
+
+# Change owner of /frontend
+- name: Change owner of {{ site_dir }}/frontend
+  file: path={{ site_dir }}/frontend owner={{ site_user }} group={{ site_user }} recurse=yes
+  become: yes
+  become_user: root
+
+# Change owner of /fonts
+- name: Change owner of {{ site_dir }}/fonts
+  file: path={{ site_dir }}/fonts owner={{ site_user }} group={{ site_user }} recurse=yes
+  become: yes
+  become_user: root

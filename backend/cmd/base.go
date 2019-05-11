@@ -26,6 +26,7 @@ func Run(db models.Datastore) bool {
 	action := flag.String("cmd", "none", "")
 	file := flag.String("file", "", "")
 	accountId := flag.Int("account_id", 0, "An account id.")
+	name := flag.String("name", "", "")
 	flag.Parse()
 
 	switch *action {
@@ -33,6 +34,12 @@ func Run(db models.Datastore) bool {
 	// Import a CSV from AirBnb
 	case "airbnb-import":
 		actions.AirBnbImport(db, uint(*accountId), *file)
+		return true
+		break
+
+	// Create a new application from the CLI
+	case "create-application":
+		actions.CreateApplication(db, *name)
 		return true
 		break
 

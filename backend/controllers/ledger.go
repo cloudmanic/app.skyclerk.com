@@ -43,12 +43,12 @@ type LedgerYearSummaryResult struct {
 }
 
 //
-// GetLedgers - Return a list of ledgers. We limit to 50 mainly so we do not overload the
+// GetLedgers - Return a list of ledgers. We limit to 25 mainly so we do not overload the
 // system, but enough so the front-end does not have to page
 //
 func (t *Controller) GetLedgers(c *gin.Context) {
 	// Query database based on url parms.
-	results, meta, err := t.QueryLedgers(c, 50, []string{"Category", "Contact", "Labels", "Files"})
+	results, meta, err := t.QueryLedgers(c, 25, []string{"Category", "Contact", "Labels", "Files"})
 
 	// Error responses were already set in QueryLedgers
 	if err != nil {

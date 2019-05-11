@@ -75,6 +75,7 @@
 
                     <td>
                       <strong *ngIf="row.Contact.Name">{{ row.Contact.Name }}</strong>
+                      <strong *ngIf="! row.Contact.Name">{{ row.Contact.FirstName }} {{ row.Contact.LastName }}</strong>
 
                       <p>
                         Categories &amp; Labels:

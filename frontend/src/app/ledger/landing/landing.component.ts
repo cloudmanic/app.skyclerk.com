@@ -21,7 +21,7 @@ export class LandingComponent implements OnInit {
 	plSummary: LedgerPnlSummary = new LedgerPnlSummary(0, 0, 0);
 	pageRangeSelect: number = 1;
 	ledgerSummary: LedgerSummaryResponse = new LedgerSummaryResponse([], [], []);
-	ledgers: LedgerResponse = new LedgerResponse(false, 0, 50, 0, []);
+	ledgers: LedgerResponse = new LedgerResponse(false, 0, 25, 0, []);
 
 	// Active filters
 	type: string = "";
@@ -210,6 +210,7 @@ export class LandingComponent implements OnInit {
 	//
 	clearAllSidebarFilters() {
 		this.page = 1;
+		this.activeYear = null;
 		this.activeLabels = [];
 		this.activeCategory = null;
 		this.refreshLedger();

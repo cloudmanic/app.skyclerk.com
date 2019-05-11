@@ -73,7 +73,7 @@ func (t *Controller) DoRoutes(r *gin.Engine) {
 	// oauth Routes
 	r.POST("/oauth/token", t.DoOauthToken)
 	r.GET("/oauth/logout", t.DoLogOut)
-	r.Use(t.AuthNoAccountMiddleware()).GET("/oauth/me", t.GetMe)
+	r.Group("/oauth/me").Use(t.AuthNoAccountMiddleware()).GET("", t.GetMe)
 
 	// -------- Static Files ------------ //
 
