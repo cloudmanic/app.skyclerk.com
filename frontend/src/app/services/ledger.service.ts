@@ -11,6 +11,8 @@ import { HttpClient } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
 import { Observable } from 'rxjs';
 import { Ledger } from '../models/ledger.model';
+import { Category } from '../models/category.model';
+import { Label } from '../models/label.model';
 
 @Injectable({
 	providedIn: 'root'
@@ -25,9 +27,25 @@ export class LedgerService {
 	//
 	// Get me
 	//
-	get(page: number, type: string, search: string): Observable<LedgerResponse> {
+	get(page: number, type: string, search: string, category: Category, labels: Label[]): Observable<LedgerResponse> {
 		let accountId = localStorage.getItem('account_id');
-		let url = environment.app_server + '/api/v3/' + accountId + '/ledger?page=' + page + '&type=' + type + '&search=' + search;
+		let url = `${environment.app_server}/api/v3/${accountId}/ledger?page=${page}&type=${type}&search=${search}`;
+
+		// Do we have a category?
+		if (category) {
+			url = url + `&category_id=${category.Id}`
+		}
+
+		// Do we have a labels?
+		if (labels) {
+			let ll = [];
+
+			for (let i = 0; i < labels.length; i++) {
+				ll.push(labels[i].Id);
+			}
+
+			url = url + `&label_ids=${ll.join(",")}`
+		}
 
 		return this.http.get<Ledger[]>(url, { observe: 'response' }).pipe(map((res) => {
 			// Setup data
@@ -54,7 +72,7 @@ export class LedgerService {
 	//
 	getLedgerSummary(type: string): Observable<LedgerSummaryResponse> {
 		let accountId = localStorage.getItem('account_id');
-		let url = environment.app_server + '/api/v3/' + accountId + '/ledger-summary?type=' + type;
+		let url = `${environment.app_server}/api/v3/${accountId}/ledger-summary?type=${type}`;
 
 		return this.http.get<LedgerSummaryResponse[]>(url, { observe: 'response' }).pipe(map((res) => {
 			// Response object
@@ -85,9 +103,25 @@ export class LedgerService {
 	//
 	// Get getLedgerPnlSummary
 	//
-	getLedgerPnlSummary(type: string, search: string): Observable<LedgerPnlSummary> {
+	getLedgerPnlSummary(type: string, search: string, category: Category, labels: Label[]): Observable<LedgerPnlSummary> {
 		let accountId = localStorage.getItem('account_id');
-		let url = environment.app_server + '/api/v3/' + accountId + '/ledger-pl-summary?type=' + type + '&search=' + search;
+		let url = `${environment.app_server}/api/v3/${accountId}/ledger-pl-summary?type=${type}&search=${search}`;
+
+		// Do we have a category?
+		if (category) {
+			url = url + `&category_id=${category.Id}`
+		}
+
+		// Do we have a labels?
+		if (labels) {
+			let ll = [];
+
+			for (let i = 0; i < labels.length; i++) {
+				ll.push(labels[i].Id);
+			}
+
+			url = url + `&label_ids=${ll.join(",")} `
+		}
 
 		return this.http.get<LedgerPnlSummary>(url)
 			.pipe(map(res => { return new LedgerPnlSummary(res["income"], res["expense"], res["profit"]) }));

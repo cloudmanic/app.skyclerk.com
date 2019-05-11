@@ -79,9 +79,9 @@
 
                       <p>
                         Categories &amp; Labels:
-                        <a href="#" *ngIf="row.Labels.length == 0">{{ row.Category.Name }}</a>
-                        <a href="#" *ngIf="row.Labels.length > 0">{{ row.Category.Name }}, </a>
-                        <a href="#" *ngFor="let row2 of row.Labels; let last = last;">{{ row2.Name }} <span *ngIf="! last">,</span></a>
+                        <a (click)="setCategoryFilter(row.Category)" *ngIf="row.Labels.length == 0">{{ row.Category.Name }}</a>
+                        <a (click)="setCategoryFilter(row.Category)" *ngIf="row.Labels.length > 0">{{ row.Category.Name }}, </a>
+                        <a (click)="addLabelFilter(row2)" *ngFor="let row2 of row.Labels; let last = last;">{{ row2.Name }} <span *ngIf="! last">,</span></a>
                       </p>
                     </td>
 
@@ -141,67 +141,41 @@
                 </ul>
               </li>
 
-              <li class="widget-primary widget-entries">
+              <li class="widget-primary widget-entries" *ngIf="doWeShowFilters()">
                 <div class="widget-primary-head">
-                  <h3 class="widget-primary-title">Showing entries</h3><!-- /.widget-title -->
-                </div><!-- /.widget-head -->
+                  <h3 class="widget-primary-title">Showing {{ ledgers.Data.length }} Entries</h3>
+                </div>
 
                 <div class="widget-primary-body">
                   <ul class="list-entries">
-                    <li>
-                      <a href="#">
-                        2014
-
-                        <span>(36)</span>
+                    <li *ngIf="activeCategory">
+                      <a>
+                        {{ activeCategory.Name }}
+                        <span>({{ filterGetCategoryCount(activeCategory) }})</span>
                       </a>
 
-                      <a href="#">
+                      <a (click)="setCategoryFilter(null)">
                         <i class="ico-x"></i>
                       </a>
                     </li>
 
-                    <li>
-                      <a href="#">
-                        Rent
-
-                        <span> (12)</span>
+                    <li *ngFor="let row of activeLabels">
+                      <a>
+                        {{ row.Name }}
+                        <span>({{ filterGetLabelCount(row) }})</span>
                       </a>
 
-                      <a href="#">
+                      <a (click)="removeLabelFilter(row)">
                         <i class="ico-x"></i>
                       </a>
                     </li>
-
-                    <li>
-                      <a href="#">
-                        Unit A
-
-                        <span>(2)</span>
-                      </a>
-
-                      <a href="#">
-                        <i class="ico-x"></i>
-                      </a>
-                    </li>
-
-                    <li>
-                      <a href="#">
-                        Unit B
-
-                        <span>(3)</span>
-                      </a>
-
-                      <a href="#">
-                        <i class="ico-x"></i>
-                      </a>
-                    </li>
-                  </ul><!-- /.list-entries -->
-                </div><!-- /.widget-body -->
+                  </ul>
+                </div>
 
                 <div class="widget-actions">
-                  <a href="#">Clear All</a>
-                </div><!-- /.widget-actions -->
-              </li><!-- /.widget widget-entries -->
+                  <a (click)="clearAllSidebarFilters()">Clear All</a>
+                </div>
+              </li>
 
               <li class="widget-primary">
                 <div class="widget-primary-head">
@@ -211,7 +185,7 @@
                 <div class="widget-primary-body">
                   <ul class="list-links">
                     <li *ngFor="let row of ledgerSummary.Categories">
-                      <a href="#">
+                      <a (click)="setCategoryFilter(row)">
                         {{ row.Name }}
                         <span>({{ row.Count }})</span>
                       </a>
@@ -228,7 +202,7 @@
                 <div class="widget-primary-body">
                   <ul class="list-links">
                     <li *ngFor="let row of ledgerSummary.Labels">
-                      <a href="#">
+                      <a (click)="addLabelFilter(row)">
                         {{ row.Name }}
                         <span>({{ row.Count }})</span>
                       </a>
