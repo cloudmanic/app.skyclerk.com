@@ -25,7 +25,7 @@
                 </div>
               </div>
 
-              <div *ngIf="showAddEditLedger">
+              <div *ngIf="showAddEditLedger" [@fadeIn]>
                 <app-ledger-add-edit [type]="showAddEditType"></app-ledger-add-edit>
               </div>
 

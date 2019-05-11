@@ -11,10 +11,17 @@ import { MeService } from 'src/app/services/me.service';
 import { Category } from 'src/app/models/category.model';
 import { Label } from 'src/app/models/label.model';
 import { ActivatedRoute } from '@angular/router';
+import { trigger, transition, animate, style } from '@angular/animations';
 
 @Component({
 	selector: 'app-landing',
-	templateUrl: './landing.component.html'
+	templateUrl: './landing.component.html',
+	animations: [
+		trigger('fadeIn', [
+			transition(':enter', [style({ opacity: 0 }), animate(700)]),
+			transition(':leave', animate(700, style({ opacity: 0 })))
+		])
+	]
 })
 
 export class LandingComponent implements OnInit {

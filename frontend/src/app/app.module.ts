@@ -3,6 +3,7 @@ import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { AppRoutingModule } from './app-routing.module';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 // Services
 import { MeService } from './services/me.service';
@@ -45,7 +46,8 @@ import { AddEditPopOutComponent } from './contacts/add-edit-pop-out/add-edit-pop
 		FormsModule,
 		BrowserModule,
 		AppRoutingModule,
-		HttpClientModule
+		HttpClientModule,
+		BrowserAnimationsModule
 	],
 	providers: [
 		MeService,
