@@ -172,7 +172,6 @@ export class LandingComponent implements OnInit {
 		this.page = 1;
 		this.activeLabels.push(lb);
 		this.refreshLedger();
-		this.getLedgerPnlSummary();
 	}
 
 	//
@@ -182,7 +181,6 @@ export class LandingComponent implements OnInit {
 		this.page = 1;
 		this.activeLabels = this.activeLabels.filter(obj => obj !== lb);
 		this.refreshLedger();
-		this.getLedgerPnlSummary();
 	}
 
 	//
@@ -192,7 +190,6 @@ export class LandingComponent implements OnInit {
 		this.page = 1;
 		this.activeYear = year;
 		this.refreshLedger();
-		this.getLedgerPnlSummary();
 	}
 
 	//
@@ -202,7 +199,6 @@ export class LandingComponent implements OnInit {
 		this.page = 1;
 		this.activeCategory = cat;
 		this.refreshLedger();
-		this.getLedgerPnlSummary();
 	}
 
 	//
@@ -214,7 +210,6 @@ export class LandingComponent implements OnInit {
 		this.activeLabels = [];
 		this.activeCategory = null;
 		this.refreshLedger();
-		this.getLedgerPnlSummary();
 	}
 
 	//
@@ -223,7 +218,6 @@ export class LandingComponent implements OnInit {
 	doSearch() {
 		this.page = 1;
 		this.refreshLedger();
-		this.getLedgerPnlSummary();
 	}
 
 	//
@@ -233,7 +227,6 @@ export class LandingComponent implements OnInit {
 		this.type = type;
 		this.page = 1;
 		this.refreshLedger();
-		this.getLedgerPnlSummary();
 	}
 
 	//

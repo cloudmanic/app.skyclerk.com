@@ -17,6 +17,7 @@ import (
 	"time"
 
 	"github.com/gin-contrib/cors"
+	"github.com/gin-contrib/gzip"
 	"github.com/gin-gonic/autotls"
 	"github.com/gin-gonic/gin"
 	"golang.org/x/crypto/acme/autocert"
@@ -107,6 +108,9 @@ func (t *Controller) StartWebServer() {
 
 	// Recovery middleware recovers from any panics and writes a 500 if there was one.
 	router.Use(gin.Recovery())
+
+	// Gzip the content
+	router.Use(gzip.Gzip(gzip.DefaultCompression))
 
 	// CORS Middleware - Global middleware
 	router.Use(cors.New(cors.Config{

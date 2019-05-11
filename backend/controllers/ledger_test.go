@@ -81,9 +81,9 @@ func TestGetLedgers01(t *testing.T) {
 	// Test results
 	st.Expect(t, err, nil)
 	st.Expect(t, w.Code, 200)
-	st.Expect(t, len(results), 50)
+	st.Expect(t, len(results), 25)
 	st.Expect(t, w.HeaderMap["X-Offset"][0], "0")
-	st.Expect(t, w.HeaderMap["X-Limit"][0], "50")
+	st.Expect(t, w.HeaderMap["X-Limit"][0], "25")
 	st.Expect(t, w.HeaderMap["X-No-Limit-Count"][0], "105")
 	st.Expect(t, w.HeaderMap["X-Last-Page"][0], "false")
 
@@ -124,9 +124,9 @@ func TestGetLedgers01(t *testing.T) {
 	// Test results
 	st.Expect(t, err, nil)
 	st.Expect(t, w2.Code, 200)
-	st.Expect(t, len(results2), 50)
-	st.Expect(t, w2.HeaderMap["X-Offset"][0], "50")
-	st.Expect(t, w2.HeaderMap["X-Limit"][0], "50")
+	st.Expect(t, len(results2), 25)
+	st.Expect(t, w2.HeaderMap["X-Offset"][0], "25")
+	st.Expect(t, w2.HeaderMap["X-Limit"][0], "25")
 	st.Expect(t, w2.HeaderMap["X-No-Limit-Count"][0], "105")
 	st.Expect(t, w2.HeaderMap["X-Last-Page"][0], "false")
 
@@ -144,11 +144,11 @@ func TestGetLedgers01(t *testing.T) {
 	// Test results
 	st.Expect(t, err, nil)
 	st.Expect(t, w3.Code, 200)
-	st.Expect(t, len(results3), 5)
-	st.Expect(t, w3.HeaderMap["X-Offset"][0], "100")
-	st.Expect(t, w3.HeaderMap["X-Limit"][0], "50")
+	st.Expect(t, len(results3), 25)
+	st.Expect(t, w3.HeaderMap["X-Offset"][0], "50")
+	st.Expect(t, w3.HeaderMap["X-Limit"][0], "25")
 	st.Expect(t, w3.HeaderMap["X-No-Limit-Count"][0], "105")
-	st.Expect(t, w3.HeaderMap["X-Last-Page"][0], "true")
+	st.Expect(t, w3.HeaderMap["X-Last-Page"][0], "false")
 }
 
 //
@@ -209,7 +209,7 @@ func TestGetLedgers02(t *testing.T) {
 	st.Expect(t, err, nil)
 	st.Expect(t, w.Code, 200)
 	st.Expect(t, w.HeaderMap["X-Offset"][0], "0")
-	st.Expect(t, w.HeaderMap["X-Limit"][0], "50")
+	st.Expect(t, w.HeaderMap["X-Limit"][0], "25")
 	st.Expect(t, w.HeaderMap["X-Last-Page"][0], "false")
 
 	for key, row := range results {
@@ -237,7 +237,7 @@ func TestGetLedgers02(t *testing.T) {
 	st.Expect(t, err, nil)
 	st.Expect(t, w.Code, 200)
 	st.Expect(t, w.HeaderMap["X-Offset"][0], "0")
-	st.Expect(t, w.HeaderMap["X-Limit"][0], "50")
+	st.Expect(t, w.HeaderMap["X-Limit"][0], "25")
 	st.Expect(t, w.HeaderMap["X-Last-Page"][0], "false")
 
 	for key, row := range results2 {
@@ -309,7 +309,7 @@ func TestGetLedgers03(t *testing.T) {
 	st.Expect(t, err, nil)
 	st.Expect(t, w.Code, 200)
 	st.Expect(t, w.HeaderMap["X-Offset"][0], "0")
-	st.Expect(t, w.HeaderMap["X-Limit"][0], "50")
+	st.Expect(t, w.HeaderMap["X-Limit"][0], "25")
 
 	for key, row := range results {
 		st.Expect(t, (dMap[106].CategoryId == row.Category.Id), true)
@@ -380,7 +380,7 @@ func TestGetLedgers04(t *testing.T) {
 	st.Expect(t, err, nil)
 	st.Expect(t, w.Code, 200)
 	st.Expect(t, w.HeaderMap["X-Offset"][0], "0")
-	st.Expect(t, w.HeaderMap["X-Limit"][0], "50")
+	st.Expect(t, w.HeaderMap["X-Limit"][0], "25")
 
 	for key, row := range results {
 		found := false
@@ -457,7 +457,7 @@ func TestGetLedgers05(t *testing.T) {
 	st.Expect(t, err, nil)
 	st.Expect(t, w.Code, 200)
 	st.Expect(t, w.HeaderMap["X-Offset"][0], "0")
-	st.Expect(t, w.HeaderMap["X-Limit"][0], "50")
+	st.Expect(t, w.HeaderMap["X-Limit"][0], "25")
 
 	for key, row := range results {
 		st.Expect(t, row.Date.Format("2006"), "2017")
@@ -528,7 +528,7 @@ func TestGetLedgers06(t *testing.T) {
 	st.Expect(t, err, nil)
 	st.Expect(t, w.Code, 200)
 	st.Expect(t, w.HeaderMap["X-Offset"][0], "0")
-	st.Expect(t, w.HeaderMap["X-Limit"][0], "50")
+	st.Expect(t, w.HeaderMap["X-Limit"][0], "25")
 
 	for key, row := range results {
 		st.Expect(t, (row.Date.Format("2006") == "2017") || (row.Date.Format("2006") == "2018"), true)
@@ -599,7 +599,7 @@ func TestGetLedgers07(t *testing.T) {
 	st.Expect(t, err, nil)
 	st.Expect(t, w.Code, 200)
 	st.Expect(t, w.HeaderMap["X-Offset"][0], "0")
-	st.Expect(t, w.HeaderMap["X-Limit"][0], "50")
+	st.Expect(t, w.HeaderMap["X-Limit"][0], "25")
 
 	for key, row := range results {
 		st.Expect(t, row.Contact.Name, "Options Cafe")

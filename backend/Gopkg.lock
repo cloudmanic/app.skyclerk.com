@@ -73,6 +73,13 @@
   version = "v1.2"
 
 [[projects]]
+  digest = "1:12397ffc825848f570da48bdbc180313888031f7df945dc6d2e36ea45da1ccc6"
+  name = "github.com/gin-contrib/gzip"
+  packages = ["."]
+  pruneopts = "UT"
+  revision = "aef065fb847d00a98c42db4173b7cba138112c9c"
+
+[[projects]]
   branch = "master"
   digest = "1:a4b5a6b32f33323c7850fae4ec085a0fbac3be93c057b6b8cef5bcabe24645ac"
   name = "github.com/gin-contrib/sse"
@@ -448,6 +455,7 @@
     "github.com/disintegration/imaging",
     "github.com/eefret/gravatar",
     "github.com/gin-contrib/cors",
+    "github.com/gin-contrib/gzip",
     "github.com/gin-contrib/static",
     "github.com/gin-gonic/autotls",
     "github.com/gin-gonic/gin",
