@@ -8,9 +8,6 @@
 
   <div class="form-controls">
     <div class="contact-select" [ngClass]="{ open: selectedContact }">
-      <span role="status" aria-live="polite" class="ui-helper-hidden-accessible">
-        Tasty And Sons
-      </span>
 
       <input [(ngModel)]="contactSearchTerm" (keyup)="searchForContact()" type="text" class="field autocomplete-field ui-autocomplete-input" placeholder="Type to find contact" autocomplete="off" />
 
