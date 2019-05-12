@@ -26,23 +26,67 @@ import (
 // system, but enough so the front-end does not have to page
 //
 func (t *Controller) GetContacts(c *gin.Context) {
-
 	// Place to store the results.
 	var results = []models.Contact{}
 
+	// Get the account id
+	accountId := c.MustGet("accountId").(int)
+
 	// Get limits and pages
 	page, _, _ := request.GetSetPagingParms(c)
+
+	// Get limit
+	limit, err := strconv.Atoi(c.DefaultQuery("limit", "500"))
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"errors": err})
+		return
+	}
 
 	// Set the query parms
 	params := models.QueryParam{
 		Order:            c.DefaultQuery("order", "ContactsName"),
 		Sort:             c.DefaultQuery("sort", "ASC"),
-		Limit:            500,
+		Limit:            limit,
 		Page:             page,
 		AllowedOrderCols: []string{"ContactsId", "ContactsName"},
 		Wheres: []models.KeyValue{
-			{Key: "ContactsAccountId", Compare: "=", ValueInt: c.MustGet("accountId").(int)},
+			{Key: "ContactsAccountId", Compare: "=", ValueInt: accountId},
 		},
+	}
+
+	// Manage a search query - TODO(spicer): this is hacky but it will do for now.
+	if len(c.DefaultQuery("search", "")) > 0 {
+		// Query term
+		search := c.DefaultQuery("search", "")
+
+		// Array of contact ids
+		contactWhereIn := []int{}
+
+		// Get contacts
+		con := []models.Contact{}
+		t.db.New().Where("(ContactsName LIKE ? OR ContactsFirstName LIKE ? OR ContactsLastName LIKE ?) AND ContactsAccountId = ?", "%"+search+"%", "%"+search+"%", "%"+search+"%", accountId).Find(&con)
+
+		// Build id array.
+		for _, row := range con {
+			contactWhereIn = append(contactWhereIn, int(row.Id))
+		}
+
+		// Update query.
+		params.Wheres = append(params.Wheres, models.KeyValue{
+			Key:          "ContactsId",
+			Compare:      "IN",
+			ValueIntList: contactWhereIn,
+		})
+
+		// If we have no ids we have no results
+		if len(contactWhereIn) == 0 {
+			// Run the query
+			meta, err := t.db.QueryMeta(&results, params)
+
+			// Return json based on if this was a good result or not.
+			response.ResultsMeta(c, []models.Contact{}, err, meta)
+			return
+		}
 	}
 
 	// Run the query

@@ -1,4 +1,13 @@
+//
+// Date: 2019-05-05
+// Author: Spicer Matthews (spicer@skyclerk.com)
+// Last Modified by: Spicer Matthews
+// Copyright: 2019 Cloudmanic Labs, LLC. All rights reserved.
+//
+
 import { Component, OnInit, Input } from '@angular/core';
+import { ContactService } from 'src/app/services/contact.service';
+import { Contact } from 'src/app/models/contact.model';
 
 @Component({
 	selector: 'app-ledger-add',
@@ -9,10 +18,15 @@ export class AddComponent implements OnInit {
 
 	showAddContact: boolean = false;
 
+	//
+	// Constructor
+	//
 	constructor() { }
 
-	ngOnInit() {
-	}
+	//
+	// ngOnInit
+	//
+	ngOnInit() { }
 
 	//
 	// Add contact click

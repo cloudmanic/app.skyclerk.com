@@ -514,7 +514,7 @@ textarea.field { height: 90px; resize: none; -webkit-overflow-scrolling: touch; 
 .ui-autocomplete a { display: block; font-size: 14px; line-height: 15px; color: #777; padding: 4px 10px; }
 .ui-autocomplete a strong { font-family: 'proximanova_bold', sans-serif; font-weight: normal; display: block; }
 .ui-autocomplete a:hover { text-decoration: none; }
-.ui-state-focus { background: #d3e7f4; }
+.ui-autocomplete li:hover { background: #d3e7f4; }
 
 .ui-hidden,
 .ui-helper-hidden-accessible { display: none; }

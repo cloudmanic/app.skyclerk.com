@@ -7,21 +7,36 @@
   <label for="field-contact" class="form-label">Contact</label>
 
   <div class="form-controls">
-    <div class="contact-select">
+    <div class="contact-select" [ngClass]="{ open: selectedContact }">
       <span role="status" aria-live="polite" class="ui-helper-hidden-accessible">
         Tasty And Sons
       </span>
 
-      <input type="text" class="field autocomplete-field ui-autocomplete-input" placeholder="Type to find contact" autocomplete="off">
+      <input [(ngModel)]="contactSearchTerm" (keyup)="searchForContact()" type="text" class="field autocomplete-field ui-autocomplete-input" placeholder="Type to find contact" autocomplete="off" />
 
-      <div class="contact-item">
+      <ul class="ui-autocomplete" *ngIf="contactSearchResults.length > 0">
+        <li *ngFor="let row of contactSearchResults">
+          <a (click)="setContact(row)">
+            <strong *ngIf="row.Name">{{ row.Name }}</strong>
+            <span *ngIf="row.Name">{{ row.FirstName }} {{ row.LastName }}</span>
+
+            <strong *ngIf="! row.Name">{{ row.FirstName }} {{ row.LastName }}</strong>
+          </a>
+        </li>
+      </ul>
+
+      <div class="contact-item" *ngIf="selectedContact">
         <div class="contact-item-box">
+          <img src="{{ selectedContact.AvatarUrl }}" />
+          <h4 *ngIf="selectedContact.Name">{{ selectedContact.Name }}</h4>
+          <p *ngIf="selectedContact.Name">{{ selectedContact.FirstName }} {{ selectedContact.LastName }}</p>
 
-        </div><!-- /.contact-item-box -->
+          <h4 *ngIf="! selectedContact.Name">{{ selectedContact.FirstName }} {{ selectedContact.LastName }}</h4>
+        </div>
 
-        <a href="#" class="change-contact">Change Contact</a>
-      </div><!-- /.contact-item -->
+        <a (click)="changeContact()" class="change-contact">Change Contact</a>
+      </div>
     </div>
 
-  </div><!-- /.form-controls -->
-</div><!-- /.form-row -->
+  </div>
+</div>

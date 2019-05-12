@@ -10,6 +10,7 @@ import { MeService } from './services/me.service';
 import { AuthService } from './services/auth.service';
 import { TokenInterceptor } from './services/token.interceptor';
 import { ReportService } from './services/report.service';
+import { ContactService } from './services/contact.service';
 
 // Components
 import { AppComponent } from './app.component';
@@ -55,6 +56,7 @@ import { AssignFieldComponent as ContactsAssignFieldComponent } from './contacts
 		MeService,
 		AuthService,
 		ReportService,
+		ContactService,
 		{ provide: HTTP_INTERCEPTORS, useClass: TokenInterceptor, multi: true },
 	],
 	bootstrap: [AppComponent]
