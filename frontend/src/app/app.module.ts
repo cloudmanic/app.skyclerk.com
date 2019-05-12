@@ -23,8 +23,9 @@ import { LandingComponent as SnapclerkLandingComponent } from './snapclerk/landi
 import { UsersComponent as SettingsUsersComponent } from './settings/users/users.component';
 import { SubNavComponent as SettingsSubNavComponent } from './settings/sub-nav/sub-nav.component';
 import { AccountComponent as SettingsAccountComponent } from './settings/account/account.component';
-import { AddEditComponent } from './ledger/add-edit/add-edit.component';
-import { AddEditPopOutComponent } from './contacts/add-edit-pop-out/add-edit-pop-out.component';
+import { AddComponent as LedgerAddComponent } from './ledger/add/add.component';
+import { AddEditPopOutComponent as ContactsAddEditPopOutComponent } from './contacts/add-edit-pop-out/add-edit-pop-out.component';
+import { AssignFieldComponent as ContactsAssignFieldComponent } from './contacts/assign-field/assign-field.component';
 
 @NgModule({
 	declarations: [
@@ -39,8 +40,9 @@ import { AddEditPopOutComponent } from './contacts/add-edit-pop-out/add-edit-pop
 		SettingsUsersComponent,
 		SettingsSubNavComponent,
 		SettingsAccountComponent,
-		AddEditComponent,
-		AddEditPopOutComponent
+		LedgerAddComponent,
+		ContactsAssignFieldComponent,
+		ContactsAddEditPopOutComponent
 	],
 	imports: [
 		FormsModule,
