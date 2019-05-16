@@ -1,1 +1,4 @@
 /* File where we override htmlburger */
+
+/* Add category pop out */
+.manage-catagories .form-head { border-bottom: unset; border-top: unset; padding-bottom: 8px; }

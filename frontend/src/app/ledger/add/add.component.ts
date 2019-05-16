@@ -8,6 +8,7 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { Contact } from 'src/app/models/contact.model';
 import { Ledger } from 'src/app/models/ledger.model';
+import { Category } from 'src/app/models/category.model';
 
 @Component({
 	selector: 'app-ledger-add',
@@ -18,6 +19,7 @@ export class AddComponent implements OnInit {
 
 	ledger: Ledger = new Ledger();
 	showAddContact: boolean = false;
+	showAddCategory: boolean = false;
 
 	//
 	// Constructor
@@ -35,6 +37,25 @@ export class AddComponent implements OnInit {
 	assignContact(contact: Contact) {
 		this.showAddContact = false;
 		this.ledger.Contact = contact;
+	}
+
+	//
+	// We call this after assigning a category.
+	//
+	assignCategory(category: Category) {
+		this.showAddCategory = false;
+		this.ledger.Category = category;
+	}
+
+	//
+	// Add category click
+	//
+	addCategoryToggle() {
+		if (this.showAddCategory) {
+			this.showAddCategory = false;
+		} else {
+			this.showAddCategory = true;
+		}
 	}
 
 	//

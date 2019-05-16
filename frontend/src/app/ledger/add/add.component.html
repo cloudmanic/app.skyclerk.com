@@ -4,6 +4,7 @@
     <h2 *ngIf="type == 'expense'">Add Expense</h2>
   </div>
 
+  <app-categories-pop-out [show]="showAddCategory" [type]="type" (onCategory)="assignCategory($event)"></app-categories-pop-out>
   <app-contacts-add-edit-pop-out [show]="showAddContact" (onContact)="assignContact($event)"></app-contacts-add-edit-pop-out>
 
   <div class="section-body">
@@ -55,33 +56,11 @@
           </div><!-- /.form-col form-col-size1 -->
 
           <div class="form-col form-col-size2">
-            <div class="form-row">
-              <label for="field-1#" class="form-label">Category</label>
 
-              <a href="#" class="add-link" data-popout="add-contact">
-                <span class="plus-box"></span>
-
-                Manage Categories
-              </a>
-
-              <div class="select">
-                <select>
-                  <option>Pick Category</option>
-                  <option>Option 2</option>
-                  <option>Option 3</option>
-                  <option>Option 4</option>
-                  <option>Option 5</option>
-                  <option>Option 6</option>
-                  <option>Option 7</option>
-                  <option>Option 8</option>
-                </select>
-
-                <span class="select-value">Pick Category</span>
-              </div><!-- /.select -->
-            </div><!-- /.form-row -->
+            <app-categories-field [type]="type" [category]="ledger.Category" (addCategoryToggle)="addCategoryToggle()" (onCategory)="assignCategory($event)"></app-categories-field>
 
             <div class="form-row">
-              <label class="form-label">Labelss</label>
+              <label class="form-label">Labels</label>
 
               <a href="#" class="add-link" data-popout="add-contact">
                 <span class="plus-box"></span>

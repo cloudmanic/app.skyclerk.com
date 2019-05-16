@@ -25,11 +25,22 @@ export class CategoryService {
 	//
 	// Get categories
 	//
-	get(): Observable<Category[]> {
+	get(type: string): Observable<Category[]> {
 		let accountId = localStorage.getItem('account_id');
-		let url = environment.app_server + '/api/v3/' + accountId + '/categories';
+		let url = `${environment.app_server}/api/v3/${accountId}/categories?type=${type}`;
 		return this.http.get<Category[]>(url)
 			.pipe(map(res => res.map(res => new Category().deserialize(res))));
+	}
+
+	//
+	// Create a new category
+	//
+	create(category: Category): Observable<Category> {
+		let accountId = localStorage.getItem('account_id');
+		category.AccountId = Number(accountId);
+
+		return this.http.post<number>(`${environment.app_server}/api/v3/${accountId}/categories`, new Category().serialize(category))
+			.pipe(map(res => new Category().deserialize(res)));
 	}
 }
 

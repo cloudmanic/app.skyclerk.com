@@ -34,6 +34,13 @@ export class Category implements Serializable {
 			name: obj.Name,
 			type: obj.Type
 		}
+
+		if (rt.type == "expense") {
+			rt.type = "1";
+		} else {
+			rt.type = "2";
+		}
+
 		return rt;
 	}
 }

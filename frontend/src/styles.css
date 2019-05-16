@@ -955,7 +955,12 @@ textarea.field { height: 90px; resize: none; -webkit-overflow-scrolling: touch; 
  background:  linear-gradient(rgba(192,192,192,1) 0%, rgba(165,165,165,1) 100%);
 }
 
-.manage-nav a:hover { color: #fff; text-decoration: none;
+.manage-nav a:hover, .manage-nav a.active { color: #fff; text-decoration: none;
+	  background: rgb(78,132,168);
+  background: -webkit-linear-gradient(rgba(78,132,168,1) 0%, rgba(29,101,148,1) 100%);
+  background: -o-linear-gradient(rgba(78,132,168,1) 0%, rgba(29,101,148,1) 100%);
+  background:  linear-gradient(rgba(78,132,168,1) 0%, rgba(29,101,148,1) 100%);
+}{ color: #fff; text-decoration: none;
 	  background: rgb(78,132,168);
   background: -webkit-linear-gradient(rgba(78,132,168,1) 0%, rgba(29,101,148,1) 100%);
   background: -o-linear-gradient(rgba(78,132,168,1) 0%, rgba(29,101,148,1) 100%);

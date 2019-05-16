@@ -1,0 +1,17 @@
+<div class="form-row">
+  <label for="field-1#" class="form-label">Category</label>
+
+  <a (click)="addCategoryToggleClick()" class="add-link" data-popout="add-contact">
+    <span class="plus-box"></span>
+    Add New Category
+  </a>
+
+  <div class="select">
+    <select [(ngModel)]="category" (change)="onChange()">
+      <option *ngFor="let row of categories" [ngValue]="row">{{ row.Name }}</option>
+    </select>
+
+    <span class="select-value" *ngIf="category.Name">{{ category.Name }}</span>
+    <span class="select-value" *ngIf="! category.Name">Select Category</span>
+  </div>
+</div>

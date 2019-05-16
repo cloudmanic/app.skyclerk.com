@@ -28,6 +28,8 @@ import { AddComponent as LedgerAddComponent } from './ledger/add/add.component';
 import { AddEditPopOutComponent as ContactsAddEditPopOutComponent } from './contacts/add-edit-pop-out/add-edit-pop-out.component';
 import { AssignFieldComponent as ContactsAssignFieldComponent } from './contacts/assign-field/assign-field.component';
 import { BaseComponent as ContactsBase } from './contacts/base/base.component';
+import { PopOutComponent as CategoriesPopOutComponent } from './categories/pop-out/pop-out.component';
+import { FieldComponent as CategoriesFieldComponent } from './categories/field/field.component';
 
 @NgModule({
 	declarations: [
@@ -45,7 +47,9 @@ import { BaseComponent as ContactsBase } from './contacts/base/base.component';
 		LedgerAddComponent,
 		ContactsAssignFieldComponent,
 		ContactsAddEditPopOutComponent,
-		ContactsBase
+		ContactsBase,
+		CategoriesPopOutComponent,
+		CategoriesFieldComponent
 	],
 	imports: [
 		FormsModule,
