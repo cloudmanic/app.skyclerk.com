@@ -1,91 +1,50 @@
 <div class="popout popout-show" data-name="add-contact">
   <div class="popout-box add-contact add-contact-primary" *ngIf="show">
-    <form action="#" method="post">
-      <div class="form-row form-row-short">
-        <label class="form-label">First Name</label>
 
-        <input type="text" class="field field-s">
-      </div><!-- /.form-row form-row-short -->
+    <form (submit)="save()" method="post">
 
-      <div class="form-row form-row-short">
-        <label class="form-label">Last Name</label>
+      <span *ngFor="let row of fields">
+        <div class="form-row form-row-short form-row-error" *ngIf="row.Section == 1" [ngClass]="{ 'form-row-error': hasError(row.Field) }">
+          <label class="form-label" for="{{ row.Name }}">{{ row.Title }}</label>
+          <input type="{{ row.Type }}" name="{{ row.Name }}" id="{{ row.Name }}" class="field field-s" placeholder="{{ row.Placeholder }}" [(ngModel)]="contact[row.Name]" />
+          <strong class="error-message" *ngIf="hasError(row.Field)">{{ hasError(row.Field) }}</strong>
+        </div>
+      </span>
 
-        <input type="text" class="field field-s">
-      </div><!-- /.form-row form-row-short -->
+      <div class="hidden-fields" [ngClass]="{ show: showMore }">
 
-      <div class="form-row form-row-short form-row-error">
-        <label class="form-label">Company</label>
-
-        <input type="text" class="field field-s" value="Office Depot">
-
-        <strong class="error-message">This contact already exists</strong>
-      </div><!-- /.form-row form-row-short -->
-
-      <div class="hidden-fields show">
-        <div class="form-row form-row-short form-row-error">
-          <label class="form-label">Email</label>
-
-          <input type="email" class="field field-s">
-
-          <strong class="error-message">This is not a valid email address please enter a valid email.</strong>
-        </div><!-- /.form-row form-row-short -->
-
-        <div class="form-row form-row-short">
-          <label class="form-label">Phone</label>
-
-          <input type="text" class="field field-s" pattern="[0-9]*">
-        </div><!-- /.form-row form-row-short -->
-
-        <div class="form-row form-row-short">
-          <label class="form-label">Address</label>
-
-          <input type="text" class="field field-s">
-        </div><!-- /.form-row form-row-short -->
-
-        <div class="form-row form-row-short">
-          <label class="form-label">City</label>
-
-          <input type="text" class="field field-s">
-        </div><!-- /.form-row form-row-short -->
+        <span *ngFor="let row of fields">
+          <div class="form-row form-row-short" *ngIf="row.Section == 2" [ngClass]="{ 'form-row-error': hasError(row.Field) }">
+            <label class="form-label" for="{{ row.Name }}">{{ row.Title }}</label>
+            <input type="{{ row.Type }}" name="{{ row.Name }}" id="{{ row.Name }}" class="field field-s" placeholder="{{ row.Placeholder }}" [(ngModel)]="contact[row.Name]" />
+            <strong class="error-message" *ngIf="hasError(row.Field)">{{ hasError(row.Field) }}</strong>
+          </div>
+        </span>
 
         <div class="form-row form-row-short">
           <label class="form-label">State</label>
-
-          <input type="text" class="field field-xxs">
+          <input type="text" class="field field-xxs" name="State" [(ngModel)]="contact.State" />
 
           <label class="form-label form-label-inline">Zip</label>
+          <input type="text" class="field field-xs" name="Zip" [(ngModel)]="contact.Zip" />
+        </div>
 
-          <input type="text" class="field field-xs">
-        </div><!-- /.form-row form-row-short -->
+        <span *ngFor="let row of fields">
+          <div class="form-row form-row-short form-row-error" *ngIf="row.Section == 4" [ngClass]="{ 'form-row-error': hasError(row.Field) }">
+            <label class="form-label" for="{{ row.Name }}">{{ row.Title }}</label>
+            <input type="{{ row.Type }}" name="{{ row.Name }}" id="{{ row.Name }}" class="field field-s" placeholder="{{ row.Placeholder }}" [(ngModel)]="contact[row.Name]" />
+            <strong class="error-message" *ngIf="hasError(row.Field)">{{ hasError(row.Field) }}</strong>
+          </div>
+        </span>
 
-        <div class="form-row form-row-short">
-          <label class="form-label">Twitter</label>
-
-          <input type="text" class="field field-s">
-        </div><!-- /.form-row form-row-short -->
-
-        <div class="form-row form-row-short">
-          <label class="form-label">Facebook</label>
-
-          <input type="text" class="field field-s">
-        </div><!-- /.form-row form-row-short -->
-
-        <div class="form-row form-row-short">
-          <label class="form-label">Linked In</label>
-
-          <input type="text" class="field field-s">
-        </div><!-- /.form-row form-row-short -->
-
-        <div class="form-row form-row-short">
-          <label class="form-label">Website</label>
-
-          <input type="text" class="field field-s">
-        </div><!-- /.form-row form-row-short -->
-      </div><!-- /.hidden-fields -->
+      </div>
 
       <div class="form-row form-row-short">
-        <a href="#" class="add-link" data-show="hidden-fields"><span class="plus-box"></span> Add More Info</a>
-      </div><!-- /.form-row form-row-short -->
+        <a (click)="showMoreClick()" class="add-link" data-show="hidden-fields">
+          <span class="plus-box"></span>
+          Add More Info
+        </a>
+      </div>
 
       <div class="form-actions">
         <input type="submit" class="btn btn-padding-10" value="ADD CONTACT">
@@ -93,5 +52,6 @@
         <a (click)="cancelPopUp()" class="btn-cancel">Cancel</a>
       </div>
     </form>
+
   </div>
 </div>

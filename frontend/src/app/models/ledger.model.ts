@@ -12,13 +12,13 @@ import { Category } from './category.model';
 import { Label } from './label.model';
 
 export class Ledger implements Serializable {
-	Id: number;
-	AccountId: number;
-	Date: Date;
-	Amount: number;
-	Note: string;
-	Contact: Contact;
-	Category: Category;
+	Id: number = 0;
+	AccountId: number = 0;
+	Date: Date = new Date();
+	Amount: number = 0.00;
+	Note: string = "";
+	Contact: Contact = new Contact();
+	Category: Category = new Category();
 	Labels = [];
 
 	//

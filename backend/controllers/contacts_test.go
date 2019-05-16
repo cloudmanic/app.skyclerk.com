@@ -583,6 +583,45 @@ func TestCreateContact05(t *testing.T) {
 }
 
 //
+// Test create Contact 06 - Empty fields
+//
+func TestCreateContact06(t *testing.T) {
+	// Start the db connection.
+	db, dbName, _ := models.NewTestDB("")
+	defer models.TestingTearDown(db, dbName)
+
+	// Create controller
+	c := &Controller{}
+	c.SetDB(db)
+
+	// Post data
+	post := models.Contact{Name: "", FirstName: "", LastName: ""}
+
+	// Get JSON
+	postStr, _ := json.Marshal(post)
+
+	// Setup request
+	req, _ := http.NewRequest("POST", "/api/v3/33/contacts", bytes.NewBuffer(postStr))
+
+	// Setup writer.
+	w := httptest.NewRecorder()
+	gin.SetMode("release")
+	gin.DisableConsoleColor()
+
+	r := gin.New()
+	r.Use(func(c *gin.Context) {
+		c.Set("accountId", 33)
+		c.Set("userId", 109)
+	})
+	r.POST("/api/v3/33/contacts", c.CreateContact)
+	r.ServeHTTP(w, req)
+
+	// Test results
+	st.Expect(t, w.Code, 400)
+	st.Expect(t, w.Body.String(), `{"errors":{"name":"A company name or contact first and last name is required."}}`)
+}
+
+//
 // TestUpdateContact01 - Test update contact 01
 //
 func TestUpdateContact01(t *testing.T) {

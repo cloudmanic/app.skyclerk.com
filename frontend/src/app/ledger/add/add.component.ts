@@ -6,6 +6,8 @@
 //
 
 import { Component, OnInit, Input } from '@angular/core';
+import { Contact } from 'src/app/models/contact.model';
+import { Ledger } from 'src/app/models/ledger.model';
 
 @Component({
 	selector: 'app-ledger-add',
@@ -14,6 +16,7 @@ import { Component, OnInit, Input } from '@angular/core';
 export class AddComponent implements OnInit {
 	@Input() type: string = "income";
 
+	ledger: Ledger = new Ledger();
 	showAddContact: boolean = false;
 
 	//
@@ -25,6 +28,14 @@ export class AddComponent implements OnInit {
 	// ngOnInit
 	//
 	ngOnInit() { }
+
+	//
+	// We call this on assigning a contact.
+	//
+	assignContact(contact: Contact) {
+		this.showAddContact = false;
+		this.ledger.Contact = contact;
+	}
 
 	//
 	// Add contact click

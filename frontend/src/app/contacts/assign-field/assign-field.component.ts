@@ -5,7 +5,7 @@
 // Copyright: 2019 Cloudmanic Labs, LLC. All rights reserved.
 //
 
-import { Component, OnInit, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Output, EventEmitter, Input } from '@angular/core';
 import { ContactService } from 'src/app/services/contact.service';
 import { Contact } from 'src/app/models/contact.model';
 
@@ -14,9 +14,10 @@ import { Contact } from 'src/app/models/contact.model';
 	templateUrl: './assign-field.component.html'
 })
 export class AssignFieldComponent implements OnInit {
+	@Input() contact: Contact = new Contact();
+	@Output() onContact = new EventEmitter<Contact>();
 	@Output() addContactToggle = new EventEmitter<boolean>();
 
-	selectedContact: Contact = null;
 	showAddContact: boolean = false;
 	contactSearchTerm: string = "";
 	contactSearchResults: Contact[] = [];
@@ -36,15 +37,16 @@ export class AssignFieldComponent implements OnInit {
 	//
 	changeContact() {
 		this.contactSearchTerm = "";
-		this.selectedContact = null;
+		this.contact = new Contact();
 	}
 
 	//
 	// Select a contact for this field
 	//
 	setContact(contact: Contact) {
-		this.selectedContact = contact;
+		this.contact = contact;
 		this.contactSearchResults = [];
+		this.onContact.emit(contact);
 	}
 
 	//

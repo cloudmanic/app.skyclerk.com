@@ -85,11 +85,6 @@ func (a Contact) Validate(db Datastore, action string, userId uint, accountId ui
 		validation.Field(&a.Name,
 			validation.By(func(value interface{}) error { return db.ValidateContactNameOrFirstLast(a, accountId, objId, action) }),
 		),
-
-		// validation.Field(&a.Type,
-		// 	validation.Required.Error("The type field is required."),
-		// 	validation.In("1", "2").Error("The type field must be 1, or 2."),
-		// ),
 	)
 }
 
@@ -166,6 +161,8 @@ func (db *DB) ValidateContactNameOrFirstLast(contact Contact, accountId uint, ob
 			if strings.ToLower(contactLastName) == strings.ToLower(c.LastName) {
 				return errors.New("Contact first and last name is already in use.")
 			}
+		} else {
+			return errors.New("A company name or contact first and last name is required.")
 		}
 
 	} else if action == "update" {

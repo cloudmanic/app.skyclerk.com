@@ -8,13 +8,25 @@
 import { Serializable } from './serializable.model';
 
 export class Contact implements Serializable {
-	Id: number;
-	AccountId: number;
-	Name: string;
-	FirstName: string;
-	LastName: string;
-	Email: string;
-	AvatarUrl: string;
+	Id: number = 0;
+	AccountId: number = 0;
+	Name: string = "";
+	FirstName: string = "";
+	LastName: string = "";
+	Email: string = "";
+	AvatarUrl: string = "";
+	Address: string = "";
+	City: string = "";
+	State: string = "";
+	Zip: string = "";
+	Phone: string = "";
+	Fax: string = "";
+	Website: string = "";
+	AccountNumber: string = "";
+	Twitter: string = "";
+	Facebook: string = "";
+	Linkedin: string = "";
+	Country: string = "";
 
 	//
 	// Json to Object.
@@ -27,6 +39,18 @@ export class Contact implements Serializable {
 		this.LastName = json["last_name"];
 		this.Email = json["email"];
 		this.AvatarUrl = json["avatar_url"];
+		this.Address = json["address"];
+		this.City = json["city"];
+		this.State = json["state"];
+		this.Zip = json["zip"];
+		this.Phone = json["phone"];
+		this.Fax = json["fax"];
+		this.Website = json["website"];
+		this.AccountNumber = json["account_number"];
+		this.Twitter = json["twitter"];
+		this.Facebook = json["facebook"];
+		this.Linkedin = json["linkedin"];
+		this.Country = json["country"];
 		return this;
 	}
 
@@ -40,7 +64,19 @@ export class Contact implements Serializable {
 			name: obj.Name,
 			first_name: obj.FirstName,
 			last_name: obj.LastName,
-			email: obj.Email
+			email: obj.Email,
+			address: obj.Address,
+			city: obj.City,
+			state: obj.State,
+			zip: obj.Zip,
+			phone: obj.Phone,
+			fax: obj.Fax,
+			website: obj.Website,
+			account_number: obj.AccountNumber,
+			twitter: obj.Twitter,
+			facebook: obj.Facebook,
+			linkedin: obj.Linkedin,
+			country: obj.Country
 		}
 		return rt;
 	}

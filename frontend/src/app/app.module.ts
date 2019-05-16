@@ -27,6 +27,7 @@ import { AccountComponent as SettingsAccountComponent } from './settings/account
 import { AddComponent as LedgerAddComponent } from './ledger/add/add.component';
 import { AddEditPopOutComponent as ContactsAddEditPopOutComponent } from './contacts/add-edit-pop-out/add-edit-pop-out.component';
 import { AssignFieldComponent as ContactsAssignFieldComponent } from './contacts/assign-field/assign-field.component';
+import { BaseComponent as ContactsBase } from './contacts/base/base.component';
 
 @NgModule({
 	declarations: [
@@ -43,7 +44,8 @@ import { AssignFieldComponent as ContactsAssignFieldComponent } from './contacts
 		SettingsAccountComponent,
 		LedgerAddComponent,
 		ContactsAssignFieldComponent,
-		ContactsAddEditPopOutComponent
+		ContactsAddEditPopOutComponent,
+		ContactsBase
 	],
 	imports: [
 		FormsModule,

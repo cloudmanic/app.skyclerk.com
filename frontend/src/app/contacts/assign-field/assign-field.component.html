@@ -7,7 +7,7 @@
   <label for="field-contact" class="form-label">Contact</label>
 
   <div class="form-controls">
-    <div class="contact-select" [ngClass]="{ open: selectedContact }">
+    <div class="contact-select" [ngClass]="{ open: contact.Id > 0 }">
 
       <input [(ngModel)]="contactSearchTerm" (keyup)="searchForContact()" type="text" class="field autocomplete-field ui-autocomplete-input" placeholder="Type to find contact" autocomplete="off" />
 
@@ -22,13 +22,13 @@
         </li>
       </ul>
 
-      <div class="contact-item" *ngIf="selectedContact">
+      <div class="contact-item" *ngIf="contact.Id > 0">
         <div class="contact-item-box">
-          <img src="{{ selectedContact.AvatarUrl }}" />
-          <h4 *ngIf="selectedContact.Name">{{ selectedContact.Name }}</h4>
-          <p *ngIf="selectedContact.Name">{{ selectedContact.FirstName }} {{ selectedContact.LastName }}</p>
+          <img src="{{ contact.AvatarUrl }}" />
+          <h4 *ngIf="contact.Name">{{ contact.Name }}</h4>
+          <p *ngIf="contact.Name">{{ contact.FirstName }} {{ contact.LastName }}</p>
 
-          <h4 *ngIf="! selectedContact.Name">{{ selectedContact.FirstName }} {{ selectedContact.LastName }}</h4>
+          <h4 *ngIf="! contact.Name">{{ contact.FirstName }} {{ contact.LastName }}</h4>
         </div>
 
         <a (click)="changeContact()" class="change-contact">Change Contact</a>

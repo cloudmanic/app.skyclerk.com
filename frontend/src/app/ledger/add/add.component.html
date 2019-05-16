@@ -4,7 +4,7 @@
     <h2 *ngIf="type == 'expense'">Add Expense</h2>
   </div>
 
-  <app-contacts-add-edit-pop-out [show]="showAddContact"></app-contacts-add-edit-pop-out>
+  <app-contacts-add-edit-pop-out [show]="showAddContact" (onContact)="assignContact($event)"></app-contacts-add-edit-pop-out>
 
   <div class="section-body">
     <div class="from-add-expence">
@@ -12,7 +12,7 @@
         <div class="form-body">
           <div class="form-col form-col-size1">
 
-            <app-contacts-assign-field (addContactToggle)="addContactToggle()"></app-contacts-assign-field>
+            <app-contacts-assign-field [contact]="ledger.Contact" (addContactToggle)="addContactToggle()" (onContact)="assignContact($event)"></app-contacts-assign-field>
 
             <div class="form-row">
               <label for="field-date" class="form-label">Date</label>
