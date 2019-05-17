@@ -31,6 +31,17 @@ export class LabelService {
 		return this.http.get<Label[]>(url)
 			.pipe(map(res => res.map(res => new Label().deserialize(res))));
 	}
+
+	//
+	// Create a new label
+	//
+	create(lb: Label): Observable<Label> {
+		let accountId = localStorage.getItem('account_id');
+		lb.AccountId = Number(accountId);
+
+		return this.http.post<number>(`${environment.app_server}/api/v3/${accountId}/labels`, new Label().serialize(lb))
+			.pipe(map(res => new Label().deserialize(res)));
+	}
 }
 
 

@@ -4,11 +4,13 @@
     <h2 *ngIf="type == 'expense'">Add Expense</h2>
   </div>
 
+  <app-labels-pop-out [show]="showAddLabel" (onLabel)="assignLabel($event)"></app-labels-pop-out>
   <app-categories-pop-out [show]="showAddCategory" [type]="type" (onCategory)="assignCategory($event)"></app-categories-pop-out>
   <app-contacts-add-edit-pop-out [show]="showAddContact" (onContact)="assignContact($event)"></app-contacts-add-edit-pop-out>
 
   <div class="section-body">
     <div class="from-add-expence">
+
       <form action="#" method="post">
         <div class="form-body">
           <div class="form-col form-col-size1">
@@ -59,79 +61,10 @@
 
             <app-categories-field [type]="type" [category]="ledger.Category" (addCategoryToggle)="addCategoryToggle()" (onCategory)="assignCategory($event)"></app-categories-field>
 
-            <div class="form-row">
-              <label class="form-label">Labels</label>
+            <app-labels-field [selectedLabels]="ledger.Labels" (addLabelToggle)="addLabelToggle()" (onLabelsChange)="onLabelsChange($event)"></app-labels-field>
 
-              <a href="#" class="add-link" data-popout="add-contact">
-                <span class="plus-box"></span>
-
-                Manage Labels
-              </a>
-
-              <div class="form-row-inner">
-                <ul class="list-checkboxes">
-                  <li>
-                    <div class="checkbox">
-                      <input type="checkbox" name="field-security" id="field-security">
-
-                      <label class="form-label" for="field-Security">Security</label>
-                    </div><!-- /.checkbox -->
-                  </li>
-
-                  <li>
-                    <div class="checkbox">
-                      <input type="checkbox" name="field-investment" id="field-investment">
-
-                      <label class="form-label" for="field-investment">Investment</label>
-                    </div><!-- /.checkbox -->
-                  </li>
-
-                  <li>
-                    <div class="checkbox">
-                      <input type="checkbox" name="field-speedy" id="field-speedy">
-
-                      <label class="form-label" for="field-speedy">Speedy</label>
-                    </div><!-- /.checkbox -->
-                  </li>
-
-                  <li>
-                    <div class="checkbox">
-                      <input type="checkbox" name="field-first-media" id="field-first-media">
-
-                      <label class="form-label" for="field-first-media">First Media</label>
-                    </div><!-- /.checkbox -->
-                  </li>
-
-                  <li>
-                    <div class="checkbox">
-                      <input type="checkbox" name="field-telkom" id="field-telkom">
-
-                      <label class="form-label" for="field-telkom">Telkom</label>
-                    </div><!-- /.checkbox -->
-                  </li>
-                </ul><!-- /.list-checkboxes -->
-
-                <ul class="list-checkboxes">
-                  <li>
-                    <div class="checkbox">
-                      <input type="checkbox" name="field-media" id="field-media">
-
-                      <label class="form-label" for="field-media">New Media</label>
-                    </div><!-- /.checkbox -->
-                  </li>
-
-                  <li>
-                    <div class="checkbox">
-                      <input type="checkbox" name="field-applications" id="field-applications">
-
-                      <label class="form-label" for="field-applications">Applications</label>
-                    </div><!-- /.checkbox -->
-                  </li>
-                </ul><!-- /.list-checkboxes -->
-              </div><!-- /.form-row-inner -->
-            </div><!-- /.form-row -->
-          </div><!-- /.form-col form-col-size2 -->
-        </div><!-- /.form-body -->
+          </div>
+        </div>
 
         <div class="form-actions">
           <button type="submit" value="Submit" class="form-btn btn btn-block btn-large btn-darkgreen" *ngIf="type == 'income'">
@@ -148,6 +81,7 @@
           <a routerLink="/ledger" class="btn-cancel">Cancel</a>
         </div>
       </form>
+
     </div>
   </div>
 </section>

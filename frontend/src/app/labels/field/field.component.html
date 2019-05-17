@@ -1,0 +1,29 @@
+<div class="form-row">
+  <label class="form-label">Labels</label>
+
+  <a (click)="showAddLabel()" class="add-link" data-popout="add-contact">
+    <span class="plus-box"></span>
+    Add Label
+  </a>
+
+  <div class="form-row-inner">
+
+    <ul class="list-checkboxes">
+      <li *ngFor="let row of labels; let even=even;">
+        <div class="checkbox" *ngIf="even">
+          <input type="checkbox" name="Labels[]" id="label-{{ row.Id }}" [checked]="isChecked(row)" (change)="onChange(row)" />
+          <label class="form-label" for="label-{{ row.Id }}">{{ row.Name }}</label>
+        </div>
+      </li>
+    </ul>
+
+    <ul class="list-checkboxes">
+      <li *ngFor="let row of labels; let odd=odd;">
+        <div class="checkbox" *ngIf="odd">
+          <input type="checkbox" name="Labels[]" id="label-{{ row.Id }}" [checked]="isChecked(row)" (change)="onChange(row)" />
+          <label class="form-label" for="label-{{ row.Id }}">{{ row.Name }}</label>
+        </div>
+      </li>
+    </ul>
+  </div>
+</div>

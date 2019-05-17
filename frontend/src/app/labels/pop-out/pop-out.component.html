@@ -1,0 +1,17 @@
+<div class="popout popout-show">
+  <div class="popout-box add-contact manage-labels" *ngIf="show">
+
+    <form (submit)="save()">
+      <div class="form-head">
+        <div class="form-row form-row-short" [ngClass]="{ 'form-row-error': errMsg }">
+          <input type="text" name="name" class="field field-s" placeholder="Add New Label" [(ngModel)]="name" />
+
+          <a (click)="save()" class="btn btn-yellow">ADD</a>
+
+          <strong class="error-message" *ngIf="errMsg">{{ errMsg }}</strong>
+        </div>
+      </div>
+    </form>
+
+  </div>
+</div>

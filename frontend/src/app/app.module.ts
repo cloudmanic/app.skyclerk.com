@@ -30,6 +30,8 @@ import { AssignFieldComponent as ContactsAssignFieldComponent } from './contacts
 import { BaseComponent as ContactsBase } from './contacts/base/base.component';
 import { PopOutComponent as CategoriesPopOutComponent } from './categories/pop-out/pop-out.component';
 import { FieldComponent as CategoriesFieldComponent } from './categories/field/field.component';
+import { FieldComponent as LabelsFieldComponent } from './labels/field/field.component';
+import { PopOutComponent as LabelsPopOutComponent } from './labels/pop-out/pop-out.component';
 
 @NgModule({
 	declarations: [
@@ -49,7 +51,9 @@ import { FieldComponent as CategoriesFieldComponent } from './categories/field/f
 		ContactsAddEditPopOutComponent,
 		ContactsBase,
 		CategoriesPopOutComponent,
-		CategoriesFieldComponent
+		CategoriesFieldComponent,
+		LabelsFieldComponent,
+		LabelsPopOutComponent
 	],
 	imports: [
 		FormsModule,
