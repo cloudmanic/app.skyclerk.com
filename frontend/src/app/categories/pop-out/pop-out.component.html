@@ -4,7 +4,7 @@
     <form (submit)="save()">
       <div class="form-head">
         <div class="form-row form-row-short" [ngClass]="{ 'form-row-error': errMsg }">
-          <input type="text" name="name" class="field field-s" placeholder="Add New Expense Category" [(ngModel)]="name" />
+          <input type="text" name="name" class="field field-s" placeholder="New {{ type }} category" [(ngModel)]="name" />
 
           <a (click)="save()" class="btn btn-yellow">ADD</a>
 

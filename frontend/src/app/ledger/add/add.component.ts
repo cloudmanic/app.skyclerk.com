@@ -10,6 +10,7 @@ import { Contact } from 'src/app/models/contact.model';
 import { Ledger } from 'src/app/models/ledger.model';
 import { Category } from 'src/app/models/category.model';
 import { Label } from 'src/app/models/label.model';
+import { Router } from '@angular/router';
 
 @Component({
 	selector: 'app-ledger-add',
@@ -26,12 +27,20 @@ export class AddComponent implements OnInit {
 	//
 	// Constructor
 	//
-	constructor() { }
+	constructor(public router: Router) { }
 
 	//
 	// ngOnInit
 	//
 	ngOnInit() { }
+
+	//
+	// Save the new ledger entry.
+	//
+	save() {
+		console.log(this.ledger);
+		this.router.navigate(['/ledger']);
+	}
 
 	//
 	// We call this on assigning a contact.
@@ -46,8 +55,6 @@ export class AddComponent implements OnInit {
 	//
 	onLabelsChange(lbs: Label[]) {
 		this.ledger.Labels = lbs;
-
-		console.log(this.ledger.Labels);
 	}
 
 	//
