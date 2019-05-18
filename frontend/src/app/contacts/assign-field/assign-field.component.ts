@@ -14,6 +14,7 @@ import { Contact } from 'src/app/models/contact.model';
 	templateUrl: './assign-field.component.html'
 })
 export class AssignFieldComponent implements OnInit {
+	@Input() errMsg: string = "";
 	@Input() contact: Contact = new Contact();
 	@Output() onContact = new EventEmitter<Contact>();
 	@Output() addContactToggle = new EventEmitter<boolean>();

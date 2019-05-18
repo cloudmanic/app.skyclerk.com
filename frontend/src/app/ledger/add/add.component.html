@@ -15,7 +15,7 @@
         <div class="form-body">
           <div class="form-col form-col-size1">
 
-            <app-contacts-assign-field [contact]="ledger.Contact" (addContactToggle)="addContactToggle()" (onContact)="assignContact($event)"></app-contacts-assign-field>
+            <app-contacts-assign-field [errMsg]="hasError('contact')" [contact]="ledger.Contact" (addContactToggle)="addContactToggle()" (onContact)="assignContact($event)"></app-contacts-assign-field>
 
             <div class="form-row">
               <label for="date" class="form-label">Date</label>

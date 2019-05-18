@@ -1,4 +1,4 @@
-<div class="form-row">
+<div class="form-row" [ngClass]="{ 'form-row-error': errMsg }">
   <a (click)="addContactToggleClick()" class="add-link">
     <span class="plus-box"></span>
     Add New Contact
@@ -34,6 +34,8 @@
         <a (click)="changeContact()" class="change-contact">Change Contact</a>
       </div>
     </div>
+
+    <strong class="error-message" *ngIf="errMsg">{{ errMsg }}</strong>
 
   </div>
 </div>
