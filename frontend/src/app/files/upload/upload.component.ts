@@ -5,7 +5,7 @@
 // Copyright: 2019 Cloudmanic Labs, LLC. All rights reserved.
 //
 
-import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef, Output, EventEmitter } from '@angular/core';
 import { UploadFile, UploadEvent, FileSystemFileEntry } from 'ngx-file-drop';
 import { FileService } from 'src/app/services/file.service';
 import { HttpErrorResponse } from '@angular/common/http';
@@ -17,6 +17,9 @@ import { File as FileModel } from '../../models/file.model';
 })
 
 export class UploadComponent implements OnInit {
+	@Output() onUpload = new EventEmitter<FileModel>();
+	@Output() onDeleteFile = new EventEmitter<FileModel>();
+
 	files: FileUploadsWithStatus[] = [];
 
 	//
@@ -30,6 +33,20 @@ export class UploadComponent implements OnInit {
 	ngOnInit() { }
 
 	//
+	// Delete a file
+	//
+	deleteClick(f: FileModel) {
+		for (let i = 0; i < this.files.length; i++) {
+			if (f.Id == this.files[i].model.Id) {
+				this.files.splice(i, 1);
+			}
+		}
+
+		// Tell parent about the delete.
+		this.onDeleteFile.emit(f);
+	}
+
+	//
 	// When a file is dropped. Also when clicks on a file upload
 	//
 	fileDropped(event: UploadEvent) {
@@ -39,7 +56,7 @@ export class UploadComponent implements OnInit {
 
 			// Is it a file?
 			if (f.fileEntry.isFile) {
-				let t = { file: f, status: "uploading", progress: 0, model: new FileModel() }
+				let t = { file: f, status: "uploading", progress: 0, error: "", model: new FileModel() }
 				this.files.push(t);
 				this.uploadFile(t);
 			}
@@ -51,9 +68,6 @@ export class UploadComponent implements OnInit {
 	//
 	uploadFile(t: FileUploadsWithStatus) {
 		const fileEntry = t.file.fileEntry as FileSystemFileEntry;
-
-		// Clear errors
-		//this.errMsg = "";
 
 		// Get the file from the entry
 		fileEntry.file((file: File) => {
@@ -76,28 +90,23 @@ export class UploadComponent implements OnInit {
 					if (typeof res == "object") {
 						t.model = res;
 						t.status = "done";
-						console.log(t);
+
+						// Send uploaded file to the parent.
+						this.onUpload.emit(t.model);
 						return;
 					}
 
-
-
-
-					// t.status = "";
-					// t.fileId = res.ID;
-					// t.file.relativePath = res.Name;
-					// this.onUpload.emit({ fileId: res.ID, docType: this.docPurpose });
 				},
 
 				// Error
 				(err: HttpErrorResponse) => {
+					t.status = "error";
+					t.error = "Unknown error please contact help@options.cafe";
 
-					console.log(err);
-
-					// t.status = "Error";
-					// if (err.error.fields.length) {
-					// 	this.errMsg = err.error.fields[0].reason;
-					// }
+					// Should only be the file field
+					if (typeof err.error.errors.file != "undefined") {
+						t.error = err.error.errors.file;
+					}
 				}
 
 			);
@@ -113,6 +122,7 @@ export interface FileUploadsWithStatus {
 	model: FileModel;
 	status: string;
 	progress: number;
+	error: string;
 }
 
 /* End File */

@@ -10,6 +10,7 @@ import { Serializable } from './serializable.model';
 import { Contact } from './contact.model';
 import { Category } from './category.model';
 import { Label } from './label.model';
+import { File as FileModel } from './file.model';
 
 export class Ledger implements Serializable {
 	Id: number = 0;
@@ -19,7 +20,8 @@ export class Ledger implements Serializable {
 	Note: string = "";
 	Contact: Contact = new Contact();
 	Category: Category = new Category();
-	Labels = [];
+	Labels: Label[] = [];
+	Files: FileModel[] = [];
 
 	//
 	// Json to Object.

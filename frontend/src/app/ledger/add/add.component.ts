@@ -10,6 +10,7 @@ import { Contact } from 'src/app/models/contact.model';
 import { Ledger } from 'src/app/models/ledger.model';
 import { Category } from 'src/app/models/category.model';
 import { Label } from 'src/app/models/label.model';
+import { File as FileModel } from 'src/app/models/file.model';
 import { Router } from '@angular/router';
 
 @Component({
@@ -55,6 +56,24 @@ export class AddComponent implements OnInit {
 	//
 	onLabelsChange(lbs: Label[]) {
 		this.ledger.Labels = lbs;
+	}
+
+	//
+	// We call this when a file is added to the ledger.
+	//
+	onAddFile(f: FileModel) {
+		this.ledger.Files.push(f);
+	}
+
+	//
+	// Call this when we delete a file.
+	//
+	onDeleteFile(f: FileModel) {
+		for (let i = 0; i < this.ledger.Files.length; i++) {
+			if (f.Id == this.ledger.Files[i].Id) {
+				this.ledger.Files.splice(i, 1);
+			}
+		}
 	}
 
 	//

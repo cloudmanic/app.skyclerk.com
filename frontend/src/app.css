@@ -1,5 +1,6 @@
 /* File where we override htmlburger */
 
+.red { color: red; }
 .mt-15 { margin-top: 15px; }
 
 /* Category pop out */

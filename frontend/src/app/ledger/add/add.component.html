@@ -41,7 +41,7 @@
               </div><!-- /.form-controls -->
             </div><!-- /.form-row -->
 
-            <app-files-upload></app-files-upload>
+            <app-files-upload (onUpload)="onAddFile($event)" (onDeleteFile)="onDeleteFile($event)"></app-files-upload>
 
           </div>
 
