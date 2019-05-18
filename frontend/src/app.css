@@ -2,6 +2,7 @@
 
 .red { color: red; }
 .mt-15 { margin-top: 15px; }
+.no-float { float: unset !important; }
 
 /* Category pop out */
 .manage-catagories .form-head { border-bottom: unset; border-top: unset; padding-bottom: 8px; }
