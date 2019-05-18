@@ -1,0 +1,38 @@
+<li class="progress-bar-primary progress-done" *ngIf="file.file">
+  <div class="progress-image">
+    <div class="progress-overlay">
+      <a href="{{ file.model.Url }}" target="_blank">
+        <i class="ico-zoom"></i>
+      </a>
+    </div>
+
+    <img src="{{ file.model.Thumb600By600Url }}" width="67" height="67" alt="" />
+  </div>
+
+  <a href="#">
+    <strong>Delete</strong>
+  </a>
+</li>
+
+<li class="progress-bar-primary" *ngIf="file.progress > 0">
+
+
+
+  <div class="progress-content">
+    <div class="progress-line">
+      <div class="progress-line-inner"></div>
+    </div>
+
+    <div class="progress-label">
+      <strong>Uploading {{ file.file.name }}</strong>
+    </div>
+  </div>
+
+  <div class="progress-aside">
+    <strong>{{ file.progress }}%</strong>
+  </div>
+</li>
+
+<li>
+  {{ file.status }}
+</li>

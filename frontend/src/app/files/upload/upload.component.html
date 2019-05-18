@@ -1,0 +1,54 @@
+<div class="form-row">
+  <div class="form-controls">
+    <label for="" class="form-label">Attach Files</label>
+    <file-drop [showBrowseBtn]="true" dropZoneClassName="" browseBtnClassName="btn" browseBtnLabel="Select Files" (onFileDrop)="fileDropped($event)"></file-drop>
+  </div>
+</div>
+
+<ul class="progress-bars">
+  <li class="progress-bar-primary" *ngFor="let row of files" [ngClass]="{ 'progress-done': (row.model.Id > 0) }">
+
+    <div class="progress-image" *ngIf="row.model.Id > 0">
+      <div class="progress-overlay">
+        <a href="{{ row.model.Url }}" target="_blank">
+          <i class="ico-zoom"></i>
+        </a>
+      </div>
+
+      <img src="{{ row.model.Thumb600By600Url }}" width="67" height="67" alt="" />
+    </div>
+
+    <a href="#" *ngIf="row.model.Id > 0">
+      <strong>Delete</strong>
+    </a>
+
+  </li>
+</ul>
+
+<ul class="progress-bars">
+  <li class="progress-bar-primary mt-15" *ngFor="let row of files" [ngClass]="{ 'progress-done': (row.model.Id > 0) }">
+
+    <div class="progress-content" *ngIf="row.status != 'done'">
+      <div class="progress-line">
+        <div class="progress-line-inner" [style.width]="row.progress + '%'"></div>
+      </div>
+
+      <div class="progress-label" *ngIf="row.status == 'uploading'">
+        <strong>Uploading {{ row.file.fileEntry.name }}</strong>
+      </div>
+
+      <div class="progress-label" *ngIf="row.status == 'processing'">
+        <strong>{{ row.file.fileEntry.name }}</strong>
+      </div>
+    </div>
+
+    <div class="progress-aside" *ngIf="row.status == 'uploading'">
+      <strong>{{ row.progress }}%</strong>
+    </div>
+
+    <div class="progress-aside" *ngIf="row.status == 'processing'">
+      <strong class="progress-processing">Processing</strong>
+    </div>
+
+  </li>
+</ul>

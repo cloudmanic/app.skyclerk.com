@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { AppRoutingModule } from './app-routing.module';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { FileDropModule } from 'ngx-file-drop';
 
 // Services
 import { MeService } from './services/me.service';
@@ -32,6 +33,8 @@ import { PopOutComponent as CategoriesPopOutComponent } from './categories/pop-o
 import { FieldComponent as CategoriesFieldComponent } from './categories/field/field.component';
 import { FieldComponent as LabelsFieldComponent } from './labels/field/field.component';
 import { PopOutComponent as LabelsPopOutComponent } from './labels/pop-out/pop-out.component';
+import { UploadComponent as FilesUploadComponent } from './files/upload/upload.component';
+import { PreviewItemComponent as FilesPreviewItemComponent } from './files/preview-item/preview-item.component';
 
 @NgModule({
 	declarations: [
@@ -53,14 +56,17 @@ import { PopOutComponent as LabelsPopOutComponent } from './labels/pop-out/pop-o
 		CategoriesPopOutComponent,
 		CategoriesFieldComponent,
 		LabelsFieldComponent,
-		LabelsPopOutComponent
+		LabelsPopOutComponent,
+		FilesUploadComponent,
+		FilesPreviewItemComponent
 	],
 	imports: [
 		FormsModule,
 		BrowserModule,
 		AppRoutingModule,
 		HttpClientModule,
-		BrowserAnimationsModule
+		BrowserAnimationsModule,
+		FileDropModule
 	],
 	providers: [
 		MeService,

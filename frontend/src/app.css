@@ -1,7 +1,13 @@
 /* File where we override htmlburger */
 
+.mt-15 { margin-top: 15px; }
+
 /* Category pop out */
 .manage-catagories .form-head { border-bottom: unset; border-top: unset; padding-bottom: 8px; }
 
 /* Add label pop out */
 .manage-labels .form-head { border-bottom: unset; border-top: unset; }
+
+/* File upload */
+.ngx-file-drop__drop-zone--over { background-color: unset !important; }
+.ngx-file-drop__content { justify-content: unset !important; width: 135px !important; height: 35px !important; }

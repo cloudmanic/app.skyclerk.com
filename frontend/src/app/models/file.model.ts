@@ -8,13 +8,13 @@
 import { Serializable } from './serializable.model';
 
 export class File implements Serializable {
-	Id: number;
-	AccountId: number;
-	Name: string;
-	Type: string;
-	Size: number;
-	Url: string;
-	Thumb600By600Url: string;
+	Id: number = 0
+	AccountId: number = 0;
+	Name: string = "";
+	Type: string = "";
+	Size: number = 0;
+	Url: string = "";
+	Thumb600By600Url: string = "";
 
 	//
 	// Json to Object.
