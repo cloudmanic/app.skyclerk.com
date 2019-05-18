@@ -1,4 +1,4 @@
-<div class="form-row">
+<div class="form-row" [ngClass]="{ 'form-row-error': errMsg }">
   <label for="field-1#" class="form-label">Category</label>
 
   <a (click)="addCategoryToggleClick()" class="add-link" data-popout="add-contact">
@@ -13,5 +13,6 @@
 
     <span class="select-value" *ngIf="category.Name">{{ category.Name }}</span>
     <span class="select-value" *ngIf="! category.Name">Select Category</span>
+    <strong class="error-message" *ngIf="errMsg">{{ errMsg }}</strong>
   </div>
 </div>

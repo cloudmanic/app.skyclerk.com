@@ -34,7 +34,6 @@ import { FieldComponent as CategoriesFieldComponent } from './categories/field/f
 import { FieldComponent as LabelsFieldComponent } from './labels/field/field.component';
 import { PopOutComponent as LabelsPopOutComponent } from './labels/pop-out/pop-out.component';
 import { UploadComponent as FilesUploadComponent } from './files/upload/upload.component';
-import { PreviewItemComponent as FilesPreviewItemComponent } from './files/preview-item/preview-item.component';
 
 @NgModule({
 	declarations: [
@@ -57,8 +56,7 @@ import { PreviewItemComponent as FilesPreviewItemComponent } from './files/previ
 		CategoriesFieldComponent,
 		LabelsFieldComponent,
 		LabelsPopOutComponent,
-		FilesUploadComponent,
-		FilesPreviewItemComponent
+		FilesUploadComponent
 	],
 	imports: [
 		FormsModule,

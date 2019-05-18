@@ -39,7 +39,7 @@ export class CategoryService {
 		let accountId = localStorage.getItem('account_id');
 		category.AccountId = Number(accountId);
 
-		return this.http.post<number>(`${environment.app_server}/api/v3/${accountId}/categories`, new Category().serialize(category))
+		return this.http.post<Category>(`${environment.app_server}/api/v3/${accountId}/categories`, new Category().serialize(category))
 			.pipe(map(res => new Category().deserialize(res)));
 	}
 }

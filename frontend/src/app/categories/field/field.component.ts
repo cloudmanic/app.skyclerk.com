@@ -15,6 +15,7 @@ import { Category } from 'src/app/models/category.model';
 })
 export class FieldComponent implements OnInit {
 	@Input() type: string = "expense";
+	@Input() errMsg: string = "";
 	@Input() category: Category = new Category();
 	@Output() onCategory = new EventEmitter<Category>();
 	@Output() addCategoryToggle = new EventEmitter<boolean>();

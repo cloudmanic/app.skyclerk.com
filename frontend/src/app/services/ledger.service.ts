@@ -25,6 +25,17 @@ export class LedgerService {
 	constructor(private http: HttpClient) { }
 
 	//
+	// Create a new ledger
+	//
+	create(ledger: Ledger): Observable<Ledger> {
+		let accountId = localStorage.getItem('account_id');
+		ledger.AccountId = Number(accountId);
+
+		return this.http.post<Ledger>(`${environment.app_server}/api/v3/${accountId}/ledger`, new Ledger().serialize(ledger))
+			.pipe(map(res => new Ledger().deserialize(res)));
+	}
+
+	//
 	// Get me
 	//
 	get(page: number, type: string, search: string, category: Category, labels: Label[], year: number): Observable<LedgerResponse> {

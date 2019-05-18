@@ -18,28 +18,25 @@
             <app-contacts-assign-field [contact]="ledger.Contact" (addContactToggle)="addContactToggle()" (onContact)="assignContact($event)"></app-contacts-assign-field>
 
             <div class="form-row">
-              <label for="field-date" class="form-label">Date</label>
-
+              <label for="date" class="form-label">Date</label>
               <div class="form-controls">
-                <input type="date" class="field" name="field-date" id="field-date" value="" placeholder="2/19/2019">
-              </div><!-- /.form-controls -->
-            </div><!-- /.form-row -->
+                <input type="date" class="field" name="Date" id="Date" placeholder="2/19/2019" [ngModel]="ledger.Date | date:'yyyy-MM-dd'" (ngModelChange)="ledger.Date = $event" />
+              </div>
+            </div>
 
             <div class="form-row">
-              <label for="field-amount" class="form-label">Amount</label>
-
+              <label for="Amount" class="form-label">Amount</label>
               <div class="form-controls">
-                <input type="text" class="field" name="field-amount" id="field-amount" value="" placeholder="$ 153.00">
-              </div><!-- /.form-controls -->
-            </div><!-- /.form-row -->
+                <input type="text" class="field" name="Amount" id="Amount" placeholder="$153.00" [(ngModel)]="ledger.Amount" />
+              </div>
+            </div>
 
             <div class="form-row">
-              <label for="field-notes" class="form-label">Notes</label>
-
+              <label for="Note" class="form-label">Notes</label>
               <div class="form-controls">
-                <textarea class="field" name="field-notes" id="field-notes" placeholder=""></textarea>
-              </div><!-- /.form-controls -->
-            </div><!-- /.form-row -->
+                <textarea class="field" name="Note" id="Note" placeholder="" [(ngModel)]="ledger.Note"></textarea>
+              </div>
+            </div>
 
             <app-files-upload (onUpload)="onAddFile($event)" (onDeleteFile)="onDeleteFile($event)"></app-files-upload>
 
@@ -47,7 +44,7 @@
 
           <div class="form-col form-col-size2">
 
-            <app-categories-field [type]="type" [category]="ledger.Category" (addCategoryToggle)="addCategoryToggle()" (onCategory)="assignCategory($event)"></app-categories-field>
+            <app-categories-field [errMsg]="hasError('category')" [type]="type" [category]="ledger.Category" (addCategoryToggle)="addCategoryToggle()" (onCategory)="assignCategory($event)"></app-categories-field>
 
             <app-labels-field [selectedLabels]="ledger.Labels" (addLabelToggle)="addLabelToggle()" (onLabelsChange)="onLabelsChange($event)"></app-labels-field>
 

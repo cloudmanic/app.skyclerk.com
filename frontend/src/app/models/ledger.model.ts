@@ -53,8 +53,8 @@ export class Ledger implements Serializable {
 		let rt = {
 			id: obj.Id,
 			account_id: obj.AccountId,
-			date: obj.Date,
-			amount: obj.Amount,
+			date: moment(obj.Date).toDate(),
+			amount: Number(obj.Amount),
 			note: obj.Note,
 			contact: new Contact().serialize(obj.Contact),
 			category: new Category().serialize(obj.Category),

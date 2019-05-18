@@ -12,6 +12,7 @@ import { Category } from 'src/app/models/category.model';
 import { Label } from 'src/app/models/label.model';
 import { File as FileModel } from 'src/app/models/file.model';
 import { Router } from '@angular/router';
+import { LedgerService } from 'src/app/services/ledger.service';
 
 @Component({
 	selector: 'app-ledger-add',
@@ -20,6 +21,8 @@ import { Router } from '@angular/router';
 export class AddComponent implements OnInit {
 	@Input() type: string = "income";
 
+
+	errors: any = [];
 	ledger: Ledger = new Ledger();
 	showAddLabel: boolean = false;
 	showAddContact: boolean = false;
@@ -28,7 +31,7 @@ export class AddComponent implements OnInit {
 	//
 	// Constructor
 	//
-	constructor(public router: Router) { }
+	constructor(public ledgerService: LedgerService, public router: Router) { }
 
 	//
 	// ngOnInit
@@ -39,8 +42,30 @@ export class AddComponent implements OnInit {
 	// Save the new ledger entry.
 	//
 	save() {
-		console.log(this.ledger);
-		this.router.navigate(['/ledger']);
+		// Clear errors
+		this.errors = [];
+
+		//console.log(this.ledger);
+		//this.router.navigate(['/ledger']);
+
+
+		// Is this an expense
+		if (this.type == "expense") {
+			this.ledger.Amount = (this.ledger.Amount * -1);
+		}
+
+		// Send this ledger to BE.
+		this.ledgerService.create(this.ledger).subscribe(
+			// Sucesss
+			res => {
+				console.log(res);
+			},
+
+			// Error
+			err => {
+				this.errors = err.error.errors;
+			}
+		);
 	}
 
 	//
@@ -128,6 +153,16 @@ export class AddComponent implements OnInit {
 		}
 	}
 
+	//
+	// Check to see if we have errors for a field.
+	//
+	hasError(field: string) {
+		if (this.errors[field]) {
+			return this.errors[field];
+		}
+
+		return "";
+	}
 }
 
 /* End File */
