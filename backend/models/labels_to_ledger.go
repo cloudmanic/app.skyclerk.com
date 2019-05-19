@@ -8,15 +8,9 @@
 
 package models
 
-import "time"
-
 type LabelsToLedger struct {
-	LabelsToLedgerId        uint      `gorm:"primary_key;column:LabelsToLedgerId" json:"_"`
-	LabelsToLedgerAccountId uint      `gorm:"column:LabelsToLedgerAccountId" json:"_"`
-	LabelsToLedgerLabelId   uint      `gorm:"column:LabelsToLedgerLabelId" json:"_"`
-	LabelsToLedgerLedgerId  uint      `gorm:"column:LabelsToLedgerLedgerId" json:"_"`
-	LabelsToLedgerUpdatedAt time.Time `gorm:"column:LabelsToLedgerUpdatedAt" sql:"not null" json:"_"`
-	LabelsToLedgerCreatedAt time.Time `gorm:"column:LabelsToLedgerCreatedAt" sql:"not null" json:"_"`
+	LabelsToLedgerLabelId  uint `gorm:"column:LabelsToLedgerLabelId" json:"_"`
+	LabelsToLedgerLedgerId uint `gorm:"column:LabelsToLedgerLedgerId" json:"_"`
 }
 
 //

@@ -115,7 +115,7 @@ func (db *DB) DeleteLabelByAccountAndId(accountId uint, labelId uint) error {
 	db.New().Where("LabelsAccountId = ? AND LabelsId = ?", accountId, labelId).Delete(Label{})
 
 	// Delete from look up table.
-	db.New().Where("LabelsToLedgerAccountId = ? AND LabelsToLedgerLabelId = ?", accountId, labelId).Delete(LabelsToLedger{})
+	db.New().Where("LabelsToLedgerLabelId = ?", labelId).Delete(LabelsToLedger{})
 
 	// Return result
 	return nil

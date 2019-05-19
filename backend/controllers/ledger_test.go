@@ -843,7 +843,7 @@ func TestCreateLedger02(t *testing.T) {
 
 	// Check result
 	st.Expect(t, w.Code, 400)
-	st.Expect(t, w.Body.String(), `{"errors":{"category":"Category name is required.","contact":"Contact name is required.","date":"The date field is required."}}`)
+	st.Expect(t, w.Body.String(), `{"errors":{"category":"Category name is required.","contact":"A company name or contact first and last name is required.","date":"The date field is required."}}`)
 
 	// ------------ Test 2 ---------------- //
 
@@ -871,7 +871,7 @@ func TestCreateLedger02(t *testing.T) {
 
 	// Check result
 	st.Expect(t, w.Code, 400)
-	st.Expect(t, w.Body.String(), `{"errors":{"category":"Category type is required.","contact":"Contact name is required."}}`)
+	st.Expect(t, w.Body.String(), `{"errors":{"category":"Category type is required.","contact":"A company name or contact first and last name is required."}}`)
 
 	// ------------ Test 4 ---------------- //
 
@@ -1188,7 +1188,7 @@ func TestUpdateLedger03(t *testing.T) {
 
 	// Test results
 	st.Expect(t, w.Code, 400)
-	st.Expect(t, w.Body.String(), `{"errors":{"category":"Category name is required.","contact":"Contact name is required."}}`)
+	st.Expect(t, w.Body.String(), `{"errors":{"category":"Category name is required.","contact":"A company name or contact first and last name is required."}}`)
 }
 
 // -------------- Delete Ledger ---------------------- //

@@ -862,12 +862,12 @@ func TestDeleteLabel01(t *testing.T) {
 	db.Save(&models.Label{AccountId: 33, Name: "Xyz"})
 
 	// Assign some fake ledger entries to the loop up table.
-	db.Save(&models.LabelsToLedger{LabelsToLedgerAccountId: 33, LabelsToLedgerLabelId: 4, LabelsToLedgerLedgerId: 1})
-	db.Save(&models.LabelsToLedger{LabelsToLedgerAccountId: 33, LabelsToLedgerLabelId: 4, LabelsToLedgerLedgerId: 2})
-	db.Save(&models.LabelsToLedger{LabelsToLedgerAccountId: 33, LabelsToLedgerLabelId: 4, LabelsToLedgerLedgerId: 3})
-	db.Save(&models.LabelsToLedger{LabelsToLedgerAccountId: 33, LabelsToLedgerLabelId: 4, LabelsToLedgerLedgerId: 4})
-	db.Save(&models.LabelsToLedger{LabelsToLedgerAccountId: 34, LabelsToLedgerLabelId: 1, LabelsToLedgerLedgerId: 4})
-	db.Save(&models.LabelsToLedger{LabelsToLedgerAccountId: 34, LabelsToLedgerLabelId: 1, LabelsToLedgerLedgerId: 4})
+	db.Save(&models.LabelsToLedger{LabelsToLedgerLabelId: 4, LabelsToLedgerLedgerId: 1})
+	db.Save(&models.LabelsToLedger{LabelsToLedgerLabelId: 4, LabelsToLedgerLedgerId: 2})
+	db.Save(&models.LabelsToLedger{LabelsToLedgerLabelId: 4, LabelsToLedgerLedgerId: 3})
+	db.Save(&models.LabelsToLedger{LabelsToLedgerLabelId: 4, LabelsToLedgerLedgerId: 4})
+	db.Save(&models.LabelsToLedger{LabelsToLedgerLabelId: 1, LabelsToLedgerLedgerId: 4})
+	db.Save(&models.LabelsToLedger{LabelsToLedgerLabelId: 1, LabelsToLedgerLedgerId: 4})
 
 	// Setup request
 	req, _ := http.NewRequest("DELETE", "/api/v3/33/labels/4", nil)
@@ -933,12 +933,12 @@ func TestDeleteLabel02(t *testing.T) {
 	db.Save(&models.Label{AccountId: 33, Name: "Xyz"})
 
 	// Assign some fake ledger entries to the loop up table.
-	db.Save(&models.LabelsToLedger{LabelsToLedgerAccountId: 33, LabelsToLedgerLabelId: 4, LabelsToLedgerLedgerId: 1})
-	db.Save(&models.LabelsToLedger{LabelsToLedgerAccountId: 33, LabelsToLedgerLabelId: 4, LabelsToLedgerLedgerId: 2})
-	db.Save(&models.LabelsToLedger{LabelsToLedgerAccountId: 33, LabelsToLedgerLabelId: 4, LabelsToLedgerLedgerId: 3})
-	db.Save(&models.LabelsToLedger{LabelsToLedgerAccountId: 33, LabelsToLedgerLabelId: 4, LabelsToLedgerLedgerId: 4})
-	db.Save(&models.LabelsToLedger{LabelsToLedgerAccountId: 34, LabelsToLedgerLabelId: 1, LabelsToLedgerLedgerId: 4})
-	db.Save(&models.LabelsToLedger{LabelsToLedgerAccountId: 34, LabelsToLedgerLabelId: 1, LabelsToLedgerLedgerId: 4})
+	db.Save(&models.LabelsToLedger{LabelsToLedgerLabelId: 4, LabelsToLedgerLedgerId: 1})
+	db.Save(&models.LabelsToLedger{LabelsToLedgerLabelId: 4, LabelsToLedgerLedgerId: 2})
+	db.Save(&models.LabelsToLedger{LabelsToLedgerLabelId: 4, LabelsToLedgerLedgerId: 3})
+	db.Save(&models.LabelsToLedger{LabelsToLedgerLabelId: 4, LabelsToLedgerLedgerId: 4})
+	db.Save(&models.LabelsToLedger{LabelsToLedgerLabelId: 1, LabelsToLedgerLedgerId: 4})
+	db.Save(&models.LabelsToLedger{LabelsToLedgerLabelId: 1, LabelsToLedgerLedgerId: 4})
 
 	// Setup request
 	req, _ := http.NewRequest("DELETE", "/api/v3/33/labels/2", nil)

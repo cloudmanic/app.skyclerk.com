@@ -118,11 +118,19 @@ func (t *Controller) CreateLedger(c *gin.Context) {
 	// Add in auto fields
 	o.AddedById = uint(c.MustGet("userId").(int))
 
-	// Create category
+	// Create ledger
 	t.db.LedgerCreate(&o)
 
+	// Fresh pull
+	j, err := t.db.GetLedgerByAccountAndId(o.AccountId, o.Id)
+
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"errors": "System error. Please contact help@skyclerk.com."})
+		return
+	}
+
 	// Return happy.
-	response.RespondCreated(c, o, nil)
+	response.RespondCreated(c, j, nil)
 }
 
 //
@@ -394,7 +402,7 @@ func (t *Controller) QueryLedgers(c *gin.Context, limit int, preloads []string) 
 
 		// Run query
 		l := []models.LabelsToLedger{}
-		t.db.New().Where("LabelsToLedgerLabelId IN (?) AND LabelsToLedgerAccountId = ?", ids, accountId).Find(&l)
+		t.db.New().Where("LabelsToLedgerLabelId IN (?)", ids).Find(&l)
 
 		// Build id array.
 		for _, row := range l {

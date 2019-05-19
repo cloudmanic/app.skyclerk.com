@@ -35,11 +35,19 @@ export class Ledger implements Serializable {
 		this.Contact = new Contact().deserialize(json["contact"]);
 		this.Category = new Category().deserialize(json["category"]);
 		this.Labels = [];
+		this.Files = [];
 
 		// Deal with labels.
 		if (json["labels"]) {
 			for (let i = 0; i < json["labels"].length; i++) {
 				this.Labels.push(new Label().deserialize(json["labels"][i]));
+			}
+		}
+
+		// Deal with files.
+		if (json["files"]) {
+			for (let i = 0; i < json["files"].length; i++) {
+				this.Files.push(new FileModel().deserialize(json["files"][i]));
 			}
 		}
 
@@ -58,12 +66,18 @@ export class Ledger implements Serializable {
 			note: obj.Note,
 			contact: new Contact().serialize(obj.Contact),
 			category: new Category().serialize(obj.Category),
-			labels: []
+			labels: [],
+			files: []
 		}
 
 		// Deal with labels.
 		for (let i = 0; i < obj.Labels.length; i++) {
 			rt.labels.push(new Label().serialize(obj.Labels[i]));
+		}
+
+		// Deal with files.
+		for (let i = 0; i < obj.Files.length; i++) {
+			rt.files.push(new FileModel().serialize(obj.Files[i]));
 		}
 
 		return rt;

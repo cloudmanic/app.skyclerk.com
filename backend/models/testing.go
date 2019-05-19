@@ -88,10 +88,13 @@ func createTestDatabase(name string) {
 func TestingTearDown(db *DB, dbName string) {
 	// special case for testing_db
 	if dbName == "testing_db" {
+		db.Close()
 		return
 	}
 
+	// Drop table
 	db.Exec("DROP DATABASE IF EXISTS " + dbName + ";")
+	db.Close()
 }
 
 //

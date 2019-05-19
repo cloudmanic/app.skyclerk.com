@@ -7,15 +7,9 @@
 
 package models
 
-import "time"
-
 type FilesToLedger struct {
-	FilesToLedgerId        uint      `gorm:"primary_key;column:FilesToLedgerId" json:"_"`
-	FilesToLedgerAccountId uint      `gorm:"column:FilesToLedgerAccountId" json:"_"`
-	FilesToLedgerFileId    uint      `gorm:"column:FilesToLedgerFileId" json:"_"`
-	FilesToLedgerLedgerId  uint      `gorm:"column:FilesToLedgerLedgerId" json:"_"`
-	FilesToLedgerUpdatedAt time.Time `gorm:"column:FilesToLedgerUpdatedAt" sql:"not null" json:"_"`
-	FilesToLedgerCreatedAt time.Time `gorm:"column:FilesToLedgerCreatedAt" sql:"not null" json:"_"`
+	FilesToLedgerFileId   uint `gorm:"column:FilesToLedgerFileId" json:"_"`
+	FilesToLedgerLedgerId uint `gorm:"column:FilesToLedgerLedgerId" json:"_"`
 }
 
 //

@@ -48,6 +48,10 @@ func NewDB() (*DB, error) {
 		return nil, err
 	}
 
+	// Set max connections
+	db.DB().SetMaxIdleConns(10)
+	db.DB().SetMaxOpenConns(100)
+
 	// Run migrations
 	doMigrations(db)
 

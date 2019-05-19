@@ -114,12 +114,6 @@ func (db *DB) LedgerCreate(ledger *Ledger) error {
 	// Store this ledger entry.
 	db.Create(&ledger)
 
-	// Add additional data to lookups TODO: remove this once we retire PHP app.
-	db.Model(LabelsToLedger{}).Where("LabelsToLedgerLedgerId = ?", ledger.Id).Updates(LabelsToLedger{LabelsToLedgerAccountId: ledger.AccountId, LabelsToLedgerCreatedAt: time.Now()})
-
-	// (files) Add additional data to lookups TODO: remove this once we retire PHP app.
-	db.Model(FilesToLedger{}).Where("FilesToLedgerLedgerId = ?", ledger.Id).Updates(FilesToLedger{FilesToLedgerAccountId: ledger.AccountId, FilesToLedgerCreatedAt: time.Now()})
-
 	return nil
 }
 
@@ -131,16 +125,10 @@ func (db *DB) LedgerUpdate(ledger *Ledger) error {
 	prepLedgerVars(db, ledger)
 
 	// Clear out old labels. We start fresh every time.
-	db.New().Where("LabelsToLedgerAccountId = ? AND LabelsToLedgerLedgerId = ?", ledger.AccountId, ledger.Id).Delete(LabelsToLedger{})
+	db.New().Where("LabelsToLedgerLedgerId = ?", ledger.Id).Delete(LabelsToLedger{})
 
 	// Update this ledger entry.
 	db.Save(&ledger)
-
-	// (labels) Add additional data to lookups TODO: remove this once we retire PHP app.
-	db.Model(LabelsToLedger{}).Where("LabelsToLedgerLedgerId = ?", ledger.Id).Updates(LabelsToLedger{LabelsToLedgerAccountId: ledger.AccountId, LabelsToLedgerCreatedAt: time.Now()})
-
-	// (files) Add additional data to lookups TODO: remove this once we retire PHP app.
-	db.Model(FilesToLedger{}).Where("FilesToLedgerLedgerId = ?", ledger.Id).Updates(FilesToLedger{FilesToLedgerAccountId: ledger.AccountId, FilesToLedgerCreatedAt: time.Now()})
 
 	return nil
 }
@@ -175,10 +163,10 @@ func (db *DB) DeleteLedgerByAccountAndId(accountId uint, id uint) error {
 	db.New().Where("LedgerAccountId = ? AND LedgerId = ?", accountId, id).Delete(Ledger{})
 
 	// Delete from look up table. - Labels
-	db.New().Where("LabelsToLedgerAccountId = ? AND LabelsToLedgerLedgerId = ?", accountId, id).Delete(LabelsToLedger{})
+	db.New().Where("LabelsToLedgerLedgerId = ?", id).Delete(LabelsToLedger{})
 
 	// Delete from look up table. - Files
-	db.New().Where("FilesToLedgerAccountId = ? AND FilesToLedgerLedgerId = ?", accountId, id).Delete(FilesToLedger{})
+	db.New().Where("FilesToLedgerLedgerId = ?", id).Delete(FilesToLedger{})
 
 	// Return result
 	return nil
@@ -207,9 +195,6 @@ func (db *DB) AddFileToLedgerEntry(accountId uint, ledgerId uint, fileId uint) e
 	// Lets add the new file to the ledger object
 	ledger.Files = append(ledger.Files, file)
 	db.Save(&ledger)
-
-	// Add additional data to lookups TODO: remove this once we retire PHP app.
-	db.Model(FilesToLedger{}).Where("FilesToLedgerLedgerId = ?", ledger.Id).Updates(FilesToLedger{FilesToLedgerAccountId: ledger.AccountId, FilesToLedgerCreatedAt: time.Now()})
 
 	// Return happy
 	return nil

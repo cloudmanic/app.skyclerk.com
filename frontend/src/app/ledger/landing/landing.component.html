@@ -85,7 +85,7 @@
                         Categories &amp; Labels:
                         <a (click)="setCategoryFilter(row.Category)" *ngIf="row.Labels.length == 0">{{ row.Category.Name }}</a>
                         <a (click)="setCategoryFilter(row.Category)" *ngIf="row.Labels.length > 0">{{ row.Category.Name }}, </a>
-                        <a (click)="addLabelFilter(row2)" *ngFor="let row2 of row.Labels; let last = last;">{{ row2.Name }} <span *ngIf="! last">,</span></a>
+                        <a (click)="addLabelFilter(row2)" *ngFor="let row2 of row.Labels; let last = last;">{{ row2.Name }}<span *ngIf="! last">, </span></a>
                       </p>
                     </td>
 
