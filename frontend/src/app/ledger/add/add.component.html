@@ -17,25 +17,28 @@
 
             <app-contacts-assign-field [errMsg]="hasError('contact')" [contact]="ledger.Contact" (addContactToggle)="addContactToggle()" (onContact)="assignContact($event)"></app-contacts-assign-field>
 
-            <div class="form-row">
+            <div class="form-row" [ngClass]="{ 'form-row-error': hasError('date') }">
               <label for="date" class="form-label">Date</label>
               <div class="form-controls">
                 <input type="date" class="field" name="Date" id="Date" placeholder="2/19/2019" [ngModel]="ledger.Date | date:'yyyy-MM-dd'" (ngModelChange)="ledger.Date = $event" />
               </div>
+              <strong class="error-message" *ngIf="hasError('contact')">{{ hasError('contact') }}</strong>
             </div>
 
-            <div class="form-row">
+            <div class="form-row" [ngClass]="{ 'form-row-error': hasError('amount') }">
               <label for="Amount" class="form-label">Amount</label>
               <div class="form-controls">
                 <input type="text" class="field" name="Amount" id="Amount" placeholder="$153.00" [(ngModel)]="ledger.Amount" />
               </div>
+              <strong class="error-message" *ngIf="hasError('amount')">{{ hasError('amount') }}</strong>
             </div>
 
-            <div class="form-row">
+            <div class="form-row" [ngClass]="{ 'form-row-error': hasError('note') }">
               <label for="Note" class="form-label">Notes</label>
               <div class="form-controls">
                 <textarea class="field" name="Note" id="Note" placeholder="" [(ngModel)]="ledger.Note"></textarea>
               </div>
+              <strong class="error-message" *ngIf="hasError('note')">{{ hasError('note') }}</strong>
             </div>
 
             <app-files-upload (onUpload)="onAddFile($event)" (onDeleteFile)="onDeleteFile($event)"></app-files-upload>

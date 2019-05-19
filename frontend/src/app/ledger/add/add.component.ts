@@ -5,7 +5,7 @@
 // Copyright: 2019 Cloudmanic Labs, LLC. All rights reserved.
 //
 
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, EventEmitter, Output } from '@angular/core';
 import { Contact } from 'src/app/models/contact.model';
 import { Ledger } from 'src/app/models/ledger.model';
 import { Category } from 'src/app/models/category.model';
@@ -20,6 +20,7 @@ import { LedgerService } from 'src/app/services/ledger.service';
 })
 export class AddComponent implements OnInit {
 	@Input() type: string = "income";
+	@Output() refreshLedger = new EventEmitter<Ledger>();
 
 
 	errors: any = [];
@@ -45,10 +46,6 @@ export class AddComponent implements OnInit {
 		// Clear errors
 		this.errors = [];
 
-		//console.log(this.ledger);
-		//this.router.navigate(['/ledger']);
-
-
 		// Is this an expense
 		if (this.type == "expense") {
 			this.ledger.Amount = (this.ledger.Amount * -1);
@@ -58,11 +55,18 @@ export class AddComponent implements OnInit {
 		this.ledgerService.create(this.ledger).subscribe(
 			// Sucesss
 			res => {
-				console.log(res);
+				this.refreshLedger.emit(res);
+				this.router.navigate(['/ledger']);
 			},
 
 			// Error
 			err => {
+				// Reset negative value
+				if (this.type == "expense") {
+					this.ledger.Amount = (this.ledger.Amount * -1);
+				}
+
+				// Show errors
 				this.errors = err.error.errors;
 			}
 		);

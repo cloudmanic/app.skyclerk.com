@@ -12,6 +12,7 @@ import { Category } from 'src/app/models/category.model';
 import { Label } from 'src/app/models/label.model';
 import { ActivatedRoute } from '@angular/router';
 import { trigger, transition, animate, style } from '@angular/animations';
+import { Ledger } from 'src/app/models/ledger.model';
 
 @Component({
 	selector: 'app-landing',
@@ -79,6 +80,13 @@ export class LandingComponent implements OnInit {
 		this.loadLedgerData();
 		this.getLedgerSummary();
 		this.getLedgerPnlSummary();
+	}
+
+	//
+	// Refresh ledger on add
+	//
+	refreshFromAdd(_l: Ledger) {
+		this.refreshLedger();
 	}
 
 	//

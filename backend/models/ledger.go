@@ -74,15 +74,11 @@ func (a Ledger) Validate(db Datastore, action string, userId uint, accountId uin
 // ValidateLedgerContact - Make sure all is good.
 //
 func (db *DB) ValidateLedgerContact(ledger Ledger, accountId uint, objId uint, action string) error {
-	const errMsg1 = "Contact name is required."
-	const errMsg2 = "Contact first and last name is required."
-
+	// Need some sort of name
 	if len(strings.Trim(ledger.Contact.Name, " ")) <= 0 {
-		return errors.New(errMsg1)
-	}
-
-	if (len(strings.Trim(ledger.Contact.FirstName, " ")) <= 0) || (len(strings.Trim(ledger.Contact.LastName, " ")) <= 0) {
-		return errors.New(errMsg2)
+		if (len(strings.Trim(ledger.Contact.FirstName, " ")) <= 0) || (len(strings.Trim(ledger.Contact.LastName, " ")) <= 0) {
+			return errors.New("A company name or contact first and last name is required.")
+		}
 	}
 
 	// All good in the hood
