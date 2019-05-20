@@ -256,6 +256,11 @@ func prepLedgerVars(db *DB, ledger *Ledger) {
 		ledger.Labels[key].AccountId = ledger.AccountId
 		db.Where("LabelsAccountId = ? AND LabelsName = ?", ledger.AccountId, strings.Trim(row.Name, " ")).FirstOrCreate(&ledger.Labels[key])
 	}
+
+	// Setup files (do this just to make sure all the correct data come in)
+	for key, row := range ledger.Files {
+		db.Find(&ledger.Files[key], row.Id)
+	}
 }
 
 /* End File */

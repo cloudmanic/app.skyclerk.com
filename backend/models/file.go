@@ -106,7 +106,6 @@ func (t *DB) StoreFile(accountId uint, filePath string) (File, error) {
 	o.Host = "amazon-s3"
 	o.Name = cleanedFileName
 	o.AccountId = accountId
-	o.Assigned = 1 // TODO(spicer): kill this after we kill PHP
 	t.New().Save(&o)
 
 	// Set upload path

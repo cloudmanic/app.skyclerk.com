@@ -34,6 +34,8 @@ import { FieldComponent as CategoriesFieldComponent } from './categories/field/f
 import { FieldComponent as LabelsFieldComponent } from './labels/field/field.component';
 import { PopOutComponent as LabelsPopOutComponent } from './labels/pop-out/pop-out.component';
 import { UploadComponent as FilesUploadComponent } from './files/upload/upload.component';
+import { ViewComponent as LedgerViewComponent } from './ledger/view/view.component';
+import { EditComponent as LedgerEditComponent } from './ledger/edit/edit.component';
 
 @NgModule({
 	declarations: [
@@ -56,7 +58,9 @@ import { UploadComponent as FilesUploadComponent } from './files/upload/upload.c
 		CategoriesFieldComponent,
 		LabelsFieldComponent,
 		LabelsPopOutComponent,
-		FilesUploadComponent
+		FilesUploadComponent,
+		LedgerViewComponent,
+		LedgerEditComponent
 	],
 	imports: [
 		FormsModule,

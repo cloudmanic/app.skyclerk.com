@@ -20,6 +20,8 @@ import { LandingComponent as LedgerLandingComponent } from './ledger/landing/lan
 import { LandingComponent as SnapclerkLandingComponent } from './snapclerk/landing/landing.component';
 import { UsersComponent as SettingsUsersComponent } from './settings/users/users.component';
 import { AccountComponent as SettingsAccountComponent } from './settings/account/account.component';
+import { ViewComponent as LedgerViewComponent } from './ledger/view/view.component';
+import { EditComponent as LedgerEditComponent } from './ledger/edit/edit.component';
 
 const routes: Routes = [
 
@@ -32,6 +34,8 @@ const routes: Routes = [
 
 			// ledger
 			{ path: 'ledger', component: LedgerLandingComponent, canActivate: [SessionGuard] },
+			{ path: 'ledger/:id', component: LedgerViewComponent, canActivate: [SessionGuard] },
+			{ path: 'ledger/:id/edit', component: LedgerEditComponent, canActivate: [SessionGuard] },
 
 			// snapclerk
 			{ path: 'snapclerk', component: SnapclerkLandingComponent, canActivate: [SessionGuard] },

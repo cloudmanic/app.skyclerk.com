@@ -36,6 +36,15 @@ export class LedgerService {
 	}
 
 	//
+	// Get by ID
+	//
+	getById(id: number): Observable<Ledger> {
+		let accountId = localStorage.getItem('account_id');
+		let url = `${environment.app_server}/api/v3/${accountId}/ledger/${id}`;
+		return this.http.get<Ledger>(url).pipe(map(res => new Ledger().deserialize(res)));
+	}
+
+	//
 	// Get me
 	//
 	get(page: number, type: string, search: string, category: Category, labels: Label[], year: number): Observable<LedgerResponse> {

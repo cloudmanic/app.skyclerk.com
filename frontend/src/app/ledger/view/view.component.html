@@ -1,0 +1,170 @@
+<div class="main">
+  <div class="shell clearfix">
+    <div class="content">
+
+      <div class="contentbox">
+        <section class="section-entry">
+          <div class="section-bar">
+            <h3>Ledger Item Details</h3>
+            <a routerLink="/ledger" class="btn">DONE</a>
+          </div>
+
+          <div class="section-inner">
+            <div class="section-head">
+              <h2>Expense</h2>
+
+              <ul class="list-select">
+                <li>
+                  <a routerLink="/ledger/{{ ledger.Id }}/edit">
+                    <i class="ico-pen"></i>
+                    Edit
+                  </a>
+                </li>
+
+                <li class="red">
+                  <a href="#">
+                    <i class="ico-trash"></i>
+                    Delete
+                  </a>
+                </li>
+              </ul>
+            </div>
+
+            <div class="section-body">
+              <div class="section-entry-row">
+                <div class="section-entry-col section-entry-col-size1">
+                  <div class="section-image">
+                    <img src="{{ ledger.Contact.AvatarUrl }}" alt="{{ ledger.Contact.Name }} {{ ledger.Contact.FirstName }} {{ ledger.Contact.LastName }}" width="100" height="100" />
+                  </div>
+
+                  <div class="section-caption" *ngIf="ledger.Contact.Name">
+                    <h2>{{ ledger.Contact.Name }}</h2>
+                    <p>{{ ledger.Contact.FirstName }} {{ ledger.Contact.LastName }}</p>
+                  </div>
+
+                  <div class="section-caption" *ngIf="! ledger.Contact.Name">
+                    <h2>{{ ledger.Contact.FirstName }} {{ ledger.Contact.LastName }}</h2>
+                  </div>
+                </div>
+
+                <div class="section-entry-col section-entry-col-border section-entry-col-size2">
+                  <ul class="details">
+                    <li class="detail">
+                      <div class="detail-aside">
+                        <strong>Date</strong>
+                      </div>
+
+                      <div class="detail-content">
+                        <strong>{{ ledger.Date | date:'shortDate' }}</strong>
+                      </div>
+                    </li>
+
+                    <li class="detail">
+                      <div class="detail-aside">
+                        <strong>Amount</strong>
+                      </div>
+
+                      <div class="detail-content">
+                        <strong>{{ ledger.Amount | currency }}</strong>
+                      </div>
+                    </li>
+
+                    <li class="detail">
+                      <div class="detail-aside">
+                        <strong>Category</strong>
+                      </div>
+
+                      <div class="detail-content">
+                        <strong>
+                          <a routerLink="/ledger">{{ ledger.Category.Name }}</a>
+                        </strong>
+                      </div>
+                    </li>
+
+                    <!-- <li class="detail">
+                      <div class="detail-aside">
+                        <strong>Invoice</strong>
+                      </div>
+
+                      <div class="detail-content">
+                        <strong>
+                          <a href="#">#00044</a>
+                        </strong>
+                      </div>
+                    </li> -->
+
+                    <li class="detail">
+                      <div class="detail-aside">
+                        <strong>Lables</strong>
+                      </div><!-- /.detail-aside -->
+
+                      <div class="detail-content">
+                        <strong>
+                          <a routerLink="/ledger" *ngFor="let row of ledger.Labels; let last = last;">{{ row.Name }}<span *ngIf="! last">, </span></a>
+                        </strong>
+                      </div>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+
+              <div class="section-entry-row">
+                <div class="section-entry-col section-entry-col-size1">
+                  <div class="notes">
+                    <h3>Notes</h3>
+                    <p>{{ ledger.Note }}</p>
+                  </div>
+                </div>
+
+                <div class="section-entry-col section-entry-col-size2">
+                  <h3>Location</h3>
+                  <img src="/images/map.jpg" alt="">
+                </div>
+              </div>
+
+              <div class="section-entry-row">
+                <div class="section-entry-col section-entry-col-size1">
+                  <h3>Files</h3>
+
+                  <ul class="list-attachements">
+                    <li *ngFor="let row of ledger.Files">
+                      <a href="{{ row.Url }}" target="_blank">
+                        <img src="{{ row.Thumb600By600Url }}" alt="{{ row.Name }}" width="75" height="75" />
+                      </a>
+                    </li>
+                  </ul>
+                </div>
+
+                <div class="section-entry-col section-entry-col-size2">
+
+                </div>
+              </div>
+
+              <div class="section-entry-row">
+                <div class="section-entry-col section-entry-col-size1">
+                  <h3>History</h3>
+
+                  <ul class="list-history">
+                    <li><strong>2-11-2014, 03:12PM</strong> Submitted by Paul Jeffries</li>
+
+                    <li><strong>2-28-2014, 03:12PM</strong> You edited this entry</li>
+
+                    <li><strong>3-02-2014, 05:18PM</strong> Marianned edited this entry</li>
+                  </ul><!-- /.list-history -->
+                </div><!-- /.section-entry-col section-entry-col-size1 -->
+
+                <div class="section-entry-col section-entry-col-size2">
+
+                </div><!-- /.section-entry-col section-entry-col-size2 -->
+              </div><!-- /.section-entry-row -->
+            </div><!-- /.section-body -->
+          </div><!-- /.section-inner -->
+        </section><!-- /.section-entry -->
+      </div><!-- /.contentbox contentbox-primary -->
+
+    </div><!-- /.content -->
+
+    <app-layouts-sidebar current="ledger"></app-layouts-sidebar>
+
+  </div>
+</div>

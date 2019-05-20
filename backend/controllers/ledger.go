@@ -96,6 +96,12 @@ func (t *Controller) GetLedger(c *gin.Context) {
 		return
 	}
 
+	// Double check the contact has an avatar. This is just to double check.
+	t.db.ConfirmContactAvatar(&l.Contact)
+
+	// Add a signed avatar path
+	l.Contact.AvatarUrl = t.db.GetSignedFileUrl(l.Contact.Avatar)
+
 	// Return happy.
 	response.Results(c, l, nil)
 }
