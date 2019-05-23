@@ -108,21 +108,26 @@
                 </div>
               </div>
 
-              <div class="section-entry-row">
+              <div class="section-entry-row" *ngIf="(ledger.Lat != 0) || (ledger.Note.length > 0)">
                 <div class="section-entry-col section-entry-col-size1">
                   <div class="notes">
-                    <h3>Notes</h3>
+                    <h3>Note</h3>
                     <p>{{ ledger.Note }}</p>
                   </div>
                 </div>
 
-                <div class="section-entry-col section-entry-col-size2">
+                <div class="section-entry-col section-entry-col-size2 clearfix" *ngIf="ledger.Lat != 0">
                   <h3>Location</h3>
-                  <img src="/images/map.jpg" alt="">
+
+                  <agm-map [latitude]="ledger.Lat" [longitude]="ledger.Lon" [zoom]="14" style="height: 300px; width 400px;">
+                    <agm-marker [latitude]="ledger.Lat" [longitude]="ledger.Lon"></agm-marker>
+                  </agm-map>
+
+                  <a href="https://www.google.com/maps/@{{ ledger.Lat }},{{ ledger.lon }},15z" target="_blank" class="mt-5 display-inline float-right">View In Maps</a>
                 </div>
               </div>
 
-              <div class="section-entry-row">
+              <div class="section-entry-row" *ngIf="ledger.Files.length > 0">
                 <div class="section-entry-col section-entry-col-size1">
                   <h3>Files</h3>
 

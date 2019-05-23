@@ -12,7 +12,7 @@
           <div class="section-inner">
             <div class="section-head">
               <h2>Expense</h2>
-            </div><!-- /.section-head -->
+            </div>
 
             <div class="section-body">
               <div class="section-entry-row">
@@ -114,22 +114,22 @@
 
                         Manage Categories
                       </a>
-                    </div><!-- /.form-row -->
+                    </div>
 
-                    <div class="form-row">
+                    <!-- <div class="form-row">
                       <div class="form-col">
                         <label for="field-amount" class="form-label">Invoice</label>
-                      </div><!-- /.form-col -->
+                      </div>
 
                       <div class="form-col">
                         <div class="form-controls">
                           <input type="text" class="field" name="field-amount" id="field-amount" value="# 00044">
-                        </div><!-- /.form-controls -->
-                      </div><!-- /.form-col -->
-                    </div><!-- /.form-row -->
+                        </div>
+                      </div>
+                    </div> -->
 
                     <div class="form-row">
-                      <label class="form-label form-label-checkbox">Labelss</label>
+                      <label class="form-label form-label-checkbox">Labels</label>
 
                       <a href="#" class="add-link add-link-secondary" data-popout="add-contact">
                         <span class="plus-box"></span>
@@ -206,49 +206,53 @@
               </div><!-- /.section-entry-row -->
 
               <div class="section-entry-row">
-                <div class="section-entry-col section-entry-col-size1">
+                <div class="section-entry-col section-entry-col-size2">
+                  <div class="notes">
+                    <h3>Note</h3>
+
+                    <form action="#" method="post">
+                      <div class="form-row">
+                        <div class="form-controls">
+                          <textarea class="field width-400" name="Note" id="field-notes" [(ngModel)]="ledger.Note"></textarea>
+                        </div>
+                      </div>
+                    </form>
+
+                  </div>
+
+
+                </div>
+
+                <div class="section-entry-col section-entry-col-size1" *ngIf="ledger.Lat != 0">
                   <div class="lacation">
                     <h3>Location</h3>
 
-                    <ul class="list-select">
+                    <ul class="list-select mr-n-20">
                       <li class="red">
                         <a href="#">
                           <i class="ico-trash"></i>
-
                           Delete
                         </a>
                       </li>
                     </ul>
 
-                    <img src="/images/map.jpg" alt="">
-                  </div><!-- /.lacation -->
-                </div><!-- /.section-entry-col section-entry-col-size1 -->
-
-                <div class="section-entry-col section-entry-col-size2">
-                  <div class="notes">
-                    <h3>Notes</h3>
-
-                    <form action="#" method="post">
-                      <div class="form-row">
-                        <div class="form-controls">
-                          <textarea class="field" name="field-notes" id="field-notes">Pellentesque laoreet massa vitae ipsum imperdiet accumsan. Duis quis libero eleifend, vulputate velit ut , consectetur augue. Curabitur metus metus, sollicitudin sed ultrices id, faucibus ac magna. Pellentesque viverra porttitor tempus. Proin iaculis quam vitae hendrerit euismod. Donec diam velit, vulputate id lacus sed, venenatis aliquam ligula.
-                          </textarea>
-                        </div><!-- /.form-controls -->
-                      </div><!-- /.form-row -->
-                    </form>
-                  </div><!-- /.notes -->
-                </div><!-- /.section-entry-col section-entry-col-size2 -->
-              </div><!-- /.section-entry-row -->
+                    <agm-map [latitude]="ledger.Lat" [longitude]="ledger.Lon" [zoom]="14" style="height: 300px; width 400px;">
+                      <agm-marker [latitude]="ledger.Lat" [longitude]="ledger.Lon"></agm-marker>
+                    </agm-map>
+                  </div>
+                </div>
+              </div>
 
               <div class="section-entry-row">
+
                 <div class="section-entry-col section-entry-col-size1">
                   <div class="attachement">
-                    <h3>Attachements</h3>
+                    <h3>Files</h3>
 
                     <a href="#" class="add-link" data-popout="add-contact">
                       <span class="plus-box"></span>
 
-                      Add Attachment
+                      Add File
                     </a>
 
                     <ul class="list-attachements">

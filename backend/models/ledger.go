@@ -29,6 +29,8 @@ type Ledger struct {
 	CategoryId       uint      `gorm:"column:LedgerCategoryId" sql:"not null" json:"category_id"`
 	Category         Category  `gorm:"foreignkey:LedgerCategoryId" json:"category"`
 	Note             string    `gorm:"column:LedgerNote" sql:"not null;type:TEXT" json:"note"`
+	Lat              float64   `gorm:"column:LedgerLat" sql:"not null" json:"lat"`
+	Lon              float64   `gorm:"column:LedgerLon" sql:"not null" json:"lon"`
 	ShoeboxedId      string    `gorm:"column:LedgerShoeboxedId" sql:"not null" json:"_"`
 	ShoeboxedImage   string    `gorm:"column:LedgerShoeboxedImage" sql:"not null" json:"_"`
 	FreshBooksId     string    `gorm:"column:LedgerFreshBooksId" sql:"not null" json:"_"`

@@ -8,13 +8,14 @@
 import { Component, OnInit } from '@angular/core';
 import { LedgerService } from 'src/app/services/ledger.service';
 import { ActivatedRoute, Router } from '@angular/router';
+import { Ledger } from 'src/app/models/ledger.model';
 
 @Component({
 	selector: 'app-ledger-edit',
 	templateUrl: './edit.component.html'
 })
 export class EditComponent implements OnInit {
-	ledgerId: number = 0;
+	ledger: Ledger = new Ledger();
 
 	//
 	// Constructor
@@ -26,14 +27,20 @@ export class EditComponent implements OnInit {
 	//
 	ngOnInit() {
 		// Is this an edit action?
-		this.ledgerId = this.route.snapshot.params['id'];
+		let ledgerId = this.route.snapshot.params['id'];
+
+		// Get the ledger based on the id we passed in.
+		this.ledgerService.getById(ledgerId).subscribe(res => {
+			this.ledger = res;
+			console.log(this.ledger);
+		});
 	}
 
 	//
 	// Save
 	//
 	save() {
-		this.router.navigate([`/ledger/${this.ledgerId}`]);
+		this.router.navigate([`/ledger/${this.ledger.Id}`]);
 	}
 }
 

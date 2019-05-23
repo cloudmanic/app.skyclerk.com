@@ -1,8 +1,15 @@
 /* File where we override htmlburger */
 
 .red { color: red; }
+.mt-5 { margin-top: 5px; }
 .mt-15 { margin-top: 15px; }
+.mr-n-20 { margin-right: -20px !important; }
+.width-280 { width: 280px !important; }
+.width-400 { width: 400px !important; }
 .no-float { float: unset !important; }
+.float-right { float: right; }
+.clearfix::after { content: ""; clear: both; display: table; }
+.display-inline { display: inline-block; }
 
 /* Category pop out */
 .manage-catagories .form-head { border-bottom: unset; border-top: unset; padding-bottom: 8px; }

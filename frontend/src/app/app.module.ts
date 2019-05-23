@@ -5,6 +5,7 @@ import { AppRoutingModule } from './app-routing.module';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { FileDropModule } from 'ngx-file-drop';
+import { AgmCoreModule } from '@agm/core';
 
 // Services
 import { MeService } from './services/me.service';
@@ -68,7 +69,8 @@ import { EditComponent as LedgerEditComponent } from './ledger/edit/edit.compone
 		AppRoutingModule,
 		HttpClientModule,
 		BrowserAnimationsModule,
-		FileDropModule
+		FileDropModule,
+		AgmCoreModule.forRoot({ apiKey: 'AIzaSyCc8fAAyASKh3FzA0IXCjIKFl5oFF5i1zU' })
 	],
 	providers: [
 		MeService,
