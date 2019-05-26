@@ -27,6 +27,7 @@ import { Ledger } from 'src/app/models/ledger.model';
 
 export class LandingComponent implements OnInit {
 	page: number = 1;
+	selected: Ledger[] = [];
 	plSummary: LedgerPnlSummary = new LedgerPnlSummary(0, 0, 0);
 	pageRangeSelect: number = 1;
 	ledgerSummary: LedgerSummaryResponse = new LedgerSummaryResponse([], [], []);
@@ -93,6 +94,9 @@ export class LandingComponent implements OnInit {
 	// Load page data
 	//
 	loadPageData() {
+		// Clear selected
+		this.selected = [];
+
 		// Reset filters, and such.
 		this.page = 1;
 		this.type = "";
@@ -173,6 +177,68 @@ export class LandingComponent implements OnInit {
 	doPrevClick() {
 		this.page--;
 		this.refreshLedger();
+	}
+
+	//
+	// Mark a ledger entry as selected
+	//
+	setSelected(entry: Ledger) {
+		// See if we are deselecting
+		for (let i = 0; i < this.selected.length; i++) {
+			if (this.selected[i].Id == entry.Id) {
+				this.selected.splice(i, 1);
+				return;
+			}
+		}
+
+		// Must be adding.
+		this.selected.push(entry);
+	}
+
+	//
+	// See if entry is checked.
+	//
+	isSelectedChecked(entry: Ledger) {
+		// See if it is selected
+		for (let i = 0; i < this.selected.length; i++) {
+			if (this.selected[i].Id == entry.Id) {
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	//
+	// Check all entries
+	//
+	checkAllEntries() {
+		if (this.selected.length) {
+			this.selected = [];
+		} else {
+			for (let i = 0; i < this.ledgers.Data.length; i++) {
+				this.selected.push(this.ledgers.Data[i]);
+			}
+		}
+	}
+
+	//
+	// Delete selected ledger
+	//
+	deleteSelectedEntries() {
+		let c = confirm(`Are you sure you want to delete ${this.selected.length} ledger entries?`);
+
+		if (!c) {
+			return;
+		}
+
+		// Loop through and delete entries.
+		for (let i = 0; i < this.selected.length; i++) {
+			this.ledgerService.delete(this.selected[i]).subscribe();
+		}
+
+		// Small delay before reloading
+		setTimeout(() => { this.loadPageData(); }, 1000);
 	}
 
 	// ------------- Filter Functions --------------- //

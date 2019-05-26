@@ -32,11 +32,7 @@ export class UploadComponent implements OnInit {
 	//
 	// ngOnInit
 	//
-	ngOnInit() {
-
-		console.log(this.filesInput);
-
-	}
+	ngOnInit() { }
 
 	//
 	// Detect changes from properties.

@@ -46,13 +46,36 @@
                 </li>
               </ul>
 
+              <section class="section-select" *ngIf="selected.length">
+                <div class="section-aside">
+                  <p>{{ selected.length }} Transaction are selected</p>
+                </div>
+
+                <div class="section-content">
+                  <ul class="list-select">
+                    <!-- <li>
+                      <a href="#">
+                        <i class="ico-pen"></i>
+                        Edit
+                      </a>
+                    </li> -->
+
+                    <li class="red">
+                      <a (click)="deleteSelectedEntries()">
+                        <i class="ico-trash"></i>
+                        Delete
+                      </a>
+                    </li>
+                  </ul>
+                </div>
+              </section>
+
               <div class="table table-prices">
                 <table>
                   <tr>
                     <th>
                       <div class="checkbox">
-                        <input type="checkbox" name="field" id="field">
-                        <label class="hidden" for="field">1#</label>
+                        <input type="checkbox" name="field" id="field" (change)="checkAllEntries()" [checked]="(selected.length == ledgers.Data.length) && (selected.length > 0)" />
                       </div>
                     </th>
 
@@ -66,8 +89,7 @@
                   <tr *ngFor="let row of ledgers.Data">
                     <td>
                       <div class="checkbox">
-                        <input type="checkbox" name="field" id="field" />
-                        <label class="hidden" for="field">{{ row.Id }}#</label>
+                        <input type="checkbox" name="field" id="field" (change)="setSelected(row)" [checked]="isSelectedChecked(row)" />
                       </div>
                     </td>
 
