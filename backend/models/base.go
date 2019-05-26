@@ -65,6 +65,7 @@ func NewDB() (*DB, error) {
 func doMigrations(db *gorm.DB) {
 	db.AutoMigrate(&LabelsToLedger{}) // Must be first.
 	db.AutoMigrate(&FilesToLedger{})  // Must be first.
+	db.AutoMigrate(&Activity{})
 	db.AutoMigrate(&AcctToUsers{})
 	db.AutoMigrate(&Account{})
 	db.AutoMigrate(&User{})

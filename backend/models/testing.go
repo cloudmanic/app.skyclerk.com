@@ -103,6 +103,7 @@ func TestingTearDown(db *DB, dbName string) {
 func truncateAllTables(db *gorm.DB) {
 	db.Exec("TRUNCATE TABLE accounts;")
 	db.Exec("TRUNCATE TABLE users;")
+	db.Exec("TRUNCATE TABLE activities;")
 	db.Exec("TRUNCATE TABLE applications;")
 	db.Exec("TRUNCATE TABLE sessions;")
 	db.Exec("TRUNCATE TABLE acct_to_users;")

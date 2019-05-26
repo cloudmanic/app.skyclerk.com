@@ -135,6 +135,31 @@ func (t *Controller) CreateLedger(c *gin.Context) {
 		return
 	}
 
+	// Set the ledger type
+	ledgerType := "expense"
+
+	if o.Amount > 0 {
+		ledgerType = "income"
+	}
+
+	// Get the contact name.
+	contactName := o.Contact.Name
+
+	if len(contactName) == 0 {
+		contactName = o.Contact.FirstName + " " + o.Contact.LastName
+	}
+
+	// Add to the activity log
+	t.db.New().Create(&models.Activity{
+		AccountId: o.AccountId,
+		UserId:    o.AddedById,
+		Action:    ledgerType,
+		SubAction: "create",
+		Name:      contactName,
+		Amount:    o.Amount,
+		LedgerId:  o.Id,
+	})
+
 	// Return happy.
 	response.RespondCreated(c, j, nil)
 }
@@ -177,6 +202,31 @@ func (t *Controller) UpdateLedger(c *gin.Context) {
 
 	// Create category
 	t.db.LedgerUpdate(&o)
+
+	// Set the ledger type
+	ledgerType := "expense"
+
+	if o.Amount > 0 {
+		ledgerType = "income"
+	}
+
+	// Get the contact name.
+	contactName := o.Contact.Name
+
+	if len(contactName) == 0 {
+		contactName = o.Contact.FirstName + " " + o.Contact.LastName
+	}
+
+	// Add to the activity log
+	t.db.New().Create(&models.Activity{
+		AccountId: o.AccountId,
+		UserId:    uint(c.MustGet("userId").(int)),
+		Action:    ledgerType,
+		SubAction: "update",
+		Name:      contactName,
+		Amount:    o.Amount,
+		LedgerId:  o.Id,
+	})
 
 	// Return happy.
 	response.RespondUpdated(c, o, nil)

@@ -808,6 +808,31 @@ func TestCreateLedger01(t *testing.T) {
 	st.Expect(t, result1.Category.AccountId, uint(33))
 	st.Expect(t, result1.Category.Name, post.Category.Name)
 	st.Expect(t, result1.Labels[0].AccountId, uint(33))
+
+	// Make sure activity logged
+	a := models.Activity{}
+	db.New().Where("ledger_id = ?", uint(1)).Find(&a)
+
+	// Get action
+	actionType := "expense"
+	if result.Amount > 0 {
+		actionType = "income"
+	}
+
+	// Get the contact name.
+	contactName := result.Contact.Name
+
+	if len(contactName) == 0 {
+		contactName = result.Contact.FirstName + " " + result.Contact.LastName
+	}
+
+	st.Expect(t, a.Id, uint(1))
+	st.Expect(t, a.AccountId, uint(33))
+	st.Expect(t, a.UserId, uint(109))
+	st.Expect(t, a.LedgerId, uint(1))
+	st.Expect(t, a.Action, actionType)
+	st.Expect(t, a.SubAction, "create")
+	st.Expect(t, a.Amount, result.Amount)
 }
 
 //
@@ -1005,7 +1030,7 @@ func TestCreateLedger04(t *testing.T) {
 //
 func TestUpdateLedger01(t *testing.T) {
 	// Start the db connection.
-	db, dbName, _ := models.NewTestDB("")
+	db, dbName, _ := models.NewTestDB("testing_db")
 	defer models.TestingTearDown(db, dbName)
 
 	// Create controller
@@ -1087,6 +1112,31 @@ func TestUpdateLedger01(t *testing.T) {
 	st.Expect(t, result1.Labels[0].AccountId, uint(33))
 	st.Expect(t, result1.Labels[0].Name, "Test Label Unit Test")
 	st.Expect(t, len(result1.Labels), 1)
+
+	// Make sure activity logged
+	a := models.Activity{}
+	db.New().Where("ledger_id = ? AND sub_action = ?", uint(1), "update").Find(&a)
+
+	// Get action
+	actionType := "expense"
+	if result1.Amount > 0 {
+		actionType = "income"
+	}
+
+	// Get the contact name.
+	contactName := result1.Contact.Name
+
+	if len(contactName) == 0 {
+		contactName = result1.Contact.FirstName + " " + result1.Contact.LastName
+	}
+
+	st.Expect(t, a.Id, uint(1))
+	st.Expect(t, a.AccountId, uint(33))
+	st.Expect(t, a.UserId, uint(109))
+	st.Expect(t, a.LedgerId, uint(1))
+	st.Expect(t, a.Action, actionType)
+	st.Expect(t, a.SubAction, "update")
+	st.Expect(t, a.Amount, result1.Amount)
 }
 
 //

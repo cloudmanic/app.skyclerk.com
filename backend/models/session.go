@@ -1,3 +1,11 @@
+//
+// Date: 2018-03-20
+// Author: Spicer Matthews (spicer@cloudmanic.com)
+// Last Modified by: Spicer Matthews
+// Last Modified: 2018-12-29
+// Copyright: 2017 Cloudmanic Labs, LLC. All rights reserved.
+//
+
 package models
 
 import (
