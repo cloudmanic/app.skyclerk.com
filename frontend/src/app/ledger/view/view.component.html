@@ -5,13 +5,14 @@
       <div class="contentbox">
         <section class="section-entry">
           <div class="section-bar">
-            <h3>Ledger Item Details</h3>
+            <h3>Ledger Details</h3>
             <a routerLink="/ledger" class="btn">DONE</a>
           </div>
 
           <div class="section-inner">
             <div class="section-head">
-              <h2>Expense</h2>
+              <h2 *ngIf="ledger.Amount < 0">Expense</h2>
+              <h2 *ngIf="ledger.Amount > 0" class="income">Income</h2>
 
               <ul class="list-select">
                 <li>
@@ -22,7 +23,7 @@
                 </li>
 
                 <li class="red">
-                  <a href="#">
+                  <a (click)="deleteLedger()">
                     <i class="ico-trash"></i>
                     Delete
                   </a>
@@ -75,9 +76,7 @@
                       </div>
 
                       <div class="detail-content">
-                        <strong>
-                          <a routerLink="/ledger">{{ ledger.Category.Name }}</a>
-                        </strong>
+                        <strong>{{ ledger.Category.Name }}</strong>
                       </div>
                     </li>
 
@@ -96,12 +95,10 @@
                     <li class="detail">
                       <div class="detail-aside">
                         <strong>Labels</strong>
-                      </div><!-- /.detail-aside -->
+                      </div>
 
                       <div class="detail-content">
-                        <strong>
-                          <a routerLink="/ledger" *ngFor="let row of ledger.Labels; let last = last;">{{ row.Name }}<span *ngIf="! last">, </span></a>
-                        </strong>
+                        <strong *ngFor="let row of ledger.Labels; let last = last;">{{ row.Name }}<span *ngIf="! last">, </span></strong>
                       </div>
                     </li>
                   </ul>

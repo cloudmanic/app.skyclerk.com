@@ -7,7 +7,7 @@
 
 import { Component, OnInit } from '@angular/core';
 import { LedgerService } from 'src/app/services/ledger.service';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Ledger } from 'src/app/models/ledger.model';
 
 @Component({
@@ -21,7 +21,7 @@ export class ViewComponent implements OnInit {
 	//
 	// Constructor
 	//
-	constructor(public ledgerService: LedgerService, public route: ActivatedRoute) { }
+	constructor(public ledgerService: LedgerService, public route: ActivatedRoute, public router: Router) { }
 
 	//
 	// ngOnInit
@@ -33,7 +33,22 @@ export class ViewComponent implements OnInit {
 		// Get the ledger based on the id we passed in.
 		this.ledgerService.getById(ledgerId).subscribe(res => {
 			this.ledger = res;
-			console.log(this.ledger);
+		});
+	}
+
+	//
+	// Delete ledger
+	//
+	deleteLedger() {
+		let c = confirm("Are you sure you want to delete this ledger entry?");
+
+		if (!c) {
+			return;
+		}
+
+		// Send delete request.
+		this.ledgerService.delete(this.ledger).subscribe(() => {
+			this.router.navigate(['/ledger']);
 		});
 	}
 

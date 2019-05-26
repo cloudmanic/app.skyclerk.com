@@ -114,7 +114,7 @@ func (t *Controller) StartWebServer() {
 
 	// CORS Middleware - Global middleware
 	router.Use(cors.New(cors.Config{
-		AllowMethods:     []string{"POST", "GET", "PUT", "OPTIONS"},
+		AllowMethods:     []string{"POST", "GET", "PUT", "OPTIONS", "DELETE"},
 		AllowHeaders:     []string{"Authorization", "DNT", "X-CustomHeader", "Keep-Alive", "User-Agent", "X-Requested-With", "If-Modified-Since", "Cache-Control", "Content-Type", "Content-Range,Range"},
 		ExposeHeaders:    []string{"Content-Length", "X-Last-Page", "X-Offset", "X-Limit", "X-No-Limit-Count"},
 		AllowCredentials: true,

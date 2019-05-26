@@ -62,9 +62,6 @@ func (t *Controller) AuthMiddleware() gin.HandlerFunc {
 		// Set Account
 		c.Set("accountId", int(accountId))
 
-		// Set the CORS header
-		t.SetCors(c)
-
 		// On to next request in the Middleware chain.
 		c.Next()
 	}
@@ -77,9 +74,6 @@ func (t *Controller) AuthNoAccountMiddleware() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		// Validate and Set the user.
 		t.AuthUser(c)
-
-		// Set the CORS header
-		t.SetCors(c)
 
 		// On to next request in the Middleware chain.
 		c.Next()
@@ -149,16 +143,6 @@ func (t *Controller) AuthUser(c *gin.Context) models.User {
 
 	// Return happy
 	return user
-}
-
-//
-// SetCors header
-//
-func (t *Controller) SetCors(c *gin.Context) {
-	// CORS for local deve opment.
-	if os.Getenv("APP_ENV") == "local" {
-		c.Writer.Header().Set("Access-Control-Allow-Origin", "*")
-	}
 }
 
 //

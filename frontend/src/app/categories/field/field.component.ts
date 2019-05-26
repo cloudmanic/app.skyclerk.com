@@ -15,6 +15,7 @@ import { Category } from 'src/app/models/category.model';
 })
 export class FieldComponent implements OnInit {
 	@Input() type: string = "expense";
+	@Input() theme: string = "add";
 	@Input() errMsg: string = "";
 	@Input() category: Category = new Category();
 	@Output() onCategory = new EventEmitter<Category>();

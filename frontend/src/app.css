@@ -20,3 +20,14 @@
 /* File upload */
 .ngx-file-drop__drop-zone--over { background-color: unset !important; }
 .ngx-file-drop__content { justify-content: unset !important; width: 135px !important; height: 35px !important; }
+
+/* Edit Ledger */
+.edit-ledger .contact-item { width: 285px; }
+.edit-ledger .change-contact { margin-top: 3px; }
+.edit-ledger .manage-catagories { right: 10px; top: 140px; }
+.edit-ledger .manage-labels { top: 295px; right: 42px; }
+.edit-ledger .list-checkboxes { margin-top: 15px; }
+.edit-ledger .label-add-link { margin-top: -16px; margin-right: 47px; }
+.edit-ledger .category-add-link { margin-right: 26px; }
+.edit-ledger .files-widget { border-bottom: unset; }
+.edit-ledger .files-widget .progress-bars { margin-top: 15px; }

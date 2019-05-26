@@ -5,7 +5,7 @@
 // Copyright: 2019 Cloudmanic Labs, LLC. All rights reserved.
 //
 
-import { Component, OnInit, ChangeDetectorRef, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef, Output, EventEmitter, Input, SimpleChanges } from '@angular/core';
 import { UploadFile, UploadEvent, FileSystemFileEntry } from 'ngx-file-drop';
 import { FileService } from 'src/app/services/file.service';
 import { HttpErrorResponse } from '@angular/common/http';
@@ -20,6 +20,8 @@ export class UploadComponent implements OnInit {
 	@Output() onUpload = new EventEmitter<FileModel>();
 	@Output() onDeleteFile = new EventEmitter<FileModel>();
 
+	@Input() filesInput: FileModel[] = [];
+
 	files: FileUploadsWithStatus[] = [];
 
 	//
@@ -30,7 +32,25 @@ export class UploadComponent implements OnInit {
 	//
 	// ngOnInit
 	//
-	ngOnInit() { }
+	ngOnInit() {
+
+		console.log(this.filesInput);
+
+	}
+
+	//
+	// Detect changes from properties.
+	//
+	ngOnChanges(changes: SimpleChanges) {
+		// Detect type changes.
+		if (typeof changes.filesInput != "undefined") {
+			this.files = [];
+
+			for (let i = 0; i < this.filesInput.length; i++) {
+				this.files.push({ file: null, status: "done", progress: 0, error: "", model: this.filesInput[i] });
+			}
+		}
+	}
 
 	//
 	// Delete a file

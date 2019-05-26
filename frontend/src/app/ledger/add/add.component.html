@@ -28,7 +28,7 @@
             <div class="form-row" [ngClass]="{ 'form-row-error': hasError('amount') }">
               <label for="Amount" class="form-label">Amount</label>
               <div class="form-controls">
-                <input type="text" class="field" name="Amount" id="Amount" placeholder="$153.00" [(ngModel)]="ledger.Amount" />
+                <input type="text" class="field" name="Amount" id="Amount" [(ngModel)]="ledger.Amount" />
               </div>
               <strong class="error-message" *ngIf="hasError('amount')">{{ hasError('amount') }}</strong>
             </div>

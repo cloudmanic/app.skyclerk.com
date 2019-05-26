@@ -259,6 +259,9 @@ func prepLedgerVars(db *DB, ledger *Ledger) {
 		db.Where("LabelsAccountId = ? AND LabelsName = ?", ledger.AccountId, strings.Trim(row.Name, " ")).FirstOrCreate(&ledger.Labels[key])
 	}
 
+	// Unassign all files and start over. TODO(spicer): Some how when we delete a file remove it at AWS.
+	db.New().Where("FilesToLedgerLedgerId = ?", ledger.Id).Delete(FilesToLedger{})
+
 	// Setup files (do this just to make sure all the correct data come in)
 	for key, row := range ledger.Files {
 		db.Find(&ledger.Files[key], row.Id)

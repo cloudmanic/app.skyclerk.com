@@ -1,13 +1,14 @@
-<div class="form-row" [ngClass]="{ 'form-row-error': errMsg }">
-  <label for="field-1#" class="form-label">Category</label>
+<!-- add verion -->
+<div class="form-row" [ngClass]="{ 'form-row-error': errMsg }" *ngIf="theme == 'add'">
+  <label for="Category" class="form-label">Category</label>
 
   <a (click)="addCategoryToggleClick()" class="add-link" data-popout="add-contact">
     <span class="plus-box"></span>
-    Add New Category
+    Add Category
   </a>
 
   <div class="select">
-    <select [(ngModel)]="category" (change)="onChange()">
+    <select id="Category" [(ngModel)]="category" (change)="onChange()">
       <option *ngFor="let row of categories" [ngValue]="row">{{ row.Name }}</option>
     </select>
 
@@ -16,3 +17,27 @@
     <strong class="error-message" *ngIf="errMsg">{{ errMsg }}</strong>
   </div>
 </div>
+
+<!-- edit version -->
+<span [ngClass]="{ 'form-row-error': errMsg }" *ngIf="theme == 'edit'">
+  <div class="form-col">
+    <label for="Category" class="form-label">Category</label>
+  </div>
+
+  <div class="form-col">
+    <div class="select">
+      <select id="Category" [(ngModel)]="category" (change)="onChange()">
+        <option *ngFor="let row of categories" [ngValue]="row">{{ row.Name }}</option>
+      </select>
+
+      <span class="select-value" *ngIf="category.Name">{{ category.Name }}</span>
+      <span class="select-value" *ngIf="! category.Name">Select Category</span>
+      <strong class="error-message" *ngIf="errMsg">{{ errMsg }}</strong>
+    </div>
+  </div>
+
+  <a (click)="addCategoryToggleClick()" class="add-link category-add-link" data-popout="add-contact">
+    <span class="plus-box"></span>
+    Add Category
+  </a>
+</span>

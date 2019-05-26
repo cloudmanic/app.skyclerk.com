@@ -36,6 +36,28 @@ export class LedgerService {
 	}
 
 	//
+	// Update a ledger
+	//
+	update(ledger: Ledger): Observable<Ledger> {
+		let accountId = localStorage.getItem('account_id');
+		ledger.AccountId = Number(accountId);
+
+		return this.http.put<Ledger>(`${environment.app_server}/api/v3/${accountId}/ledger/${ledger.Id}`, new Ledger().serialize(ledger))
+			.pipe(map(res => new Ledger().deserialize(res)));
+	}
+
+	//
+	// Delete a ledger
+	//
+	delete(ledger: Ledger): Observable<Boolean> {
+		let accountId = localStorage.getItem('account_id');
+		ledger.AccountId = Number(accountId);
+
+		return this.http.delete<Boolean>(`${environment.app_server}/api/v3/${accountId}/ledger/${ledger.Id}`, {})
+			.pipe(map(() => true));
+	}
+
+	//
 	// Get by ID
 	//
 	getById(id: number): Observable<Ledger> {

@@ -1080,6 +1080,7 @@ textarea.field { height: 90px; resize: none; -webkit-overflow-scrolling: touch; 
 
 .section-entry .section-head { border-bottom: 2px solid #ababab; padding-bottom: 5px; }
 .section-entry .section-head h2 { font-family: 'proximanova_bold', sans-serif; font-size: 22px; color: #7f2825; display: inline-block; }
+.section-entry .section-head h2.income { color: #517c35; }
 
 .section-entry .section-head .list-select { float: right; }
 
