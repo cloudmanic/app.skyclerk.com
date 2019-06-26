@@ -100,7 +100,7 @@ func TestGetActivities01(t *testing.T) {
 	st.Expect(t, results[0].Id, uint(105))
 	st.Expect(t, results[1].Id, uint(104))
 	st.Expect(t, results[2].Id, uint(103))
-	st.Expect(t, results[0].Message, fmt.Sprintf("%s, %s an %s ledger entry of %.2f for %s.", user.FirstName, "created", dMap[105].Action, dMap[105].Amount, dMap[105].Name))
+	st.Expect(t, results[0].Message, fmt.Sprintf("%s %s an %s ledger entry of %.2f from %s.", user.FirstName, "created", dMap[105].Action, dMap[105].Amount, dMap[105].Name))
 }
 
 //
@@ -183,7 +183,7 @@ func TestGetActivities02(t *testing.T) {
 	st.Expect(t, results[0].Id, uint(105))
 	st.Expect(t, results[1].Id, uint(104))
 	st.Expect(t, results[2].Id, uint(103))
-	st.Expect(t, results[0].Message, fmt.Sprintf("%s, %s an %s ledger entry of %.2f for %s.", user.FirstName, "created", dMap[105].Action, dMap[105].Amount, dMap[105].Name))
+	st.Expect(t, results[0].Message, fmt.Sprintf("%s %s an %s ledger entry of %.2f from %s.", user.FirstName, "created", dMap[105].Action, dMap[105].Amount, dMap[105].Name))
 }
 
 //
@@ -266,7 +266,7 @@ func TestGetActivities03(t *testing.T) {
 	st.Expect(t, results[0].Id, uint(80))
 	st.Expect(t, results[1].Id, uint(79))
 	st.Expect(t, results[2].Id, uint(78))
-	st.Expect(t, results[0].Message, fmt.Sprintf("%s, %s an %s ledger entry of %.2f for %s.", user.FirstName, "created", dMap[80].Action, dMap[80].Amount, dMap[80].Name))
+	st.Expect(t, results[0].Message, fmt.Sprintf("%s %s an %s ledger entry of %.2f from %s.", user.FirstName, "created", dMap[80].Action, dMap[80].Amount, dMap[80].Name))
 }
 
 /* End File */

@@ -15,22 +15,22 @@ import (
 
 // Activity struct
 type Activity struct {
-	Id          uint `gorm:"primary_key"`
-	CreatedAt   time.Time
-	UpdatedAt   time.Time
-	AccountId   uint    `sql:"not null;index:account_id" json:"account_id"`
-	UserId      uint    `sql:"not null;index:user_id"`
-	User        User    `gorm:"foreignkey:UserId" json:"user"`
-	Action      string  `sql:"not null;type:ENUM('income', 'expense', 'contact', 'category', 'label', 'snapclerk', 'other');default:'other'" json:"action"`
-	SubAction   string  `sql:"not null;type:ENUM('create', 'update', 'delete', 'other');default:'other'" json:"sub_action"`
-	Name        string  `sql:"not null" json:"name"`
-	Amount      float64 `sql:"not null;type:DECIMAL(12,2)" json:"amount"`
-	LedgerId    uint    `sql:"not null;index:ledger_id" json:"ledger_id"`
-	ContactId   uint    `sql:"not null;index:contact_id" json:"contact_id"`
-	LabelId     uint    `sql:"not null;index:label_id" json:"label_id"`
-	CategoryId  uint    `sql:"not null;index:category_id" json:"category_id"`
-	SnapClerkId uint    `sql:"not null;index:snapclerk_id" json:"snapclerk_id"`
-	Message     string  `gorm:"-" json:"message"`
+	Id          uint      `gorm:"primary_key"`
+	CreatedAt   time.Time `json:"created_at"`
+	UpdatedAt   time.Time `json:"updated_at"`
+	AccountId   uint      `sql:"not null;index:account_id" json:"account_id"`
+	UserId      uint      `sql:"not null;index:user_id"`
+	User        User      `gorm:"foreignkey:UserId" json:"user"`
+	Action      string    `sql:"not null;type:ENUM('income', 'expense', 'contact', 'category', 'label', 'snapclerk', 'other');default:'other'" json:"action"`
+	SubAction   string    `sql:"not null;type:ENUM('create', 'update', 'delete', 'other');default:'other'" json:"sub_action"`
+	Name        string    `sql:"not null" json:"name"`
+	Amount      float64   `sql:"not null;type:DECIMAL(12,2)" json:"amount"`
+	LedgerId    uint      `sql:"not null;index:ledger_id" json:"ledger_id"`
+	ContactId   uint      `sql:"not null;index:contact_id" json:"contact_id"`
+	LabelId     uint      `sql:"not null;index:label_id" json:"label_id"`
+	CategoryId  uint      `sql:"not null;index:category_id" json:"category_id"`
+	SnapClerkId uint      `sql:"not null;index:snapclerk_id" json:"snapclerk_id"`
+	Message     string    `gorm:"-" json:"message"`
 }
 
 //
@@ -38,6 +38,7 @@ type Activity struct {
 //
 func (a *Activity) SetMessage() {
 	subAction := ""
+	mixWord := ""
 	userName := "Unknown"
 
 	// Make sure we have a user
@@ -46,12 +47,18 @@ func (a *Activity) SetMessage() {
 	}
 
 	if a.SubAction == "create" {
+		mixWord = "from"
 		subAction = "created"
+	}
+
+	if a.SubAction == "update" {
+		mixWord = "for"
+		subAction = "updated"
 	}
 
 	// See if this is a ledger activity. - Spicer, Added a ledger entry of -2325.20 for Bank of America.
 	if a.LedgerId > 0 {
-		a.Message = fmt.Sprintf("%s, %s an %s ledger entry of %.2f for %s.", userName, subAction, a.Action, a.Amount, a.Name)
+		a.Message = fmt.Sprintf("%s %s an %s ledger entry of %.2f %s %s.", userName, subAction, a.Action, a.Amount, mixWord, a.Name)
 	}
 }
 

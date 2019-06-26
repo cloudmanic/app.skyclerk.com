@@ -100,162 +100,38 @@
                     <div class="widget-activity">
                       <div class="widget-head">
                         <h3>Activity</h3>
-                      </div><!-- /.widget-head -->
+                      </div>
 
                       <div class="widget-body">
                         <ul class="activities">
-                          <li class="activity">
+
+                          <li class="activity" *ngFor="let row of activity">
                             <div class="activity-meta">
-                              <h5>Today, 20 Mar 2013 12:13 PM</h5>
-                            </div><!-- /.activity-meta -->
+                              <h5>{{ row.CreatedAt | date:'medium' }}</h5>
+                            </div>
 
                             <div class="activity-inner">
                               <div class="activity-label">
-                                <span class="label-secondary label-secondary-red">Expense</span>
-                              </div><!-- /.activity-label -->
+                                <span class="label-secondary label-secondary-blue" *ngIf="row.Action == 'snapclerk'">Snap!Clerk</span>
+                                <span class="label-secondary label-secondary-orange" *ngIf="row.Action == 'contact'">Contacts</span>
+                                <span class="label-secondary label-secondary-red" *ngIf="row.Action == 'expense'">Expense</span>
+                                <span class="label-secondary label-secondary-green" *ngIf="row.Action == 'income'">Income</span>
+                              </div>
 
                               <div class="activity-content">
-                                <p>
-                                  <strong>Matt</strong> added an expense of 53.45 from <a href="#">Salt Design</a>
-                                </p>
-                              </div><!-- /.activity-content -->
-                            </div><!-- /.activity-inner -->
-                          </li><!-- /.activity -->
-
-                          <li class="activity">
-                            <div class="activity-meta">
-                              <h5>Today, 20 Mar 2013 12:13 PM</h5>
-                            </div><!-- /.activity-meta -->
-
-                            <div class="activity-inner">
-                              <div class="activity-label">
-                                <span class="label-secondary label-secondary-green">Income</span>
-                              </div><!-- /.activity-label -->
-
-                              <div class="activity-content">
-                                <p>
-                                  <strong>Matt</strong> added an income entry of 53.45 from <a href="#">Whitman College</a>
-                                </p>
-                              </div><!-- /.activity-content -->
-                            </div><!-- /.activity-inner -->
-                          </li><!-- /.activity -->
-
-                          <li class="activity">
-                            <div class="activity-meta">
-                              <h5>Today, 20 Mar 2013 12:13 PM</h5>
-                            </div><!-- /.activity-meta -->
-
-                            <div class="activity-inner">
-                              <div class="activity-label">
-                                <span class="label-secondary label-secondary-green">Income</span>
-                              </div><!-- /.activity-label -->
-
-                              <div class="activity-content">
-                                <p>
-                                  <strong>Matt</strong> added an income entry of 53.45 from <a href="#">Whitman College</a>
-                                </p>
-                              </div><!-- /.activity-content -->
-                            </div><!-- /.activity-inner -->
-                          </li><!-- /.activity -->
-
-                          <li class="activity">
-                            <div class="activity-meta">
-                              <h5>Today, 20 Mar 2013 12:13 PM</h5>
-                            </div><!-- /.activity-meta -->
-
-                            <div class="activity-inner">
-                              <div class="activity-label">
-                                <span class="label-secondary label-secondary-orange">Contacts</span>
-                              </div><!-- /.activity-label -->
-
-                              <div class="activity-content">
-                                <p>
-                                  <strong>Matt</strong> added an expense of 53.45 from <a href="#">Salt Design</a>
-                                </p>
-                              </div><!-- /.activity-content -->
-                            </div><!-- /.activity-inner -->
-                          </li><!-- /.activity -->
-
-                          <li class="activity">
-                            <div class="activity-meta">
-                              <h5>Today, 20 Mar 2013 12:13 PM</h5>
-                            </div><!-- /.activity-meta -->
-
-                            <div class="activity-inner">
-                              <div class="activity-label">
-                                <span class="label-secondary label-secondary-blue">Snap!Clerk</span>
-                              </div><!-- /.activity-label -->
-
-                              <div class="activity-content">
-                                <p>
-                                  <strong>Matt</strong> uploaded a receipt for 536.45 from <a href="#">Whole Foods Inc.</a>
-                                </p>
-                              </div><!-- /.activity-content -->
-                            </div><!-- /.activity-inner -->
-                          </li><!-- /.activity -->
-
-                          <li class="activity">
-                            <div class="activity-meta">
-                              <h5>Today, 20 Mar 2013 12:13 PM</h5>
-                            </div><!-- /.activity-meta -->
-
-                            <div class="activity-inner">
-                              <div class="activity-label">
-                                <span class="label-secondary label-secondary-orange">Contacts</span>
-                              </div><!-- /.activity-label -->
-
-                              <div class="activity-content">
-                                <p>
-                                  <strong>Matt</strong> added an expense of 53.45 from <a href="#">Salt Design</a>
-                                </p>
-                              </div><!-- /.activity-content -->
-                            </div><!-- /.activity-inner -->
-                          </li><!-- /.activity -->
-
-                          <li class="activity">
-                            <div class="activity-meta">
-                              <h5>Today, 20 Mar 2013 12:13 PM</h5>
-                            </div><!-- /.activity-meta -->
-
-                            <div class="activity-inner">
-                              <div class="activity-label">
-                                <span class="label-secondary label-secondary-green">Income</span>
-                              </div><!-- /.activity-label -->
-
-                              <div class="activity-content">
-                                <p>
-                                  <strong>Matt</strong> added an income entry of 53.45 from <a href="#">Whitman College</a>
-                                </p>
-                              </div><!-- /.activity-content -->
-                            </div><!-- /.activity-inner -->
-                          </li><!-- /.activity -->
-
-                          <li class="activity">
-                            <div class="activity-meta">
-                              <h5>Today, 20 Mar 2013 12:13 PM</h5>
-                            </div><!-- /.activity-meta -->
-
-                            <div class="activity-inner">
-                              <div class="activity-label">
-                                <span class="label-secondary label-secondary-orange">Contacts</span>
-                              </div><!-- /.activity-label -->
-
-                              <div class="activity-content">
-                                <p>
-                                  <strong>Matt</strong> edited a contact: <a href="#">Whitman College</a>
-                                </p>
-                              </div><!-- /.activity-content -->
-                            </div><!-- /.activity-inner -->
-                          </li><!-- /.activity -->
-                        </ul><!-- /.activities -->
-                      </div><!-- /.widget-body -->
+                                <p [innerHTML]="printMessage(row) | safeHtml"></p>
+                              </div>
+                            </div>
+                          </li>
+                        </ul>
+                      </div>
 
                       <div class="widget-actions">
-                        <a href="#" class="activities-btn">All Activity</a>
-                      </div><!-- /.widget-actions -->
-                    </div><!-- /.widget-activity -->
-                  </div><!-- /.tab-aside -->
-                </div><!-- /.tab -->
+                        <a routerLink="/activity" class="activities-btn">All Activity</a>
+                      </div>
+                    </div>
+                  </div>
+                </div>
 
                 <div class="tab" id="tab2">
                   <section class="section-secondary">

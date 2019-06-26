@@ -7,12 +7,16 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { FileDropModule } from 'ngx-file-drop';
 import { AgmCoreModule } from '@agm/core';
 
+// Pipes
+import { SafeHtmlPipe } from './pipes/safe-html.pipe';
+
 // Services
 import { MeService } from './services/me.service';
 import { AuthService } from './services/auth.service';
 import { TokenInterceptor } from './services/token.interceptor';
 import { ReportService } from './services/report.service';
 import { ContactService } from './services/contact.service';
+import { ActivityService } from './services/activity.service';
 
 // Components
 import { AppComponent } from './app.component';
@@ -40,6 +44,7 @@ import { EditComponent as LedgerEditComponent } from './ledger/edit/edit.compone
 
 @NgModule({
 	declarations: [
+		SafeHtmlPipe,
 		AppComponent,
 		LoginComponent,
 		LayoutAuthComponent,
@@ -77,6 +82,7 @@ import { EditComponent as LedgerEditComponent } from './ledger/edit/edit.compone
 		AuthService,
 		ReportService,
 		ContactService,
+		ActivityService,
 		{ provide: HTTP_INTERCEPTORS, useClass: TokenInterceptor, multi: true },
 	],
 	bootstrap: [AppComponent]
