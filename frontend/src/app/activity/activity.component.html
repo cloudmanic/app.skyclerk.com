@@ -150,226 +150,28 @@
 
 
 
-            <div class="table-activity">
+            <div class="table-activity" *ngFor="let row of activityKeys">
               <table>
                 <tr>
-                  <th colspan="3">Today, August 20, 2013</th>
+                  <th colspan="3">{{ row | date:'fullDate' }}</th>
                 </tr>
 
-                <tr>
+                <tr *ngFor="let row2 of activity[row]">
                   <td>
-                    <span class="label-secondary label-secondary-red">Expense</span>
+                    <span class="label-secondary label-secondary-blue" *ngIf="row2.Action == 'snapclerk'">Snap!Clerk</span>
+                    <span class="label-secondary label-secondary-orange" *ngIf="row2.Action == 'contact'">Contacts</span>
+                    <span class="label-secondary label-secondary-red" *ngIf="row2.Action == 'expense'">Expense</span>
+                    <span class="label-secondary label-secondary-green" *ngIf="row2.Action == 'income'">Income</span>
                   </td>
 
-                  <td>
-                    <strong>Matt</strong> added an expense of 53.45 from <a href="#">Salt Design</a>
-                  </td>
+                  <td [innerHTML]="printMessage(row2) | safeHtml"></td>
 
-                  <td>4:45 pm</td>
-                </tr>
-
-                <tr>
-                  <td>
-                    <span class="label-secondary label-secondary-green">Income</span>
-                  </td>
-
-                  <td>
-                    <strong>Matt</strong> added an income entry of 53.45 from <a href="#">Whitman College</a>
-                  </td>
-
-                  <td>4:45 pm</td>
-                </tr>
-
-                <tr>
-                  <td>
-                    <span class="label-secondary label-secondary-green">Income</span>
-                  </td>
-
-                  <td>
-                    <strong>Matt</strong> added an income entry of 53.45 from <a href="#">Whitman College</a>
-                  </td>
-
-                  <td>4:45 pm</td>
-                </tr>
-
-                <tr>
-                  <td>
-                    <span class="label-secondary label-secondary-orange">Contacts</span>
-                  </td>
-
-                  <td>
-                    <strong>Matt</strong> added a new contact: <a href="#">Salt Design</a>
-                  </td>
-
-                  <td>4:45 pm</td>
+                  <td>{{ row2.CreatedAt | date:'shortTime' }}</td>
                 </tr>
               </table>
-            </div><!-- /.table-activity -->
+            </div>
 
-            <div class="table-activity">
-              <table>
-                <tr>
-                  <th colspan="3">Friday, 20 Mar 2013 12:13 PM</th>
-                </tr>
-
-                <tr>
-                  <td>
-                    <span class="label-secondary label-secondary-red">Expense</span>
-                  </td>
-
-                  <td>
-                    <strong>Matt</strong> added an expense of 53.45 from <a href="#">Salt Design</a>
-                  </td>
-
-                  <td>4:45 pm</td>
-                </tr>
-
-                <tr>
-                  <td>
-                    <span class="label-secondary label-secondary-green">Income</span>
-                  </td>
-
-                  <td>
-                    <strong>Matt</strong> added an income entry of 53.45 from <a href="#">Whitman College</a>
-                  </td>
-
-                  <td>4:45 pm</td>
-                </tr>
-
-                <tr>
-                  <td>
-                    <span class="label-secondary label-secondary-green">Income</span>
-                  </td>
-
-                  <td>
-                    <strong>Matt</strong> added an income entry of 53.45 from <a href="#">Whitman College</a>
-                  </td>
-
-                  <td>4:45 pm</td>
-                </tr>
-
-                <tr>
-                  <td>
-                    <span class="label-secondary label-secondary-orange">Contacts</span>
-                  </td>
-
-                  <td>
-                    <strong>Matt</strong> added a new contact: <a href="#">Salt Design</a>
-                  </td>
-
-                  <td>4:45 pm</td>
-                </tr>
-
-                <tr>
-                  <td>
-                    <span class="label-secondary label-secondary-blue">Contacts</span>
-                  </td>
-
-                  <td>
-                    <strong>Matt</strong> uploaded a receipt for 536.45 from <a href="#">Whole Foods Inc.</a>
-                  </td>
-
-                  <td>4:45 pm</td>
-                </tr>
-              </table>
-            </div><!-- /.table-activity -->
-
-            <div class="table-activity">
-              <table>
-                <tr>
-                  <th colspan="3">Thursday, 20 Mar 2013 12:13 PM</th>
-                </tr>
-
-                <tr>
-                  <td>
-                    <span class="label-secondary label-secondary-red">Expense</span>
-                  </td>
-
-                  <td>
-                    <strong>Matt</strong> added an expense of 53.45 from <a href="#">Salt Design</a>
-                  </td>
-
-                  <td>4:45 pm</td>
-                </tr>
-              </table>
-            </div><!-- /.table-activity -->
-
-            <div class="table-activity">
-              <table>
-                <tr>
-                  <th colspan="3">Wednesday, 20 Mar 2013 12:13 PM</th>
-                </tr>
-
-                <tr>
-                  <td>
-                    <span class="label-secondary label-secondary-red">Expense</span>
-                  </td>
-
-                  <td>
-                    <strong>Matt</strong> added an expense of 53.45 from <a href="#">Salt Design</a>
-                  </td>
-
-                  <td>4:45 pm</td>
-                </tr>
-              </table>
-            </div><!-- /.table-activity -->
-
-            <div class="table-activity">
-              <table>
-                <tr>
-                  <th colspan="3">Wednesday, 20 Mar 2013 12:13 PM</th>
-                </tr>
-
-                <tr>
-                  <td>
-                    <span class="label-secondary label-secondary-red">Expense</span>
-                  </td>
-
-                  <td>
-                    <strong>Matt</strong> added an expense of 53.45 from <a href="#">Salt Design</a>
-                  </td>
-
-                  <td>4:45 pm</td>
-                </tr>
-
-                <tr>
-                  <td>
-                    <span class="label-secondary label-secondary-green">Income</span>
-                  </td>
-
-                  <td>
-                    <strong>Matt</strong> added an income entry of 53.45 from <a href="#">Whitman College</a>
-                  </td>
-
-                  <td>4:45 pm</td>
-                </tr>
-
-                <tr>
-                  <td>
-                    <span class="label-secondary label-secondary-green">Income</span>
-                  </td>
-
-                  <td>
-                    <strong>Matt</strong> added an income entry of 53.45 from <a href="#">Whitman College</a>
-                  </td>
-
-                  <td>4:45 pm</td>
-                </tr>
-
-                <tr>
-                  <td>
-                    <span class="label-secondary label-secondary-green">Income</span>
-                  </td>
-
-                  <td>
-                    <strong>Matt</strong> added an income entry of 53.45 from <a href="#">Whitman College</a>
-                  </td>
-
-                  <td>4:45 pm</td>
-                </tr>
-              </table>
-            </div><!-- /.table-activity -->
-          </div><!-- /.section-body -->
+          </div>
 
           <div class="section-paging">
             <div class="pagination">
@@ -394,22 +196,7 @@
 
     </div><!-- /.content -->
 
-    <div class="sidebar">
-      <div class="sidenav">
-        <ul>
-          <li><a href="#"><strong>Dashboard</strong> View all recent activity &amp; reports</a></li>
-          <li><a href="#"><strong>Ledger</strong> View/Edit income &amp; expenses</a></li>
-          <li><a href="#"><strong>Contacts</strong> View/Edit vendors &amp; customers</a></li>
-          <li><a href="#"><strong>Invoices</strong> View/Edit invoices</a></li>
-          <li><a href="#"><strong>Reports</strong> Browse &amp; Export activity reports</a></li>
-          <li class="current"><a href="#"><strong>SnapClerk</strong> Scan &amp; Upload reciepts</a></li>
-        </ul>
-      </div>
-      <!-- /.sidenav -->
-      <div class="side-actions">
-        <a href="#" class="btn btn-block btn-large btn-red"><span class="ico-plus-circle">&nbsp;</span> ADD EXPENSE</a>
-        <a href="#" class="btn btn-block btn-large btn-darkgreen"><span class="ico-plus-circle">&nbsp;</span> ADD INCOME</a>
-      </div><!-- /.side-actions -->
-    </div><!-- /.sidebar -->
+    <app-layouts-sidebar current="dashboard"></app-layouts-sidebar>
+
   </div>
-</div><!-- /.main -->
+</div>

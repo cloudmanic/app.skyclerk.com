@@ -15,7 +15,9 @@ import { ActivityService } from '../services/activity.service';
 })
 
 export class ActivityComponent implements OnInit {
-	activity: Activity[] = [];
+	activity: any;
+	activityKeys: Number[];
+
 	//
 	// Constructor
 	//
@@ -33,8 +35,15 @@ export class ActivityComponent implements OnInit {
 	// Load activity
 	//
 	loadActivity() {
-		this.activityService.get(1, 25).subscribe(res => {
+		this.activityService.getByGroup(1, 25).subscribe(res => {
 			this.activity = res;
+
+			let t = [];
+			for (let row in this.activity) {
+				t.push(row);
+			}
+
+			this.activityKeys = t.slice().reverse();
 		});
 	}
 
