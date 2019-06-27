@@ -48,7 +48,18 @@ func (t *Controller) GetActivities(c *gin.Context) {
 	}
 
 	// Return json based on if this was a good result or not.
-	response.ResultsMeta(c, results, err, meta)
+	if c.DefaultQuery("group", "") == "date" {
+		r := make(map[string][]models.Activity)
+
+		for _, row := range results {
+			indx := row.CreatedAt.Format("2006-01-02")
+			r[indx] = append(r[indx], row)
+		}
+
+		response.ResultsMeta(c, r, err, meta)
+	} else {
+		response.ResultsMeta(c, results, err, meta)
+	}
 }
 
 /* End File */

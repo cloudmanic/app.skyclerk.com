@@ -10,9 +10,11 @@ package controllers
 import (
 	"encoding/json"
 	"fmt"
+	"math/rand"
 	"net/http"
 	"net/http/httptest"
 	"testing"
+	"time"
 
 	"app.skyclerk.com/backend/library/test"
 	"app.skyclerk.com/backend/models"
@@ -223,7 +225,6 @@ func TestGetActivities03(t *testing.T) {
 		if len(contactName) == 0 {
 			contactName = l.Contact.FirstName + " " + l.Contact.LastName
 		}
-
 		// Add to the activity log
 		y := models.Activity{
 			AccountId: uint(33),
@@ -267,6 +268,95 @@ func TestGetActivities03(t *testing.T) {
 	st.Expect(t, results[1].Id, uint(79))
 	st.Expect(t, results[2].Id, uint(78))
 	st.Expect(t, results[0].Message, fmt.Sprintf("%s %s an %s ledger entry of %.2f from %s.", user.FirstName, "created", dMap[80].Action, dMap[80].Amount, dMap[80].Name))
+}
+
+//
+// Test get Activities 04 - group by date
+//
+func TestGetActivities04(t *testing.T) {
+	// Data map
+	dMap := make(map[uint]models.Activity)
+
+	// Start the db connection.
+	db, dbName, _ := models.NewTestDB("testing_db")
+	defer models.TestingTearDown(db, dbName)
+
+	// Create controller
+	c := &Controller{}
+	c.SetDB(db)
+
+	// Create test user
+	user := test.GetRandomUser(33)
+	db.Save(&user)
+
+	// Test dates
+	dates := []time.Time{
+		time.Now(),
+		time.Date(2017, 10, 29, 17, 20, 01, 507451, time.UTC),
+		time.Date(2018, 8, 19, 17, 20, 01, 507451, time.UTC),
+		time.Date(2019, 1, 10, 17, 20, 01, 507451, time.UTC),
+	}
+
+	// Create like 105 ledger entries. This will create Activities
+	for i := 0; i < 105; i++ {
+		l := test.GetRandomLedger(33)
+		db.LedgerCreate(&l)
+
+		// Set the ledger type
+		ledgerType := "expense"
+
+		if l.Amount > 0 {
+			ledgerType = "income"
+		}
+
+		// Get the contact name.
+		contactName := l.Contact.Name
+
+		if len(contactName) == 0 {
+			contactName = l.Contact.FirstName + " " + l.Contact.LastName
+		}
+
+		// Add to the activity log
+		y := models.Activity{
+			CreatedAt: dates[rand.Intn(len(dates))],
+			AccountId: uint(33),
+			UserId:    user.Id,
+			Action:    ledgerType,
+			SubAction: "create",
+			Name:      contactName,
+			Amount:    l.Amount,
+			LedgerId:  l.Id,
+		}
+
+		db.Create(&y)
+
+		dMap[l.Id] = y
+	}
+
+	// Setup request
+	req, _ := http.NewRequest("GET", "/api/v3/33/activities?group=date", nil)
+
+	// Setup writer.
+	w := httptest.NewRecorder()
+	gin.SetMode("release")
+	gin.DisableConsoleColor()
+
+	r := gin.New()
+	r.Use(func(c *gin.Context) {
+		c.Set("accountId", 33)
+		c.Set("userId", int(user.Id))
+	})
+	r.GET("/api/v3/:account/activities", c.GetActivities)
+	r.ServeHTTP(w, req)
+
+	// Grab result and convert to strut
+	results := make(map[string][]models.Activity)
+	err := json.Unmarshal([]byte(w.Body.String()), &results)
+
+	// Test results
+	st.Expect(t, err, nil)
+
+	// TODO(spicer): do better unit testing.
 }
 
 /* End File */

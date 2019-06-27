@@ -41,6 +41,7 @@ import { PopOutComponent as LabelsPopOutComponent } from './labels/pop-out/pop-o
 import { UploadComponent as FilesUploadComponent } from './files/upload/upload.component';
 import { ViewComponent as LedgerViewComponent } from './ledger/view/view.component';
 import { EditComponent as LedgerEditComponent } from './ledger/edit/edit.component';
+import { ActivityComponent } from './activity/activity.component';
 
 @NgModule({
 	declarations: [
@@ -66,7 +67,8 @@ import { EditComponent as LedgerEditComponent } from './ledger/edit/edit.compone
 		LabelsPopOutComponent,
 		FilesUploadComponent,
 		LedgerViewComponent,
-		LedgerEditComponent
+		LedgerEditComponent,
+		ActivityComponent
 	],
 	imports: [
 		FormsModule,
