@@ -15,11 +15,11 @@ import (
 
 // Activity struct
 type Activity struct {
-	Id          uint      `gorm:"primary_key"`
+	Id          uint      `gorm:"primary_key" json:"id"`
 	CreatedAt   time.Time `json:"created_at"`
 	UpdatedAt   time.Time `json:"updated_at"`
 	AccountId   uint      `sql:"not null;index:account_id" json:"account_id"`
-	UserId      uint      `sql:"not null;index:user_id"`
+	UserId      uint      `sql:"not null;index:user_id" json:"user_id"`
 	User        User      `gorm:"foreignkey:UserId" json:"user"`
 	Action      string    `sql:"not null;type:ENUM('income', 'expense', 'contact', 'category', 'label', 'snapclerk', 'other');default:'other'" json:"action"`
 	SubAction   string    `sql:"not null;type:ENUM('create', 'update', 'delete', 'other');default:'other'" json:"sub_action"`

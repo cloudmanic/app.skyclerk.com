@@ -5,6 +5,7 @@
 // Copyright: 2019 Cloudmanic Labs, LLC. All rights reserved.
 //
 
+import * as moment from 'moment';
 import { Component, OnInit } from '@angular/core';
 import { Activity } from '../models/activity.model';
 import { ActivityService } from '../services/activity.service';
@@ -16,7 +17,7 @@ import { ActivityService } from '../services/activity.service';
 
 export class ActivityComponent implements OnInit {
 	activity: any;
-	activityKeys: Number[];
+	activityKeys: String[];
 
 	//
 	// Constructor
@@ -35,15 +36,21 @@ export class ActivityComponent implements OnInit {
 	// Load activity
 	//
 	loadActivity() {
-		this.activityService.getByGroup(1, 25).subscribe(res => {
-			this.activity = res;
+		this.activityService.get(1, 25).subscribe(res => {
+			// Build Grouping
+			this.activity = {}
+			this.activityKeys = [];
 
-			let t = [];
-			for (let row in this.activity) {
-				t.push(row);
+			for (let i = 0; i < res.length; i++) {
+				let ix = moment(res[i].CreatedAt).format("YYYY-MM-DD");
+
+				if (typeof this.activity[ix] == "undefined") {
+					this.activity[ix] = [];
+					this.activityKeys.push(ix);
+				}
+
+				this.activity[ix].push(res[i]);
 			}
-
-			this.activityKeys = t.slice().reverse();
 		});
 	}
 
