@@ -23,6 +23,8 @@ import { AccountComponent as SettingsAccountComponent } from './settings/account
 import { ViewComponent as LedgerViewComponent } from './ledger/view/view.component';
 import { EditComponent as LedgerEditComponent } from './ledger/edit/edit.component';
 import { ActivityComponent } from './activity/activity.component';
+import { GraphsComponent } from './dashboard/graphs/graphs.component';
+import { ReportsComponent } from './dashboard/reports/reports.component';
 
 const routes: Routes = [
 
@@ -32,6 +34,8 @@ const routes: Routes = [
 
 			// dashboard
 			{ path: '', component: DashboardLandingComponent, canActivate: [SessionGuard] },
+			{ path: 'dashboard/graphs', component: GraphsComponent, canActivate: [SessionGuard] },
+			{ path: 'dashboard/reports', component: ReportsComponent, canActivate: [SessionGuard] },
 
 			// activity
 			{ path: 'activity', component: ActivityComponent, canActivate: [SessionGuard] },

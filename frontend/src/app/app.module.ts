@@ -42,6 +42,9 @@ import { UploadComponent as FilesUploadComponent } from './files/upload/upload.c
 import { ViewComponent as LedgerViewComponent } from './ledger/view/view.component';
 import { EditComponent as LedgerEditComponent } from './ledger/edit/edit.component';
 import { ActivityComponent } from './activity/activity.component';
+import { GraphsComponent } from './dashboard/graphs/graphs.component';
+import { SubNavComponent } from './dashboard/sub-nav/sub-nav.component';
+import { ReportsComponent } from './dashboard/reports/reports.component';
 
 @NgModule({
 	declarations: [
@@ -68,7 +71,10 @@ import { ActivityComponent } from './activity/activity.component';
 		FilesUploadComponent,
 		LedgerViewComponent,
 		LedgerEditComponent,
-		ActivityComponent
+		ActivityComponent,
+		GraphsComponent,
+		SubNavComponent,
+		ReportsComponent
 	],
 	imports: [
 		FormsModule,
