@@ -124,7 +124,7 @@ func TestGetPnL01(t *testing.T) {
 	// Create like 10 ledger entries for March
 	for i := 0; i < 10; i++ {
 		l := test.GetRandomLedger(33)
-		l.Date = helpers.ParseDateNoError("2019-03-01")
+		l.Date = helpers.ParseDateNoError("2019-03-01 00:00:00")
 		db.LedgerCreate(&l)
 		dMap[l.Id] = l
 	}
@@ -132,7 +132,7 @@ func TestGetPnL01(t *testing.T) {
 	// Create like 10 ledger entries for April
 	for i := 0; i < 10; i++ {
 		l := test.GetRandomLedger(33)
-		l.Date = helpers.ParseDateNoError("2019-04-01")
+		l.Date = helpers.ParseDateNoError("2019-04-01 00:00:00")
 		db.LedgerCreate(&l)
 		dMap[l.Id] = l
 	}
@@ -140,15 +140,15 @@ func TestGetPnL01(t *testing.T) {
 	// Create like 10 ledger entries for May
 	for i := 0; i < 10; i++ {
 		l := test.GetRandomLedger(33)
-		l.Date = helpers.ParseDateNoError("2019-05-01")
+		l.Date = helpers.ParseDateNoError("2019-05-01 00:00:00")
 		db.LedgerCreate(&l)
 		dMap[l.Id] = l
 	}
 
-	// Create like 10 ledger entries for May
+	// Create like 10 ledger entries for June
 	for i := 0; i < 10; i++ {
 		l := test.GetRandomLedger(33)
-		l.Date = helpers.ParseDateNoError("2019-06-01")
+		l.Date = helpers.ParseDateNoError("2019-06-01 00:00:00")
 		db.LedgerCreate(&l)
 		dMap[l.Id] = l
 	}
@@ -294,6 +294,87 @@ func TestGetPnL01(t *testing.T) {
 
 	// Test results
 	st.Expect(t, len(pl4), 0)
+}
+
+//
+// TestGetPnL02 - return PnL by group / start / end
+//
+func TestGetPnL02(t *testing.T) {
+	// Data map
+	dMap := make(map[uint]models.Ledger)
+
+	// Start the db connection.
+	db, dbName, _ := models.NewTestDB("")
+	defer models.TestingTearDown(db, dbName)
+
+	// Create like 5 ledger entries. Diffent account.
+	for i := 0; i < 5; i++ {
+		l := test.GetRandomLedger(23)
+		db.LedgerCreate(&l)
+	}
+
+	// Create like 10 ledger entries - 2019-Q1
+	for i := 0; i < 10; i++ {
+		l := test.GetRandomLedger(33)
+		l.Date = helpers.ParseDateNoError("2019-02-01 00:00:00")
+		l.Amount = 100.00
+		db.LedgerCreate(&l)
+		dMap[l.Id] = l
+	}
+
+	// Create like 10 ledger entries - 2018-Q2
+	for i := 0; i < 10; i++ {
+		l := test.GetRandomLedger(33)
+		l.Date = helpers.ParseDateNoError("2018-04-01 00:00:00")
+		l.Amount = 200.00
+		db.LedgerCreate(&l)
+		dMap[l.Id] = l
+	}
+
+	// Create like 10 ledger entries - 2018-Q1
+	for i := 0; i < 10; i++ {
+		l := test.GetRandomLedger(33)
+		l.Date = helpers.ParseDateNoError("2018-01-01 00:00:00")
+		l.Amount = -100.00
+		db.LedgerCreate(&l)
+		dMap[l.Id] = l
+	}
+
+	// Create like 10 ledger entries - 2018-Q4
+	for i := 0; i < 10; i++ {
+		l := test.GetRandomLedger(33)
+		l.Date = helpers.ParseDateNoError("2018-10-01 00:00:00")
+		l.Amount = -200.00
+		db.LedgerCreate(&l)
+		dMap[l.Id] = l
+	}
+
+	// Set start / end
+	start := helpers.ParseDateNoError("2018-01-01")
+	end := helpers.ParseDateNoError("2019-12-30")
+
+	// ---------- quarter ------------- //
+
+	// Run test function
+	pl := GetPnL(db, 33, start, end, "quarter", "ASC")
+
+	// Test results
+	st.Expect(t, len(pl), 4)
+
+	st.Expect(t, pl[0].Profit, -1000.00)
+	st.Expect(t, pl[1].Profit, 2000.00)
+	st.Expect(t, pl[2].Profit, -2000.00)
+	st.Expect(t, pl[3].Profit, 1000.00)
+
+	st.Expect(t, pl[0].Income, 0.00)
+	st.Expect(t, pl[1].Income, 2000.00)
+	st.Expect(t, pl[2].Income, 0.00)
+	st.Expect(t, pl[3].Income, 1000.00)
+
+	st.Expect(t, pl[0].Expense, -1000.00)
+	st.Expect(t, pl[1].Expense, 0.00)
+	st.Expect(t, pl[2].Expense, -2000.00)
+	st.Expect(t, pl[3].Expense, 0.00)
 }
 
 //
