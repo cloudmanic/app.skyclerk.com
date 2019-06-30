@@ -7,13 +7,46 @@
 package reports
 
 import (
+	"time"
+
 	"app.skyclerk.com/backend/models"
 )
+
+// PnL struct
+type PnL struct {
+	Date    string  `json:"date"`
+	Profit  float64 `json:"profit"`
+	Income  float64 `json:"income"`
+	Expense float64 `json:"expense"`
+}
 
 // YearPnL struct
 type YearPnL struct {
 	Year  int     `json:"year"`
 	Value float64 `json:"value"`
+}
+
+//
+// GetPnL - Profit / Loss based on start / stop  group
+//
+func GetPnL(db models.Datastore, accountId uint, start time.Time, end time.Time, group string, sort string) []PnL {
+	// SQL String
+	sql := ""
+
+	// Struct we return
+	rt := []PnL{}
+
+	// Build sql
+	switch group {
+	case "month":
+		sql = "SELECT date_format(LedgerDate, '%Y-%m') AS date, SUM(LedgerAmount) AS profit, SUM(CASE WHEN LedgerAmount>0 THEN LedgerAmount ELSE 0 END) AS income, SUM(CASE WHEN LedgerAmount<0 THEN LedgerAmount ELSE 0 END) AS expense FROM Ledger WHERE LedgerAccountId = ? AND LedgerDate >= ? AND LedgerDate <= ? GROUP BY date_format(LedgerDate, '%Y-%m') ORDER BY date " + sort
+	}
+
+	// Run query
+	db.New().Raw(sql, accountId, start.Format("2006-01-02"), end.Format("2006-01-02")).Scan(&rt)
+
+	// Return happy.
+	return rt
 }
 
 //

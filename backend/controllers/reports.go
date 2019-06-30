@@ -15,12 +15,29 @@ import (
 )
 
 //
+// ReportsPnl returns income, expense, profit by date range grouping
+//
+func (t *Controller) ReportsPnl(c *gin.Context) {
+	// Set start / end
+	start := dates.ParseDateNoError("2019-03-01")
+	end := dates.ParseDateNoError("2019-06-30")
+
+	// Run function
+	pl := reports.GetPnL(t.db, uint(c.MustGet("accountId").(int)), start, end, "month")
+
+	// Return happy JSON
+	c.JSON(200, pl)
+}
+
+//
 // ReportsCurrentPnl returns current year and the P&L for that year.
 //
 func (t *Controller) ReportsCurrentPnl(c *gin.Context) {
-	// Run test function
+	// Run function
 	pl := reports.GetCurrentYearPnL(t.db, uint(c.MustGet("accountId").(int)), time.Now().Year())
 
 	// Return happy JSON
 	c.JSON(200, pl)
 }
+
+/* End File */
