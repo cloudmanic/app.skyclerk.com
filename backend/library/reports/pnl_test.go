@@ -16,6 +16,88 @@ import (
 )
 
 //
+// TestGetExpenseByContact01 - Get expenses by vendor
+//
+func TestGetExpenseByContact01(t *testing.T) {
+	// Data map
+	dMap := make(map[uint]models.Ledger)
+
+	// Start the db connection.
+	db, dbName, _ := models.NewTestDB("")
+	defer models.TestingTearDown(db, dbName)
+
+	// Create like 5 ledger entries. Diffent account.
+	for i := 0; i < 5; i++ {
+		l := test.GetRandomLedger(23)
+		db.LedgerCreate(&l)
+	}
+
+	// Create like 10 ledger entries for March
+	for i := 0; i < 10; i++ {
+		l := test.GetRandomLedger(33)
+		l.Date = helpers.ParseDateNoError("2019-03-01")
+		db.LedgerCreate(&l)
+		dMap[l.Id] = l
+	}
+
+	// Create like 10 ledger entries for April
+	for i := 0; i < 10; i++ {
+		l := test.GetRandomLedger(33)
+		l.Date = helpers.ParseDateNoError("2019-04-01")
+		db.LedgerCreate(&l)
+		dMap[l.Id] = l
+	}
+
+	// Create like 10 ledger entries for May
+	for i := 0; i < 10; i++ {
+		l := test.GetRandomLedger(33)
+		l.Date = helpers.ParseDateNoError("2019-05-01")
+		db.LedgerCreate(&l)
+		dMap[l.Id] = l
+	}
+
+	// Create like 10 ledger entries for June
+	for i := 0; i < 10; i++ {
+		l := test.GetRandomLedger(33)
+		l.Date = helpers.ParseDateNoError("2019-06-01")
+
+		// test non-Name options
+		if l.Contact.Name == "Home Depot" {
+			l.Contact.Name = ""
+		}
+
+		db.LedgerCreate(&l)
+		dMap[l.Id] = l
+	}
+
+	// Set start / end
+	start := helpers.ParseDateNoError("2019-03-01")
+	end := helpers.ParseDateNoError("2019-06-30")
+
+	// Run test function
+	result := GetExpenseByContact(db, 33, start, end, "ASC")
+
+	// Sort of a cheal test here.
+	expenseTotal := 0.00
+
+	for key := range dMap {
+		if dMap[key].Amount < 0 {
+			expenseTotal = expenseTotal + dMap[key].Amount
+		}
+	}
+
+	// Build total from results
+	total := 0.00
+
+	for _, row := range result {
+		total = total + row.Amount
+	}
+
+	// Test results.
+	st.Expect(t, helpers.Round(total, 2), helpers.Round(expenseTotal, 2))
+}
+
+//
 // TestGetPnL01 - return PnL by group / start / end
 //
 func TestGetPnL01(t *testing.T) {

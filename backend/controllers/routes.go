@@ -69,6 +69,7 @@ func (t *Controller) DoRoutes(r *gin.Engine) {
 
 		// Reports
 		apiV1.GET("/:account/reports/pnl", t.ReportsPnl)
+		apiV1.GET("/:account/reports/expenses-by-contact", t.ReportsExpensesByContact)
 		apiV1.GET("/:account/reports/pnl-current-year", t.ReportsCurrentPnl)
 	}
 

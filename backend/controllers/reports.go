@@ -16,6 +16,21 @@ import (
 )
 
 //
+// ReportsExpensesByContact - Get expenses by contact
+//
+func (t *Controller) ReportsExpensesByContact(c *gin.Context) {
+	// Set start / end big range default
+	start := helpers.ParseDateNoError(c.DefaultQuery("start", "1800-01-01"))
+	end := helpers.ParseDateNoError(c.DefaultQuery("end", "3000-01-01"))
+
+	// Run function
+	result := reports.GetExpenseByContact(t.db, uint(c.MustGet("accountId").(int)), start, end, c.DefaultQuery("sort", "desc"))
+
+	// Return happy JSON
+	c.JSON(200, result)
+}
+
+//
 // ReportsPnl returns income, expense, profit by date range grouping
 //
 func (t *Controller) ReportsPnl(c *gin.Context) {
