@@ -7,6 +7,7 @@
 package reports
 
 import (
+	"strings"
 	"time"
 
 	"app.skyclerk.com/backend/models"
@@ -36,10 +37,17 @@ func GetPnL(db models.Datastore, accountId uint, start time.Time, end time.Time,
 	// Struct we return
 	rt := []PnL{}
 
+	// Quick security check
+	if strings.ToUpper(sort) != "ASC" && strings.ToUpper(sort) != "DESC" {
+		sort = "ASC"
+	}
+
 	// Build sql
 	switch group {
 	case "month":
 		sql = "SELECT date_format(LedgerDate, '%Y-%m') AS date, SUM(LedgerAmount) AS profit, SUM(CASE WHEN LedgerAmount>0 THEN LedgerAmount ELSE 0 END) AS income, SUM(CASE WHEN LedgerAmount<0 THEN LedgerAmount ELSE 0 END) AS expense FROM Ledger WHERE LedgerAccountId = ? AND LedgerDate >= ? AND LedgerDate <= ? GROUP BY date_format(LedgerDate, '%Y-%m') ORDER BY date " + sort
+	default:
+		return rt
 	}
 
 	// Run query

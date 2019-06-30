@@ -11,6 +11,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 
+	"app.skyclerk.com/backend/library/helpers"
 	"app.skyclerk.com/backend/library/reports"
 )
 
@@ -18,12 +19,12 @@ import (
 // ReportsPnl returns income, expense, profit by date range grouping
 //
 func (t *Controller) ReportsPnl(c *gin.Context) {
-	// Set start / end
-	start := dates.ParseDateNoError("2019-03-01")
-	end := dates.ParseDateNoError("2019-06-30")
+	// Set start / end big range default
+	start := helpers.ParseDateNoError(c.DefaultQuery("start", "1800-01-01"))
+	end := helpers.ParseDateNoError(c.DefaultQuery("end", "3000-01-01"))
 
 	// Run function
-	pl := reports.GetPnL(t.db, uint(c.MustGet("accountId").(int)), start, end, "month")
+	pl := reports.GetPnL(t.db, uint(c.MustGet("accountId").(int)), start, end, c.DefaultQuery("group", "month"), c.DefaultQuery("sort", "desc"))
 
 	// Return happy JSON
 	c.JSON(200, pl)

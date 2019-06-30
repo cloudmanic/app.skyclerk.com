@@ -23,7 +23,7 @@ func TestGetPnL01(t *testing.T) {
 	dMap := make(map[uint]models.Ledger)
 
 	// Start the db connection.
-	db, dbName, _ := models.NewTestDB("testing_db")
+	db, dbName, _ := models.NewTestDB("")
 	defer models.TestingTearDown(db, dbName)
 
 	// Create like 5 ledger entries. Diffent account.
@@ -182,6 +182,36 @@ func TestGetPnL01(t *testing.T) {
 	st.Expect(t, helpers.Round(pl2[2].Expense, 2), helpers.Round(expense042019, 2))
 	st.Expect(t, helpers.Round(pl2[1].Expense, 2), helpers.Round(expense052019, 2))
 	st.Expect(t, helpers.Round(pl2[0].Expense, 2), helpers.Round(expense062019, 2))
+
+	// ---------- Security Check ------------- //
+
+	// Run test function
+	pl3 := GetPnL(db, 33, start, end, "month", "JJJJ")
+
+	// Test results
+	st.Expect(t, len(pl), 4)
+	st.Expect(t, helpers.Round(pl3[0].Profit, 2), helpers.Round(profit032019, 2))
+	st.Expect(t, helpers.Round(pl3[1].Profit, 2), helpers.Round(profit042019, 2))
+	st.Expect(t, helpers.Round(pl3[2].Profit, 2), helpers.Round(profit052019, 2))
+	st.Expect(t, helpers.Round(pl3[3].Profit, 2), helpers.Round(profit062019, 2))
+
+	st.Expect(t, helpers.Round(pl3[0].Income, 2), helpers.Round(income032019, 2))
+	st.Expect(t, helpers.Round(pl3[1].Income, 2), helpers.Round(income042019, 2))
+	st.Expect(t, helpers.Round(pl3[2].Income, 2), helpers.Round(income052019, 2))
+	st.Expect(t, helpers.Round(pl3[3].Income, 2), helpers.Round(income062019, 2))
+
+	st.Expect(t, helpers.Round(pl3[0].Expense, 2), helpers.Round(expense032019, 2))
+	st.Expect(t, helpers.Round(pl3[1].Expense, 2), helpers.Round(expense042019, 2))
+	st.Expect(t, helpers.Round(pl3[2].Expense, 2), helpers.Round(expense052019, 2))
+	st.Expect(t, helpers.Round(pl3[3].Expense, 2), helpers.Round(expense062019, 2))
+
+	// ---------- Security Check - Group ------------- //
+
+	// Run test function
+	pl4 := GetPnL(db, 33, start, end, "blah", "ASC")
+
+	// Test results
+	st.Expect(t, len(pl4), 0)
 }
 
 //
