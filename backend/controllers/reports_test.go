@@ -21,6 +21,106 @@ import (
 )
 
 //
+// TestReportsIncomeByContact01	 - Get income by contact
+//
+func TestReportsIncomeByContact01(t *testing.T) {
+	// Data map
+	dMap := make(map[uint]models.Ledger)
+
+	// Start the db connection.
+	db, dbName, _ := models.NewTestDB("")
+	defer models.TestingTearDown(db, dbName)
+
+	// Create controller
+	c := &Controller{}
+	c.SetDB(db)
+
+	// Create like 5 ledger entries. Diffent account.
+	for i := 0; i < 5; i++ {
+		l := test.GetRandomLedger(23)
+		db.LedgerCreate(&l)
+	}
+
+	// Create like 10 ledger entries for March
+	for i := 0; i < 10; i++ {
+		l := test.GetRandomLedger(33)
+		l.Date = helpers.ParseDateNoError("2019-03-01")
+		db.LedgerCreate(&l)
+		dMap[l.Id] = l
+	}
+
+	// Create like 10 ledger entries for April
+	for i := 0; i < 10; i++ {
+		l := test.GetRandomLedger(33)
+		l.Date = helpers.ParseDateNoError("2019-04-01")
+		db.LedgerCreate(&l)
+		dMap[l.Id] = l
+	}
+
+	// Create like 10 ledger entries for May
+	for i := 0; i < 10; i++ {
+		l := test.GetRandomLedger(33)
+		l.Date = helpers.ParseDateNoError("2019-05-01")
+		db.LedgerCreate(&l)
+		dMap[l.Id] = l
+	}
+
+	// Create like 10 ledger entries for June
+	for i := 0; i < 10; i++ {
+		l := test.GetRandomLedger(33)
+		l.Date = helpers.ParseDateNoError("2019-06-01")
+
+		// test non-Name options
+		if l.Contact.Name == "Home Depot" {
+			l.Contact.Name = ""
+		}
+
+		db.LedgerCreate(&l)
+		dMap[l.Id] = l
+	}
+
+	// Setup request
+	req, _ := http.NewRequest("GET", "/api/v3/33/reports/income-by-contact?start=2019-03-01&end=2019-06-30&sort=asc", nil)
+
+	// Setup writer.
+	w := httptest.NewRecorder()
+	gin.SetMode("release")
+	gin.DisableConsoleColor()
+
+	r := gin.New()
+	r.Use(func(c *gin.Context) {
+		c.Set("accountId", 33)
+		c.Set("userId", uint(109))
+	})
+	r.GET("/api/v3/:account/reports/income-by-contact", c.ReportsIncomeByContact)
+	r.ServeHTTP(w, req)
+
+	// Grab result and convert to strut
+	results := []reports.NameValue{}
+	err := json.Unmarshal([]byte(w.Body.String()), &results)
+
+	// Sort of a cheal test here.
+	incomeTotal := 0.00
+
+	for key := range dMap {
+		if dMap[key].Amount > 0 {
+			incomeTotal = incomeTotal + dMap[key].Amount
+		}
+	}
+
+	// Build total from results
+	total := 0.00
+
+	for _, row := range results {
+		total = total + row.Amount
+	}
+
+	// Test results
+	st.Expect(t, err, nil)
+	st.Expect(t, helpers.Round(total, 2), helpers.Round(incomeTotal, 2))
+}
+
+//
 // TestReportsExpensesByContact01	 - Get expenses by contact
 //
 func TestReportsExpensesByContact01(t *testing.T) {

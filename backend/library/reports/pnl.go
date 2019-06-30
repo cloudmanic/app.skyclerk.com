@@ -34,6 +34,36 @@ type YearPnL struct {
 }
 
 //
+// GetIncomeByContact - Get income by contact
+//
+func GetIncomeByContact(db models.Datastore, accountId uint, start time.Time, end time.Time, sort string) []NameValue {
+	// SQL String
+	sql := "SELECT IF(LENGTH(ContactsName)>0,ContactsName, CONCAT(ContactsFirstName, \" \", ContactsLastName)) AS name, "
+	sql = sql + "sum(LedgerAmount) AS amount "
+	sql = sql + "FROM Ledger "
+	sql = sql + "JOIN Contacts ON Contacts.ContactsId = Ledger.LedgerContactId "
+	sql = sql + "WHERE LedgerAccountId = ? AND LedgerDate >= ? AND LedgerDate <= ? "
+	sql = sql + "AND LedgerAmount > 0 GROUP BY name ORDER BY name "
+
+	// Struct we return
+	rt := []NameValue{}
+
+	// Quick security check
+	if strings.ToUpper(sort) != "ASC" && strings.ToUpper(sort) != "DESC" {
+		sort = "ASC"
+	}
+
+	// Add in sort
+	sql = sql + sort
+
+	// Run query
+	db.New().Raw(sql, accountId, start.Format("2006-01-02"), end.Format("2006-01-02")).Scan(&rt)
+
+	// Return happy.
+	return rt
+}
+
+//
 // GetExpenseByContact - Get expense by contact
 //
 func GetExpenseByContact(db models.Datastore, accountId uint, start time.Time, end time.Time, sort string) []NameValue {
