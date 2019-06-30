@@ -378,6 +378,79 @@ func TestGetPnL02(t *testing.T) {
 }
 
 //
+// TestGetPnL03 - Year
+//
+func TestGetPnL03(t *testing.T) {
+	// Data map
+	dMap := make(map[uint]models.Ledger)
+
+	// Start the db connection.
+	db, dbName, _ := models.NewTestDB("")
+	defer models.TestingTearDown(db, dbName)
+
+	// Create like 5 ledger entries. Diffent account.
+	for i := 0; i < 5; i++ {
+		l := test.GetRandomLedger(23)
+		db.LedgerCreate(&l)
+	}
+
+	// Create like 10 ledger entries - 2019
+	for i := 0; i < 10; i++ {
+		l := test.GetRandomLedger(33)
+		l.Date = helpers.ParseDateNoError("2019-02-01 00:00:00")
+		l.Amount = 100.00
+		db.LedgerCreate(&l)
+		dMap[l.Id] = l
+	}
+
+	// Create like 10 ledger entries - 2018
+	for i := 0; i < 10; i++ {
+		l := test.GetRandomLedger(33)
+		l.Date = helpers.ParseDateNoError("2018-04-01 00:00:00")
+		l.Amount = 200.00
+		db.LedgerCreate(&l)
+		dMap[l.Id] = l
+	}
+
+	// Create like 10 ledger entries - 2017
+	for i := 0; i < 10; i++ {
+		l := test.GetRandomLedger(33)
+		l.Date = helpers.ParseDateNoError("2017-01-01 00:00:00")
+		l.Amount = -100.00
+		db.LedgerCreate(&l)
+		dMap[l.Id] = l
+	}
+
+	// Set start / end
+	start := helpers.ParseDateNoError("2017-01-01")
+	end := helpers.ParseDateNoError("2019-12-30")
+
+	// ---------- quarter ------------- //
+
+	// Run test function
+	pl := GetPnL(db, 33, start, end, "year", "ASC")
+
+	// Test results
+	st.Expect(t, len(pl), 3)
+
+	st.Expect(t, pl[0].Date, "2017")
+	st.Expect(t, pl[1].Date, "2018")
+	st.Expect(t, pl[2].Date, "2019")
+
+	st.Expect(t, pl[0].Profit, -1000.00)
+	st.Expect(t, pl[1].Profit, 2000.00)
+	st.Expect(t, pl[2].Profit, 1000.00)
+
+	st.Expect(t, pl[0].Income, 0.00)
+	st.Expect(t, pl[1].Income, 2000.00)
+	st.Expect(t, pl[2].Income, 1000.00)
+
+	st.Expect(t, pl[0].Expense, -1000.00)
+	st.Expect(t, pl[1].Expense, 0.00)
+	st.Expect(t, pl[2].Expense, 0.00)
+}
+
+//
 // TestGetCurrentYearPnL01 - return the current year and the profit and lost of that year.
 //
 func TestGetCurrentYearPnL01(t *testing.T) {

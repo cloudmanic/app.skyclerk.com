@@ -95,6 +95,16 @@ func GetPnL(db models.Datastore, accountId uint, start time.Time, end time.Time,
 
 		GROUP BY date ORDER BY date ` + sort
 
+	case "year":
+		sql = `SELECT
+		date_format(LedgerDate, '%Y') AS date,
+		SUM(LedgerAmount) AS profit,
+		SUM(CASE WHEN LedgerAmount>0 THEN LedgerAmount ELSE 0 END) AS income,
+		SUM(CASE WHEN LedgerAmount<0 THEN LedgerAmount ELSE 0 END) AS expense
+		FROM Ledger
+		WHERE LedgerAccountId = ? AND LedgerDate >= ? AND LedgerDate <= ?
+		GROUP BY date ORDER BY date ` + sort
+
 	default:
 		return rt
 	}
