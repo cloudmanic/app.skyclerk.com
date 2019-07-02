@@ -21,7 +21,114 @@ import (
 )
 
 //
-// TestReportsIncomeByContact01	 - Get pnl by category
+// TestReportsPnlLabel01	 - Get pnl by label
+//
+func TestReportsPnlLabel01(t *testing.T) {
+	// Start the db connection.
+	db, dbName, _ := models.NewTestDB("")
+	defer models.TestingTearDown(db, dbName)
+
+	// Setup controllers
+	c := &Controller{}
+	c.SetDB(db)
+
+	// Create like 5 ledger entries. Diffent account.
+	for i := 0; i < 5; i++ {
+		l := test.GetRandomLedger(23)
+		db.LedgerCreate(&l)
+	}
+
+	// Create like 5 ledger entries
+	for i := 0; i < 5; i++ {
+		l := test.GetRandomLedger(33)
+		l.Amount = 100
+		r := test.GetRandomLabel(33)
+		r.Name = "Label #1"
+		l.Labels = []models.Label{r}
+		l.Date = helpers.ParseDateNoError("2019-03-01")
+		db.LedgerCreate(&l)
+	}
+
+	// Create like 5 ledger entries
+	for i := 0; i < 5; i++ {
+		l := test.GetRandomLedger(33)
+		l.Amount = 100
+		r := test.GetRandomLabel(33)
+		r.Name = "Label #2"
+		l.Labels = []models.Label{r}
+		l.Date = helpers.ParseDateNoError("2019-03-05")
+		db.LedgerCreate(&l)
+	}
+
+	// Create like 5 ledger entries
+	for i := 0; i < 5; i++ {
+		l := test.GetRandomLedger(33)
+		l.Amount = -100
+		r := test.GetRandomLabel(33)
+		r.Name = "Label #3"
+		l.Labels = []models.Label{r}
+		l.Date = helpers.ParseDateNoError("2019-03-05")
+		db.LedgerCreate(&l)
+	}
+
+	// Create like 5 ledger entries
+	for i := 0; i < 5; i++ {
+		l := test.GetRandomLedger(33)
+		l.Amount = -100
+		r := test.GetRandomLabel(33)
+		r.Name = "Label #4"
+		l.Labels = []models.Label{r}
+		l.Date = helpers.ParseDateNoError("2019-03-10")
+		db.LedgerCreate(&l)
+	}
+
+	// Create like 5 ledger entries
+	for i := 0; i < 5; i++ {
+		l := test.GetRandomLedger(33)
+		l.Amount = 100
+		r := test.GetRandomLabel(33)
+		r.Name = "Label #5"
+		l.Labels = []models.Label{r}
+		l.Date = helpers.ParseDateNoError("2019-03-15")
+		db.LedgerCreate(&l)
+	}
+
+	// Setup request
+	req, _ := http.NewRequest("GET", "/api/v3/33/reports/pnl-label?start=2019-03-01&end=2019-06-30&sort=asc", nil)
+
+	// Setup writer.
+	w := httptest.NewRecorder()
+	gin.SetMode("release")
+	gin.DisableConsoleColor()
+
+	r := gin.New()
+	r.Use(func(c *gin.Context) {
+		c.Set("accountId", 33)
+		c.Set("userId", uint(109))
+	})
+	r.GET("/api/v3/:account/reports/pnl-label", c.ReportsPnlLabel)
+	r.ServeHTTP(w, req)
+
+	// Grab result and convert to strut
+	result := []reports.NameValue{}
+	err := json.Unmarshal([]byte(w.Body.String()), &result)
+
+	// Test results
+	st.Expect(t, err, nil)
+	st.Expect(t, result[0].Name, "Label #1")
+	st.Expect(t, result[0].Amount, 500.00)
+	st.Expect(t, result[1].Name, "Label #2")
+	st.Expect(t, result[1].Amount, 500.00)
+	st.Expect(t, result[2].Name, "Label #3")
+	st.Expect(t, result[2].Amount, -500.00)
+	st.Expect(t, result[3].Name, "Label #4")
+	st.Expect(t, result[3].Amount, -500.00)
+	st.Expect(t, result[4].Name, "Label #5")
+	st.Expect(t, result[4].Amount, 500.00)
+}
+
+//
+// TestReportsPnlCategory01	 - Get pnl by category
 //
 func TestReportsPnlCategory01(t *testing.T) {
 	// Start the db connection.

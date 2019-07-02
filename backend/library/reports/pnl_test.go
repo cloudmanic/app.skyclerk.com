@@ -16,6 +16,95 @@ import (
 )
 
 //
+// TestGetLabelsPnL01 - Test Labels
+//
+func TestGetLabelsPnL01(t *testing.T) {
+	// Start the db connection.
+	db, dbName, _ := models.NewTestDB("")
+	defer models.TestingTearDown(db, dbName)
+
+	// Create like 5 ledger entries. Diffent account.
+	for i := 0; i < 5; i++ {
+		l := test.GetRandomLedger(23)
+		db.LedgerCreate(&l)
+	}
+
+	// Create like 5 ledger entries
+	for i := 0; i < 5; i++ {
+		l := test.GetRandomLedger(33)
+		l.Amount = 100
+		r := test.GetRandomLabel(33)
+		r.Name = "Label #1"
+		l.Labels = []models.Label{r}
+		l.Date = helpers.ParseDateNoError("2019-03-01")
+		db.LedgerCreate(&l)
+	}
+
+	// Create like 5 ledger entries
+	for i := 0; i < 5; i++ {
+		l := test.GetRandomLedger(33)
+		l.Amount = 100
+		r := test.GetRandomLabel(33)
+		r.Name = "Label #2"
+		l.Labels = []models.Label{r}
+		l.Date = helpers.ParseDateNoError("2019-03-05")
+		db.LedgerCreate(&l)
+	}
+
+	// Create like 5 ledger entries
+	for i := 0; i < 5; i++ {
+		l := test.GetRandomLedger(33)
+		l.Amount = -100
+		r := test.GetRandomLabel(33)
+		r.Name = "Label #3"
+		l.Labels = []models.Label{r}
+		l.Date = helpers.ParseDateNoError("2019-03-05")
+		db.LedgerCreate(&l)
+	}
+
+	// Create like 5 ledger entries
+	for i := 0; i < 5; i++ {
+		l := test.GetRandomLedger(33)
+		l.Amount = -100
+		r := test.GetRandomLabel(33)
+		r.Name = "Label #4"
+		l.Labels = []models.Label{r}
+		l.Date = helpers.ParseDateNoError("2019-03-10")
+		db.LedgerCreate(&l)
+	}
+
+	// Create like 5 ledger entries
+	for i := 0; i < 5; i++ {
+		l := test.GetRandomLedger(33)
+		l.Amount = 100
+		r := test.GetRandomLabel(33)
+		r.Name = "Label #5"
+		l.Labels = []models.Label{r}
+		l.Date = helpers.ParseDateNoError("2019-03-15")
+		db.LedgerCreate(&l)
+	}
+
+	// Set start / end
+	start := helpers.ParseDateNoError("2019-03-01")
+	end := helpers.ParseDateNoError("2019-06-30")
+
+	// Run test function
+	result := GetLabelsPnL(db, 33, start, end, "ASC")
+
+	// Test results
+	st.Expect(t, result[0].Name, "Label #1")
+	st.Expect(t, result[0].Amount, 500.00)
+	st.Expect(t, result[1].Name, "Label #2")
+	st.Expect(t, result[1].Amount, 500.00)
+	st.Expect(t, result[2].Name, "Label #3")
+	st.Expect(t, result[2].Amount, -500.00)
+	st.Expect(t, result[3].Name, "Label #4")
+	st.Expect(t, result[3].Amount, -500.00)
+	st.Expect(t, result[4].Name, "Label #5")
+	st.Expect(t, result[4].Amount, 500.00)
+}
+
+//
 // TestGetCategoriesPnL01 - Test Categories
 //
 func TestGetCategoriesPnL01(t *testing.T) {

@@ -34,7 +34,36 @@ type YearPnL struct {
 }
 
 //
-// GetCategoriesPnL returns catories and the total for the time period.
+// GetLabelsPnL returns labels and the total for the time period.
+//
+func GetLabelsPnL(db models.Datastore, accountId uint, start time.Time, end time.Time, sort string) []NameValue {
+	// SQL String
+	sql := "SELECT LabelsName as name, SUM(LedgerAmount) as amount FROM LabelsToLedger "
+	sql = sql + "JOIN Ledger ON LabelsToLedger.LabelsToLedgerLedgerId = Ledger.LedgerId "
+	sql = sql + "JOIN Labels ON Labels.LabelsId = LabelsToLedger.LabelsToLedgerLabelId "
+	sql = sql + "WHERE LedgerAccountId = ? AND LedgerDate >= ? AND LedgerDate <= ? "
+	sql = sql + "GROUP BY LabelsName ORDER BY name "
+
+	// Struct we return
+	rt := []NameValue{}
+
+	// Quick security check
+	if strings.ToUpper(sort) != "ASC" && strings.ToUpper(sort) != "DESC" {
+		sort = "ASC"
+	}
+
+	// Add in sort
+	sql = sql + sort
+
+	// Run query
+	db.New().Raw(sql, accountId, start.Format("2006-01-02"), end.Format("2006-01-02")).Scan(&rt)
+
+	// Return happy.
+	return rt
+}
+
+//
+// GetCategoriesPnL returns categories and the total for the time period.
 //
 func GetCategoriesPnL(db models.Datastore, accountId uint, start time.Time, end time.Time, sort string) []NameValue {
 	// SQL String
