@@ -21,6 +21,103 @@ import (
 )
 
 //
+// TestReportsIncomeByContact01	 - Get pnl by category
+//
+func TestReportsPnlCategory01(t *testing.T) {
+	// Start the db connection.
+	db, dbName, _ := models.NewTestDB("")
+	defer models.TestingTearDown(db, dbName)
+
+	// Setup controllers
+	c := &Controller{}
+	c.SetDB(db)
+
+	// Create like 5 ledger entries. Diffent account.
+	for i := 0; i < 5; i++ {
+		l := test.GetRandomLedger(23)
+		db.LedgerCreate(&l)
+	}
+
+	// Create like 5 ledger entries
+	for i := 0; i < 5; i++ {
+		l := test.GetRandomLedger(33)
+		l.Amount = 100
+		l.Category.Name = "Category #1"
+		l.Date = helpers.ParseDateNoError("2019-03-01")
+		db.LedgerCreate(&l)
+	}
+
+	// Create like 5 ledger entries
+	for i := 0; i < 5; i++ {
+		l := test.GetRandomLedger(33)
+		l.Amount = 100
+		l.Category.Name = "Category #2"
+		l.Date = helpers.ParseDateNoError("2019-03-05")
+		db.LedgerCreate(&l)
+	}
+
+	// Create like 5 ledger entries
+	for i := 0; i < 5; i++ {
+		l := test.GetRandomLedger(33)
+		l.Amount = -100
+		l.Category.Name = "Category #3"
+		l.Date = helpers.ParseDateNoError("2019-03-05")
+		db.LedgerCreate(&l)
+	}
+
+	// Create like 5 ledger entries
+	for i := 0; i < 5; i++ {
+		l := test.GetRandomLedger(33)
+		l.Amount = -100
+		l.Category.Name = "Category #4"
+		l.Date = helpers.ParseDateNoError("2019-03-10")
+		db.LedgerCreate(&l)
+	}
+
+	// Create like 5 ledger entries
+	for i := 0; i < 5; i++ {
+		l := test.GetRandomLedger(33)
+		l.Amount = 100
+		l.Category.Name = "Category #5"
+		l.Date = helpers.ParseDateNoError("2019-03-15")
+		db.LedgerCreate(&l)
+	}
+
+	// Setup request
+	req, _ := http.NewRequest("GET", "/api/v3/33/reports/pnl-category?start=2019-03-01&end=2019-06-30&sort=asc", nil)
+
+	// Setup writer.
+	w := httptest.NewRecorder()
+	gin.SetMode("release")
+	gin.DisableConsoleColor()
+
+	r := gin.New()
+	r.Use(func(c *gin.Context) {
+		c.Set("accountId", 33)
+		c.Set("userId", uint(109))
+	})
+	r.GET("/api/v3/:account/reports/pnl-category", c.ReportsPnlCategory)
+	r.ServeHTTP(w, req)
+
+	// Grab result and convert to strut
+	result := []reports.NameValue{}
+	err := json.Unmarshal([]byte(w.Body.String()), &result)
+
+	// Test results
+	st.Expect(t, err, nil)
+	st.Expect(t, result[0].Name, "Category #1")
+	st.Expect(t, result[0].Amount, 500.00)
+	st.Expect(t, result[1].Name, "Category #2")
+	st.Expect(t, result[1].Amount, 500.00)
+	st.Expect(t, result[2].Name, "Category #3")
+	st.Expect(t, result[2].Amount, -500.00)
+	st.Expect(t, result[3].Name, "Category #4")
+	st.Expect(t, result[3].Amount, -500.00)
+	st.Expect(t, result[4].Name, "Category #5")
+	st.Expect(t, result[4].Amount, 500.00)
+}
+
+//
 // TestReportsIncomeByContact01	 - Get income by contact
 //
 func TestReportsIncomeByContact01(t *testing.T) {

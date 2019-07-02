@@ -16,6 +16,102 @@ import (
 )
 
 //
+// TestGetCategoriesPnL01 - Test Categories
+//
+func TestGetCategoriesPnL01(t *testing.T) {
+	// Start the db connection.
+	db, dbName, _ := models.NewTestDB("")
+	defer models.TestingTearDown(db, dbName)
+
+	// Create like 5 ledger entries. Diffent account.
+	for i := 0; i < 5; i++ {
+		l := test.GetRandomLedger(23)
+		db.LedgerCreate(&l)
+	}
+
+	// Create like 5 ledger entries
+	for i := 0; i < 5; i++ {
+		l := test.GetRandomLedger(33)
+		l.Amount = 100
+		l.Category.Name = "Category #1"
+		l.Date = helpers.ParseDateNoError("2019-03-01")
+		db.LedgerCreate(&l)
+	}
+
+	// Create like 5 ledger entries
+	for i := 0; i < 5; i++ {
+		l := test.GetRandomLedger(33)
+		l.Amount = 100
+		l.Category.Name = "Category #2"
+		l.Date = helpers.ParseDateNoError("2019-03-05")
+		db.LedgerCreate(&l)
+	}
+
+	// Create like 5 ledger entries
+	for i := 0; i < 5; i++ {
+		l := test.GetRandomLedger(33)
+		l.Amount = -100
+		l.Category.Name = "Category #3"
+		l.Date = helpers.ParseDateNoError("2019-03-05")
+		db.LedgerCreate(&l)
+	}
+
+	// Create like 5 ledger entries
+	for i := 0; i < 5; i++ {
+		l := test.GetRandomLedger(33)
+		l.Amount = -100
+		l.Category.Name = "Category #4"
+		l.Date = helpers.ParseDateNoError("2019-03-10")
+		db.LedgerCreate(&l)
+	}
+
+	// Create like 5 ledger entries
+	for i := 0; i < 5; i++ {
+		l := test.GetRandomLedger(33)
+		l.Amount = 100
+		l.Category.Name = "Category #5"
+		l.Date = helpers.ParseDateNoError("2019-03-15")
+		db.LedgerCreate(&l)
+	}
+
+	// Set start / end
+	start := helpers.ParseDateNoError("2019-03-01")
+	end := helpers.ParseDateNoError("2019-06-30")
+
+	// Run test function
+	result := GetCategoriesPnL(db, 33, start, end, "ASC")
+
+	// Test results
+	st.Expect(t, result[0].Name, "Category #1")
+	st.Expect(t, result[0].Amount, 500.00)
+	st.Expect(t, result[1].Name, "Category #2")
+	st.Expect(t, result[1].Amount, 500.00)
+	st.Expect(t, result[2].Name, "Category #3")
+	st.Expect(t, result[2].Amount, -500.00)
+	st.Expect(t, result[3].Name, "Category #4")
+	st.Expect(t, result[3].Amount, -500.00)
+	st.Expect(t, result[4].Name, "Category #5")
+	st.Expect(t, result[4].Amount, 500.00)
+
+	// -------- Different Order -------------- //
+
+	// Run test function
+	result = GetCategoriesPnL(db, 33, start, end, "DESC")
+
+	// Test results
+	st.Expect(t, result[0].Name, "Category #5")
+	st.Expect(t, result[0].Amount, 500.00)
+	st.Expect(t, result[1].Name, "Category #4")
+	st.Expect(t, result[1].Amount, -500.00)
+	st.Expect(t, result[2].Name, "Category #3")
+	st.Expect(t, result[2].Amount, -500.00)
+	st.Expect(t, result[3].Name, "Category #2")
+	st.Expect(t, result[3].Amount, 500.00)
+	st.Expect(t, result[4].Name, "Category #1")
+	st.Expect(t, result[4].Amount, 500.00)
+}
+
+//
 // TestGetIncomeByContact01 - Get income by contact
 //
 func TestGetIncomeByContact01(t *testing.T) {
