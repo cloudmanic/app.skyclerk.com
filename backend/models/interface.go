@@ -63,6 +63,9 @@ type Datastore interface {
 	ValidateUserLogin(email string, password string) error
 	LoginUserByEmailPass(email string, password string, appId uint, userAgent string, ipAddress string) (User, Session, error)
 
+	// AcctToUsers
+	GetUsersByAccount(accountId uint) []User
+
 	// File
 	GetSignedFileUrl(path string) string
 	CleanFileName(fileName string) string
