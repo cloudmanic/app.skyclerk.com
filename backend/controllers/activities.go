@@ -8,6 +8,9 @@
 package controllers
 
 import (
+	"net/http"
+	"strconv"
+
 	"app.skyclerk.com/backend/library/request"
 	"app.skyclerk.com/backend/library/response"
 	"app.skyclerk.com/backend/models"
@@ -37,6 +40,23 @@ func (t *Controller) GetActivities(c *gin.Context) {
 			{Key: "user_id", Compare: "=", ValueInt: c.MustGet("userId").(int)},
 			{Key: "account_id", Compare: "=", ValueInt: c.MustGet("accountId").(int)},
 		},
+	}
+
+	// Did we pass in a leder_id so we filter by a ledger.
+	if c.DefaultQuery("ledger_id", "") != "" {
+		// Set id
+		ledger_id, err := strconv.ParseInt(c.Query("ledger_id"), 10, 32)
+
+		if err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"errors": err})
+			return
+		}
+
+		params.Wheres = append(params.Wheres, models.KeyValue{
+			Key:      "ledger_id",
+			Compare:  "=",
+			ValueInt: int(ledger_id),
+		})
 	}
 
 	// Run the query

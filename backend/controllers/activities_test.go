@@ -359,4 +359,84 @@ func TestGetActivities04(t *testing.T) {
 	// TODO(spicer): do better unit testing.
 }
 
+//
+// Test get Activities 05
+//
+func TestGetActivities05(t *testing.T) {
+	// Data map
+	dMap := make(map[uint]models.Activity)
+
+	// Start the db connection.
+	db, dbName, _ := models.NewTestDB("")
+	defer models.TestingTearDown(db, dbName)
+
+	// Create controller
+	c := &Controller{}
+	c.SetDB(db)
+
+	// Create test user
+	user := test.GetRandomUser(33)
+	db.Save(&user)
+
+	// Create like 105 ledger entries. This will create Activities
+	for i := 0; i < 105; i++ {
+		l := test.GetRandomLedger(33)
+		db.LedgerCreate(&l)
+
+		// Set the ledger type
+		ledgerType := "expense"
+
+		if l.Amount > 0 {
+			ledgerType = "income"
+		}
+
+		// Get the contact name.
+		contactName := l.Contact.Name
+
+		if len(contactName) == 0 {
+			contactName = l.Contact.FirstName + " " + l.Contact.LastName
+		}
+
+		// Add to the activity log
+		y := models.Activity{
+			AccountId: uint(33),
+			UserId:    user.Id,
+			Action:    ledgerType,
+			SubAction: "create",
+			Name:      contactName,
+			Amount:    l.Amount,
+			LedgerId:  l.Id,
+		}
+
+		db.Create(&y)
+
+		dMap[l.Id] = y
+	}
+
+	// Setup request
+	req, _ := http.NewRequest("GET", "/api/v3/33/activities?ledger_id=3", nil)
+
+	// Setup writer.
+	w := httptest.NewRecorder()
+	gin.SetMode("release")
+	gin.DisableConsoleColor()
+
+	r := gin.New()
+	r.Use(func(c *gin.Context) {
+		c.Set("accountId", 33)
+		c.Set("userId", int(user.Id))
+	})
+	r.GET("/api/v3/:account/activities", c.GetActivities)
+	r.ServeHTTP(w, req)
+
+	// Grab result and convert to strut
+	results := []models.Activity{}
+	err := json.Unmarshal([]byte(w.Body.String()), &results)
+
+	// Test results
+	st.Expect(t, err, nil)
+	st.Expect(t, len(results), 1)
+	st.Expect(t, results[0].LedgerId, uint(3))
+}
+
 /* End File */
