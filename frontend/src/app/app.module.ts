@@ -23,7 +23,7 @@ import { AppComponent } from './app.component';
 import { LoginComponent } from './auth/login/login.component';
 import { AuthComponent as LayoutAuthComponent } from './layouts/auth/auth.component';
 import { AppComponent as LayoutAppComponent } from './layouts/app/app.component';
-import { LandingComponent as DashboardLandingComponent } from './dashboard/landing/landing.component';
+import { SummaryComponent as DashboardSummaryComponent } from './dashboard/summary/summary.component';
 import { SidebarComponent } from './layouts/sidebar/sidebar.component';
 import { LandingComponent as LedgerLandingComponent } from './ledger/landing/landing.component';
 import { LandingComponent as SnapclerkLandingComponent } from './snapclerk/landing/landing.component';
@@ -53,7 +53,7 @@ import { ReportsComponent } from './dashboard/reports/reports.component';
 		LoginComponent,
 		LayoutAuthComponent,
 		LayoutAppComponent,
-		DashboardLandingComponent,
+		DashboardSummaryComponent,
 		SidebarComponent,
 		LedgerLandingComponent,
 		SnapclerkLandingComponent,

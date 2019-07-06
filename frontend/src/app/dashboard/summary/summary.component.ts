@@ -13,11 +13,11 @@ import { Activity } from 'src/app/models/activity.model';
 import { ReportService } from 'src/app/services/report.service';
 
 @Component({
-	selector: 'app-landing',
-	templateUrl: './landing.component.html'
+	selector: 'app-dashboard-summary',
+	templateUrl: './summary.component.html'
 })
 
-export class LandingComponent implements OnInit {
+export class SummaryComponent implements OnInit {
 	activity: Activity[] = [];
 
 	// Setup chart options - Chart 1

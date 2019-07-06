@@ -15,7 +15,7 @@ import { SessionGuard } from './auth/guards/session.guard';
 import { LoginComponent } from './auth/login/login.component';
 import { AuthComponent as LayoutAuthComponent } from './layouts/auth/auth.component';
 import { AppComponent as LayoutAppComponent } from './layouts/app/app.component';
-import { LandingComponent as DashboardLandingComponent } from './dashboard/landing/landing.component';
+import { SummaryComponent as DashboardSummaryComponent } from './dashboard/summary/summary.component';
 import { LandingComponent as LedgerLandingComponent } from './ledger/landing/landing.component';
 import { LandingComponent as SnapclerkLandingComponent } from './snapclerk/landing/landing.component';
 import { UsersComponent as SettingsUsersComponent } from './settings/users/users.component';
@@ -33,7 +33,7 @@ const routes: Routes = [
 		path: '', component: LayoutAppComponent, children: [
 
 			// dashboard
-			{ path: '', component: DashboardLandingComponent, canActivate: [SessionGuard] },
+			{ path: '', component: DashboardSummaryComponent, canActivate: [SessionGuard] },
 			{ path: 'dashboard/graphs', component: GraphsComponent, canActivate: [SessionGuard] },
 			{ path: 'dashboard/reports', component: ReportsComponent, canActivate: [SessionGuard] },
 
