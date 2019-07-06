@@ -5,6 +5,7 @@
 // Copyright: 2019 Cloudmanic Labs, LLC. All rights reserved.
 //
 
+import * as moment from 'moment';
 import { map } from "rxjs/operators";
 import { Injectable, EventEmitter } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
@@ -32,11 +33,35 @@ export class ReportService {
 		return this.http.get<PnlCurrentYear>(`${environment.app_server}/api/v3/${accountId}/reports/pnl-current-year`)
 			.pipe(map(res => { return { Year: res["year"], Value: res["value"] } }));
 	}
+
+	//
+	// Get Pnl
+	//
+	getPnl(start: Date, end: Date, group: string, sort: string): Observable<Pnl[]> {
+		let accountId = localStorage.getItem('account_id');
+		return this.http.get<Pnl[]>(`${environment.app_server}/api/v3/${accountId}/reports/pnl?sort=${sort}&start=${moment(start).format('YYYY-MM-DD')}&end=${moment(end).format('YYYY-MM-DD')}&group=${group}`)
+			.pipe(map(res => {
+				let rt = [];
+
+				for (let i = 0; i < res.length; i++) {
+					rt.push({ Date: moment(res[i]["date"]).toDate(), Profit: res[i]["profit"], Expense: res[i]["expense"], Income: res[i]["income"] });
+				}
+
+				return rt;
+			}));
+	}
 }
 
 export interface PnlCurrentYear {
 	Year: number,
 	Value: number
+}
+
+export interface Pnl {
+	Date: Date,
+	Profit: number,
+	Expense: number,
+	Income: number
 }
 
 /* End File */
