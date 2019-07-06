@@ -26,9 +26,12 @@
             "styles": [
               "src/styles.css",
               "src/fonts.css",
-              "src/app.css"
+              "src/app.css",
+              "node_modules/pikaday/css/pikaday.css"
             ],
-            "scripts": []
+            "scripts": [
+              "node_modules/pikaday/pikaday.js"
+            ],
           },
           "configurations": {
             "production": {

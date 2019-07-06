@@ -5,8 +5,10 @@
 // Copyright: 2019 Cloudmanic Labs, LLC. All rights reserved.
 //
 
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ElementRef, ViewChild } from '@angular/core';
 import { ReportService } from 'src/app/services/report.service';
+
+declare var Pikaday: any;
 
 @Component({
 	selector: 'app-dashboard-graphs',
@@ -15,7 +17,14 @@ import { ReportService } from 'src/app/services/report.service';
 
 export class GraphsComponent implements OnInit {
 	showFilter: boolean = false;
-	editStartDate: boolean = false;
+
+	// Setup date pickers
+	endDate: Date = new Date();
+	startDate: Date = new Date();
+	@ViewChild('endDateField') endDateField: ElementRef;
+	@ViewChild('endDateTrigger') endDateTrigger: ElementRef;
+	@ViewChild('startDateField') startDateField: ElementRef;
+	@ViewChild('startDateTrigger') startDateTrigger: ElementRef;
 
 	//
 	// Constructor
@@ -26,12 +35,44 @@ export class GraphsComponent implements OnInit {
 	// ngOnInit
 	//
 	ngOnInit() {
-		// // Load page data
-		// this.loadActivity();
-		//
-		// // Build charts
-		// this.buildChart1();
-		// this.buildChart2();
+		// Setup date pickers.
+		this.setupDatePickers();
+
+		// Build the page
+		this.refreshPageData();
+	}
+
+	//
+	// Load the page data.
+	//
+	refreshPageData() {
+		console.log(this.startDate);
+		console.log(this.endDate);
+	}
+
+	//
+	// Setup date pickers
+	//
+	setupDatePickers() {
+		// Setup start date picker.
+		new Pikaday({
+			field: this.startDateField.nativeElement,
+			trigger: this.startDateTrigger.nativeElement,
+			onSelect: (date: Date) => {
+				this.startDate = date;
+				this.refreshPageData();
+			}
+		});
+
+		// Setup end date picker.
+		new Pikaday({
+			field: this.endDateField.nativeElement,
+			trigger: this.endDateTrigger.nativeElement,
+			onSelect: (date: Date) => {
+				this.endDate = date;
+				this.refreshPageData();
+			}
+		});
 	}
 
 	//
@@ -42,17 +83,6 @@ export class GraphsComponent implements OnInit {
 			this.showFilter = false;
 		} else {
 			this.showFilter = true;
-		}
-	}
-
-	//
-	// Toggle start date
-	//
-	toggleEditStartDate() {
-		if (this.editStartDate) {
-			this.editStartDate = false;
-		} else {
-			this.editStartDate = true;
 		}
 	}
 }

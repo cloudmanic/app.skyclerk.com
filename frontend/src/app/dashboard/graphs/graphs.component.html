@@ -43,22 +43,22 @@
                               <div class="form-col form-col-size2">
                                 <ul class="list-dates">
                                   <li>
-                                    <a *ngIf="! editStartDate" (click)="toggleEditStartDate()">
+                                    <a #startDateTrigger>
                                       <i class="ico-date"></i>
-                                      January 23, 2011
+                                      {{ startDate | date:'longDate' }}
                                     </a>
-                                    <input type="date" name="startDate" value="" *ngIf="editStartDate" />
+                                    <input type="text" #startDateField name="startDate" value="" style="opacity: 0;" />
                                   </li>
 
                                   <li>
-                                    <a href="#">
+                                    <a #endDateTrigger>
                                       <i class="ico-date"></i>
-
-                                      Today, September 2, 2013
+                                      {{ endDate | date:'longDate' }}
                                     </a>
+                                    <input type="text" #endDateField name="endDate" value="" style="opacity: 0;" />
                                   </li>
-                                </ul><!-- /.list-dates -->
-                              </div><!-- /.form-col form-col-size1 -->
+                                </ul>
+                              </div>
 
                               <div class="form-col form-col-size3">
                                 <button type="submit" value="GO" class="search-activity-btn btn" (click)="toggleFilter()">
