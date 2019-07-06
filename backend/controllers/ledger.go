@@ -245,7 +245,7 @@ func (t *Controller) DeleteLedger(c *gin.Context) {
 	}
 
 	// First we make sure this is an entry we have access to.
-	_, err2 := t.db.GetLedgerByAccountAndId(uint(c.MustGet("accountId").(int)), uint(id))
+	entry, err2 := t.db.GetLedgerByAccountAndId(uint(c.MustGet("accountId").(int)), uint(id))
 
 	if err2 != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Ledger entry not found."})
@@ -259,6 +259,31 @@ func (t *Controller) DeleteLedger(c *gin.Context) {
 		response.RespondError(c, err)
 		return
 	}
+
+	// Set the ledger type
+	ledgerType := "expense"
+
+	if entry.Amount > 0 {
+		ledgerType = "income"
+	}
+
+	// Get the contact name.
+	contactName := entry.Contact.Name
+
+	if len(contactName) == 0 {
+		contactName = entry.Contact.FirstName + " " + entry.Contact.LastName
+	}
+
+	// Add to the activity log
+	t.db.New().Create(&models.Activity{
+		AccountId: entry.AccountId,
+		UserId:    uint(c.MustGet("userId").(int)),
+		Action:    ledgerType,
+		SubAction: "delete",
+		Name:      contactName,
+		Amount:    entry.Amount,
+		LedgerId:  entry.Id,
+	})
 
 	// Return happy.
 	response.RespondDeleted(c, nil)

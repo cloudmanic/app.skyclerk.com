@@ -143,28 +143,24 @@
               </div>
 
               <div class="section-entry-row">
-                <div class="section-entry-col section-entry-col-size1">
+                <div class="section-entry-col">
                   <h3>History</h3>
 
                   <ul class="list-history">
-                    <li><strong>2-11-2014, 03:12PM</strong> Submitted by Paul Jeffries</li>
+                    <li *ngFor="let row of activity">
+                      <strong>{{ row.CreatedAt | date:'shortDate' }}, {{ row.CreatedAt | date:'shortTime' }}</strong>
+                      {{ row.Message }}
+                    </li>
+                  </ul>
+                </div>
+              </div>
 
-                    <li><strong>2-28-2014, 03:12PM</strong> You edited this entry</li>
+            </div>
+          </div>
+        </section>
+      </div>
 
-                    <li><strong>3-02-2014, 05:18PM</strong> Marianned edited this entry</li>
-                  </ul><!-- /.list-history -->
-                </div><!-- /.section-entry-col section-entry-col-size1 -->
-
-                <div class="section-entry-col section-entry-col-size2">
-
-                </div><!-- /.section-entry-col section-entry-col-size2 -->
-              </div><!-- /.section-entry-row -->
-            </div><!-- /.section-body -->
-          </div><!-- /.section-inner -->
-        </section><!-- /.section-entry -->
-      </div><!-- /.contentbox contentbox-primary -->
-
-    </div><!-- /.content -->
+    </div>
 
     <app-layouts-sidebar current="ledger"></app-layouts-sidebar>
 

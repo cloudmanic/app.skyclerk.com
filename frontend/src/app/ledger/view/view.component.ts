@@ -9,6 +9,8 @@ import { Component, OnInit } from '@angular/core';
 import { LedgerService } from 'src/app/services/ledger.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Ledger } from 'src/app/models/ledger.model';
+import { Activity } from 'src/app/models/activity.model';
+import { ActivityService } from 'src/app/services/activity.service';
 
 @Component({
 	selector: 'app-ledger-view',
@@ -16,12 +18,13 @@ import { Ledger } from 'src/app/models/ledger.model';
 })
 
 export class ViewComponent implements OnInit {
+	activity: Activity[] = [];
 	ledger: Ledger = new Ledger();
 
 	//
 	// Constructor
 	//
-	constructor(public ledgerService: LedgerService, public route: ActivatedRoute, public router: Router) { }
+	constructor(public ledgerService: LedgerService, public route: ActivatedRoute, public router: Router, public activityService: ActivityService) { }
 
 	//
 	// ngOnInit
@@ -31,8 +34,29 @@ export class ViewComponent implements OnInit {
 		let ledgerId = this.route.snapshot.params['id'];
 
 		// Get the ledger based on the id we passed in.
+		this.loadLedgerEntry(ledgerId);
+
+		// Load activity for this ledger entry.
+		this.loadActivity(ledgerId);
+	}
+
+	//
+	// Load Ledger entry.
+	//
+	loadLedgerEntry(ledgerId: number) {
 		this.ledgerService.getById(ledgerId).subscribe(res => {
 			this.ledger = res;
+		});
+	}
+
+	//
+	// Load activity
+	//
+	loadActivity(ledgerId: number) {
+		this.activityService.getByLedgerId(ledgerId).subscribe(res => {
+			this.activity = res;
+
+			console.log(this.activity);
 		});
 	}
 
@@ -51,7 +75,6 @@ export class ViewComponent implements OnInit {
 			this.router.navigate(['/ledger']);
 		});
 	}
-
 }
 
 /* End File */

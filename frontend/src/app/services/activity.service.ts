@@ -32,6 +32,16 @@ export class ActivityService {
 		return this.http.get<Activity[]>(url)
 			.pipe(map(res => res.map(res => new Activity().deserialize(res))));
 	}
+
+	//
+	// Get Activity by Ledger ID
+	//
+	getByLedgerId(ledgerId: number): Observable<Activity[]> {
+		let accountId = localStorage.getItem('account_id');
+		let url = `${environment.app_server}/api/v3/${accountId}/activities?ledger_id=${ledgerId}`;
+		return this.http.get<Activity[]>(url)
+			.pipe(map(res => res.map(res => new Activity().deserialize(res))));
+	}
 }
 
 

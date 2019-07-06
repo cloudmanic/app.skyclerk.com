@@ -12,6 +12,7 @@ export class Activity implements Serializable {
 	Id: number = 0;
 	Name: string = "";
 	Action: string = "";
+	SubAction: string = "";
 	Message: string = "";
 	LedgerId: number = 0;
 	ContactId: number = 0;
@@ -27,6 +28,7 @@ export class Activity implements Serializable {
 		this.Id = json["id"];
 		this.Name = json["name"];
 		this.Action = json["action"];
+		this.SubAction = json["sub_action"];
 		this.Message = json["message"];
 		this.LedgerId = json["ledger_id"];
 		this.ContactId = json["contact_id"];

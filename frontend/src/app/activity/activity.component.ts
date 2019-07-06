@@ -63,7 +63,13 @@ export class ActivityComponent implements OnInit {
 		a.shift();
 		let body = a.join(" ");
 		body = body.split(row.Name)[0];
-		body = `${body}<a href="/ledger/${row.LedgerId}">${row.Name}</a>`
+
+		if (row.SubAction != "delete") {
+			body = `${body}<a href="/ledger/${row.LedgerId}">${row.Name}</a>`
+		} else {
+			body = `${body} ${row.Name}`
+		}
+
 		return `<strong>${first}</strong> ${body}.`;
 	}
 }

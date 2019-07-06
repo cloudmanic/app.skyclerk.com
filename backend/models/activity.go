@@ -56,6 +56,11 @@ func (a *Activity) SetMessage() {
 		subAction = "updated"
 	}
 
+	if a.SubAction == "delete" {
+		mixWord = "for"
+		subAction = "deleted"
+	}
+
 	// See if this is a ledger activity. - Spicer, Added a ledger entry of -2325.20 for Bank of America.
 	if a.LedgerId > 0 {
 		a.Message = fmt.Sprintf("%s %s an %s ledger entry of %.2f %s %s.", userName, subAction, a.Action, a.Amount, mixWord, a.Name)
