@@ -7,7 +7,7 @@
 
 import * as moment from 'moment-timezone';
 import { Component, OnInit, ElementRef, ViewChild } from '@angular/core';
-import { ReportService } from 'src/app/services/report.service';
+import { ReportService, PnlNameAmount } from 'src/app/services/report.service';
 
 declare var Pikaday: any;
 
@@ -18,6 +18,9 @@ declare var Pikaday: any;
 
 export class GraphsComponent implements OnInit {
 	showFilter: boolean = false;
+	nameTitle: string = "Category";
+	type: string = "Profit & Loss by Category";
+	nameAmount: PnlNameAmount[] = [];
 
 	// Setup date pickers
 	endDate: Date = new Date();
@@ -47,8 +50,78 @@ export class GraphsComponent implements OnInit {
 	// Load the page data.
 	//
 	refreshPageData() {
-		console.log(this.startDate);
-		console.log(this.endDate);
+		this.nameAmount = [];
+
+		// Which report type is this?
+		switch (this.type) {
+			case "Income by Contact":
+				this.loadIncomeByContact();
+				break;
+
+			case "Expense by Contact":
+				this.loadExpenseByContact();
+				break;
+
+			case "Profit & Loss by Label":
+				this.loadProfitLossByLabel();
+				break;
+
+			case "Profit & Loss by Category":
+				this.loadProfitLossByCategory();
+				break;
+		}
+	}
+
+	//
+	// loadIncomeByContact
+	//
+	loadIncomeByContact() {
+		// Set titles
+		this.nameTitle = "Contact";
+
+		// AJAX call to get data.
+		this.reportService.getIncomeByContact(this.startDate, this.endDate, "asc").subscribe(res => {
+			this.nameAmount = res;
+		})
+	}
+
+	//
+	// loadExpenseByContact
+	//
+	loadExpenseByContact() {
+		// Set titles
+		this.nameTitle = "Contact";
+
+		// AJAX call to get data.
+		this.reportService.getExpenseByContact(this.startDate, this.endDate, "asc").subscribe(res => {
+			this.nameAmount = res;
+		})
+	}
+
+	//
+	// loadProfitLossByCategory
+	//
+	loadProfitLossByCategory() {
+		// Set titles
+		this.nameTitle = "Category";
+
+		// AJAX call to get data.
+		this.reportService.getProfitLossByCategory(this.startDate, this.endDate, "asc").subscribe(res => {
+			this.nameAmount = res;
+		})
+	}
+
+	//
+	// loadProfitLossByLabel
+	//
+	loadProfitLossByLabel() {
+		// Set titles
+		this.nameTitle = "Label";
+
+		// AJAX call to get data.
+		this.reportService.getProfitLossByLabel(this.startDate, this.endDate, "asc").subscribe(res => {
+			this.nameAmount = res;
+		})
 	}
 
 	//

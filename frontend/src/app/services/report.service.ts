@@ -50,6 +50,74 @@ export class ReportService {
 				return rt;
 			}));
 	}
+
+	//
+	// Get profit loss by cateogry
+	//
+	getProfitLossByCategory(start: Date, end: Date, sort: string): Observable<PnlNameAmount[]> {
+		let accountId = localStorage.getItem('account_id');
+		return this.http.get<PnlNameAmount[]>(`${environment.app_server}/api/v3/${accountId}/reports/pnl-category?sort=${sort}&start=${moment(start).format('YYYY-MM-DD')}&end=${moment(end).format('YYYY-MM-DD')}`)
+			.pipe(map(res => {
+				let rt = [];
+
+				for (let i = 0; i < res.length; i++) {
+					rt.push({ Name: res[i]["name"], Amount: res[i]["amount"] });
+				}
+
+				return rt;
+			}));
+	}
+
+	//
+	// Get profit loss by label
+	//
+	getProfitLossByLabel(start: Date, end: Date, sort: string): Observable<PnlNameAmount[]> {
+		let accountId = localStorage.getItem('account_id');
+		return this.http.get<PnlNameAmount[]>(`${environment.app_server}/api/v3/${accountId}/reports/pnl-label?sort=${sort}&start=${moment(start).format('YYYY-MM-DD')}&end=${moment(end).format('YYYY-MM-DD')}`)
+			.pipe(map(res => {
+				let rt = [];
+
+				for (let i = 0; i < res.length; i++) {
+					rt.push({ Name: res[i]["name"], Amount: res[i]["amount"] });
+				}
+
+				return rt;
+			}));
+	}
+
+	//
+	// Get expense by contact
+	//
+	getExpenseByContact(start: Date, end: Date, sort: string): Observable<PnlNameAmount[]> {
+		let accountId = localStorage.getItem('account_id');
+		return this.http.get<PnlNameAmount[]>(`${environment.app_server}/api/v3/${accountId}/reports/expenses-by-contact?sort=${sort}&start=${moment(start).format('YYYY-MM-DD')}&end=${moment(end).format('YYYY-MM-DD')}`)
+			.pipe(map(res => {
+				let rt = [];
+
+				for (let i = 0; i < res.length; i++) {
+					rt.push({ Name: res[i]["name"], Amount: res[i]["amount"] });
+				}
+
+				return rt;
+			}));
+	}
+
+	//
+	// Get income by contact
+	//
+	getIncomeByContact(start: Date, end: Date, sort: string): Observable<PnlNameAmount[]> {
+		let accountId = localStorage.getItem('account_id');
+		return this.http.get<PnlNameAmount[]>(`${environment.app_server}/api/v3/${accountId}/reports/income-by-contact?sort=${sort}&start=${moment(start).format('YYYY-MM-DD')}&end=${moment(end).format('YYYY-MM-DD')}`)
+			.pipe(map(res => {
+				let rt = [];
+
+				for (let i = 0; i < res.length; i++) {
+					rt.push({ Name: res[i]["name"], Amount: res[i]["amount"] });
+				}
+
+				return rt;
+			}));
+	}
 }
 
 export interface PnlCurrentYear {
@@ -64,4 +132,8 @@ export interface Pnl {
 	Income: number
 }
 
+export interface PnlNameAmount {
+	Name: string,
+	Amount: number
+}
 /* End File */

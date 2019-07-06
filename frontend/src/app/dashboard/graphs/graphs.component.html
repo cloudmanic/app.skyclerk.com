@@ -28,17 +28,17 @@
                               <div class="form-col form-col-size1">
                                 <div class="form-controls">
                                   <div class="select">
-                                    <select name="field-filter-user" class="select" id="field-filter-user">
-                                      <option>Option 1</option>
-                                      <option>Option 2</option>
-                                      <option>Option 3</option>
-                                      <option>Option 4</option>
+                                    <select name="field-filter-user" class="select" id="field-filter-user" [(ngModel)]="type" (change)="refreshPageData()">
+                                      <option value="Income by Contact">Income by Contact</option>
+                                      <option value="Expense by Contact">Expense by Contact</option>
+                                      <option value="Profit & Loss by Label">Profit & Loss by Label</option>
+                                      <option value="Profit & Loss by Category">Profit & Loss by Category</option>
                                     </select>
 
-                                    <span class="select-value">Expenses by Vendor</span>
-                                  </div><!-- /.select -->
-                                </div><!-- /.form-controls -->
-                              </div><!-- /.form-col form-col-size1 -->
+                                    <span class="select-value">{{ type }}</span>
+                                  </div>
+                                </div>
+                              </div>
 
                               <div class="form-col form-col-size2">
                                 <ul class="list-dates">
@@ -60,12 +60,12 @@
                                 </ul>
                               </div>
 
-                              <div class="form-col form-col-size3">
+                              <!-- <div class="form-col form-col-size3">
                                 <button type="submit" value="GO" class="search-activity-btn btn" (click)="toggleFilter()">
                                   <i class="ico-search"></i>
                                   FILTERS
                                 </button>
-                              </div>
+                              </div> -->
                             </div>
 
                             <div class="form-filters" *ngIf="showFilter">
@@ -195,51 +195,20 @@
                       <div class="table-companies">
                         <table>
                           <tr>
-                            <th>Contact</th>
-
+                            <th>{{ nameTitle }}</th>
                             <th>Amount</th>
                           </tr>
 
-                          <tr>
-                            <td>Company 1</td>
-
-                            <td>$111.89</td>
-                          </tr>
-
-                          <tr>
-                            <td>Company 1</td>
-
-                            <td>$111.89</td>
-                          </tr>
-
-                          <tr>
-                            <td>Company 1</td>
-
-                            <td>$111.89</td>
-                          </tr>
-
-                          <tr>
-                            <td>Company 1</td>
-
-                            <td>$111.89</td>
-                          </tr>
-
-                          <tr>
-                            <td>Company 1</td>
-
-                            <td>$111.89</td>
-                          </tr>
-
-                          <tr>
-                            <td>Company 1</td>
-
-                            <td>$111.89</td>
+                          <tr *ngFor="let row of nameAmount">
+                            <td>{{ row.Name }}</td>
+                            <td>{{ row.Amount | currency }}</td>
                           </tr>
                         </table>
-                      </div><!-- /.table-companies -->
-                    </div><!-- /.section-body -->
-                  </div><!-- /.section-secondary -->
-                </div><!-- /.tab -->
+                      </div>
+                    </div>
+
+                  </div>
+                </div>
 
 
               </div><!-- /.tabs-body -->
