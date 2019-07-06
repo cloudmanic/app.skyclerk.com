@@ -43,11 +43,11 @@
                               <div class="form-col form-col-size2">
                                 <ul class="list-dates">
                                   <li>
-                                    <a href="#">
+                                    <a *ngIf="! editStartDate" (click)="toggleEditStartDate()">
                                       <i class="ico-date"></i>
-
                                       January 23, 2011
                                     </a>
+                                    <input type="date" name="startDate" value="" *ngIf="editStartDate" />
                                   </li>
 
                                   <li>
@@ -61,21 +61,19 @@
                               </div><!-- /.form-col form-col-size1 -->
 
                               <div class="form-col form-col-size3">
-                                <button type="submit" value="GO" class="search-activity-btn btn">
+                                <button type="submit" value="GO" class="search-activity-btn btn" (click)="toggleFilter()">
                                   <i class="ico-search"></i>
-
                                   FILTERS
                                 </button>
-                              </div><!-- /.form-col form-col-size1 -->
-                            </div><!-- /.form-row -->
+                              </div>
+                            </div>
 
-                            <div class="form-filters">
+                            <div class="form-filters" *ngIf="showFilter">
                               <form action="#" method="post">
                                 <div class="form-head">
                                   <h1>Filters</h1>
-
-                                  <a href="#" class="form-filters-btn-close">Close</a>
-                                </div><!-- /.form-head -->
+                                  <a class="form-filters-btn-close" (click)="toggleFilter()">Close</a>
+                                </div>
 
                                 <div class="form-body">
                                   <div class="form-row">
