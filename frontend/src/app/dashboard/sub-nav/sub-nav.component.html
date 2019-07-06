@@ -1,15 +1,15 @@
 <div class="tabs-head">
   <nav class="tabs-nav">
     <ul>
-      <li class="current">
+      <li [ngClass]="{ current: (current == 'summary') }">
         <a routerLink="/">Summary</a>
       </li>
 
-      <li>
+      <li [ngClass]="{ current: (current == 'graphs') }">
         <a routerLink="/dashboard/graphs">Graphs</a>
       </li>
 
-      <li>
+      <li [ngClass]="{ current: (current == 'reports') }">
         <a routerLink="/dashboard/reports">Reports</a>
       </li>
     </ul>
