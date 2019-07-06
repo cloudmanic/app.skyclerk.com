@@ -5,6 +5,7 @@
 // Copyright: 2019 Cloudmanic Labs, LLC. All rights reserved.
 //
 
+import * as Highcharts from 'highcharts';
 import * as moment from 'moment-timezone';
 import { Component, OnInit, ElementRef, ViewChild } from '@angular/core';
 import { ReportService, PnlNameAmount } from 'src/app/services/report.service';
@@ -29,6 +30,49 @@ export class GraphsComponent implements OnInit {
 	@ViewChild('endDateTrigger') endDateTrigger: ElementRef;
 	@ViewChild('startDateField') startDateField: ElementRef;
 	@ViewChild('startDateTrigger') startDateTrigger: ElementRef;
+
+	// Setup chart options
+	chartOptions: any = {
+		chart: { type: 'column' },
+
+		title: { text: '' },
+
+		credits: { enabled: false },
+
+		rangeSelector: { enabled: false },
+
+		scrollbar: { enabled: false },
+
+		navigator: { enabled: false },
+
+		legend: { enabled: false },
+
+		tooltip: {
+			formatter: function() {
+				// TODO(spicer): Manage different currencies
+				return this.x + ': $' + Highcharts.numberFormat(this.y, 0, '.', ',');
+			}
+		},
+
+		yAxis: {
+			title: { text: '' },
+
+			labels: {
+				formatter: function() {
+					// TODO(spicer): Manage different currencies
+					return '$' + Highcharts.numberFormat(this.value, 0, '.', ',');
+				}
+			}
+		},
+
+		xAxis: {
+			categories: []
+		},
+
+		series: [
+			{ name: "", color: "#757575", data: [] }
+		]
+	}
 
 	//
 	// Constructor
@@ -82,6 +126,27 @@ export class GraphsComponent implements OnInit {
 		// AJAX call to get data.
 		this.reportService.getIncomeByContact(this.startDate, this.endDate, "asc").subscribe(res => {
 			this.nameAmount = res;
+
+			// Build Graph
+			let cats = [];
+			let data = [];
+
+			for (let i = 0; i < res.length; i++) {
+				// Set X-Axis
+				cats.push(res[i].Name);
+
+				// Set color
+				let color = "#537b37";
+
+				// Set Y-Axis
+				data.push({ color: color, y: res[i].Amount });
+			}
+
+			// Rebuilt the chart
+			this.chartOptions.series[0].name = this.nameTitle;
+			this.chartOptions.series[0].data = data;
+			this.chartOptions.xAxis.categories = cats;
+			Highcharts.chart('chart', this.chartOptions);
 		})
 	}
 
@@ -95,6 +160,27 @@ export class GraphsComponent implements OnInit {
 		// AJAX call to get data.
 		this.reportService.getExpenseByContact(this.startDate, this.endDate, "asc").subscribe(res => {
 			this.nameAmount = res;
+
+			// Build Graph
+			let cats = [];
+			let data = [];
+
+			for (let i = 0; i < res.length; i++) {
+				// Set X-Axis
+				cats.push(res[i].Name);
+
+				// Set color
+				let color = "#bb4626";
+
+				// Set Y-Axis
+				data.push({ color: color, y: (res[i].Amount * -1) });
+			}
+
+			// Rebuilt the chart
+			this.chartOptions.series[0].name = this.nameTitle;
+			this.chartOptions.series[0].data = data;
+			this.chartOptions.xAxis.categories = cats;
+			Highcharts.chart('chart', this.chartOptions);
 		})
 	}
 
@@ -108,7 +194,32 @@ export class GraphsComponent implements OnInit {
 		// AJAX call to get data.
 		this.reportService.getProfitLossByCategory(this.startDate, this.endDate, "asc").subscribe(res => {
 			this.nameAmount = res;
-		})
+
+			// Build Graph
+			let cats = [];
+			let data = [];
+
+			for (let i = 0; i < res.length; i++) {
+				// Set X-Axis
+				cats.push(res[i].Name);
+
+				// Set color
+				let color = "#537b37";
+
+				if (res[i].Amount < 0) {
+					color = "#bb4626";
+				}
+
+				// Set Y-Axis
+				data.push({ color: color, y: res[i].Amount });
+			}
+
+			// Rebuilt the chart
+			this.chartOptions.series[0].name = this.nameTitle;
+			this.chartOptions.series[0].data = data;
+			this.chartOptions.xAxis.categories = cats;
+			Highcharts.chart('chart', this.chartOptions);
+		});
 	}
 
 	//
@@ -121,6 +232,31 @@ export class GraphsComponent implements OnInit {
 		// AJAX call to get data.
 		this.reportService.getProfitLossByLabel(this.startDate, this.endDate, "asc").subscribe(res => {
 			this.nameAmount = res;
+
+			// Build Graph
+			let cats = [];
+			let data = [];
+
+			for (let i = 0; i < res.length; i++) {
+				// Set X-Axis
+				cats.push(res[i].Name);
+
+				// Set color
+				let color = "#537b37";
+
+				if (res[i].Amount < 0) {
+					color = "#bb4626";
+				}
+
+				// Set Y-Axis
+				data.push({ color: color, y: res[i].Amount });
+			}
+
+			// Rebuilt the chart
+			this.chartOptions.series[0].name = this.nameTitle;
+			this.chartOptions.series[0].data = data;
+			this.chartOptions.xAxis.categories = cats;
+			Highcharts.chart('chart', this.chartOptions);
 		})
 	}
 
