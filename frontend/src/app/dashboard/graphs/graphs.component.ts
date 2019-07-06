@@ -5,6 +5,7 @@
 // Copyright: 2019 Cloudmanic Labs, LLC. All rights reserved.
 //
 
+import * as moment from 'moment-timezone';
 import { Component, OnInit, ElementRef, ViewChild } from '@angular/core';
 import { ReportService } from 'src/app/services/report.service';
 
@@ -20,7 +21,7 @@ export class GraphsComponent implements OnInit {
 
 	// Setup date pickers
 	endDate: Date = new Date();
-	startDate: Date = new Date();
+	startDate: Date = moment(moment().format('YYYY-01-01')).toDate();
 	@ViewChild('endDateField') endDateField: ElementRef;
 	@ViewChild('endDateTrigger') endDateTrigger: ElementRef;
 	@ViewChild('startDateField') startDateField: ElementRef;
@@ -56,6 +57,7 @@ export class GraphsComponent implements OnInit {
 	setupDatePickers() {
 		// Setup start date picker.
 		new Pikaday({
+			defaultDate: this.startDate,
 			field: this.startDateField.nativeElement,
 			trigger: this.startDateTrigger.nativeElement,
 			onSelect: (date: Date) => {
@@ -66,6 +68,7 @@ export class GraphsComponent implements OnInit {
 
 		// Setup end date picker.
 		new Pikaday({
+			defaultDate: this.endDate,
 			field: this.endDateField.nativeElement,
 			trigger: this.endDateTrigger.nativeElement,
 			onSelect: (date: Date) => {
