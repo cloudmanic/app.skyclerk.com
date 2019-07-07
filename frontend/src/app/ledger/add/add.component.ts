@@ -5,6 +5,7 @@
 // Copyright: 2019 Cloudmanic Labs, LLC. All rights reserved.
 //
 
+import 'rxjs/add/operator/takeUntil';
 import { Component, OnInit, Input, EventEmitter, Output } from '@angular/core';
 import { Contact } from 'src/app/models/contact.model';
 import { Ledger } from 'src/app/models/ledger.model';
@@ -13,6 +14,8 @@ import { Label } from 'src/app/models/label.model';
 import { File as FileModel } from 'src/app/models/file.model';
 import { Router } from '@angular/router';
 import { LedgerService } from 'src/app/services/ledger.service';
+import { MeService } from 'src/app/services/me.service';
+import { Subject } from 'rxjs';
 
 @Component({
 	selector: 'app-ledger-add',
@@ -22,22 +25,35 @@ export class AddComponent implements OnInit {
 	@Input() type: string = "income";
 	@Output() refreshLedger = new EventEmitter<Ledger>();
 
-
 	errors: any = [];
 	ledger: Ledger = new Ledger();
 	showAddLabel: boolean = false;
 	showAddContact: boolean = false;
 	showAddCategory: boolean = false;
+	destory: Subject<boolean> = new Subject<boolean>();
 
 	//
 	// Constructor
 	//
-	constructor(public ledgerService: LedgerService, public router: Router) { }
+	constructor(public ledgerService: LedgerService, public router: Router, public meService: MeService) { }
 
 	//
 	// ngOnInit
 	//
-	ngOnInit() { }
+	ngOnInit() {
+		// Listen for account changes.
+		this.meService.accountChange.takeUntil(this.destory).subscribe(() => {
+			this.router.navigate([`/ledger`]);
+		});
+	}
+
+	//
+	// OnDestroy
+	//
+	ngOnDestroy() {
+		this.destory.next();
+		this.destory.complete();
+	}
 
 	//
 	// Save the new ledger entry.

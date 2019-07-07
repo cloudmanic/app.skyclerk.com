@@ -5,12 +5,15 @@
 // Copyright: 2019 Cloudmanic Labs, LLC. All rights reserved.
 //
 
+import 'rxjs/add/operator/takeUntil';
 import { Component, OnInit } from '@angular/core';
 import { LedgerService } from 'src/app/services/ledger.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Ledger } from 'src/app/models/ledger.model';
 import { Activity } from 'src/app/models/activity.model';
 import { ActivityService } from 'src/app/services/activity.service';
+import { MeService } from 'src/app/services/me.service';
+import { Subject } from 'rxjs';
 
 @Component({
 	selector: 'app-ledger-view',
@@ -20,11 +23,12 @@ import { ActivityService } from 'src/app/services/activity.service';
 export class ViewComponent implements OnInit {
 	activity: Activity[] = [];
 	ledger: Ledger = new Ledger();
+	destory: Subject<boolean> = new Subject<boolean>();
 
 	//
 	// Constructor
 	//
-	constructor(public ledgerService: LedgerService, public route: ActivatedRoute, public router: Router, public activityService: ActivityService) { }
+	constructor(public ledgerService: LedgerService, public route: ActivatedRoute, public router: Router, public activityService: ActivityService, public meService: MeService) { }
 
 	//
 	// ngOnInit
@@ -38,6 +42,19 @@ export class ViewComponent implements OnInit {
 
 		// Load activity for this ledger entry.
 		this.loadActivity(ledgerId);
+
+		// Listen for account changes.
+		this.meService.accountChange.takeUntil(this.destory).subscribe(() => {
+			this.router.navigate([`/`]);
+		});
+	}
+
+	//
+	// OnDestroy
+	//
+	ngOnDestroy() {
+		this.destory.next();
+		this.destory.complete();
 	}
 
 	//

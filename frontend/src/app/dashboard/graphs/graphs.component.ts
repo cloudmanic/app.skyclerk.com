@@ -5,11 +5,14 @@
 // Copyright: 2019 Cloudmanic Labs, LLC. All rights reserved.
 //
 
+import 'rxjs/add/operator/takeUntil';
 import * as Highcharts from 'highcharts';
 import * as moment from 'moment-timezone';
 import { AngularCsv } from 'angular7-csv/dist/Angular-csv'
 import { Component, OnInit, ElementRef, ViewChild } from '@angular/core';
 import { ReportService, PnlNameAmount } from 'src/app/services/report.service';
+import { Subject } from 'rxjs';
+import { MeService } from 'src/app/services/me.service';
 
 declare var Pikaday: any;
 
@@ -23,6 +26,7 @@ export class GraphsComponent implements OnInit {
 	nameTitle: string = "Category";
 	type: string = "Profit & Loss by Category";
 	nameAmount: PnlNameAmount[] = [];
+	destory: Subject<boolean> = new Subject<boolean>();
 
 	// Setup date pickers
 	endDate: Date = new Date();
@@ -78,7 +82,7 @@ export class GraphsComponent implements OnInit {
 	//
 	// Constructor
 	//
-	constructor(public reportService: ReportService) { }
+	constructor(public reportService: ReportService, public meService: MeService) { }
 
 	//
 	// ngOnInit
@@ -89,6 +93,19 @@ export class GraphsComponent implements OnInit {
 
 		// Build the page
 		this.refreshPageData();
+
+		// Listen for account changes.
+		this.meService.accountChange.takeUntil(this.destory).subscribe(() => {
+			this.refreshPageData();
+		});
+	}
+
+	//
+	// OnDestroy
+	//
+	ngOnDestroy() {
+		this.destory.next();
+		this.destory.complete();
 	}
 
 	//

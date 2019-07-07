@@ -5,12 +5,15 @@
 // Copyright: 2019 Cloudmanic Labs, LLC. All rights reserved.
 //
 
+import 'rxjs/add/operator/takeUntil';
 import * as moment from 'moment-timezone';
 import * as Highcharts from 'highcharts';
 import { Component, OnInit } from '@angular/core';
 import { ActivityService } from 'src/app/services/activity.service';
 import { Activity } from 'src/app/models/activity.model';
 import { ReportService } from 'src/app/services/report.service';
+import { MeService } from 'src/app/services/me.service';
+import { Subject } from 'rxjs';
 
 @Component({
 	selector: 'app-dashboard-summary',
@@ -19,6 +22,7 @@ import { ReportService } from 'src/app/services/report.service';
 
 export class SummaryComponent implements OnInit {
 	activity: Activity[] = [];
+	destory: Subject<boolean> = new Subject<boolean>();
 
 	// Setup chart options - Chart 1
 	chartOptions1: any = {
@@ -138,12 +142,33 @@ export class SummaryComponent implements OnInit {
 	//
 	// Constructor
 	//
-	constructor(public activityService: ActivityService, public reportService: ReportService) { }
+	constructor(public activityService: ActivityService, public reportService: ReportService, public meService: MeService) { }
 
 	//
 	// ngOnInit
 	//
 	ngOnInit() {
+		// Load page data.
+		this.refreshPage();
+
+		// Listen for account changes.
+		this.meService.accountChange.takeUntil(this.destory).subscribe(() => {
+			this.refreshPage();
+		});
+	}
+
+	//
+	// OnDestroy
+	//
+	ngOnDestroy() {
+		this.destory.next();
+		this.destory.complete();
+	}
+
+	//
+	// Load all the data for the page.
+	//
+	refreshPage() {
 		// Load page data
 		this.loadActivity();
 

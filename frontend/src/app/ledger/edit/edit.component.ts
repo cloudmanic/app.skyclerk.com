@@ -5,6 +5,7 @@
 // Copyright: 2019 Cloudmanic Labs, LLC. All rights reserved.
 //
 
+import 'rxjs/add/operator/takeUntil';
 import { Component, OnInit } from '@angular/core';
 import { LedgerService } from 'src/app/services/ledger.service';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -13,6 +14,8 @@ import { Contact } from 'src/app/models/contact.model';
 import { Label } from 'src/app/models/label.model';
 import { Category } from 'src/app/models/category.model';
 import { File as FileModel } from 'src/app/models/file.model';
+import { MeService } from 'src/app/services/me.service';
+import { Subject } from 'rxjs';
 
 @Component({
 	selector: 'app-ledger-edit',
@@ -22,6 +25,7 @@ export class EditComponent implements OnInit {
 	errors: any = [];
 	type: string = "income";
 	ledger: Ledger = new Ledger();
+	destory: Subject<boolean> = new Subject<boolean>();
 
 	showAddLabel: boolean = false;
 	showAddContact: boolean = false;
@@ -30,7 +34,7 @@ export class EditComponent implements OnInit {
 	//
 	// Constructor
 	//
-	constructor(public ledgerService: LedgerService, public route: ActivatedRoute, public router: Router) { }
+	constructor(public ledgerService: LedgerService, public route: ActivatedRoute, public router: Router, public meService: MeService) { }
 
 	//
 	// ngOnInit
@@ -48,6 +52,19 @@ export class EditComponent implements OnInit {
 				this.type = "expense";
 			}
 		});
+
+		// Listen for account changes.
+		this.meService.accountChange.takeUntil(this.destory).subscribe(() => {
+			this.router.navigate([`/`]);
+		});
+	}
+
+	//
+	// OnDestroy
+	//
+	ngOnDestroy() {
+		this.destory.next();
+		this.destory.complete();
 	}
 
 	//

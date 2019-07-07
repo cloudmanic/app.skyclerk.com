@@ -5,9 +5,12 @@
 // Copyright: 2019 Cloudmanic Labs, LLC. All rights reserved.
 //
 
+import 'rxjs/add/operator/takeUntil';
 import * as moment from 'moment-timezone';
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { ReportService, PnlNameAmount } from 'src/app/services/report.service';
+import { Subject } from 'rxjs';
+import { MeService } from 'src/app/services/me.service';
 
 declare var Pikaday: any;
 
@@ -20,6 +23,7 @@ export class ReportsComponent implements OnInit {
 	showFilter: boolean = false;
 	type: string = "Income Statement";
 	nameAmount: PnlNameAmount[] = [];
+	destory: Subject<boolean> = new Subject<boolean>();
 
 	// Setup date pickers
 	endDate: Date = new Date();
@@ -36,7 +40,7 @@ export class ReportsComponent implements OnInit {
 	//
 	// Constructor
 	//
-	constructor(public reportService: ReportService) { }
+	constructor(public reportService: ReportService, public meService: MeService) { }
 
 	//
 	// ngOnInit
@@ -47,6 +51,19 @@ export class ReportsComponent implements OnInit {
 
 		// Build the page
 		this.refreshPageData();
+
+		// Listen for account changes.
+		this.meService.accountChange.takeUntil(this.destory).subscribe(() => {
+			this.refreshPageData();
+		});
+	}
+
+	//
+	// OnDestroy
+	//
+	ngOnDestroy() {
+		this.destory.next();
+		this.destory.complete();
 	}
 
 	//
