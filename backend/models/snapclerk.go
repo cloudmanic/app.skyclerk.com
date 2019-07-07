@@ -91,4 +91,29 @@ func (db *DB) GetSnapClerkByAccountAndId(accountId uint, id uint) (SnapClerk, er
 	return c, nil
 }
 
+//
+// SnapClerkMonthlyUsage - Returns how many Snapclerks we have used this month.
+//
+func (db *DB) SnapClerkMonthlyUsage(accountId uint) int {
+	// Return struct
+	type r struct {
+		Count int `json:"count"`
+	}
+
+	rt := r{}
+
+	// Set the start date
+	now := time.Now()
+	start := now.Format("2006") + "-" + now.Format("01") + "-01"
+
+	// SQL String
+	sql := "SELECT COUNT(SnapClerkId) AS count FROM SnapClerk WHERE SnapClerkCreatedAt > ? AND SnapClerkAccountId = ?"
+
+	// Run query
+	db.New().Raw(sql, start, accountId).Scan(&rt)
+
+	// Return happy.
+	return rt.Count
+}
+
 /* End File */

@@ -77,6 +77,7 @@ type Datastore interface {
 
 	// SnapClerk
 	SnapClerkCreate(sc *SnapClerk) error
+	SnapClerkMonthlyUsage(accountId uint) int
 	GetSnapClerkByAccountAndId(accountId uint, id uint) (SnapClerk, error)
 }
 

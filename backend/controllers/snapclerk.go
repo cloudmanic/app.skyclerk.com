@@ -19,6 +19,26 @@ import (
 )
 
 //
+// GetSnapClerkUsage - returns the monthly usage.
+//
+func (t *Controller) GetSnapClerkUsage(c *gin.Context) {
+	// AccountId.
+	accountId := uint(c.MustGet("accountId").(int))
+
+	// Get the total number of SnapClerks used.
+	count := t.db.SnapClerkMonthlyUsage(accountId)
+
+	type r struct {
+		Count int `json:"count"`
+	}
+
+	rt := r{Count: count}
+
+	// Return happy.
+	response.Results(c, rt, nil)
+}
+
+//
 // CreateSnapClerk - Upload a file to store in snapclerk
 //
 func (t *Controller) CreateSnapClerk(c *gin.Context) {

@@ -28,6 +28,60 @@ import (
 )
 
 //
+// TestGetSnapClerkUsage01
+//
+func TestGetSnapClerkUsage01(t *testing.T) {
+	// Data map
+	dMap := make(map[uint]models.SnapClerk)
+
+	// Start the db connection.
+	db, dbName, _ := models.NewTestDB("testing_db")
+	defer models.TestingTearDown(db, dbName)
+
+	// Create controller
+	c := &Controller{}
+	c.SetDB(db)
+
+	// Create like 10 snapclerk entries. Diffent account.
+	for i := 0; i < 10; i++ {
+		l := test.GetRandomSnapClerk(23)
+		db.New().Save(&l)
+	}
+
+	// Create like 15 snapclerk entries.
+	for i := 0; i < 15; i++ {
+		l := test.GetRandomSnapClerk(33)
+		db.New().Save(&l)
+		dMap[l.Id] = l
+	}
+
+	// Create like 10 snapclerk entries. Diffent account.
+	for i := 0; i < 10; i++ {
+		l := test.GetRandomSnapClerk(43)
+		db.New().Save(&l)
+	}
+
+	// Setup request
+	req, _ := http.NewRequest("GET", "/api/v3/33/snapclerk/usage", nil)
+
+	// Setup writer.
+	w := httptest.NewRecorder()
+	gin.SetMode("release")
+	gin.DisableConsoleColor()
+
+	r := gin.New()
+	r.Use(func(c *gin.Context) {
+		c.Set("accountId", 33)
+		c.Set("userId", uint(109))
+	})
+	r.GET("/api/v3/:account/snapclerk/usage", c.GetSnapClerkUsage)
+	r.ServeHTTP(w, req)
+
+	// Test results
+	st.Expect(t, w.Body.String(), `{"count":15}`)
+}
+
+//
 // TestCreateSnapClerk01 - Test create snapclerk 01
 //
 func TestCreateSnapClerk01(t *testing.T) {
