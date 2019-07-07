@@ -23,6 +23,18 @@ export class SnapClerkService {
 	constructor(private http: HttpClient) { }
 
 	//
+	// Get Usage
+	//
+	getUsage(): Observable<number> {
+		let accountId = localStorage.getItem('account_id');
+		let url = `${environment.app_server}/api/v3/${accountId}/snapclerk/usage`;
+		return this.http.get<number>(url)
+			.pipe(map(res => {
+				return res["count"];
+			}));
+	}
+
+	//
 	// Get snapclerk list
 	//
 	get(page: number, limit: number, order: string, sort: string): Observable<SnapClerkResponse> {

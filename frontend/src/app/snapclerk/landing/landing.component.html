@@ -26,7 +26,7 @@
             </div>
 
             <div class="contentbox-bar">
-              <a href="#" class="btn btn-yellow btn-large"><span class="ico-plus-circle">&nbsp;</span> NEW RECEIPT</a>
+              <a href="#" class="btn btn-yellow btn-large"><span class="ico-plus-circle">&nbsp;</span> UPLOAD RECEIPT</a>
             </div>
 
             <div class="contentbox-body">
@@ -48,7 +48,7 @@
                       </td>
                       <td rowspan=2>{{ row.CreatedAt | date:'shortDate' }}</td>
                       <td>{{ row.Contact }}</td>
-                      <td>{{ row.Amount | currency }}</td>
+                      <td>{{ (row.Amount * -1) | currency }}</td>
                       <td>
                         <span class="label" *ngIf="row.Status == 'Pending'">Pending</span>
                         <span class="label label-green" *ngIf="row.Status == 'Processed'">Processed</span>
@@ -274,7 +274,7 @@
               <li class="widget widget-usage">
                 <h4 class="widget-title">Usage</h4>
                 <div class="usage-stat usage-stat-green">
-                  <span class="usage-value">17</span>/<span class="usage-total">100</span>
+                  <span class="usage-value">{{ usage }}</span>/<span class="usage-total">100</span>
                 </div>
                 <p>Scans this month</p>
               </li>

@@ -18,6 +18,7 @@ import { MeService } from 'src/app/services/me.service';
 export class LandingComponent implements OnInit {
 	snapclerks: SnapClerkResponse = new SnapClerkResponse(false, 0, 50, 0, []);
 	page: number = 1;
+	usage: number = 0;
 	destory: Subject<boolean> = new Subject<boolean>();
 
 	//
@@ -53,6 +54,11 @@ export class LandingComponent implements OnInit {
 		// Get the list of snapclerks
 		this.snapClerkService.get(this.page, 25, "SnapClerkId", "DESC").subscribe(res => {
 			this.snapclerks = res;
+		});
+
+		// Get the snapclerk usage
+		this.snapClerkService.getUsage().subscribe(res => {
+			this.usage = res;
 		});
 	}
 
