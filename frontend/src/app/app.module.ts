@@ -8,6 +8,7 @@ import { FileDropModule } from 'ngx-file-drop';
 import { AgmCoreModule } from '@agm/core';
 
 // Pipes
+import { CallbackPipe } from './pipes/callback.pipe';
 import { SafeHtmlPipe } from './pipes/safe-html.pipe';
 
 // Services
@@ -48,6 +49,7 @@ import { ReportsComponent } from './dashboard/reports/reports.component';
 
 @NgModule({
 	declarations: [
+		CallbackPipe,
 		SafeHtmlPipe,
 		AppComponent,
 		LoginComponent,

@@ -25,56 +25,53 @@
 
                           <div class="form-body">
                             <div class="form-row">
+
                               <div class="form-col form-col-size1">
                                 <div class="form-controls">
                                   <div class="select">
-                                    <select name="field-filter-user" class="select" id="field-filter-user">
-                                      <option>Option 1</option>
-                                      <option>Option 2</option>
-                                      <option>Option 3</option>
-                                      <option>Option 4</option>
+                                    <select name="field-filter-user" class="select" id="field-filter-user" [(ngModel)]="type" (change)="refreshPageData()">
+                                      <option value="Income Statement">Income Statement</option>
                                     </select>
-
-                                    <span class="select-value">Expenses by Vendor</span>
-                                  </div><!-- /.select -->
-                                </div><!-- /.form-controls -->
-                              </div><!-- /.form-col form-col-size1 -->
+                                    <span class="select-value">{{ type }}</span>
+                                  </div>
+                                </div>
+                              </div>
 
                               <div class="form-col form-col-size2">
                                 <ul class="list-dates">
                                   <li>
-                                    <a href="#">
+                                    <a #startDateTrigger>
                                       <i class="ico-date"></i>
-
-                                      January 23, 2011
+                                      {{ startDate | date:'longDate' }}
                                     </a>
+                                    <input type="text" #startDateField name="startDate" style="opacity: 0;" />
                                   </li>
 
                                   <li>
-                                    <a href="#">
+                                    <a #endDateTrigger>
                                       <i class="ico-date"></i>
-
-                                      Today, September 2, 2013
+                                      {{ endDate | date:'longDate' }}
                                     </a>
+                                    <input type="text" #endDateField name="endDate" style="opacity: 0;" />
                                   </li>
-                                </ul><!-- /.list-dates -->
-                              </div><!-- /.form-col form-col-size1 -->
+                                </ul>
+                              </div>
 
-                              <div class="form-col form-col-size3">
-                                <button type="submit" value="GO" class="search-activity-btn btn">
+                              <!-- <div class="form-col form-col-size3">
+                                <button type="submit" value="GO" class="search-activity-btn btn" (click)="toggleFilter()">
                                   <i class="ico-search"></i>
-
                                   FILTERS
                                 </button>
-                              </div><!-- /.form-col form-col-size1 -->
-                            </div><!-- /.form-row -->
+                              </div> -->
 
-                            <div class="form-filters">
+                            </div>
+
+                            <div class="form-filters" *ngIf="showFilter">
                               <form action="#" method="post">
                                 <div class="form-head">
                                   <h1>Filters</h1>
 
-                                  <a href="#" class="form-filters-btn-close">Close</a>
+                                  <a class="form-filters-btn-close" (click)="toggleFilter()">Close</a>
                                 </div><!-- /.form-head -->
 
                                 <div class="form-body">
@@ -168,18 +165,20 @@
                     </div><!-- /.section-body -->
                   </section><!-- /.section-secondary -->
 
+
+
+
                   <section class="section-secondary">
                     <div class="section-head">
-                      <h1>Expenses by Vendor</h1>
+                      <h1>{{ type }}</h1>
 
                       <ul class="list-actions-primary">
-                        <li>
+                        <!-- <li>
                           <a href="#">
                             <i class="ico-print"></i>
-
                             Print Graph
                           </a>
-                        </li>
+                        </li> -->
                       </ul><!-- /.list-actions-primary -->
                     </div><!-- /.section-head -->
 
@@ -190,21 +189,20 @@
                             <th colspan="2">Income</th>
                           </tr>
 
-                          <tr>
-                            <td>Other Income</td>
-
-                            <td>$11.15</td>
+                          <tr *ngFor="let row of nameAmount | callback: incomeEntries">
+                            <td>{{ row.Name }}</td>
+                            <td>{{ row.Amount | currency }}</td>
                           </tr>
 
                           <tr>
                             <td>&nbsp;</td>
 
                             <td>
-                              <strong>$16.15</strong>
+                              <strong>{{ incomeTotal | currency }}</strong>
                             </td>
                           </tr>
                         </table>
-                      </div><!-- /.table-expenses -->
+                      </div>
 
                       <div class="table-expenses">
                         <table>
@@ -212,49 +210,16 @@
                             <th colspan="2">Expenses</th>
                           </tr>
 
-                          <tr>
-                            <td>Other Income</td>
-
-                            <td>$11.15</td>
-                          </tr>
-
-                          <tr>
-                            <td>Advertising</td>
-
-                            <td>$11.15</td>
-                          </tr>
-
-                          <tr>
-                            <td>Office Expense</td>
-
-                            <td>
-                              $16.15
-                            </td>
-                          </tr>
-
-                          <tr>
-                            <td>Car Expenses</td>
-
-                            <td>$116.15</td>
-                          </tr>
-
-                          <tr>
-                            <td>Home Decor</td>
-
-                            <td>$16.15</td>
-                          </tr>
-
-                          <tr>
-                            <td>Other Income</td>
-
-                            <td>$16.15</td>
+                          <tr *ngFor="let row of nameAmount | callback: expenseEntries">
+                            <td>{{ row.Name }}</td>
+                            <td>{{ row.Amount | currency }}</td>
                           </tr>
 
                           <tr>
                             <td>&nbsp;</td>
 
                             <td>
-                              <strong>$182.74</strong>
+                              <strong>{{ expenseTotal | currency }}</strong>
                             </td>
                           </tr>
 
@@ -264,24 +229,24 @@
                             </td>
 
                             <td>
-                              <strong>$156.74</strong>
+                              <strong>{{ (incomeTotal - expenseTotal) | currency }}</strong>
                             </td>
                           </tr>
                         </table>
-                      </div><!-- /.table-expenses -->
-                    </div><!-- /.section-body -->
-                  </section><!-- /.section-secondary -->
-                </div><!-- /.tab -->
+                      </div>
+                    </div>
+                  </section>
+                </div>
 
 
-              </div><!-- /.tabs-body -->
-            </div><!-- /.tabs -->
-          </div><!-- /.overview-body -->
-        </div><!-- /.overview -->
+              </div>
+            </div>
+          </div>
+        </div>
 
-      </div><!-- /.contentbox -->
+      </div>
 
-    </div><!-- /.content -->
+    </div>
 
 
     <app-layouts-sidebar current="dashboard"></app-layouts-sidebar>

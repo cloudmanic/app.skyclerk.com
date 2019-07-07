@@ -148,7 +148,7 @@ export class GraphsComponent implements OnInit {
 			this.chartOptions.series[0].data = data;
 			this.chartOptions.xAxis.categories = cats;
 			Highcharts.chart('chart', this.chartOptions);
-		})
+		});
 	}
 
 	//
