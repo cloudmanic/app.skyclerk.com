@@ -7,6 +7,7 @@
 
 import * as Highcharts from 'highcharts';
 import * as moment from 'moment-timezone';
+import { AngularCsv } from 'angular7-csv/dist/Angular-csv'
 import { Component, OnInit, ElementRef, ViewChild } from '@angular/core';
 import { ReportService, PnlNameAmount } from 'src/app/services/report.service';
 
@@ -296,6 +297,25 @@ export class GraphsComponent implements OnInit {
 		} else {
 			this.showFilter = true;
 		}
+	}
+
+	//
+	// Export CSV
+	//
+	doExportCSV() {
+		let options = {
+			fieldSeparator: ',',
+			quoteStrings: '"',
+			decimalseparator: '.',
+			headers: [this.nameTitle, 'Amount'],
+			showTitle: false,
+			useBom: true,
+			removeNewLines: false,
+			keys: []
+		};
+
+		// Download CSV to browser.
+		new AngularCsv(this.nameAmount, 'skyclerk-' + this.type, options);
 	}
 }
 

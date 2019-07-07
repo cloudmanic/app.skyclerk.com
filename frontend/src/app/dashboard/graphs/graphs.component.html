@@ -173,23 +173,22 @@
                       <h1>{{ type }}</h1>
 
                       <ul class="list-actions-primary">
-                        <li>
+                        <!-- <li>
                           <a href="#">
                             <i class="ico-print"></i>
 
                             Print Graph
                           </a>
-                        </li>
+                        </li> -->
 
                         <li>
-                          <a href="#">
+                          <a (click)="doExportCSV()">
                             <i class="ico-export"></i>
-
                             Export Data To Excel
                           </a>
                         </li>
-                      </ul><!-- /.list-actions-primary -->
-                    </div><!-- /.section-head -->
+                      </ul>
+                    </div>
 
 
                     <div class="section-body">
