@@ -25,9 +25,9 @@ export class SnapClerkService {
 	//
 	// Get snapclerk list
 	//
-	get(page: number, order: string, sort: string): Observable<SnapClerkResponse> {
+	get(page: number, limit: number, order: string, sort: string): Observable<SnapClerkResponse> {
 		let accountId = localStorage.getItem('account_id');
-		let url = `${environment.app_server}/api/v3/${accountId}/snapclerk?page=${page}&order=${order}&sort=${sort}`;
+		let url = `${environment.app_server}/api/v3/${accountId}/snapclerk?page=${page}&order=${order}&sort=${sort}&limit=${limit}`;
 
 		return this.http.get<SnapClerk[]>(url, { observe: 'response' }).pipe(map((res) => {
 			// Setup data

@@ -76,13 +76,13 @@ func (t *Controller) GetSnapClerk(c *gin.Context) {
 	var results = []models.SnapClerk{}
 
 	// Get limits and pages
-	page, _, _ := request.GetSetPagingParms(c)
+	page, limit, _ := request.GetSetPagingParms(c)
 
 	// Set the query parms
 	params := models.QueryParam{
 		Order:            c.DefaultQuery("order", "SnapClerkId"),
 		Sort:             c.DefaultQuery("sort", "ASC"),
-		Limit:            50,
+		Limit:            limit,
 		Page:             page,
 		Debug:            false,
 		PreLoads:         []string{"File"},

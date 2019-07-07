@@ -51,7 +51,7 @@ export class LandingComponent implements OnInit {
 	//
 	refreshPage() {
 		// Get the list of snapclerks
-		this.snapClerkService.get(this.page, "SnapClerkId", "DESC").subscribe(res => {
+		this.snapClerkService.get(this.page, 25, "SnapClerkId", "DESC").subscribe(res => {
 			this.snapclerks = res;
 		});
 	}
