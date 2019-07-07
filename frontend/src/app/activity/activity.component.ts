@@ -9,6 +9,8 @@ import * as moment from 'moment';
 import { Component, OnInit } from '@angular/core';
 import { Activity } from '../models/activity.model';
 import { ActivityService } from '../services/activity.service';
+import { Subject } from 'rxjs';
+import { MeService } from '../services/me.service';
 
 @Component({
 	selector: 'app-activity',
@@ -18,11 +20,12 @@ import { ActivityService } from '../services/activity.service';
 export class ActivityComponent implements OnInit {
 	activity: any;
 	activityKeys: String[];
+	destory: Subject<boolean> = new Subject<boolean>();
 
 	//
 	// Constructor
 	//
-	constructor(public activityService: ActivityService) { }
+	constructor(public activityService: ActivityService, public meService: MeService) { }
 
 	//
 	// ngOnInit
@@ -30,6 +33,19 @@ export class ActivityComponent implements OnInit {
 	ngOnInit() {
 		// Load page data
 		this.loadActivity();
+
+		// Listen for account changes.
+		this.meService.accountChange.takeUntil(this.destory).subscribe(() => {
+			this.loadActivity();
+		});
+	}
+
+	//
+	// OnDestroy
+	//
+	ngOnDestroy() {
+		this.destory.next();
+		this.destory.complete();
 	}
 
 	//
@@ -58,6 +74,9 @@ export class ActivityComponent implements OnInit {
 	// Format the message to our liking
 	//
 	printMessage(row: Activity) {
+
+		console.log(row);
+
 		let a = row.Message.split(" ");
 		let first = a[0];
 		a.shift();
@@ -68,6 +87,10 @@ export class ActivityComponent implements OnInit {
 			body = `${body}<a href="/ledger/${row.LedgerId}">${row.Name}</a>`
 		} else {
 			body = `${body} ${row.Name}`
+		}
+
+		if (row.SubAction == "other") {
+			return row.Name;
 		}
 
 		return `<strong>${first}</strong> ${body}.`;

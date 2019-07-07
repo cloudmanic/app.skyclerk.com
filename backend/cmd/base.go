@@ -12,6 +12,7 @@ import (
 	"flag"
 	"fmt"
 	"strings"
+	"time"
 
 	"app.skyclerk.com/backend/cmd/actions"
 	"app.skyclerk.com/backend/models"
@@ -35,19 +36,16 @@ func Run(db models.Datastore) bool {
 	case "airbnb-import":
 		actions.AirBnbImport(db, uint(*accountId), *file)
 		return true
-		break
 
 	// Create a new application from the CLI
 	case "create-application":
 		actions.CreateApplication(db, *name)
 		return true
-		break
 
 	// Loop through the accounts table and append "accounts" to the file name.
 	case "files-add-account-prefix":
 		FileAddAccountPrefix(db)
 		return true
-		break
 
 	// Loop through the contacts table and build an avatar for every contact
 	case "contacts-build-missing-avatars":
@@ -56,17 +54,71 @@ func Run(db models.Datastore) bool {
 			panic(err)
 		}
 		return true
-		break
+
+	// Copy app log
+	case "copy-app-log":
+		CopyAppLog(db)
+		return true
 
 	// Just a test
 	case "test":
 		fmt.Println("CMD Works....")
 		return true
-		break
 
 	}
 
 	return false
+}
+
+//
+// Copy applog stuff over to our new activities table - Delete one we run in production.
+//
+// go run main.go -cmd=copy-app-log
+//
+func CopyAppLog(db models.Datastore) {
+
+	type Applog struct {
+		ApplogId        uint      `gorm:"column:ApplogId"`
+		ApplogAccountId uint      `gorm:"column:ApplogAccountId"`
+		ApplogAction    string    `gorm:"column:ApplogAction"`
+		ApplogText      string    `gorm:"column:ApplogText"`
+		ApplogPoster    int       `gorm:"column:ApplogPoster"`
+		ApplogCreatedAt time.Time `gorm:"column:ApplogCreatedAt"`
+	}
+
+	a := []Applog{}
+
+	db.New().Table("Applog").Find(&a)
+
+	for key, row := range a {
+		action := row.ApplogAction
+
+		if action == "Receipt" {
+			action = "snapclerk"
+		}
+
+		if action == "Income" {
+			action = "income"
+		}
+
+		if action == "Expense" {
+			action = "expense"
+		}
+
+		t := models.Activity{
+			CreatedAt: row.ApplogCreatedAt,
+			AccountId: row.ApplogAccountId,
+			Action:    action,
+			SubAction: "other",
+			Name:      row.ApplogText,
+		}
+
+		db.New().Save(&t)
+
+		// Append accounts and save to DB.
+		fmt.Println(key, " of ", len(a))
+	}
+
 }
 
 //

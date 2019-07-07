@@ -183,6 +183,8 @@ export class SummaryComponent implements OnInit {
 	loadActivity() {
 		this.activityService.get(1, 10).subscribe(res => {
 			this.activity = res;
+
+			console.log(this.activity);
 		});
 	}
 
@@ -245,7 +247,7 @@ export class SummaryComponent implements OnInit {
 		let body = a.join(" ");
 		body = body.split(row.Name)[0];
 
-		if (row.SubAction != "delete") {
+		if ((row.SubAction != "delete") && (row.SubAction != "other")) {
 			body = `${body}<a href="/ledger/${row.LedgerId}">${row.Name}</a>`
 		} else {
 			body = `${body} ${row.Name}`

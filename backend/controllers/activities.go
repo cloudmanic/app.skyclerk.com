@@ -37,7 +37,6 @@ func (t *Controller) GetActivities(c *gin.Context) {
 		AllowedOrderCols: []string{},
 		PreLoads:         []string{"User"},
 		Wheres: []models.KeyValue{
-			{Key: "user_id", Compare: "=", ValueInt: c.MustGet("userId").(int)},
 			{Key: "account_id", Compare: "=", ValueInt: c.MustGet("accountId").(int)},
 		},
 	}

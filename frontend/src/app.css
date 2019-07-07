@@ -31,3 +31,6 @@
 .edit-ledger .category-add-link { margin-right: 26px; }
 .edit-ledger .files-widget { border-bottom: unset; }
 .edit-ledger .files-widget .progress-bars { margin-top: 15px; }
+
+/* Activity */
+.table-activity .label-secondary { width: 85px; }
