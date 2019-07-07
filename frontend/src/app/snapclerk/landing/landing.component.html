@@ -40,21 +40,44 @@
                     <th>Status</th>
                     <th width="60">&nbsp;</th>
                   </tr>
-                  <tr>
-                    <td rowspan=2><img src="/images/receipt.png" class="receipt-image" alt=""></td>
-                    <td rowspan=2>01/06/13</td>
-                    <td>The Mac Store</td>
-                    <td>$9,999.99</td>
-                    <td><span class="label label-green">Processed</span></td>
-                    <td><a href="#">View</a></td>
-                  </tr>
-                  <tr>
-                    <td colspan=4>
-                      <p class="receipt-tags">Categories &amp; Labels: <a href="#">Business</a>, <a href="#">Office Expense</a>, <a href="#">Food</a></p>
-                    </td>
-                  </tr>
 
-                  <tr>
+                  <ng-container *ngFor="let row of snapclerks.Data">
+                    <tr>
+                      <td rowspan=2>
+                        <img src="{{ row.File.Thumb600By600Url }}" class="receipt-image" alt="{{ row.File.Name }}" width="60" height="60" />
+                      </td>
+                      <td rowspan=2>{{ row.CreatedAt | date:'shortDate' }}</td>
+                      <td>{{ row.Contact }}</td>
+                      <td>{{ row.Amount | currency }}</td>
+                      <td>
+                        <span class="label" *ngIf="row.Status == 'Pending'">Pending</span>
+                        <span class="label label-green" *ngIf="row.Status == 'Processed'">Processed</span>
+                        <span class="label label-red" *ngIf="row.Status == 'Rejected'">Rejected</span>
+                      </td>
+                      <td>
+                        <a href="{{ row.File.Url }}" target="_blank" *ngIf="row.LedgerId == 0">View</a>
+                        <a routerLink="/ledger/{{ row.LedgerId }}" *ngIf="row.LedgerId > 0">View</a>
+                      </td>
+                    </tr>
+
+                    <tr>
+                      <td colspan=4>
+                        <p class="receipt-tags" *ngIf="row.Category.length || row.Labels.length">
+                          <b>Categories &amp; Labels: </b>
+                          <span *ngIf="row.Category.length">{{ row.Category }}<span *ngIf="row.Labels.length">, </span></span>
+                          <span *ngIf="row.Labels.length">{{ row.Labels }}</span>
+                        </p>
+                      </td>
+                    </tr>
+                  </ng-container>
+
+
+
+
+
+
+
+                  <!-- <tr>
                     <td rowspan=2><img src="/images/receipt.png" class="receipt-image" alt=""></td>
                     <td rowspan=2>01/06/13</td>
                     <td>Firestone Tires</td>
@@ -220,22 +243,31 @@
                     <td colspan=4>
                       <p class="receipt-tags">Categories &amp; Labels: <a href="#">Business</a>, <a href="#">Office Expense</a>, <a href="#">Food</a></p>
                     </td>
-                  </tr>
+                  </tr> -->
+
                 </table>
               </div><!-- /.table-receipts -->
 
+
               <div class="pagination">
                 <div class="pagination-controls">
-                  <a href="#" class="pagination-prev btn btn-xsmall btn-darkgray">« PREV</a>
-                  <span class="pagination-divider">|</span>
-                  <a href="#" class="pagination-next btn btn-xsmall btn-darkgray">NEXT »</a>
+                  <a (click)="doPrevClick()" class="pagination-prev-primary btn btn-xsmall btn-darkgray" *ngIf="(snapclerks.Offset > 0)">Prev</a>
+
+                  <div class="pagination-select" *ngIf="snapclerks.NoLimitCount > snapclerks.Limit">
+                    <select name="pageRangeSelect" class="select" id="pageRangeSelect" (change)="doPageSelectChange()" [(ngModel)]="page">
+                      <option value="{{ row }}" *ngFor="let row of getPageRange()">{{ row }}</option>
+                    </select>
+                  </div>
+
+                  <a (click)="doNextClick()" class="pagination-next-primary btn btn-xsmall btn-darkgray" *ngIf="! snapclerks.LastPage">Next</a>
                 </div>
-                <p>Showing 25 - 50 of 100 (filtered from 1,000 entries)</p>
+
+                <p>Viewing {{ (snapclerks.Offset + 1) }}-{{ snapclerks.Offset + snapclerks.Limit }} of {{ snapclerks.NoLimitCount }}</p>
               </div>
 
             </div>
 
-          </div><!-- /.contentbox-center -->
+          </div>
 
           <div class="contentbox-aside">
             <ul class="widgets">

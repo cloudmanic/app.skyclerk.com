@@ -16,7 +16,8 @@ import { MeService } from 'src/app/services/me.service';
 })
 
 export class LandingComponent implements OnInit {
-	snapclerks: SnapClerkResponse;
+	snapclerks: SnapClerkResponse = new SnapClerkResponse(false, 0, 50, 0, []);
+	page: number = 1;
 	destory: Subject<boolean> = new Subject<boolean>();
 
 	//
@@ -28,6 +29,9 @@ export class LandingComponent implements OnInit {
 	// NgOnInit
 	//
 	ngOnInit() {
+		// Load page data.
+		this.refreshPage();
+
 		// Listen for account changes.
 		this.meService.accountChange.takeUntil(this.destory).subscribe(() => {
 			this.refreshPage();
@@ -47,10 +51,52 @@ export class LandingComponent implements OnInit {
 	//
 	refreshPage() {
 		// Get the list of snapclerks
-		this.snapClerkService.get(1, "desc", "SnapClerkId").subscribe(res => {
-			console.log(res);
+		this.snapClerkService.get(this.page, "SnapClerkId", "DESC").subscribe(res => {
 			this.snapclerks = res;
+			console.log(this.snapclerks);
 		});
+	}
+
+	//
+	// Return the page list for ledger
+	//
+	getPageRange() {
+		let pages = [];
+
+		if (this.snapclerks.Data.length == 0) {
+			return [1];
+		}
+
+		let pageCount = Math.ceil(this.snapclerks.NoLimitCount / this.snapclerks.Limit);
+
+		for (let i = 1; i <= pageCount; i++) {
+			pages.push(i);
+		}
+
+		return pages;
+	}
+
+	//
+	// Paging select change
+	//
+	doPageSelectChange() {
+		this.refreshPage();
+	}
+
+	//
+	// Paging next click
+	//
+	doNextClick() {
+		this.page++;
+		this.refreshPage();
+	}
+
+	//
+	// Paging prev click
+	//
+	doPrevClick() {
+		this.page--;
+		this.refreshPage();
 	}
 }
 

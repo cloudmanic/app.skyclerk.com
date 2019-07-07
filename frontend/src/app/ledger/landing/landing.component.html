@@ -127,7 +127,7 @@
 
               <div class="pagination">
                 <div class="pagination-controls">
-                  <a (click)="doPrevClick()" class="pagination-prev-primary" *ngIf="(ledgers.Offset > 0)">Prev</a>
+                  <a (click)="doPrevClick()" class="pagination-prev-primary btn btn-xsmall btn-darkgray" *ngIf="(ledgers.Offset > 0)">Prev</a>
 
                   <div class="pagination-select" *ngIf="ledgers.NoLimitCount > ledgers.Limit">
                     <select name="pageRangeSelect" class="select" id="pageRangeSelect" (change)="doPageSelectChange()" [(ngModel)]="pageRangeSelect">
@@ -135,7 +135,7 @@
                     </select>
                   </div>
 
-                  <a (click)="doNextClick()" class="pagination-next-primary" *ngIf="! ledgers.LastPage">Next</a>
+                  <a (click)="doNextClick()" class="pagination-next-primary btn btn-xsmall btn-darkgray" *ngIf="! ledgers.LastPage">Next</a>
                 </div>
 
                 <p>Viewing {{ (ledgers.Offset + 1) }}-{{ ledgers.Offset + ledgers.Limit }} of {{ ledgers.NoLimitCount }}</p>

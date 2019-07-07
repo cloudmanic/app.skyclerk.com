@@ -74,9 +74,6 @@ export class ActivityComponent implements OnInit {
 	// Format the message to our liking
 	//
 	printMessage(row: Activity) {
-
-		console.log(row);
-
 		let a = row.Message.split(" ");
 		let first = a[0];
 		a.shift();
