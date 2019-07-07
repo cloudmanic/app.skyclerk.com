@@ -23,7 +23,7 @@ export class SnapClerkService {
 	constructor(private http: HttpClient) { }
 
 	//
-	// Get me
+	// Get snapclerk list
 	//
 	get(page: number, order: string, sort: string): Observable<SnapClerkResponse> {
 		let accountId = localStorage.getItem('account_id');

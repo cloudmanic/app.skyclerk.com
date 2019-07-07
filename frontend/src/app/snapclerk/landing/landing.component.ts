@@ -53,7 +53,6 @@ export class LandingComponent implements OnInit {
 		// Get the list of snapclerks
 		this.snapClerkService.get(this.page, "SnapClerkId", "DESC").subscribe(res => {
 			this.snapclerks = res;
-			console.log(this.snapclerks);
 		});
 	}
 

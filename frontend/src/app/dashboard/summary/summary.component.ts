@@ -181,10 +181,8 @@ export class SummaryComponent implements OnInit {
 	// Load activity
 	//
 	loadActivity() {
-		this.activityService.get(1, 10).subscribe(res => {
+		this.activityService.getWithLimit(1, 10).subscribe(res => {
 			this.activity = res;
-
-			console.log(this.activity);
 		});
 	}
 

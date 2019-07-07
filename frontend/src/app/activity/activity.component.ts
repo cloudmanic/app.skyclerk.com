@@ -8,7 +8,7 @@
 import * as moment from 'moment';
 import { Component, OnInit } from '@angular/core';
 import { Activity } from '../models/activity.model';
-import { ActivityService } from '../services/activity.service';
+import { ActivityService, ActivityResponse } from '../services/activity.service';
 import { Subject } from 'rxjs';
 import { MeService } from '../services/me.service';
 
@@ -18,7 +18,9 @@ import { MeService } from '../services/me.service';
 })
 
 export class ActivityComponent implements OnInit {
+	page: number = 1;
 	activity: any;
+	activityResponse: ActivityResponse = new ActivityResponse(false, 0, 25, 0, []);
 	activityKeys: String[];
 	destory: Subject<boolean> = new Subject<boolean>();
 
@@ -52,22 +54,66 @@ export class ActivityComponent implements OnInit {
 	// Load activity
 	//
 	loadActivity() {
-		this.activityService.get(1, 25).subscribe(res => {
+		this.activityService.get(this.page, 25, "id", "DESC").subscribe(res => {
+			this.activityResponse = res;
+
 			// Build Grouping
 			this.activity = {}
 			this.activityKeys = [];
 
-			for (let i = 0; i < res.length; i++) {
-				let ix = moment(res[i].CreatedAt).format("YYYY-MM-DD");
+			for (let i = 0; i < res.Data.length; i++) {
+				let ix = moment(res.Data[i].CreatedAt).format("YYYY-MM-DD");
 
 				if (typeof this.activity[ix] == "undefined") {
 					this.activity[ix] = [];
 					this.activityKeys.push(ix);
 				}
 
-				this.activity[ix].push(res[i]);
+				this.activity[ix].push(res.Data[i]);
 			}
 		});
+	}
+
+	//
+	// Return the page list for ledger
+	//
+	getPageRange() {
+		let pages = [];
+
+		if (this.activityResponse.Data.length == 0) {
+			return [1];
+		}
+
+		let pageCount = Math.ceil(this.activityResponse.NoLimitCount / this.activityResponse.Limit);
+
+		for (let i = 1; i <= pageCount; i++) {
+			pages.push(i);
+		}
+
+		return pages;
+	}
+
+	//
+	// Paging select change
+	//
+	doPageSelectChange() {
+		this.loadActivity();
+	}
+
+	//
+	// Paging next click
+	//
+	doNextClick() {
+		this.page++;
+		this.loadActivity();
+	}
+
+	//
+	// Paging prev click
+	//
+	doPrevClick() {
+		this.page--;
+		this.loadActivity();
 	}
 
 	//

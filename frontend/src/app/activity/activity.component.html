@@ -174,27 +174,29 @@
           </div>
 
           <div class="section-paging">
+
             <div class="pagination">
               <div class="pagination-controls">
-                <a href="#" class="pagination-prev-primary">Previous</a>
+                <a (click)="doPrevClick()" class="pagination-prev-primary btn btn-xsmall btn-darkgray" *ngIf="(activityResponse.Offset > 0)">Prev</a>
 
-                <div class="pagination-select">
-                  <select name="field-1#" class="select" id="field-1#">
-                    <option value="">156</option>
+                <div class="pagination-select" *ngIf="activityResponse.NoLimitCount > activityResponse.Limit">
+                  <select name="pageRangeSelect" class="select" id="pageRangeSelect" (change)="doPageSelectChange()" [(ngModel)]="page">
+                    <option value="{{ row }}" *ngFor="let row of getPageRange()">{{ row }}</option>
                   </select>
-                </div><!-- /.pagination-select-->
+                </div>
 
-                <a href="#" class="pagination-next-primary">Next</a>
+                <a (click)="doNextClick()" class="pagination-next-primary btn btn-xsmall btn-darkgray" *ngIf="! activityResponse.LastPage">Next</a>
               </div>
 
-              <p>Viewing 1556-1566 of 2560</p>
+              <p>Viewing {{ (activityResponse.Offset + 1) }}-{{ activityResponse.Offset + activityResponse.Limit }} of {{ activityResponse.NoLimitCount }}</p>
             </div>
-          </div><!-- /.section-paging -->
-        </section><!-- /.section-activity -->
 
-      </div><!-- /.contentbox -->
+          </div>
+        </section>
 
-    </div><!-- /.content -->
+      </div>
+
+    </div>
 
     <app-layouts-sidebar current="dashboard"></app-layouts-sidebar>
 
