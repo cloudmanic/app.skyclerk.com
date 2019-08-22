@@ -9,6 +9,7 @@ import { Component, OnInit } from '@angular/core';
 import { SnapClerkService, SnapClerkResponse } from 'src/app/services/snapckerk.service';
 import { Subject } from 'rxjs';
 import { MeService } from 'src/app/services/me.service';
+import { File as FileModel } from 'src/app/models/file.model';
 
 @Component({
 	selector: 'snapclerk-app-landing',
@@ -102,6 +103,16 @@ export class LandingComponent implements OnInit {
 	doPrevClick() {
 		this.page--;
 		this.refreshPage();
+	}
+
+	//
+	// We call this when a file has been uploaded
+	//
+	onAddFile(f: FileModel) {
+		// Send file to server.
+		this.snapClerkService.create(f.Id).subscribe(_res => {
+			this.refreshPage();
+		});
 	}
 }
 

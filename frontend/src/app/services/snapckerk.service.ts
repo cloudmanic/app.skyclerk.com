@@ -61,38 +61,15 @@ export class SnapClerkService {
 		}));
 	}
 
-	// //
-	// // Create new snapclerk
-	// //
-	// create(photo: string, type: string, note: string, labels: string, category: string, lat: number, lon: number): Promise<FileUploadResult> {
-	// 	const fileTransfer: FileTransferObject = this.fileTransfer.create();
 	//
-	// 	// Get accountId
-	// 	let accountId = localStorage.getItem('account_id');
+	// Create a new snapclerk
 	//
-	// 	// Set the access token
-	// 	let accessToken = localStorage.getItem('access_token');
-	//
-	// 	// Setup load options.
-	// 	let options: FileUploadOptions = {
-	// 		fileKey: 'file',
-	// 		fileName: this.createFileName(type),
-	// 		mimeType: type,
-	// 		headers: {
-	// 			Authorization: `Bearer ${accessToken}`
-	// 		},
-	// 		params: {
-	// 			note: note,
-	// 			labels: labels,
-	// 			category: category,
-	// 			lat: String(lat),
-	// 			lon: String(lon)
-	// 		}
-	// 	}
-	//
-	// 	// Return happy.
-	// 	return fileTransfer.upload(photo, `${environment.app_server}/api/v3/${accountId}/snapclerk`, options);
-	// }
+	create(fileId: number): Observable<SnapClerk> {
+		let accountId = localStorage.getItem('account_id');
+
+		return this.http.post<SnapClerk>(`${environment.app_server}/api/v3/${accountId}/snapclerk/add-by-file-id`, { file_id: fileId })
+			.pipe(map(res => new SnapClerk().deserialize(res)));
+	}
 
 	//
 	// Create a file name for this upload.

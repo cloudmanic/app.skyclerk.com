@@ -15,16 +15,17 @@ import (
 
 	"app.skyclerk.com/backend/library/slack"
 	"app.skyclerk.com/backend/services"
+	validation "github.com/go-ozzo/ozzo-validation"
 )
 
 // SnapClerk struct
 type SnapClerk struct {
 	Id           uint      `gorm:"primary_key;column:SnapClerkId" json:"id"`
 	AccountId    uint      `gorm:"column:SnapClerkAccountId" sql:"not null" json:"account_id"`
-	AddedById    uint      `gorm:"column:SnapClerkAddedById" sql:"not null" json:"_"`
-	ReviewedById uint      `gorm:"column:SnapClerkReviewedById" sql:"not null" json:"_"`
+	AddedById    uint      `gorm:"column:SnapClerkAddedById" sql:"not null" json:"-"`
+	ReviewedById uint      `gorm:"column:SnapClerkReviewedById" sql:"not null" json:"-"`
 	Status       string    `gorm:"column:SnapClerkStatus" sql:"not null;type:ENUM('Pending','Processed','Rejected');default:'Pending'" json:"status"`
-	FileId       uint      `gorm:"column:SnapClerkFileId" sql:"not null" json:"_"`
+	FileId       uint      `gorm:"column:SnapClerkFileId" sql:"not null" json:"file_id"`
 	File         File      `gorm:"foreignkey:SnapClerkFileId" json:"file"`
 	LedgerId     uint      `gorm:"column:SnapClerkLedgerId;index:SnapClerkLedgerId" sql:"not null" json:"ledger_id"`
 	Amount       float64   `gorm:"column:SnapClerkAmount" sql:"not null;type:DECIMAL(12,2)" json:"amount"`
@@ -34,7 +35,7 @@ type SnapClerk struct {
 	Note         string    `gorm:"column:SnapClerkNote" sql:"not null;type:TEXT" json:"note"`
 	Lat          string    `gorm:"column:SnapClerkLat" sql:"not null;type:TEXT" json:"lat"`
 	Lon          string    `gorm:"column:SnapClerkLon" sql:"not null;type:TEXT" json:"lon"`
-	UpdatedAt    time.Time `gorm:"column:SnapClerkUpdatedAt" sql:"not null" json:"_"`
+	UpdatedAt    time.Time `gorm:"column:SnapClerkUpdatedAt" sql:"not null" json:"-"`
 	CreatedAt    time.Time `gorm:"column:SnapClerkCreatedAt" sql:"not null" json:"created_at"`
 	ProcessedAt  time.Time `gorm:"column:SnapClerkProcessedAt" sql:"not null" json:"processed_at"` // This has to be at the end GORM (auto update stuff)
 }
@@ -44,6 +45,19 @@ type SnapClerk struct {
 //
 func (SnapClerk) TableName() string {
 	return "SnapClerk"
+}
+
+//
+// Validate for this model.
+//
+func (a SnapClerk) Validate(db Datastore, action string, userId uint, accountId uint, objId uint) error {
+
+	return validation.ValidateStruct(&a,
+
+		validation.Field(&a.FileId,
+			validation.Required.Error("The file_id field is required."),
+		),
+	)
 }
 
 //

@@ -20,6 +20,8 @@ export class UploadComponent implements OnInit {
 	@Output() onUpload = new EventEmitter<FileModel>();
 	@Output() onDeleteFile = new EventEmitter<FileModel>();
 
+	@Input() type: string = "progress-bar";
+	@Input() label: string = "";
 	@Input() filesInput: FileModel[] = [];
 
 	files: FileUploadsWithStatus[] = [];
@@ -88,6 +90,9 @@ export class UploadComponent implements OnInit {
 		// Get the file from the entry
 		fileEntry.file((file: File) => {
 
+			let oldLabel = this.label;
+			this.label = "Uploading...";
+
 			this.fileService.upload(file).subscribe(
 				// Success
 				(res) => {
@@ -107,6 +112,9 @@ export class UploadComponent implements OnInit {
 						t.model = res;
 						t.status = "done";
 
+						// Change label
+						this.label = oldLabel;
+
 						// Send uploaded file to the parent.
 						this.onUpload.emit(t.model);
 						return;
@@ -118,6 +126,9 @@ export class UploadComponent implements OnInit {
 				(err: HttpErrorResponse) => {
 					t.status = "error";
 					t.error = "Unknown error please contact help@options.cafe";
+
+					// Change label
+					this.label = oldLabel;
 
 					// Should only be the file field
 					if (typeof err.error.errors.file != "undefined") {

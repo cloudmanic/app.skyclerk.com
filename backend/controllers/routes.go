@@ -67,6 +67,7 @@ func (t *Controller) DoRoutes(r *gin.Engine) {
 		apiV1.GET("/:account/snapclerk", t.GetSnapClerk)
 		apiV1.GET("/:account/snapclerk/usage", t.GetSnapClerkUsage)
 		apiV1.POST("/:account/snapclerk", t.CreateSnapClerk)
+		apiV1.POST("/:account/snapclerk/add-by-file-id", t.CreateSnapClerkByFileId)
 
 		// Activities
 		apiV1.GET("/:account/activities", t.GetActivities)

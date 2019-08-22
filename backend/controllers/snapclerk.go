@@ -8,6 +8,7 @@
 package controllers
 
 import (
+	"net/http"
 	"strconv"
 	"time"
 
@@ -36,6 +37,43 @@ func (t *Controller) GetSnapClerkUsage(c *gin.Context) {
 
 	// Return happy.
 	response.Results(c, rt, nil)
+}
+
+//
+// CreateSnapClerkByFileId - Create a new SnapClerk by file_id
+//
+func (t *Controller) CreateSnapClerkByFileId(c *gin.Context) {
+	// UserId.
+	userId := uint(c.MustGet("userId").(int))
+
+	// AccountId.
+	accountId := uint(c.MustGet("accountId").(int))
+
+	// Setup Contact obj
+	o := models.SnapClerk{}
+
+	// Here we parse the JSON sent in, assign it to a struct, set validation errors if any.
+	if t.ValidateRequest(c, &o, "create") != nil {
+		return
+	}
+
+	// Make sure the AccountId is correct.
+	o.AddedById = userId
+	o.AccountId = accountId
+
+	// Store in DB
+	t.db.SnapClerkCreate(&o)
+
+	// Refresh object
+	sc, err := t.db.GetSnapClerkByAccountAndId(accountId, o.Id)
+
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Snapclerk not found."})
+		return
+	}
+
+	// Return happy.
+	response.RespondCreated(c, sc, nil)
 }
 
 //

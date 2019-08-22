@@ -216,28 +216,12 @@
   version = "v1.0.2"
 
 [[projects]]
-  digest = "1:2fa7b0155cd54479a755c629de26f888a918e13f8857a2c442205d825368e084"
-  name = "github.com/mattn/go-colorable"
-  packages = ["."]
-  pruneopts = "UT"
-  revision = "3a70a971f94a22f2fa562ffcc7a0eb45f5daf045"
-  version = "v0.1.1"
-
-[[projects]]
   digest = "1:e150b5fafbd7607e2d638e4e5cf43aa4100124e5593385147b0a74e2733d8b0d"
   name = "github.com/mattn/go-isatty"
   packages = ["."]
   pruneopts = "UT"
   revision = "c2a7a6ca930a4cd0bc33a3f298eb71960732a3a7"
   version = "v0.0.7"
-
-[[projects]]
-  branch = "master"
-  digest = "1:2b32af4d2a529083275afc192d1067d8126b578c7a9613b26600e4df9c735155"
-  name = "github.com/mgutz/ansi"
-  packages = ["."]
-  pruneopts = "UT"
-  revision = "9520e82c474b0a04dd04f8a40959027271bab992"
 
 [[projects]]
   digest = "1:a6bd51dbb8312bfe7ea1609dc4edd00b46e9328b878644e7b110a7cfe8bceb89"
@@ -467,7 +451,6 @@
     "github.com/jinzhu/gorm",
     "github.com/jpfuentes2/go-env",
     "github.com/jpfuentes2/go-env/autoload",
-    "github.com/mgutz/ansi",
     "github.com/minio/minio-go",
     "github.com/nbio/st",
     "github.com/tidwall/gjson",
