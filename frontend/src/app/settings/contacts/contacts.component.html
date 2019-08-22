@@ -13,10 +13,10 @@
           <div class="overview-body">
             <div class="tabs">
 
-              <app-settings-sub-nav current="account"></app-settings-sub-nav>
+              <app-settings-sub-nav current="contacts"></app-settings-sub-nav>
 
               <div class="tabs-body">
-                <div class="tab current" id="tab1">
+                <div class="tab" id="tab1">
                   <section class="section-settings">
                     <div class="section__entry">
                       <div class="section__head">
@@ -70,7 +70,6 @@
                       <div class="section__body">
                         <p>Have more than one business? <br>Click add to create a new instance of Skyclerk (no additional costs). </p>
 
-
                       </div><!-- /.section__body -->
                     </div><!-- /.section__entry -->
 
@@ -86,15 +85,39 @@
                       </div><!-- /.section__body -->
                     </div><!-- /.section__entry -->
 
-                    <div class="section__entry section__entry--bigbtn">
+                    <div class="section__entry section__entry--bigbtn section__entry--bigbtn-aly">
                       <div class="section__head section__head--align-top">
                         <h6>Shutdown Account</h6>
 
-                        <a href="#" class="btn btn-darkgray">DELETE</a>
+                        <a href="#" class="btn btn-darkgray hidden">DELETE</a>
                       </div><!-- /.section__head -->
 
                       <div class="section__body">
-                        <p>Delete my account. You won't be charged again. </p>
+                        <p>We are sorry to see you go! <br> If you have a paid account you won’t be charged again after your official cancellation date. </p>
+
+                        <div class="form-settings form-settings--checkboxes">
+                          <div class="form-row">
+                            <label class="form-label hidden">Clear Account</label>
+
+                            <label class="checkbox">
+                              <input type="checkbox">
+
+                              I acknowledge that my information will be immediately and permanently delated.
+                            </label>
+
+                            <label class="checkbox">
+                              <input type="checkbox">
+
+                              I am familiar with the <a href="">refund policy.</a>
+                            </label>
+                          </div>
+
+                          <div class="form-actions">
+                            <button type="submit" class="btn btn-yellow">Delete Account</button>
+
+                            <a href="#" class="red-txt"><strong>Cancel</strong></a>
+                          </div>
+                        </div><!-- /.form-settings -->
                       </div><!-- /.section__body -->
                     </div><!-- /.section__entry -->
                   </section><!-- /.tab-content -->
@@ -573,6 +596,383 @@
                       </div><!-- /.table-expenses -->
                     </div><!-- /.section-body -->
                   </section><!-- /.section-secondary -->
+                </div><!-- /.tab -->
+
+                <div class="tab  current" id="tab4">
+                  <div class="section-contacts">
+                    <div class="section__head">
+                      <h6>Contacts</h6>
+
+                      <a href="#" class="btn-add"><strong>Add Contact</strong></a>
+
+                      <div class="form-search">
+                        <form action="?" method="post">
+                          <div class="form-row">
+                            <label class="form-label">search</label>
+
+                            <input type="text" class="field" placeholder="Search Contacts">
+                          </div>
+                        </form>
+                      </div><!-- /.form-search -->
+                    </div><!-- /.section__head -->
+
+                    <div class="section__body">
+                      <ul class="list-contacts">
+                        <li class="contacts-item">
+                          <div class="contacts__media">
+                            <img src="/images/contacts-1.png" srcset="/images/contacts-1.png 1x, /images/contacts-1@2x.png 2x" alt="contacts-1">
+                          </div><!-- /.contacts__media -->
+
+                          <div class="contacts__content">
+                            <h6>Austin Investments Corp.</h6>
+                          </div><!-- /.contacts__content -->
+
+                          <div class="contacts__actions">
+                            <a href="#" class="list-btn">
+                              <img src="/images/icon-edit.png" srcset="/images/icon-edit.png 1x, /images/icon-edit@2x.png 2x" alt="edit">
+                            </a>
+
+                            <a href="#" class="list-btn">
+                              <img src="/images/icon-trash.png" srcset="/images/icon-trash.png 1x, /images/icon-trash@2x.png 2x" alt="trash">
+                            </a>
+                          </div><!-- /.contacts__actions -->
+                        </li>
+
+                        <li class="contacts-item">
+                          <div class="contacts__media">
+                            <img src="/images/contacts-1.png" srcset="/images/contacts-1.png 1x, /images/contacts-1@2x.png 2x" alt="contacts-1">
+                          </div><!-- /.contacts__media -->
+
+                          <div class="contacts__content">
+                            <h6>Florence Corp</h6>
+
+                            <a href="#">helenabrauer@company.com</a>
+                          </div><!-- /.contacts__content -->
+
+                          <div class="contacts__actions">
+                            <a href="#" class="list-btn">
+                              <img src="/images/icon-edit.png" srcset="/images/icon-edit.png 1x, /images/icon-edit@2x.png 2x" alt="edit">
+                            </a>
+
+                            <a href="#" class="list-btn">
+                              <img src="/images/icon-trash.png" srcset="/images/icon-trash.png 1x, /images/icon-trash@2x.png 2x" alt="trash">
+                            </a>
+                          </div><!-- /.contacts__actions -->
+                        </li>
+
+                        <li class="contacts-item">
+                          <div class="contacts__media">
+                            <img src="/images/contacts-2.png" srcset="/images/contacts-2.png 1x, /images/contacts-2@2x.png 2x" alt="contacts-2">
+                          </div><!-- /.contacts__media -->
+
+                          <div class="contacts__content">
+                            <h6>Rio de Janeiro Restaurant</h6>
+                          </div><!-- /.contacts__content -->
+
+                          <div class="contacts__actions">
+                            <a href="#" class="list-btn">
+                              <img src="/images/icon-edit.png" srcset="/images/icon-edit.png 1x, /images/icon-edit@2x.png 2x" alt="edit">
+                            </a>
+
+                            <a href="#" class="list-btn">
+                              <img src="/images/icon-trash.png" srcset="/images/icon-trash.png 1x, /images/icon-trash@2x.png 2x" alt="trash">
+                            </a>
+                          </div><!-- /.contacts__actions -->
+                        </li>
+
+                        <li class="contacts-item">
+                          <div class="contacts__media">
+                            <img src="/images/contacts-1.png" srcset="/images/contacts-1.png 1x, /images/contacts-1@2x.png 2x" alt="contacts-1">
+                          </div><!-- /.contacts__media -->
+
+                          <div class="contacts__content">
+                            <h6>Lu Zhou</h6>
+                          </div><!-- /.contacts__content -->
+
+                          <div class="contacts__actions">
+                            <a href="#" class="list-btn">
+                              <img src="/images/icon-edit.png" srcset="/images/icon-edit.png 1x, /images/icon-edit@2x.png 2x" alt="edit">
+                            </a>
+
+                            <a href="#" class="list-btn">
+                              <img src="/images/icon-trash.png" srcset="/images/icon-trash.png 1x, /images/icon-trash@2x.png 2x" alt="trash">
+                            </a>
+                          </div><!-- /.contacts__actions -->
+                        </li>
+
+                        <li class="contacts-item">
+                          <div class="contacts__media">
+                            <img src="/images/contacts-3.png" srcset="/images/contacts-3.png 1x, /images/contacts-3@2x.png 2x" alt="contacts-3">
+                          </div><!-- /.contacts__media -->
+
+                          <div class="contacts__content">
+                            <h6>Bangkok Cafe</h6>
+
+                            <a href="#">helenabrauer@company.com</a>
+                          </div><!-- /.contacts__content -->
+
+                          <div class="contacts__actions">
+                            <a href="#" class="list-btn">
+                              <img src="/images/icon-edit.png" srcset="/images/icon-edit.png 1x, /images/icon-edit@2x.png 2x" alt="edit">
+                            </a>
+
+                            <a href="#" class="list-btn">
+                              <img src="/images/icon-trash.png" srcset="/images/icon-trash.png 1x, /images/icon-trash@2x.png 2x" alt="trash">
+                            </a>
+                          </div><!-- /.contacts__actions -->
+                        </li>
+
+                        <li class="contacts-item">
+                          <div class="contacts__media">
+                            <img src="/images/contacts-1.png" srcset="/images/contacts-1.png 1x, /images/contacts-1@2x.png 2x" alt="contacts-1">
+                          </div><!-- /.contacts__media -->
+
+                          <div class="contacts__content">
+                            <h6>Alberto Raya</h6>
+                          </div><!-- /.contacts__content -->
+
+                          <div class="contacts__actions">
+                            <a href="#" class="list-btn">
+                              <img src="/images/icon-edit.png" srcset="/images/icon-edit.png 1x, /images/icon-edit@2x.png 2x" alt="edit">
+                            </a>
+
+                            <a href="#" class="list-btn">
+                              <img src="/images/icon-trash.png" srcset="/images/icon-trash.png 1x, /images/icon-trash@2x.png 2x" alt="trash">
+                            </a>
+                          </div><!-- /.contacts__actions -->
+                        </li>
+
+                        <li class="contacts-item">
+                          <div class="contacts__media">
+                            <img src="/images/contacts-1.png" srcset="/images/contacts-1.png 1x, /images/contacts-1@2x.png 2x" alt="contacts-1">
+                          </div><!-- /.contacts__media -->
+
+                          <div class="contacts__content">
+                            <h6>CeeCee Bass</h6>
+                          </div><!-- /.contacts__content -->
+
+                          <div class="contacts__actions">
+                            <a href="#" class="list-btn">
+                              <img src="/images/icon-edit.png" srcset="/images/icon-edit.png 1x, /images/icon-edit@2x.png 2x" alt="edit">
+                            </a>
+
+                            <a href="#" class="list-btn">
+                              <img src="/images/icon-trash.png" srcset="/images/icon-trash.png 1x, /images/icon-trash@2x.png 2x" alt="trash">
+                            </a>
+                          </div><!-- /.contacts__actions -->
+                        </li>
+
+                        <li class="contacts-item">
+                          <div class="contacts__media">
+                            <img src="/images/contacts-1.png" srcset="/images/contacts-1.png 1x, /images/contacts-1@2x.png 2x" alt="contacts-1">
+                          </div><!-- /.contacts__media -->
+
+                          <div class="contacts__content">
+                            <h6>San Antonio Muffler</h6>
+                          </div><!-- /.contacts__content -->
+
+                          <div class="contacts__actions">
+                            <a href="#" class="list-btn">
+                              <img src="/images/icon-edit.png" srcset="/images/icon-edit.png 1x, /images/icon-edit@2x.png 2x" alt="edit">
+                            </a>
+
+                            <a href="#" class="list-btn">
+                              <img src="/images/icon-trash.png" srcset="/images/icon-trash.png 1x, /images/icon-trash@2x.png 2x" alt="trash">
+                            </a>
+                          </div><!-- /.contacts__actions -->
+                        </li>
+
+                        <li class="contacts-item">
+                          <div class="contacts__media">
+                            <img src="/images/contacts-1.png" srcset="/images/contacts-1.png 1x, /images/contacts-1@2x.png 2x" alt="contacts-1">
+                          </div><!-- /.contacts__media -->
+
+                          <div class="contacts__content">
+                            <h6>Yolanda Barrueco</h6>
+                          </div><!-- /.contacts__content -->
+
+                          <div class="contacts__actions">
+                            <a href="#" class="list-btn">
+                              <img src="/images/icon-edit.png" srcset="/images/icon-edit.png 1x, /images/icon-edit@2x.png 2x" alt="edit">
+                            </a>
+
+                            <a href="#" class="list-btn">
+                              <img src="/images/icon-trash.png" srcset="/images/icon-trash.png 1x, /images/icon-trash@2x.png 2x" alt="trash">
+                            </a>
+                          </div><!-- /.contacts__actions -->
+                        </li>
+
+                        <li class="contacts-item">
+                          <div class="contacts__media">
+                            <img src="/images/contacts-1.png" srcset="/images/contacts-1.png 1x, /images/contacts-1@2x.png 2x" alt="contacts-1">
+                          </div><!-- /.contacts__media -->
+
+                          <div class="contacts__content">
+                            <h6>Bangkok Cafe</h6>
+
+                            <a href="#">rustem.tolstobrov@company.com</a>
+                          </div><!-- /.contacts__content -->
+
+                          <div class="contacts__actions">
+                            <a href="#" class="list-btn">
+                              <img src="/images/icon-edit.png" srcset="/images/icon-edit.png 1x, /images/icon-edit@2x.png 2x" alt="edit">
+                            </a>
+
+                            <a href="#" class="list-btn">
+                              <img src="/images/icon-trash.png" srcset="/images/icon-trash.png 1x, /images/icon-trash@2x.png 2x" alt="trash">
+                            </a>
+                          </div><!-- /.contacts__actions -->
+                        </li>
+                      </ul><!-- /.list-contacts -->
+
+                      <div class="pagination">
+                        <div class="pagination-controls">
+                          <a href="#" class="pagination-prev-primary">Previous</a>
+
+                          <div class="pagination-select">
+                            <select name="field-1#" class="select" id="field-1#">
+                              <option value="">156</option>
+                              <option value="">157</option>
+                            </select>
+                          </div><!-- /.pagination-select-->
+
+                          <a href="#" class="pagination-next-primary">Next</a>
+                        </div>
+
+                        <p>Viewing 1-10 of 59</p>
+                      </div>
+                    </div><!-- /.section__body -->
+                  </div><!-- /.section-contacts -->
+                </div><!-- /.tab -->
+
+                <div class="tab" id="tab5">
+                  <div class="categories">
+                    <div class="category">
+                      <div class="category__head">
+                        <h6>Income Categories</h6>
+
+                        <p>Use categories to oraganize your expenses. <br>Categories in use cannot be deleted.</p>
+                      </div><!-- /.category__head -->
+
+                      <div class="category__body">
+                        <div class="table-oraganize">
+                          <div class="table">
+                            <table>
+                              <tr>
+                                <th>Name</th>
+                                <th>Usage</th>
+                                <th></th>
+                              </tr>
+
+                              <tr class="row-add">
+                                <td>
+                                  <a href="#" class="btn-add">
+                                    <img src="/images/icon-add.png" srcset="/images/icon-add.png 1x, /images/icon-add@2x.png 2x" alt="add">
+
+                                    <p>Add</p>
+                                  </a>
+                                </td>
+                                <td></td>
+                                <td></td>
+                              </tr>
+                            </table>
+                          </div><!-- /.table -->
+                        </div><!-- /.table -->
+
+                        <div class="hint-update hint-update--red">
+                          <div class="hint__holder">
+                            <img src="/images/arrow-left-red.png" srcset="/images/arrow-left-red.png 1x, /images/arrow-left-red@2x.png 2x" alt="arrow-left">
+
+                            <p>No categories yet. Click here to add.</p>
+                          </div><!-- /.hint__holder -->
+                        </div>
+                      </div><!-- /.category__body -->
+                    </div><!-- /.category -->
+
+                    <div class="category">
+                      <div class="category__head">
+                        <h6>Expense Categories</h6>
+
+                        <p>Use categories to oraganize your expenses. <br>Categories in use cannot be deleted.</p>
+                      </div><!-- /.category__head -->
+
+                      <div class="category__body">
+                        <div class="table-oraganize">
+                          <div class="table">
+                            <table>
+                              <tr>
+                                <th>Name</th>
+                                <th>Usage</th>
+                                <th></th>
+                              </tr>
+
+                              <tr class="row-add">
+                                <td>
+                                  <a href="#" class="btn-add">
+                                    <img src="/images/icon-add.png" srcset="/images/icon-add.png 1x, /images/icon-add@2x.png 2x" alt="add">
+
+                                    <p>Add</p>
+                                  </a>
+                                </td>
+                                <td></td>
+                                <td></td>
+                              </tr>
+                            </table>
+                          </div><!-- /.table -->
+                        </div><!-- /.table -->
+
+                        <div class="hint-update hint-update--red">
+                          <div class="hint__holder">
+                            <img src="/images/arrow-left-red.png" srcset="/images/arrow-left-red.png 1x, /images/arrow-left-red@2x.png 2x" alt="arrow-left">
+
+                            <p>No categories yet. Click here to add.</p>
+                          </div><!-- /.hint__holder -->
+                        </div>
+                      </div><!-- /.category__body -->
+                    </div><!-- /.category -->
+
+                    <div class="category">
+                      <div class="category__head">
+                        <h6>Labels</h6>
+
+                        <p>Labels can be handy to label your stuff.</p>
+                      </div><!-- /.category__head -->
+
+                      <div class="category__body">
+                        <div class="table-oraganize">
+                          <div class="table">
+                            <table>
+                              <tr>
+                                <th>Name</th>
+                                <th>Usage</th>
+                                <th></th>
+                              </tr>
+
+                              <tr class="row-add">
+                                <td>
+                                  <a href="#" class="btn-add">
+                                    <img src="/images/icon-add.png" srcset="/images/icon-add.png 1x, /images/icon-add@2x.png 2x" alt="add">
+
+                                    <p>Add</p>
+                                  </a>
+                                </td>
+                                <td></td>
+                                <td></td>
+                              </tr>
+                            </table>
+                          </div><!-- /.table -->
+                        </div><!-- /.table -->
+
+                        <div class="hint-update hint-update--red">
+                          <div class="hint__holder">
+                            <img src="/images/arrow-left-red.png" srcset="/images/arrow-left-red.png 1x, /images/arrow-left-red@2x.png 2x" alt="arrow-left">
+
+                            <p>No labels yet. Click here to add.</p>
+                          </div><!-- /.hint__holder -->
+                        </div>
+                      </div><!-- /.category__body -->
+                    </div><!-- /.category -->
+                  </div><!-- /.categories -->
                 </div><!-- /.tab -->
               </div><!-- /.tabs-body -->
             </div><!-- /.tabs -->

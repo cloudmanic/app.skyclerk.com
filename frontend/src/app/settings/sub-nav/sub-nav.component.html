@@ -1,13 +1,29 @@
 <div class="tabs-head">
   <nav class="tabs-nav">
     <ul>
+      <li [ngClass]="{ current: (current == 'account') }">
+        <a routerLink="/settings/account">Account</a>
+      </li>
+
+      <li [ngClass]="{ current: (current == 'billing') }">
+        <a routerLink="/settings/billing">Billing</a>
+      </li>
+
       <li [ngClass]="{ current: (current == 'users') }">
         <a routerLink="/settings/users">Users</a>
       </li>
 
-      <li [ngClass]="{ current: (current == 'account') }">
-        <a routerLink="/settings/account">Account</a>
+      <li [ngClass]="{ current: (current == 'contacts') }">
+        <a routerLink="/settings/contacts">Contacts</a>
       </li>
+
+      <li [ngClass]="{ current: (current == 'categories-labels') }">
+        <a routerLink="/settings/categories-labels">Categories / Labels</a>
+      </li>
+
+      <!-- <li [ngClass]="{ current: (current == 'linked-accounts') }">
+        <a routerLink="/settings/linked-accounts">Linked Accounts</a>
+      </li> -->
     </ul>
   </nav>
 </div>

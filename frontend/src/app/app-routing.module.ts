@@ -18,8 +18,11 @@ import { AppComponent as LayoutAppComponent } from './layouts/app/app.component'
 import { SummaryComponent as DashboardSummaryComponent } from './dashboard/summary/summary.component';
 import { LandingComponent as LedgerLandingComponent } from './ledger/landing/landing.component';
 import { LandingComponent as SnapclerkLandingComponent } from './snapclerk/landing/landing.component';
+import { BillingComponent as SettingsBillingComponent } from './settings/billing/billing.component';
+import { CategoriesLabelsComponent as SettingsCategoriesLabelsComponent } from './settings/categories-labels/categories-labels.component';
 import { UsersComponent as SettingsUsersComponent } from './settings/users/users.component';
 import { AccountComponent as SettingsAccountComponent } from './settings/account/account.component';
+import { ContactsComponent as SettingsContactsComponent } from './settings/contacts/contacts.component';
 import { ViewComponent as LedgerViewComponent } from './ledger/view/view.component';
 import { EditComponent as LedgerEditComponent } from './ledger/edit/edit.component';
 import { ActivityComponent } from './activity/activity.component';
@@ -50,7 +53,10 @@ const routes: Routes = [
 
 			// settings
 			{ path: 'settings/users', component: SettingsUsersComponent, canActivate: [SessionGuard] },
+			{ path: 'settings/billing', component: SettingsBillingComponent, canActivate: [SessionGuard] },
 			{ path: 'settings/account', component: SettingsAccountComponent, canActivate: [SessionGuard] },
+			{ path: 'settings/contacts', component: SettingsContactsComponent, canActivate: [SessionGuard] },
+			{ path: 'settings/categories-labels', component: SettingsCategoriesLabelsComponent, canActivate: [SessionGuard] },
 		]
 	},
 

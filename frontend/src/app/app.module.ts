@@ -46,6 +46,9 @@ import { ActivityComponent } from './activity/activity.component';
 import { GraphsComponent } from './dashboard/graphs/graphs.component';
 import { SubNavComponent } from './dashboard/sub-nav/sub-nav.component';
 import { ReportsComponent } from './dashboard/reports/reports.component';
+import { BillingComponent } from './settings/billing/billing.component';
+import { ContactsComponent } from './settings/contacts/contacts.component';
+import { CategoriesLabelsComponent } from './settings/categories-labels/categories-labels.component';
 
 @NgModule({
 	declarations: [
@@ -76,7 +79,10 @@ import { ReportsComponent } from './dashboard/reports/reports.component';
 		ActivityComponent,
 		GraphsComponent,
 		SubNavComponent,
-		ReportsComponent
+		ReportsComponent,
+		BillingComponent,
+		ContactsComponent,
+		CategoriesLabelsComponent
 	],
 	imports: [
 		FormsModule,

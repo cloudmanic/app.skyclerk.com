@@ -13,94 +13,236 @@
           <div class="overview-body">
             <div class="tabs">
 
-              <app-settings-sub-nav current="account"></app-settings-sub-nav>
+              <app-settings-sub-nav current="billing"></app-settings-sub-nav>
 
               <div class="tabs-body">
-                <div class="tab current" id="tab1">
-                  <section class="section-settings">
-                    <div class="section__entry">
-                      <div class="section__head">
-                        <h6>Company Name</h6>
+                <div class="tab " id="tab1">
+                  <div class="tab-content">
+                    <section class="section-secondary">
+                      <div class="section-head">
+                        <h1>Income and Expenses</h1>
+                      </div>
 
-                        <a href="#" class="link-blue">Edit</a>
-                      </div><!-- /.section__head -->
+                      <div class="section-body">
+                        <img src="/images/chart1.jpg" alt="" class="image-chart">
+                      </div>
+                    </section>
 
-                      <div class="section__body">
-                        <p>Cloudmanic Labs, LLC</p>
-                      </div><!-- /.section__body -->
-                    </div><!-- /.section__entry -->
+                    <section class="section-secondary">
+                      <div class="section-head">
+                        <h1>Outstanding Invoices</h1>
+                      </div><!-- /.section-head -->
 
-                    <div class="section__entry">
-                      <div class="section__head">
-                        <h6>Currency</h6>
+                      <div class="section-body">
+                        <div class="invoice">
+                          <div class="invoice-price">
+                            <strong>$ 999,999.59</strong>
+                          </div><!-- /.invoice-price -->
 
-                        <a href="#" class="link-blue">Edit</a>
-                      </div><!-- /.section__head -->
+                          <div class="table-invoice">
+                            <table>
+                              <tr>
+                                <th>Days Overdue</th>
 
-                      <div class="section__body">
-                        <p>U.S. Dollar ($)</p>
-                      </div><!-- /.section__body -->
-                    </div><!-- /.section__entry -->
+                                <th>Amount</th>
+                              </tr>
 
-                    <div class="section__entry">
-                      <div class="section__head">
-                        <h6>Account Owner</h6>
+                              <tr>
+                                <td>0 - 30 days:</td>
 
-                        <a href="#" class="link-blue">Edit</a>
-                      </div><!-- /.section__head -->
+                                <td>
+                                  <strong>$1,999,999.99</strong>
+                                </td>
+                              </tr>
 
-                      <div class="section__body">
-                        <p>Spicer Matthew</p>
-                      </div><!-- /.section__body -->
-                    </div><!-- /.section__entry -->
+                              <tr>
+                                <td>31 - 60 days:</td>
 
-                    <div class="section__entry  section__entry--bigbtn ">
-                      <div class="section__head">
-                        <h6 class="title-hint-holder">
-                          Add Account
+                                <td>
+                                  <strong>$12.96</strong>
+                                </td>
+                              </tr>
 
-                          <a class="title__hint">
-                            <img src="/images/icon-help.png" srcset="/images/icon-help.png 1x, /images/icon-help@2x.png 2x" alt="help">
-                          </a>
-                        </h6>
+                              <tr>
+                                <td>61 - 90 days:</td>
 
-                        <a href="#" class="btn btn-darkgray">ADD</a>
-                      </div><!-- /.section__head -->
+                                <td>$0</td>
+                              </tr>
 
-                      <div class="section__body">
-                        <p>Have more than one business? <br>Click add to create a new instance of Skyclerk (no additional costs). </p>
+                              <tr>
+                                <td>Over 90 days:</td>
 
+                                <td>$0</td>
+                              </tr>
+                            </table>
+                          </div><!-- /.table-invoice -->
+                        </div><!-- /.invoices -->
+                      </div><!-- /.section-body -->
+                    </section><!-- /.section-secondary -->
+                  </div><!-- /.tab-content -->
 
-                      </div><!-- /.section__body -->
-                    </div><!-- /.section__entry -->
+                  <div class="tab-aside">
+                    <div class="widget-activity">
+                      <div class="widget-head">
+                        <h3>Activity</h3>
+                      </div><!-- /.widget-head -->
 
-                    <div class="section__entry section__entry--bigbtn">
-                      <div class="section__head section__head--align-top">
-                        <h6>Clear Account</h6>
+                      <div class="widget-body">
+                        <ul class="activities">
+                          <li class="activity">
+                            <div class="activity-meta">
+                              <h5>Today, 20 Mar 2013 12:13 PM</h5>
+                            </div><!-- /.activity-meta -->
 
-                        <a href="#" class="btn btn-darkgray">CLEAR</a>
-                      </div><!-- /.section__head -->
+                            <div class="activity-inner">
+                              <div class="activity-label">
+                                <span class="label-secondary label-secondary-red">Expense</span>
+                              </div><!-- /.activity-label -->
 
-                      <div class="section__body">
-                        <p>Delete all data from your account forever. </p>
-                      </div><!-- /.section__body -->
-                    </div><!-- /.section__entry -->
+                              <div class="activity-content">
+                                <p>
+                                  <strong>Matt</strong> added an expense of 53.45 from <a href="#">Salt Design</a>
+                                </p>
+                              </div><!-- /.activity-content -->
+                            </div><!-- /.activity-inner -->
+                          </li><!-- /.activity -->
 
-                    <div class="section__entry section__entry--bigbtn">
-                      <div class="section__head section__head--align-top">
-                        <h6>Shutdown Account</h6>
+                          <li class="activity">
+                            <div class="activity-meta">
+                              <h5>Today, 20 Mar 2013 12:13 PM</h5>
+                            </div><!-- /.activity-meta -->
 
-                        <a href="#" class="btn btn-darkgray">DELETE</a>
-                      </div><!-- /.section__head -->
+                            <div class="activity-inner">
+                              <div class="activity-label">
+                                <span class="label-secondary label-secondary-green">Income</span>
+                              </div><!-- /.activity-label -->
 
-                      <div class="section__body">
-                        <p>Delete my account. You won't be charged again. </p>
-                      </div><!-- /.section__body -->
-                    </div><!-- /.section__entry -->
-                  </section><!-- /.tab-content -->
+                              <div class="activity-content">
+                                <p>
+                                  <strong>Matt</strong> added an income entry of 53.45 from <a href="#">Whitman College</a>
+                                </p>
+                              </div><!-- /.activity-content -->
+                            </div><!-- /.activity-inner -->
+                          </li><!-- /.activity -->
+
+                          <li class="activity">
+                            <div class="activity-meta">
+                              <h5>Today, 20 Mar 2013 12:13 PM</h5>
+                            </div><!-- /.activity-meta -->
+
+                            <div class="activity-inner">
+                              <div class="activity-label">
+                                <span class="label-secondary label-secondary-green">Income</span>
+                              </div><!-- /.activity-label -->
+
+                              <div class="activity-content">
+                                <p>
+                                  <strong>Matt</strong> added an income entry of 53.45 from <a href="#">Whitman College</a>
+                                </p>
+                              </div><!-- /.activity-content -->
+                            </div><!-- /.activity-inner -->
+                          </li><!-- /.activity -->
+
+                          <li class="activity">
+                            <div class="activity-meta">
+                              <h5>Today, 20 Mar 2013 12:13 PM</h5>
+                            </div><!-- /.activity-meta -->
+
+                            <div class="activity-inner">
+                              <div class="activity-label">
+                                <span class="label-secondary label-secondary-orange">Contacts</span>
+                              </div><!-- /.activity-label -->
+
+                              <div class="activity-content">
+                                <p>
+                                  <strong>Matt</strong> added an expense of 53.45 from <a href="#">Salt Design</a>
+                                </p>
+                              </div><!-- /.activity-content -->
+                            </div><!-- /.activity-inner -->
+                          </li><!-- /.activity -->
+
+                          <li class="activity">
+                            <div class="activity-meta">
+                              <h5>Today, 20 Mar 2013 12:13 PM</h5>
+                            </div><!-- /.activity-meta -->
+
+                            <div class="activity-inner">
+                              <div class="activity-label">
+                                <span class="label-secondary label-secondary-blue">Snap!Clerk</span>
+                              </div><!-- /.activity-label -->
+
+                              <div class="activity-content">
+                                <p>
+                                  <strong>Matt</strong> uploaded a receipt for 536.45 from <a href="#">Whole Foods Inc.</a>
+                                </p>
+                              </div><!-- /.activity-content -->
+                            </div><!-- /.activity-inner -->
+                          </li><!-- /.activity -->
+
+                          <li class="activity">
+                            <div class="activity-meta">
+                              <h5>Today, 20 Mar 2013 12:13 PM</h5>
+                            </div><!-- /.activity-meta -->
+
+                            <div class="activity-inner">
+                              <div class="activity-label">
+                                <span class="label-secondary label-secondary-orange">Contacts</span>
+                              </div><!-- /.activity-label -->
+
+                              <div class="activity-content">
+                                <p>
+                                  <strong>Matt</strong> added an expense of 53.45 from <a href="#">Salt Design</a>
+                                </p>
+                              </div><!-- /.activity-content -->
+                            </div><!-- /.activity-inner -->
+                          </li><!-- /.activity -->
+
+                          <li class="activity">
+                            <div class="activity-meta">
+                              <h5>Today, 20 Mar 2013 12:13 PM</h5>
+                            </div><!-- /.activity-meta -->
+
+                            <div class="activity-inner">
+                              <div class="activity-label">
+                                <span class="label-secondary label-secondary-green">Income</span>
+                              </div><!-- /.activity-label -->
+
+                              <div class="activity-content">
+                                <p>
+                                  <strong>Matt</strong> added an income entry of 53.45 from <a href="#">Whitman College</a>
+                                </p>
+                              </div><!-- /.activity-content -->
+                            </div><!-- /.activity-inner -->
+                          </li><!-- /.activity -->
+
+                          <li class="activity">
+                            <div class="activity-meta">
+                              <h5>Today, 20 Mar 2013 12:13 PM</h5>
+                            </div><!-- /.activity-meta -->
+
+                            <div class="activity-inner">
+                              <div class="activity-label">
+                                <span class="label-secondary label-secondary-orange">Contacts</span>
+                              </div><!-- /.activity-label -->
+
+                              <div class="activity-content">
+                                <p>
+                                  <strong>Matt</strong> edited a contact: <a href="#">Whitman College</a>
+                                </p>
+                              </div><!-- /.activity-content -->
+                            </div><!-- /.activity-inner -->
+                          </li><!-- /.activity -->
+                        </ul><!-- /.activities -->
+                      </div><!-- /.widget-body -->
+
+                      <div class="widget-actions">
+                        <a href="#" class="activities-btn">All Activity</a>
+                      </div><!-- /.widget-actions -->
+                    </div><!-- /.widget-activity -->
+                  </div><!-- /.tab-aside -->
                 </div><!-- /.tab -->
 
-                <div class="tab " id="tab2">
+                <div class="tab current" id="tab2">
                   <section class="section-settings">
                     <div class="section__entry">
                       <div class="section__head">
