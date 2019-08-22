@@ -25,6 +25,8 @@ import (
 // system, but enough so the front-end does not have to page
 //
 func (t *Controller) GetCategories(c *gin.Context) {
+	// Set account id
+	var accountId = c.MustGet("accountId").(int)
 
 	// Place to store the results.
 	var results = []models.Category{}
@@ -41,7 +43,7 @@ func (t *Controller) GetCategories(c *gin.Context) {
 		Debug:            false,
 		AllowedOrderCols: []string{"CategoriesId", "CategoriesName"},
 		Wheres: []models.KeyValue{
-			{Key: "CategoriesAccountId", Compare: "=", ValueInt: c.MustGet("accountId").(int)},
+			{Key: "CategoriesAccountId", Compare: "=", ValueInt: accountId},
 		},
 	}
 
@@ -64,6 +66,18 @@ func (t *Controller) GetCategories(c *gin.Context) {
 			results[key].Type = "expense"
 		} else {
 			results[key].Type = "income"
+		}
+	}
+
+	// Add in usage.
+	usage := t.db.GetCategoryUsageByAccount(uint(accountId))
+
+	// Add in count TODO(spicer): use MAPs so we do less loops
+	for key, row := range results {
+		for _, row2 := range usage {
+			if row2.Name == row.Name {
+				results[key].Count = row2.Count
+			}
 		}
 	}
 

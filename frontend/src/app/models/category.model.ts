@@ -12,6 +12,7 @@ export class Category implements Serializable {
 	AccountId: number;
 	Name: string;
 	Type: string;
+	Count: number;
 	EditMode: boolean = false;
 	ErrorMsg: string = "";
 
@@ -23,6 +24,7 @@ export class Category implements Serializable {
 		this.AccountId = json["account_id"];
 		this.Name = json["name"];
 		this.Type = json["type"];
+		this.Count = json["count"];
 		return this;
 	}
 
@@ -34,7 +36,8 @@ export class Category implements Serializable {
 			id: obj.Id,
 			account_id: obj.AccountId,
 			name: obj.Name,
-			type: obj.Type
+			type: obj.Type,
+			count: obj.Count
 		}
 
 		if (rt.type == "expense") {

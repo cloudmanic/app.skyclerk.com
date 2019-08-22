@@ -16,15 +16,23 @@ import (
 	validation "github.com/go-ozzo/ozzo-validation"
 )
 
+// CategoryUsage struct
+type CategoryUsage struct {
+	Name  string `json:"name"`
+	Count int    `json:"count"`
+}
+
+// Category struct
 type Category struct {
 	Id        uint      `gorm:"primary_key;column:CategoriesId" json:"id"`
 	AccountId uint      `gorm:"column:CategoriesAccountId" sql:"not null" json:"account_id"`
-	UpdatedAt time.Time `gorm:"column:CategoriesUpdatedAt" sql:"not null" json:"_"`
-	CreatedAt time.Time `gorm:"column:CategoriesCreatedAt" sql:"not null" json:"_"`
+	UpdatedAt time.Time `gorm:"column:CategoriesUpdatedAt" sql:"not null" json:"-"`
+	CreatedAt time.Time `gorm:"column:CategoriesCreatedAt" sql:"not null" json:"-"`
 	Name      string    `gorm:"column:CategoriesName" sql:"not null;" json:"name"`
 	Type      string    `gorm:"column:CategoriesType" sql:"not null" json:"type"` // 1 = expense, 2 = income
-	Irs       string    `gorm:"column:CategoriesIrs" sql:"not null" json:"_"`
-	Show      string    `gorm:"column:CategoriesShow" sql:"not null" json:"_"`
+	Irs       string    `gorm:"column:CategoriesIrs" sql:"not null" json:"-"`
+	Show      string    `gorm:"column:CategoriesShow" sql:"not null" json:"-"`
+	Count     int       `gorm:"-" sql:"not null" json:"count"`
 }
 
 //
@@ -129,6 +137,26 @@ func (db *DB) DeleteCategoryByAccountAndId(accountId uint, categoryId uint) erro
 
 	// Return result
 	return nil
+}
+
+//
+// GetCategoryUsage - returns a list of categories by account and the usage.
+//
+func (db *DB) GetCategoryUsageByAccount(accountId uint) []CategoryUsage {
+	// SQL String
+	sql := "SELECT CategoriesName AS name, COUNT(LedgerId) AS count FROM Ledger "
+	sql = sql + "INNER JOIN Categories ON Ledger.LedgerCategoryId=Categories.CategoriesId "
+	sql = sql + "WHERE CategoriesAccountId = ? "
+	sql = sql + "GROUP BY CategoriesName ORDER BY CategoriesName "
+
+	// Struct we return
+	rt := []CategoryUsage{}
+
+	// Run query
+	db.New().Raw(sql, accountId).Scan(&rt)
+
+	// Return happy.
+	return rt
 }
 
 /* End File */

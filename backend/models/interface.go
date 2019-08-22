@@ -40,6 +40,7 @@ type Datastore interface {
 	DeleteCategoryByAccountAndId(accountId uint, categoryId uint) error
 	ValidateDuplicateCategoryName(cat Category, accountId uint, objId uint, action string) error
 	GetCategoryByAccountAndId(accountId uint, categoryId uint) (Category, error)
+	GetCategoryUsageByAccount(accountId uint) []CategoryUsage
 
 	// Contact
 	GenerateAvatarsForAllMissing() error
