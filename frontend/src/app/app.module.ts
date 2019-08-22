@@ -59,6 +59,8 @@ import { AccountPlanComponent } from './settings/billing/account-plan/account-pl
 import { PaymentMethodComponent } from './settings/billing/payment-method/payment-method.component';
 import { NextPaymentComponent } from './settings/billing/next-payment/next-payment.component';
 import { HistoryComponent } from './settings/billing/history/history.component';
+import { CategoriesComponent } from './settings/categories-labels/categories/categories.component';
+import { LabelsComponent } from './settings/categories-labels/labels/labels.component';
 
 @NgModule({
 	declarations: [
@@ -102,7 +104,9 @@ import { HistoryComponent } from './settings/billing/history/history.component';
 		AccountPlanComponent,
 		PaymentMethodComponent,
 		NextPaymentComponent,
-		HistoryComponent
+		HistoryComponent,
+		CategoriesComponent,
+		LabelsComponent
 	],
 	imports: [
 		FormsModule,

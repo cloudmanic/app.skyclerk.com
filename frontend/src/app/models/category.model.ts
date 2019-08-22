@@ -12,6 +12,8 @@ export class Category implements Serializable {
 	AccountId: number;
 	Name: string;
 	Type: string;
+	EditMode: boolean = false;
+	ErrorMsg: string = "";
 
 	//
 	// Json to Object.

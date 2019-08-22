@@ -40,6 +40,8 @@
 .table-activity .label-secondary { width: 85px; }
 
 /* Settings */
+.settings .form-edit { padding: 10px 0 10px 0; }
+.settings .form-edit.hasError { padding: 25px 0 10px 0; }
 .settings .mod { display: block; margin-top: 20px; }
 .settings .mod:first-child { margin-top: unset; }
 .form-actions { padding: 0 10px 0 10px; }

@@ -42,6 +42,39 @@ export class CategoryService {
 		return this.http.post<Category>(`${environment.app_server}/api/v3/${accountId}/categories`, new Category().serialize(category))
 			.pipe(map(res => new Category().deserialize(res)));
 	}
+
+	//
+	// Update a category
+	//
+	update(category: Category): Observable<Category> {
+		let accountId = localStorage.getItem('account_id');
+
+		// Set type. 1 = expense, 2 = income
+		let type = "1";
+		if (category.Type == "income") {
+			type = "2"
+		}
+
+		let put = {
+			type: type,
+			name: category.Name,
+			account_id: Number(accountId)
+		}
+
+		return this.http.put<Category>(`${environment.app_server}/api/v3/${accountId}/categories/${category.Id}`, put)
+			.pipe(map(res => new Category().deserialize(res)));
+	}
+
+	//
+	// Delete a category
+	//
+	delete(category: Category): Observable<Boolean> {
+		let accountId = localStorage.getItem('account_id');
+		category.AccountId = Number(accountId);
+
+		return this.http.delete<Boolean>(`${environment.app_server}/api/v3/${accountId}/categories/${category.Id}`, {})
+			.pipe(map(() => true));
+	}
 }
 
 
