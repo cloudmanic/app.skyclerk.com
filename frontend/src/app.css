@@ -2,8 +2,11 @@
 
 .red { color: red; }
 .mt-5 { margin-top: 5px; }
+.mt-0 { margin-top: 0; }
 .mt-15 { margin-top: 15px; }
+.mt-20 { margin-top: 20px; }
 .ml-5 { margin-left: 5px; }
+.ml-10 { margin-left: 10px; }
 .mr-n-20 { margin-right: -20px !important; }
 .width-280 { width: 280px !important; }
 .width-400 { width: 400px !important; }
@@ -35,3 +38,8 @@
 
 /* Activity */
 .table-activity .label-secondary { width: 85px; }
+
+/* Settings */
+.settings .mod { display: block; margin-top: 20px; }
+.settings .mod:first-child { margin-top: unset; }
+.form-actions { padding: 0 10px 0 10px; }

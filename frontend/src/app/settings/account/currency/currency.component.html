@@ -1,0 +1,46 @@
+<div class="section__entry" *ngIf="! editMode">
+  <div class="section__head">
+    <h6>Currency</h6>
+
+    <a class="link-blue" (click)="editModeToggle()">Edit</a>
+  </div>
+
+  <div class="section__body">
+    <p>U.S. Dollar ($)</p>
+  </div>
+</div>
+
+
+<div class="section__entry" *ngIf="editMode">
+  <div class="section__head">
+    <h6>Currency</h6>
+  </div>
+
+  <div class="section__body">
+    <div class="form-settings form-settings--select">
+      <form action="?" method="post">
+        <div class="form-row">
+          <label class="form-label hidden">Currency</label>
+
+          <div class="select">
+            <select>
+              <option>Option 1</option>
+              <option>Option 2</option>
+              <option>Option 3</option>
+              <option>Option 4</option>
+            </select>
+            <span class="select-value">U.S. Dollar ($)</span>
+          </div><!-- /.select -->
+        </div>
+
+        <div class="form-actions">
+          <button type="submit" class="btn btn-yellow">Save changes</button>
+
+          <a class="red-txt" (click)="editModeToggle()">
+            <strong>Cancel</strong>
+          </a>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

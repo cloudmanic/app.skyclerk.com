@@ -49,6 +49,12 @@ import { ReportsComponent } from './dashboard/reports/reports.component';
 import { BillingComponent } from './settings/billing/billing.component';
 import { ContactsComponent } from './settings/contacts/contacts.component';
 import { CategoriesLabelsComponent } from './settings/categories-labels/categories-labels.component';
+import { CompanyNameComponent } from './settings/account/company-name/company-name.component';
+import { CurrencyComponent } from './settings/account/currency/currency.component';
+import { AccountOwnerComponent } from './settings/account/account-owner/account-owner.component';
+import { AccountAddComponent } from './settings/account/account-add/account-add.component';
+import { AccountShutdownComponent } from './settings/account/account-shutdown/account-shutdown.component';
+import { AccountClearComponent } from './settings/account/account-clear/account-clear.component';
 
 @NgModule({
 	declarations: [
@@ -82,7 +88,13 @@ import { CategoriesLabelsComponent } from './settings/categories-labels/categori
 		ReportsComponent,
 		BillingComponent,
 		ContactsComponent,
-		CategoriesLabelsComponent
+		CategoriesLabelsComponent,
+		CompanyNameComponent,
+		CurrencyComponent,
+		AccountOwnerComponent,
+		AccountAddComponent,
+		AccountShutdownComponent,
+		AccountClearComponent
 	],
 	imports: [
 		FormsModule,

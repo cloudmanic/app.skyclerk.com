@@ -1,0 +1,45 @@
+<div class="section__entry section__entry--bigbtn" *ngIf="! editMode">
+  <div class="section__head section__head--align-top">
+    <h6>Shutdown Account</h6>
+    <a class="btn btn-darkgray" (click)="editModeToggle()">DELETE</a>
+  </div>
+
+  <div class="section__body">
+    <p>Delete my account. You won't be charged again. </p>
+  </div>
+</div>
+
+
+<div class="section__entry section__entry--bigbtn section__entry--bigbtn-aly" *ngIf="editMode">
+  <div class="section__head section__head--align-top">
+    <h6>Shutdown Account</h6>
+  </div>
+
+  <div class="section__body">
+    <p>We are sorry to see you go! <br> If you have a paid account you won’t be charged again after your official cancellation date. </p>
+
+    <div class="form-settings form-settings--checkboxes">
+      <div class="form-row">
+        <label class="form-label hidden">Clear Account</label>
+
+        <label class="checkbox">
+          <input type="checkbox">
+
+          I acknowledge that my information will be immediately and permanently delated.
+        </label>
+
+        <label class="checkbox">
+          <input type="checkbox">
+
+          I am familiar with the <a href="">refund policy.</a>
+        </label>
+      </div>
+
+      <div class="form-actions">
+        <button type="submit" class="btn btn-yellow">Delete Account</button>
+
+        <a class="red-txt" (click)="editModeToggle()"><strong>Cancel</strong></a>
+      </div>
+    </div>
+  </div>
+</div>

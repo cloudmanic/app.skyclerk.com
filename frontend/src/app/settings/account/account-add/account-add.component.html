@@ -1,0 +1,56 @@
+<div class="section__entry  section__entry--bigbtn" *ngIf="! editMode">
+  <div class="section__head">
+    <h6 class="title-hint-holder">
+      Add Account
+
+      <a class="title__hint">
+        <img src="/images/icon-help.png" srcset="/images/icon-help.png 1x, /images/icon-help@2x.png 2x" alt="help">
+      </a>
+    </h6>
+
+    <a class="btn btn-darkgray" (click)="editModeToggle()">ADD</a>
+  </div>
+
+  <div class="section__body">
+    <p>Have more than one business? <br>Click add to create a new instance of Skyclerk (no additional costs). </p>
+  </div>
+</div>
+
+
+<div class="section__entry  section__entry--bigbtn" *ngIf="editMode">
+  <div class="section__head">
+    <h6 class="title-hint-holder">
+      Add Account
+
+      <a class="title__hint">
+        <img src="/images//icon-help.png" srcset="/images//icon-help.png 1x, /images//icon-help@2x.png 2x" alt="help">
+      </a>
+    </h6>
+  </div>
+
+  <div class="section__body">
+    <p>Have more than one business? <br>Click add to create a new instance of Skyclerk (no additional costs). </p>
+
+    <div class="form-settings">
+      <form action="?" method="post">
+        <div class="form-row form--error">
+          <span class="form__error red-txt"><strong>Not a valid account name</strong></span>
+
+          <label class="form-label"><strong>Account Name</strong></label>
+
+          <input type="text" class="field" placeholder="SkyClerk">
+        </div>
+
+        <div class="form-actions">
+          <button type="submit" class="btn btn-yellow">Add account</button>
+
+          <a class="red-txt" (click)="editModeToggle()">
+            <strong>Cancel</strong>
+          </a>
+        </div>
+      </form>
+    </div>
+
+    <p>You will be directed to your new account.</p>
+  </div>
+</div>

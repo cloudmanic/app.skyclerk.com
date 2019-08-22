@@ -1,0 +1,38 @@
+<div class="section__entry section__entry--bigbtn" *ngIf="! editMode">
+  <div class="section__head section__head--align-top">
+    <h6>Clear Account</h6>
+
+    <a class="btn btn-darkgray" (click)="editModeToggle()">CLEAR</a>
+  </div>
+
+  <div class="section__body">
+    <p>Delete all data from your account forever. </p>
+  </div>
+</div>
+
+
+<div class="section__entry section__entry--bigbtn" *ngIf="editMode">
+  <div class="section__head section__head--align-top">
+    <h6>Clear Account</h6>
+  </div>
+
+  <div class="section__body">
+    <div class="form-settings form-settings--checkboxes">
+      <div class="form-row">
+        <label class="form-label hidden">Clear Account</label>
+
+        <label class="checkbox">
+          <input type="checkbox">
+
+          I understand that by clicking the button below I will clear my entire account of all data and restore it to the state when I first signed up. All data will be deleted forever.
+        </label>
+      </div>
+
+      <div class="form-actions">
+        <button type="submit" class="btn btn-yellow">Clear Account</button>
+
+        <a class="red-txt" (click)="editModeToggle()"><strong>Cancel</strong></a>
+      </div>
+    </div>
+  </div>
+</div>
