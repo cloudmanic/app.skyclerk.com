@@ -55,6 +55,10 @@ import { AccountOwnerComponent } from './settings/account/account-owner/account-
 import { AccountAddComponent } from './settings/account/account-add/account-add.component';
 import { AccountShutdownComponent } from './settings/account/account-shutdown/account-shutdown.component';
 import { AccountClearComponent } from './settings/account/account-clear/account-clear.component';
+import { AccountPlanComponent } from './settings/billing/account-plan/account-plan.component';
+import { PaymentMethodComponent } from './settings/billing/payment-method/payment-method.component';
+import { NextPaymentComponent } from './settings/billing/next-payment/next-payment.component';
+import { HistoryComponent } from './settings/billing/history/history.component';
 
 @NgModule({
 	declarations: [
@@ -94,7 +98,11 @@ import { AccountClearComponent } from './settings/account/account-clear/account-
 		AccountOwnerComponent,
 		AccountAddComponent,
 		AccountShutdownComponent,
-		AccountClearComponent
+		AccountClearComponent,
+		AccountPlanComponent,
+		PaymentMethodComponent,
+		NextPaymentComponent,
+		HistoryComponent
 	],
 	imports: [
 		FormsModule,

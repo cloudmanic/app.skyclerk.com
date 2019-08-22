@@ -1,0 +1,52 @@
+<div class="section__entry" *ngIf="! editMode">
+  <div class="section__head">
+    <h6>Account Plan</h6>
+    <a class="link-blue" (click)="editModeToggle()">Edit</a>
+  </div>
+
+  <div class="section__body">
+    <p>You are on the monthly plan</p>
+  </div>
+</div>
+
+<div class="section__entry" *ngIf="editMode">
+  <div class="section__head">
+    <h6>Account Plan</h6>
+  </div>
+
+  <div class="section__body">
+    <p>You are on the monthly plan</p>
+
+    <div class="checkbox-slider">
+      <input type="checkbox" name="" id="field-1#">
+
+      <div class="checkbox-option">
+        <p>Monthy</p>
+
+        <span>$6/mo</span>
+      </div>
+
+      <label for="field-1#"></label>
+
+      <div class="checkbox-option">
+        <p>Annual</p>
+
+        <span>$60/year</span>
+      </div>
+
+      <div class="hint-update">
+        <div class="hint__holder">
+          <img src="/images/arrow-left.png" srcset="/images/arrow-left.png 1x, /images/arrow-left@2x.png 2x" alt="arrow-left">
+
+          <p>Save 20% with the annual subscription!</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="section__actions">
+      <a href="#" class="btn btn-yellow">CHANGE PLAN</a>
+
+      <a class="red-txt" (click)="editModeToggle()"><strong>Cancel</strong></a>
+    </div>
+  </div>
+</div>
