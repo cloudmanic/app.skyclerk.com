@@ -27,6 +27,7 @@ export class Contact implements Serializable {
 	Facebook: string = "";
 	Linkedin: string = "";
 	Country: string = "";
+	EditMode: boolean = false;
 
 	//
 	// Json to Object.

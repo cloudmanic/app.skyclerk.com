@@ -48,6 +48,28 @@ export class ContactService {
 		return this.http.post<number>(`${environment.app_server}/api/v3/${accountId}/contacts`, new Contact().serialize(contact))
 			.pipe(map(res => new Contact().deserialize(res)));
 	}
+
+	//
+	// Update a contact
+	//
+	update(contact: Contact): Observable<Contact> {
+		let accountId = localStorage.getItem('account_id');
+		contact.AccountId = Number(accountId);
+
+		return this.http.put<Contact>(`${environment.app_server}/api/v3/${accountId}/contacts/${contact.Id}`, new Contact().serialize(contact))
+			.pipe(map(res => new Contact().deserialize(res)));
+	}
+
+	//
+	// Delete a contact
+	//
+	delete(contact: Contact): Observable<Boolean> {
+		let accountId = localStorage.getItem('account_id');
+		contact.AccountId = Number(accountId);
+
+		return this.http.delete<Boolean>(`${environment.app_server}/api/v3/${accountId}/contacts/${contact.Id}`, {})
+			.pipe(map(() => true));
+	}
 }
 
 
