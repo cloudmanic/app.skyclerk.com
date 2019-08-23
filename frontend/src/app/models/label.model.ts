@@ -11,6 +11,9 @@ export class Label implements Serializable {
 	Id: number;
 	AccountId: number;
 	Name: string;
+	Count: number;
+	EditMode: boolean = false;
+	ErrorMsg: string = "";
 
 	//
 	// Json to Object.
@@ -19,6 +22,7 @@ export class Label implements Serializable {
 		this.Id = json["id"];
 		this.AccountId = json["account_id"];
 		this.Name = json["name"];
+		this.Count = json["count"];
 		return this;
 	}
 
@@ -29,7 +33,8 @@ export class Label implements Serializable {
 		let rt = {
 			id: obj.Id,
 			account_id: obj.AccountId,
-			name: obj.Name
+			name: obj.Name,
+			count: obj.Count
 		}
 		return rt;
 	}

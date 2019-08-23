@@ -25,6 +25,8 @@ import (
 // system, but enough so the front-end does not have to page
 //
 func (t *Controller) GetLabels(c *gin.Context) {
+	// Set account id
+	var accountId = c.MustGet("accountId").(int)
 
 	// Place to store the results.
 	var results = []models.Label{}
@@ -40,12 +42,24 @@ func (t *Controller) GetLabels(c *gin.Context) {
 		Page:             page,
 		AllowedOrderCols: []string{"LabelsId", "LabelsName"},
 		Wheres: []models.KeyValue{
-			{Key: "LabelsAccountId", Compare: "=", ValueInt: c.MustGet("accountId").(int)},
+			{Key: "LabelsAccountId", Compare: "=", ValueInt: accountId},
 		},
 	}
 
 	// Run the query
 	meta, err := t.db.QueryMeta(&results, params)
+
+	// Add in usage.
+	usage := t.db.GetLabelUsageByAccount(uint(accountId))
+
+	// Add in count TODO(spicer): use MAPs so we do less loops
+	for key, row := range results {
+		for _, row2 := range usage {
+			if row2.Name == row.Name {
+				results[key].Count = row2.Count
+			}
+		}
+	}
 
 	// Return json based on if this was a good result or not.
 	response.ResultsMeta(c, results, err, meta)

@@ -16,6 +16,13 @@ import (
 	validation "github.com/go-ozzo/ozzo-validation"
 )
 
+// LabelUsage struct
+type LabelUsage struct {
+	Name  string `json:"name"`
+	Count int    `json:"count"`
+}
+
+// Label struct
 type Label struct {
 	Id        uint      `gorm:"primary_key;column:LabelsId" json:"id"`
 	AccountId uint      `gorm:"column:LabelsAccountId" sql:"not null" json:"account_id"`
@@ -23,6 +30,7 @@ type Label struct {
 	CreatedAt time.Time `gorm:"column:LabelsCreatedAt" sql:"not null" json:"_"`
 	Name      string    `gorm:"column:LabelsName" sql:"not null;" json:"name"`
 	System    uint      `gorm:"column:LabelsSystem" sql:"not null" json:"_"`
+	Count     int       `gorm:"-" sql:"not null" json:"count"`
 }
 
 //
@@ -119,6 +127,26 @@ func (db *DB) DeleteLabelByAccountAndId(accountId uint, labelId uint) error {
 
 	// Return result
 	return nil
+}
+
+//
+// GetLabelUsageByAccount - returns a list of labels by account and the usage.
+//
+func (db *DB) GetLabelUsageByAccount(accountId uint) []LabelUsage {
+	// SQL String
+	sql := "SELECT LabelsName as name, COUNT(LabelsToLedgerLedgerId) as count FROM LabelsToLedger "
+	sql = sql + "INNER JOIN Labels ON LabelsToLedger.LabelsToLedgerLabelId=Labels.LabelsId "
+	sql = sql + "WHERE LabelsAccountId = ? "
+	sql = sql + "GROUP BY LabelsName ORDER BY LabelsName"
+
+	// Struct we return
+	rt := []LabelUsage{}
+
+	// Run query
+	db.New().Raw(sql, accountId).Scan(&rt)
+
+	// Return happy.
+	return rt
 }
 
 /* End File */

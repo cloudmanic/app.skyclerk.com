@@ -42,6 +42,32 @@ export class LabelService {
 		return this.http.post<number>(`${environment.app_server}/api/v3/${accountId}/labels`, new Label().serialize(lb))
 			.pipe(map(res => new Label().deserialize(res)));
 	}
+
+	//
+	// Update a label
+	//
+	update(label: Label): Observable<Label> {
+		let accountId = localStorage.getItem('account_id');
+
+		let put = {
+			name: label.Name,
+			account_id: Number(accountId)
+		}
+
+		return this.http.put<Label>(`${environment.app_server}/api/v3/${accountId}/labels/${label.Id}`, put)
+			.pipe(map(res => new Label().deserialize(res)));
+	}
+
+	//
+	// Delete a label
+	//
+	delete(label: Label): Observable<Boolean> {
+		let accountId = localStorage.getItem('account_id');
+		label.AccountId = Number(accountId);
+
+		return this.http.delete<Boolean>(`${environment.app_server}/api/v3/${accountId}/labels/${label.Id}`, {})
+			.pipe(map(() => true));
+	}
 }
 
 

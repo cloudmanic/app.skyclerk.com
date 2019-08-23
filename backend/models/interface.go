@@ -55,6 +55,7 @@ type Datastore interface {
 	GetLabelByAccountAndId(accountId uint, labelId uint) (Label, error)
 	DeleteLabelByAccountAndId(accountId uint, labelId uint) error
 	ValidateDuplicateLabelName(obj Label, accountId uint, objId uint, action string) error
+	GetLabelUsageByAccount(accountId uint) []LabelUsage
 
 	// User
 	GetUserById(id uint) (User, error)
