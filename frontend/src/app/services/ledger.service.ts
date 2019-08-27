@@ -13,6 +13,7 @@ import { Observable } from 'rxjs';
 import { Ledger } from '../models/ledger.model';
 import { Category } from '../models/category.model';
 import { Label } from '../models/label.model';
+import { TrackService } from './track.service';
 
 @Injectable({
 	providedIn: 'root'
@@ -22,7 +23,7 @@ export class LedgerService {
 	//
 	// Constructor
 	//
-	constructor(private http: HttpClient) { }
+	constructor(private http: HttpClient, private trackService: TrackService) { }
 
 	//
 	// Create a new ledger
@@ -32,7 +33,19 @@ export class LedgerService {
 		ledger.AccountId = Number(accountId);
 
 		return this.http.post<Ledger>(`${environment.app_server}/api/v3/${accountId}/ledger`, new Ledger().serialize(ledger))
-			.pipe(map(res => new Ledger().deserialize(res)));
+			.pipe(map(res => {
+				let lg = new Ledger().deserialize(res);
+				let type = "expense";
+
+				if (lg.Amount > 0) {
+					type = "income";
+				}
+
+				// Track event.
+				this.trackService.event('ledger-create', { ledgerEntryType: type, app: "web" });
+
+				return lg;
+			}));
 	}
 
 	//
@@ -43,7 +56,14 @@ export class LedgerService {
 		ledger.AccountId = Number(accountId);
 
 		return this.http.put<Ledger>(`${environment.app_server}/api/v3/${accountId}/ledger/${ledger.Id}`, new Ledger().serialize(ledger))
-			.pipe(map(res => new Ledger().deserialize(res)));
+			.pipe(map(res => {
+				let lg = new Ledger().deserialize(res);
+
+				// Track that a ledger entry was updated.
+				this.trackService.event('ledger-update', { app: "web" });
+
+				return lg;
+			}));
 	}
 
 	//
@@ -54,7 +74,12 @@ export class LedgerService {
 		ledger.AccountId = Number(accountId);
 
 		return this.http.delete<Boolean>(`${environment.app_server}/api/v3/${accountId}/ledger/${ledger.Id}`, {})
-			.pipe(map(() => true));
+			.pipe(map(() => {
+				// Track event.
+				this.trackService.event('ledger-delete', { app: "web" });
+
+				return true;
+			}));
 	}
 
 	//

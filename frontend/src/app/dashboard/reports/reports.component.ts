@@ -11,6 +11,7 @@ import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { ReportService, PnlNameAmount } from 'src/app/services/report.service';
 import { Subject } from 'rxjs';
 import { MeService } from 'src/app/services/me.service';
+import { Title } from '@angular/platform-browser';
 
 declare var Pikaday: any;
 
@@ -20,6 +21,7 @@ declare var Pikaday: any;
 })
 
 export class ReportsComponent implements OnInit {
+	pageTitle: string = "Skyclerk | Dashboard Reports";
 	showFilter: boolean = false;
 	type: string = "Income Statement";
 	nameAmount: PnlNameAmount[] = [];
@@ -40,12 +42,15 @@ export class ReportsComponent implements OnInit {
 	//
 	// Constructor
 	//
-	constructor(public reportService: ReportService, public meService: MeService) { }
+	constructor(public reportService: ReportService, public meService: MeService, private titleService: Title) { }
 
 	//
 	// ngOnInit
 	//
 	ngOnInit() {
+		// Set page title.
+		this.titleService.setTitle(this.pageTitle);
+
 		// Setup date pickers.
 		this.setupDatePickers();
 

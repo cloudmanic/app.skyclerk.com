@@ -14,6 +14,7 @@ import { Activity } from 'src/app/models/activity.model';
 import { ReportService } from 'src/app/services/report.service';
 import { MeService } from 'src/app/services/me.service';
 import { Subject } from 'rxjs';
+import { Title } from '@angular/platform-browser';
 
 @Component({
 	selector: 'app-dashboard-summary',
@@ -21,6 +22,7 @@ import { Subject } from 'rxjs';
 })
 
 export class SummaryComponent implements OnInit {
+	pageTitle: string = "Skyclerk | Dashboard";
 	activity: Activity[] = [];
 	destory: Subject<boolean> = new Subject<boolean>();
 
@@ -142,12 +144,15 @@ export class SummaryComponent implements OnInit {
 	//
 	// Constructor
 	//
-	constructor(public activityService: ActivityService, public reportService: ReportService, public meService: MeService) { }
+	constructor(public activityService: ActivityService, public reportService: ReportService, public meService: MeService, private titleService: Title) { }
 
 	//
 	// ngOnInit
 	//
 	ngOnInit() {
+		// Set page title.
+		this.titleService.setTitle(this.pageTitle);
+
 		// Load page data.
 		this.refreshPage();
 

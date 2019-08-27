@@ -13,6 +13,7 @@ import { Component, OnInit, ElementRef, ViewChild } from '@angular/core';
 import { ReportService, PnlNameAmount } from 'src/app/services/report.service';
 import { Subject } from 'rxjs';
 import { MeService } from 'src/app/services/me.service';
+import { Title } from '@angular/platform-browser';
 
 declare var Pikaday: any;
 
@@ -22,6 +23,7 @@ declare var Pikaday: any;
 })
 
 export class GraphsComponent implements OnInit {
+	pageTitle: string = "Skyclerk | Dashboard Graphs";
 	showFilter: boolean = false;
 	nameTitle: string = "Category";
 	type: string = "Profit & Loss by Category";
@@ -82,12 +84,15 @@ export class GraphsComponent implements OnInit {
 	//
 	// Constructor
 	//
-	constructor(public reportService: ReportService, public meService: MeService) { }
+	constructor(public reportService: ReportService, public meService: MeService, private titleService: Title) { }
 
 	//
 	// ngOnInit
 	//
 	ngOnInit() {
+		// Set page title.
+		this.titleService.setTitle(this.pageTitle);
+
 		// Setup date pickers.
 		this.setupDatePickers();
 

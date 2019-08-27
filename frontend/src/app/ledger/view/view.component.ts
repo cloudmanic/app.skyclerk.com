@@ -14,6 +14,9 @@ import { Activity } from 'src/app/models/activity.model';
 import { ActivityService } from 'src/app/services/activity.service';
 import { MeService } from 'src/app/services/me.service';
 import { Subject } from 'rxjs';
+import { Title } from '@angular/platform-browser';
+
+const pageTitle: string = "Skyckerk | Ledger View";
 
 @Component({
 	selector: 'app-ledger-view',
@@ -28,12 +31,15 @@ export class ViewComponent implements OnInit {
 	//
 	// Constructor
 	//
-	constructor(public ledgerService: LedgerService, public route: ActivatedRoute, public router: Router, public activityService: ActivityService, public meService: MeService) { }
+	constructor(public ledgerService: LedgerService, public route: ActivatedRoute, public router: Router, public activityService: ActivityService, public meService: MeService, private titleService: Title) { }
 
 	//
 	// ngOnInit
 	//
 	ngOnInit() {
+		// Set page title.
+		this.titleService.setTitle(pageTitle);
+
 		// Is this an edit action?
 		let ledgerId = this.route.snapshot.params['id'];
 

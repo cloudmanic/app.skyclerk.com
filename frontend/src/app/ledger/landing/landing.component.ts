@@ -13,6 +13,9 @@ import { Label } from 'src/app/models/label.model';
 import { ActivatedRoute } from '@angular/router';
 import { trigger, transition, animate, style } from '@angular/animations';
 import { Ledger } from 'src/app/models/ledger.model';
+import { Title } from '@angular/platform-browser';
+
+const pageTitle: string = "Skyclerk | Ledger";
 
 @Component({
 	selector: 'app-landing',
@@ -26,6 +29,7 @@ import { Ledger } from 'src/app/models/ledger.model';
 })
 
 export class LandingComponent implements OnInit {
+	pageTitle: string = "Skyclerk | Dashboard Reports";
 	page: number = 1;
 	selected: Ledger[] = [];
 	plSummary: LedgerPnlSummary = new LedgerPnlSummary(0, 0, 0);
@@ -48,12 +52,15 @@ export class LandingComponent implements OnInit {
 	//
 	// Construct
 	//
-	constructor(public ledgerService: LedgerService, public meService: MeService, public activeRoute: ActivatedRoute) { }
+	constructor(public ledgerService: LedgerService, public meService: MeService, public activeRoute: ActivatedRoute, private titleService: Title) { }
 
 	//
 	// ngOnInit
 	//
 	ngOnInit() {
+		// Set page title.
+		this.titleService.setTitle(pageTitle);
+
 		// Load starting data
 		this.refreshLedger();
 
