@@ -6,6 +6,10 @@
 //
 
 import { Component, OnInit } from '@angular/core';
+import { environment } from 'src/environments/environment';
+import { Title } from '@angular/platform-browser';
+
+const pageTitle: string = environment.title_prefix + "Settings Billing";
 
 @Component({
 	selector: 'app-settings-billing',
@@ -14,9 +18,17 @@ import { Component, OnInit } from '@angular/core';
 
 export class BillingComponent implements OnInit {
 
-	constructor() { }
+	//
+	// Construct.
+	//
+	constructor(public titleService: Title) { }
 
+	//
+	// ngOnInit
+	//
 	ngOnInit() {
+		// Set page title.
+		this.titleService.setTitle(pageTitle);
 	}
 
 }

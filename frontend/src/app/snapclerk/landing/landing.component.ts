@@ -10,6 +10,10 @@ import { SnapClerkService, SnapClerkResponse } from 'src/app/services/snapckerk.
 import { Subject } from 'rxjs';
 import { MeService } from 'src/app/services/me.service';
 import { File as FileModel } from 'src/app/models/file.model';
+import { Title } from '@angular/platform-browser';
+import { environment } from 'src/environments/environment';
+
+const pageTitle: string = environment.title_prefix + "Snap!Clerk";
 
 @Component({
 	selector: 'snapclerk-app-landing',
@@ -25,12 +29,15 @@ export class LandingComponent implements OnInit {
 	//
 	// Constructor
 	//
-	constructor(public snapClerkService: SnapClerkService, public meService: MeService) { }
+	constructor(public snapClerkService: SnapClerkService, public meService: MeService, public titleService: Title) { }
 
 	//
 	// NgOnInit
 	//
 	ngOnInit() {
+		// Set page title.
+		this.titleService.setTitle(pageTitle);
+
 		// Load page data.
 		this.refreshPage();
 

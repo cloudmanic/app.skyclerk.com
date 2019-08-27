@@ -8,6 +8,10 @@
 import { Component, OnInit } from '@angular/core';
 import { ContactService } from 'src/app/services/contact.service';
 import { Contact } from 'src/app/models/contact.model';
+import { environment } from 'src/environments/environment';
+import { Title } from '@angular/platform-browser';
+
+const pageTitle: string = environment.title_prefix + "Settings Contacts";
 
 @Component({
 	selector: 'app-settings-contacts',
@@ -23,12 +27,16 @@ export class ContactsComponent implements OnInit {
 	//
 	// Constructor
 	//
-	constructor(public contactService: ContactService) { }
+	constructor(public contactService: ContactService, public titleService: Title) { }
 
 	//
 	// ngOnInit
 	//
 	ngOnInit() {
+		// Set page title.
+		this.titleService.setTitle(pageTitle);
+
+		// Refresh contacts		
 		this.refreshContacts();
 	}
 

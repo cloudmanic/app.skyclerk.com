@@ -15,8 +15,9 @@ import { ActivityService } from 'src/app/services/activity.service';
 import { MeService } from 'src/app/services/me.service';
 import { Subject } from 'rxjs';
 import { Title } from '@angular/platform-browser';
+import { environment } from 'src/environments/environment';
 
-const pageTitle: string = "Skyckerk | Ledger View";
+const pageTitle: string = environment.title_prefix + "Ledger View";
 
 @Component({
 	selector: 'app-ledger-view',

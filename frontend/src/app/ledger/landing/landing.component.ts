@@ -14,8 +14,9 @@ import { ActivatedRoute } from '@angular/router';
 import { trigger, transition, animate, style } from '@angular/animations';
 import { Ledger } from 'src/app/models/ledger.model';
 import { Title } from '@angular/platform-browser';
+import { environment } from 'src/environments/environment';
 
-const pageTitle: string = "Skyclerk | Ledger";
+const pageTitle: string = environment.title_prefix + "Ledger";
 
 @Component({
 	selector: 'app-landing',

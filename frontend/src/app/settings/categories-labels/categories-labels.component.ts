@@ -6,6 +6,10 @@
 //
 
 import { Component, OnInit } from '@angular/core';
+import { environment } from 'src/environments/environment';
+import { Title } from '@angular/platform-browser';
+
+const pageTitle: string = environment.title_prefix + "Settings Categories / Labels";
 
 @Component({
 	selector: 'app-settings-categories-labels',
@@ -13,9 +17,17 @@ import { Component, OnInit } from '@angular/core';
 })
 export class CategoriesLabelsComponent implements OnInit {
 
-	constructor() { }
+	//
+	// Constructor
+	//
+	constructor(private titleService: Title) { }
 
+	//
+	// ngOnInit
+	//
 	ngOnInit() {
+		// Set page title.
+		this.titleService.setTitle(pageTitle);
 	}
 
 }

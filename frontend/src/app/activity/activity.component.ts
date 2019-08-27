@@ -11,6 +11,10 @@ import { Activity } from '../models/activity.model';
 import { ActivityService, ActivityResponse } from '../services/activity.service';
 import { Subject } from 'rxjs';
 import { MeService } from '../services/me.service';
+import { environment } from 'src/environments/environment';
+import { Title } from '@angular/platform-browser';
+
+const pageTitle: string = environment.title_prefix + "Activity";
 
 @Component({
 	selector: 'app-activity',
@@ -27,12 +31,15 @@ export class ActivityComponent implements OnInit {
 	//
 	// Constructor
 	//
-	constructor(public activityService: ActivityService, public meService: MeService) { }
+	constructor(public activityService: ActivityService, public meService: MeService, public titleService: Title) { }
 
 	//
 	// ngOnInit
 	//
 	ngOnInit() {
+		// Set page title.
+		this.titleService.setTitle(pageTitle);
+
 		// Load page data
 		this.loadActivity();
 

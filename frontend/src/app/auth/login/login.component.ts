@@ -10,6 +10,10 @@ import { AuthService } from 'src/app/services/auth.service';
 import { Router } from '@angular/router';
 import { HttpErrorResponse } from '@angular/common/http';
 import { MeService } from 'src/app/services/me.service';
+import { Title } from '@angular/platform-browser';
+import { environment } from 'src/environments/environment';
+
+const pageTitle: string = environment.title_prefix + "Login";
 
 @Component({
 	selector: 'app-auth-login',
@@ -24,12 +28,15 @@ export class LoginComponent implements OnInit {
 	//
 	// Construct.
 	//
-	constructor(public authService: AuthService, public meService: MeService, public router: Router) { }
+	constructor(public authService: AuthService, public meService: MeService, public router: Router, public titleService: Title) { }
 
 	//
 	// OnInit...
 	//
-	ngOnInit() { }
+	ngOnInit() {
+		// Set page title.
+		this.titleService.setTitle(pageTitle);
+	}
 
 	//
 	// Submit login request

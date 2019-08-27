@@ -7,7 +7,8 @@ export const environment = {
 	version: "1.0.0",
 	client_id: "XL8TeRGBdsUvvM3",
 	app_server: "http://127.0.0.1:9090",
-	mixpanel_key: ""
+	mixpanel_key: "",
+	title_prefix: "Skyclerk | "
 	//mixpanel_key: "5974bde1c90a5606add2695a17b2db10"
 	//app_server: "http://192.168.1.100:9090"
 };
@@ -19,4 +20,4 @@ export const environment = {
  * This import should be commented out in production mode because it will have a negative impact
  * on performance if an error is thrown.
  */
-// import 'zone.js/dist/zone-error';  // Included with Angular CLI.
+import 'zone.js/dist/zone-error';  // Included with Angular CLI.
