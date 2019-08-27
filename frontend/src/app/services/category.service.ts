@@ -11,6 +11,7 @@ import { HttpClient } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
 import { Observable } from 'rxjs';
 import { Category } from '../models/category.model';
+import { TrackService } from './track.service';
 
 @Injectable({
 	providedIn: 'root'
@@ -20,7 +21,7 @@ export class CategoryService {
 	//
 	// Constructor
 	//
-	constructor(private http: HttpClient) { }
+	constructor(private http: HttpClient, private trackService: TrackService) { }
 
 	//
 	// Get categories
@@ -40,7 +41,14 @@ export class CategoryService {
 		category.AccountId = Number(accountId);
 
 		return this.http.post<Category>(`${environment.app_server}/api/v3/${accountId}/categories`, new Category().serialize(category))
-			.pipe(map(res => new Category().deserialize(res)));
+			.pipe(map(res => {
+				let con = new Category().deserialize(res);
+
+				// Track event.
+				this.trackService.event('category-create', { app: "web", "accountId": accountId });
+
+				return con;
+			}));
 	}
 
 	//
@@ -62,7 +70,14 @@ export class CategoryService {
 		}
 
 		return this.http.put<Category>(`${environment.app_server}/api/v3/${accountId}/categories/${category.Id}`, put)
-			.pipe(map(res => new Category().deserialize(res)));
+			.pipe(map(res => {
+				let cat = new Category().deserialize(res);
+
+				// Track event.
+				this.trackService.event('category-update', { app: "web", "accountId": accountId });
+
+				return cat;
+			}));
 	}
 
 	//
@@ -73,7 +88,12 @@ export class CategoryService {
 		category.AccountId = Number(accountId);
 
 		return this.http.delete<Boolean>(`${environment.app_server}/api/v3/${accountId}/categories/${category.Id}`, {})
-			.pipe(map(() => true));
+			.pipe(map(() => {
+				// Track event.
+				this.trackService.event('category-delete', { app: "web", "accountId": accountId });
+
+				return true;
+			}));
 	}
 }
 

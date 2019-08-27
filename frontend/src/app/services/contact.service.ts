@@ -11,6 +11,7 @@ import { HttpClient } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
 import { Observable } from 'rxjs';
 import { Contact } from '../models/contact.model';
+import { TrackService } from './track.service';
 
 @Injectable({
 	providedIn: 'root'
@@ -20,7 +21,7 @@ export class ContactService {
 	//
 	// Constructor
 	//
-	constructor(private http: HttpClient) { }
+	constructor(private http: HttpClient, private trackService: TrackService) { }
 
 	//
 	// Get contacts
@@ -46,7 +47,14 @@ export class ContactService {
 		contact.AccountId = Number(accountId);
 
 		return this.http.post<number>(`${environment.app_server}/api/v3/${accountId}/contacts`, new Contact().serialize(contact))
-			.pipe(map(res => new Contact().deserialize(res)));
+			.pipe(map(res => {
+				let con = new Contact().deserialize(res);
+
+				// Track event.
+				this.trackService.event('contact-create', { app: "web", "accountId": accountId });
+
+				return con;
+			}));
 	}
 
 	//
@@ -57,7 +65,14 @@ export class ContactService {
 		contact.AccountId = Number(accountId);
 
 		return this.http.put<Contact>(`${environment.app_server}/api/v3/${accountId}/contacts/${contact.Id}`, new Contact().serialize(contact))
-			.pipe(map(res => new Contact().deserialize(res)));
+			.pipe(map(res => {
+				let con = new Contact().deserialize(res);
+
+				// Track event.
+				this.trackService.event('contact-update', { app: "web", "accountId": accountId });
+
+				return con;
+			}));
 	}
 
 	//
@@ -68,7 +83,12 @@ export class ContactService {
 		contact.AccountId = Number(accountId);
 
 		return this.http.delete<Boolean>(`${environment.app_server}/api/v3/${accountId}/contacts/${contact.Id}`, {})
-			.pipe(map(() => true));
+			.pipe(map(() => {
+				// Track event.
+				this.trackService.event('contact-delete', { app: "web", "accountId": accountId });
+
+				return true;
+			}));
 	}
 }
 

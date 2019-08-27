@@ -11,6 +11,7 @@ import { HttpClient, HttpEventType } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
 import { Observable } from 'rxjs';
 import { File as FileModel } from '../models/file.model';
+import { TrackService } from './track.service';
 
 @Injectable({
 	providedIn: 'root'
@@ -20,7 +21,7 @@ export class FileService {
 	//
 	// Constructor
 	//
-	constructor(private http: HttpClient) { }
+	constructor(private http: HttpClient, private trackService: TrackService) { }
 
 	//
 	// Upload a file. Returns the file ID
@@ -44,6 +45,10 @@ export class FileService {
 					return { status: 'progress', message: progress };
 
 				case HttpEventType.Response:
+					// Track event.
+					this.trackService.event('file-upload', { app: "web", "accountId": accountId });
+
+					// Return the file object
 					return new FileModel().deserialize(event.body);
 
 				default:

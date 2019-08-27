@@ -42,7 +42,7 @@ export class LedgerService {
 				}
 
 				// Track event.
-				this.trackService.event('ledger-create', { ledgerEntryType: type, app: "web" });
+				this.trackService.event('ledger-create', { ledgerEntryType: type, app: "web", "accountId": accountId });
 
 				return lg;
 			}));
@@ -60,7 +60,7 @@ export class LedgerService {
 				let lg = new Ledger().deserialize(res);
 
 				// Track that a ledger entry was updated.
-				this.trackService.event('ledger-update', { app: "web" });
+				this.trackService.event('ledger-update', { app: "web", "accountId": accountId });
 
 				return lg;
 			}));
@@ -76,7 +76,7 @@ export class LedgerService {
 		return this.http.delete<Boolean>(`${environment.app_server}/api/v3/${accountId}/ledger/${ledger.Id}`, {})
 			.pipe(map(() => {
 				// Track event.
-				this.trackService.event('ledger-delete', { app: "web" });
+				this.trackService.event('ledger-delete', { app: "web", "accountId": accountId });
 
 				return true;
 			}));

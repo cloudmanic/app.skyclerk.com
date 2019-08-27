@@ -11,6 +11,7 @@ import { HttpClient } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
 import { Observable } from 'rxjs';
 import { Label } from '../models/label.model';
+import { TrackService } from './track.service';
 
 @Injectable({
 	providedIn: 'root'
@@ -20,7 +21,7 @@ export class LabelService {
 	//
 	// Constructor
 	//
-	constructor(private http: HttpClient) { }
+	constructor(private http: HttpClient, private trackService: TrackService) { }
 
 	//
 	// Get labels
@@ -40,7 +41,14 @@ export class LabelService {
 		lb.AccountId = Number(accountId);
 
 		return this.http.post<number>(`${environment.app_server}/api/v3/${accountId}/labels`, new Label().serialize(lb))
-			.pipe(map(res => new Label().deserialize(res)));
+			.pipe(map(res => {
+				let lb = new Label().deserialize(res);
+
+				// Track event.
+				this.trackService.event('label-create', { app: "web", "accountId": accountId });
+
+				return lb;
+			}));
 	}
 
 	//
@@ -55,7 +63,14 @@ export class LabelService {
 		}
 
 		return this.http.put<Label>(`${environment.app_server}/api/v3/${accountId}/labels/${label.Id}`, put)
-			.pipe(map(res => new Label().deserialize(res)));
+			.pipe(map(res => {
+				let lb = new Label().deserialize(res);
+
+				// Track event.
+				this.trackService.event('label-update', { app: "web", "accountId": accountId });
+
+				return lb;
+			}));
 	}
 
 	//
@@ -66,7 +81,12 @@ export class LabelService {
 		label.AccountId = Number(accountId);
 
 		return this.http.delete<Boolean>(`${environment.app_server}/api/v3/${accountId}/labels/${label.Id}`, {})
-			.pipe(map(() => true));
+			.pipe(map(() => {
+				// Track event.
+				this.trackService.event('label-delete', { app: "web", "accountId": accountId });
+
+				return true;
+			}));
 	}
 }
 

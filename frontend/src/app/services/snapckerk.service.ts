@@ -11,6 +11,7 @@ import { HttpClient } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
 import { Observable } from 'rxjs';
 import { SnapClerk } from '../models/snapclerk.model';
+import { TrackService } from './track.service';
 
 @Injectable({
 	providedIn: 'root'
@@ -20,7 +21,7 @@ export class SnapClerkService {
 	//
 	// Constructor
 	//
-	constructor(private http: HttpClient) { }
+	constructor(private http: HttpClient, private trackService: TrackService) { }
 
 	//
 	// Get Usage
@@ -68,7 +69,14 @@ export class SnapClerkService {
 		let accountId = localStorage.getItem('account_id');
 
 		return this.http.post<SnapClerk>(`${environment.app_server}/api/v3/${accountId}/snapclerk/add-by-file-id`, { file_id: fileId })
-			.pipe(map(res => new SnapClerk().deserialize(res)));
+			.pipe(map(res => {
+				let sc = new SnapClerk().deserialize(res);
+
+				// Track event.
+				this.trackService.event('snapclerk-create', { app: "web", "accountId": accountId });
+
+				return sc;
+			}));
 	}
 
 	//
