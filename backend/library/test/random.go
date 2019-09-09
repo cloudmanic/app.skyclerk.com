@@ -50,6 +50,8 @@ func GetRandomAccount(accountId int64) models.Account {
 		CardExpMonth: "",
 		CardExpYear:  "",
 		SignupIp:     "127.0.0.1",
+		UpdatedAt:    time.Now(),
+		CreatedAt:    time.Now(),
 	}
 
 	return acc

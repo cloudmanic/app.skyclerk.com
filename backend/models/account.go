@@ -8,7 +8,10 @@
 
 package models
 
-import "time"
+import (
+	"errors"
+	"time"
+)
 
 // Account struct
 type Account struct {
@@ -30,6 +33,20 @@ type Account struct {
 	CardExpMonth string    `sql:"not null" json:"_"`
 	CardExpYear  string    `sql:"not null" json:"_"`
 	SignupIp     string    `sql:"not null" json:"_"`
+}
+
+//
+// GetAccountById - Get a account by Id.
+//
+func (t *DB) GetAccountById(id uint) (Account, error) {
+	var u Account
+
+	if t.Where("id = ?", id).First(&u).RecordNotFound() {
+		return u, errors.New("Record not found")
+	}
+
+	// Return the user.
+	return u, nil
 }
 
 /* End File */

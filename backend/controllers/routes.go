@@ -29,6 +29,7 @@ func (t *Controller) DoRoutes(r *gin.Engine) {
 
 		// users
 		apiV1.GET("/:account/users", t.GetUsers)
+		apiV1.POST("/:account/users/invite", t.InviteUser)
 
 		// Ledger
 		apiV1.GET("/:account/ledger", t.GetLedgers)

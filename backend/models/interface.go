@@ -21,6 +21,9 @@ type Datastore interface {
 	QueryWithNoFilterCount(model interface{}, params QueryParam) (int, error)
 	GetQueryMetaData(noLimitCount int, params QueryParam) QueryMetaData
 
+	// Account
+	GetAccountById(id uint) (Account, error)
+
 	// Application
 	ValidateClientIdGrantType(clientId string, grantType string) (Application, error)
 

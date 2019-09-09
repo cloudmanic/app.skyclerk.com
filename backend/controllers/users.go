@@ -8,9 +8,20 @@
 package controllers
 
 import (
-	"github.com/gin-gonic/gin"
+	"flag"
+	"fmt"
+	"io/ioutil"
+	"net/http"
+	"os"
 
+	"github.com/gin-gonic/gin"
+	"github.com/tidwall/gjson"
+
+	"app.skyclerk.com/backend/emails"
+	"app.skyclerk.com/backend/library/email"
 	"app.skyclerk.com/backend/library/response"
+	"app.skyclerk.com/backend/models"
+	"app.skyclerk.com/backend/services"
 )
 
 //
@@ -26,6 +37,109 @@ func (t *Controller) GetUsers(c *gin.Context) {
 
 	// Return happy.
 	response.Results(c, users, nil)
+}
+
+//
+// InviteUser - Invites a new user to an account. If the user is new they will create an account.
+// If not we will simply add them.
+//
+func (t *Controller) InviteUser(c *gin.Context) {
+	// Data posted in.
+	var firstName string
+	var lastName string
+	var emailAddress string
+	//var message string
+
+	// Get account id
+	accountId := uint(c.MustGet("accountId").(int))
+
+	// Make sure the UserId is correct.
+	userId := uint(c.MustGet("userId").(int))
+
+	// Get the full user
+	me, err := t.db.GetUserById(userId)
+
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "User not found."})
+		return
+	}
+
+	// Get account.
+	account, err := t.db.GetAccountById(accountId)
+
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Account not found."})
+		return
+	}
+
+	// Parse JSON posted in.
+	body, _ := ioutil.ReadAll(c.Request.Body)
+	firstName = gjson.Get(string(body), "first_name").String()
+	lastName = gjson.Get(string(body), "last_name").String()
+	emailAddress = gjson.Get(string(body), "email").String()
+	//message = gjson.Get(string(body), "message").String()
+
+	// Poor man's validation
+	if (len(firstName) == 0) || (len(lastName) == 0) || (len(emailAddress) == 0) {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "The following fields are required: first_name, last_name, email."})
+		return
+	}
+
+	// Make sure we have a valid email address
+	err = t.db.ValidateEmailAddress(emailAddress)
+
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Email address is not valid."})
+		return
+	}
+
+	// Setup the basic vars for sending emails.
+	url := os.Getenv("SITE_URL")
+	name := me.FirstName + " " + me.LastName
+	subject := fmt.Sprintf("%s %s invited you to Skyclerk (%s)", me.FirstName, me.LastName, account.Name)
+
+	// First we check if this user is already in the system
+	user, err := t.db.GetUserByEmail(emailAddress)
+
+	// Not a new user. We should create a create user invite entry.
+	if err != nil {
+		services.InfoMsg(fmt.Sprintf("New user invited to Skyclerk: AccountId - %d, Email: %s", accountId, emailAddress))
+
+		// Store the user in our invite table
+
+		// Send a welcome email to user. This is different than the welcome email below.
+
+		return
+	}
+
+	// Validate this user is not already part of the account.
+	u := models.AcctToUsers{}
+	t.db.New().Where("acct_id = ? AND  user_id = ?", account.Id, user.Id).First(&u)
+
+	if u.Id > 0 {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "User is already part of this account."})
+		return
+	}
+
+	// User already in the system let's just assign them to the account.
+	t.db.New().Save(&models.AcctToUsers{
+		AcctId: accountId,
+		UserId: user.Id,
+	})
+
+	// Setup emails to send.
+	html := emails.GetInviteCurrentUserHTML(name, account.Name, url)
+	text := emails.GetInviteCurrentUserText(name, account.Name, url)
+
+	// Send welcome email to user already in the system.
+	if flag.Lookup("test.v") != nil {
+		email.Send(emailAddress, subject, html, text)
+	} else {
+		go email.Send(emailAddress, subject, html, text)
+	}
+
+	// Return happy.
+	c.JSON(http.StatusNoContent, nil)
 }
 
 /* End File */

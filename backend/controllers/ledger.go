@@ -131,7 +131,7 @@ func (t *Controller) CreateLedger(c *gin.Context) {
 	j, err := t.db.GetLedgerByAccountAndId(o.AccountId, o.Id)
 
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"errors": "System error. Please contact help@skyclerk.com."})
+		c.JSON(http.StatusBadRequest, gin.H{"error": "System error. Please contact help@skyclerk.com."})
 		return
 	}
 
