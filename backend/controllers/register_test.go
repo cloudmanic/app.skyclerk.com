@@ -26,7 +26,7 @@ import (
 //
 func TestDoRegister01(t *testing.T) {
 	// Start the db connection.
-	db, dbName, _ := models.NewTestDB("testing_db")
+	db, dbName, _ := models.NewTestDB("")
 	defer models.TestingTearDown(db, dbName)
 
 	// Create applicaiton.
@@ -311,6 +311,57 @@ func TestDoRegister07(t *testing.T) {
 	// Test results
 	st.Expect(t, w.Code, 400)
 	st.Expect(t, w.Body.String(), `{"error":"Something went wrong while logging into your account. Please try again or contact help@options.cafe. Sorry for the trouble."}`)
+}
+
+//
+// TestDoRegister08 - Error user already in the system.
+//
+func TestDoRegister08(t *testing.T) {
+	// Start the db connection.
+	db, dbName, _ := models.NewTestDB("testing_db")
+	defer models.TestingTearDown(db, dbName)
+
+	// Create applicaiton.
+	app := test.GetRandomApplication()
+	app.GrantType = "password"
+	db.Save(&app)
+
+	// Create controller
+	c := &Controller{}
+	c.SetDB(db)
+
+	// Get JSON
+	postStr := fmt.Sprintf(`{ "first": "%s", "last": "%s", "email": "%s", "password": "%s", "client_id": "%s" }`, "Jane", "Wells", "jane@wells.com", "foobar123", app.ClientId)
+
+	// Setup request
+	req, _ := http.NewRequest("POST", "/register", bytes.NewBuffer([]byte(postStr)))
+
+	// Setup writer.
+	w := httptest.NewRecorder()
+	gin.SetMode("release")
+	gin.DisableConsoleColor()
+
+	r := gin.New()
+	r.POST("/register", c.DoRegister)
+	r.ServeHTTP(w, req)
+
+	// --------- Register again so we get errors ---------- //
+
+	// Setup request
+	req1, _ := http.NewRequest("POST", "/register", bytes.NewBuffer([]byte(postStr)))
+
+	// Setup writer.
+	w1 := httptest.NewRecorder()
+	gin.SetMode("release")
+	gin.DisableConsoleColor()
+
+	r1 := gin.New()
+	r1.POST("/register", c.DoRegister)
+	r1.ServeHTTP(w1, req1)
+
+	// Test results
+	st.Expect(t, w1.Code, 400)
+	st.Expect(t, w1.Body.String(), `{"error":"Looks like you already have an account."}`)
 }
 
 /* End File */
