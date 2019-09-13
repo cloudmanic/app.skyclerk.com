@@ -10,8 +10,14 @@ import (
 	"errors"
 	"time"
 
+	"html/template"
+
+	"golang.org/x/crypto/bcrypt"
+
 	"app.skyclerk.com/backend/library/checkmail"
 	"app.skyclerk.com/backend/library/helpers"
+	"app.skyclerk.com/backend/library/sendy"
+	"app.skyclerk.com/backend/library/slack"
 	"app.skyclerk.com/backend/services"
 )
 
@@ -23,11 +29,13 @@ type User struct {
 	FirstName    string    `sql:"not null" json:"first_name"`
 	LastName     string    `sql:"not null" json:"last_name"`
 	Email        string    `sql:"not null" json:"email"`
+	Password     string    `sql:"not null" json:"-"`
 	Md5Password  string    `sql:"not null" json:"-"`
 	Md5Salt      string    `sql:"not null" json:"-"`
 	Status       string    `sql:"not null;type:ENUM('Active', 'Disable');default:'Active'" json:"-"`
-	LastActivity time.Time `json:"last_activity"`
+	LastActivity time.Time `sql:"not null" json:"last_activity"`
 	Accounts     []Account `json:"accounts"`
+	Session      Session   `json:"-"`
 }
 
 //
@@ -139,10 +147,59 @@ func (t *DB) ValidateUserLogin(email string, password string) error {
 }
 
 //
+// Create a new user.
+//
+func (t *DB) CreateUser(first string, last string, email string, password string, appId uint, userAgent string, ipAddress string) (User, error) {
+	// Lets do some validation
+	if err := t.ValidateCreateUser(first, last, email, false); err != nil {
+		return User{}, err
+	}
+
+	// Make sure the password is at least 6 chars long
+	if err := t.ValidatePassword(password); err != nil {
+		return User{}, err
+	}
+
+	// Generate "hash" to store from user password
+	hash, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
+
+	if err != nil {
+		services.InfoMsg(err.Error() + "CreateUser - Unable to create password hash (password hash)")
+		return User{}, err
+	}
+
+	// Install user into the database
+	var _first = template.HTMLEscapeString(first)
+	var _last = template.HTMLEscapeString(last)
+
+	user := User{FirstName: _first, LastName: _last, Email: email, Password: string(hash), Status: "Active", LastActivity: time.Now()}
+	t.Create(&user)
+
+	// Log user creation.
+	services.InfoMsg("CreateUser - Created a new user account - " + first + " " + last + " " + email)
+
+	// Create a session so we get an access_token
+	session, err := t.CreateSession(user.Id, appId, userAgent, ipAddress)
+
+	if err != nil {
+		services.InfoMsg(err.Error() + "CreateUser - Unable to create session in CreateSession()")
+		return User{}, err
+	}
+
+	// Add the session to the user object.
+	user.Session = session
+
+	// Do post register stuff
+	t.doPostUserRegisterStuff(user, ipAddress)
+
+	// Return the user.
+	return user, nil
+}
+
+//
 // ValidatePassword - Validate password.
 //
 func (t *DB) ValidatePassword(password string) error {
-
 	// Make sure the password is at least 6 chars long
 	if len(password) < 6 {
 		return errors.New("The password filed must be at least 6 characters long.")
@@ -150,14 +207,12 @@ func (t *DB) ValidatePassword(password string) error {
 
 	// Return happy.
 	return nil
-
 }
 
 //
 // ValidateEmailAddress - Validate an email address
 //
 func (t *DB) ValidateEmailAddress(email string) error {
-
 	// Check length
 	if len(email) == 0 {
 		return errors.New("Email address field is required.")
@@ -170,7 +225,56 @@ func (t *DB) ValidateEmailAddress(email string) error {
 
 	// Return happy.
 	return nil
+}
 
+//
+// ValidateCreateUser a create user action. We do not always get a first name and last name from google.
+// so we make the validation optional with them.
+//
+func (t *DB) ValidateCreateUser(first string, last string, email string, googleAuth bool) error {
+	// Are first and last name fields empty
+	if (!googleAuth) && (len(first) == 0) && (len(last) == 0) {
+		return errors.New("First name and last name fields are required.")
+	}
+
+	// Are first name empty
+	if (!googleAuth) && len(first) == 0 {
+		return errors.New("First name field is required.")
+	}
+
+	// Are last name empty
+	if (!googleAuth) && len(last) == 0 {
+		return errors.New("Last name field is required.")
+	}
+
+	// Lets validate the email address
+	if err := t.ValidateEmailAddress(email); err != nil {
+		return err
+	}
+
+	// See if we already have this user.
+	_, err := t.GetUserByEmail(email)
+
+	if err == nil {
+		return errors.New("Looks like you already have an account.")
+	}
+
+	// Return happy.
+	return nil
+}
+
+// ------------------ Helper Functions --------------------- //
+
+//
+// Do post user register stuff.
+//
+func (t *DB) doPostUserRegisterStuff(user User, ipAddress string) {
+	// Subscribe new user to mailing lists.
+	go sendy.Subscribe("trial", user.Email, user.FirstName, user.LastName, "", "", ipAddress, "No")
+	go sendy.Subscribe("subscribers", user.Email, user.FirstName, user.LastName, "No", "", ipAddress, "No")
+
+	// Tell slack about this.
+	go slack.Notify("#events", "New Skyclerk User Account : "+user.Email)
 }
 
 /* End File */

@@ -89,6 +89,9 @@ func (t *Controller) DoRoutes(r *gin.Engine) {
 	r.GET("/oauth/logout", t.DoLogOut)
 	r.Group("/oauth/me").Use(t.AuthNoAccountMiddleware()).GET("", t.GetMe)
 
+	// Other Auth Routes
+	r.POST("/register", t.DoRegister)
+
 	// -------- Static Files ------------ //
 
 	r.Use(static.Serve("/", static.LocalFile("/frontend", true)))

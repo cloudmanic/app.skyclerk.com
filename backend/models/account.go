@@ -33,6 +33,8 @@ type Account struct {
 	CardExpMonth string    `sql:"not null" json:"_"`
 	CardExpYear  string    `sql:"not null" json:"_"`
 	SignupIp     string    `sql:"not null" json:"_"`
+	Status       string    `sql:"not null;type:ENUM('Active', 'Disable', 'Delinquent', 'Expired', 'Trial');default:'Trial'" json:"status"`
+	TrialExpire  time.Time `json:"-"`
 }
 
 //

@@ -66,7 +66,9 @@ type Datastore interface {
 	ValidatePassword(password string) error
 	ValidateEmailAddress(email string) error
 	ValidateUserLogin(email string, password string) error
+	ValidateCreateUser(first string, last string, email string, googleAuth bool) error
 	LoginUserByEmailPass(email string, password string, appId uint, userAgent string, ipAddress string) (User, Session, error)
+	CreateUser(first string, last string, email string, password string, appId uint, userAgent string, ipAddress string) (User, error)
 
 	// AcctToUsers
 	GetUsersByAccount(accountId uint) []User

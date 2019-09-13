@@ -25,7 +25,7 @@ type Application struct {
 // Validate a client id and grant type.
 //
 func (db *DB) ValidateClientIdGrantType(clientId string, grantType string) (Application, error) {
-
+	// Application
 	var u Application
 
 	if db.Where("client_id = ? AND grant_type= ?", clientId, grantType).First(&u).RecordNotFound() {
