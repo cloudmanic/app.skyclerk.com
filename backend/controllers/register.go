@@ -98,7 +98,7 @@ func (t *Controller) DoRegister(c *gin.Context) {
 	// Add the account entry
 	acct := models.Account{
 		OwnerId:      user.Id,
-		Name:         "woots",
+		Name:         post.First + "'s Skyclerk",
 		Status:       "Trial",
 		LastActivity: time.Now(),
 		SignupIp:     realip.RealIP(c.Request),
