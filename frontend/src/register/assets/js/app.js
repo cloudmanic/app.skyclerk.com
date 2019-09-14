@@ -19,7 +19,7 @@ var app = new Vue({
 	methods: {
 		// Return the base URL
 		getBaseUrl: function () {
-			if(location.origin.indexOf("localhost")) {
+			if(location.origin.indexOf("localhost") >= 0) {
 				return "http://localhost:9090";
 			}
 
@@ -28,7 +28,7 @@ var app = new Vue({
 
     // Return the client_id
 		getClientId: function () {
-			if(location.origin.indexOf("localhost")) {
+			if(location.origin.indexOf("localhost") >= 0) {
 				return "abc123";
 			}
 
