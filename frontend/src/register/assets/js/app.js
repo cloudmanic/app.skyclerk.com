@@ -12,7 +12,8 @@ var app = new Vue({
 		password: "",
 		passwordConfirmed: "",
 		company: "",
-		errorMsg: ""
+		errorMsg: "",
+    token: ""
   },
 
 	// Method used in this component
@@ -52,7 +53,8 @@ var app = new Vue({
 			  "email": this.email,
 			  "first": this.first,
 			  "last": this.last,
-        "company": this.company
+        "company": this.company,
+        "token": this.token
 			};
 
       // Clear error
@@ -129,6 +131,21 @@ var app = new Vue({
      // Set email if passed in.
      if(getVars.email) {
        this.email = getVars.email;
+     }
+
+     // Set first if passed in.
+     if(getVars.first) {
+       this.first = getVars.first;
+     }
+
+     // Set last if passed in.
+     if(getVars.last) {
+       this.last = getVars.last;
+     }
+
+     // Set token if passed in.
+     if(getVars.token) {
+       this.token = getVars.token;
      }
    }
  }
