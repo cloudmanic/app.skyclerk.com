@@ -2,13 +2,119 @@
 <html lang="en">
 
 <head>
+	<!-- Global site tag (gtag.js) - Google Analytics -->
+	<script async src="https://www.googletagmanager.com/gtag/js?id=UA-102266466-2"></script>
+	<script>
+		window.dataLayer = window.dataLayer || [];
+	  function gtag(){dataLayer.push(arguments);}
+	  gtag('js', new Date());
+
+	  gtag('config', 'UA-102266466-2');
+	</script>
+
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-	<title>Skyclerk Register Page</title>
+	<title>Skyclerk Register</title>
 
 	<link rel="shortcut icon" type="image/x-icon" href="assets/images/favicon.ico">
 	<link rel="stylesheet" type="text/css" href="assets/css/bundle.css">
+
+	<!-- Matomo -->
+	<script type="text/javascript">
+		var _paq = window._paq || [];
+		/* tracker methods like "setCustomDimension" should be called before "trackPageView" */
+		_paq.push(["setDocumentTitle", document.domain + "/" + document.title]);
+		_paq.push(["setCookieDomain", "*.skyclerk.com"]);
+		_paq.push(["setDomains", ["*.skyclerk.com", "*.app.skyclerk.com"]]);
+		_paq.push(['trackPageView']);
+		_paq.push(['enableLinkTracking']);
+		(function() {
+			var u = "//piwik.cloudmanic.com/";
+			_paq.push(['setTrackerUrl', u + 'matomo.php']);
+			_paq.push(['setSiteId', '9']);
+			var d = document,
+				g = d.createElement('script'),
+				s = d.getElementsByTagName('script')[0];
+			g.type = 'text/javascript';
+			g.async = true;
+			g.defer = true;
+			g.src = u + 'matomo.js';
+			s.parentNode.insertBefore(g, s);
+		})();
+
+	</script>
+	<!-- End Matomo Code -->
+
+	<!-- start Mixpanel -->
+	<script type="text/javascript">
+		(function(c, a) {
+			if (!a.__SV) {
+				var b = window;
+				try {
+					var d, m, j, k = b.location,
+						f = k.hash;
+					d = function(a, b) {
+						return (m = a.match(RegExp(b + "=([^&]*)"))) ? m[1] : null
+					};
+					f && d(f, "state") && (j = JSON.parse(decodeURIComponent(d(f, "state"))), "mpeditor" === j.action && (b.sessionStorage.setItem("_mpcehash", f), history.replaceState(j.desiredHash || "", c.title, k.pathname + k.search)))
+				} catch (n) {}
+				var l, h;
+				window.mixpanel = a;
+				a._i = [];
+				a.init = function(b, d, g) {
+					function c(b, i) {
+						var a = i.split(".");
+						2 == a.length && (b = b[a[0]], i = a[1]);
+						b[i] = function() {
+							b.push([i].concat(Array.prototype.slice.call(arguments,
+								0)))
+						}
+					}
+					var e = a;
+					"undefined" !== typeof g ? e = a[g] = [] : g = "mixpanel";
+					e.people = e.people || [];
+					e.toString = function(b) {
+						var a = "mixpanel";
+						"mixpanel" !== g && (a += "." + g);
+						b || (a += " (stub)");
+						return a
+					};
+					e.people.toString = function() {
+						return e.toString(1) + ".people (stub)"
+					};
+					l =
+						"disable time_event track track_pageview track_links track_forms track_with_groups add_group set_group remove_group register register_once alias unregister identify name_tag set_config reset opt_in_tracking opt_out_tracking has_opted_in_tracking has_opted_out_tracking clear_opt_in_out_tracking people.set people.set_once people.unset people.increment people.append people.union people.track_charge people.clear_charges people.delete_user people.remove"
+						.split(" ");
+					for (h = 0; h < l.length; h++) c(e, l[h]);
+					var f = "set set_once union unset remove delete".split(" ");
+					e.get_group = function() {
+						function a(c) {
+							b[c] = function() {
+								call2_args = arguments;
+								call2 = [c].concat(Array.prototype.slice.call(call2_args, 0));
+								e.push([d, call2])
+							}
+						}
+						for (var b = {}, d = ["get_group"].concat(Array.prototype.slice.call(arguments, 0)), c = 0; c < f.length; c++) a(f[c]);
+						return b
+					};
+					a._i.push([b, d, g])
+				};
+				a.__SV = 1.2;
+				b = c.createElement("script");
+				b.type = "text/javascript";
+				b.async = !0;
+				b.src = "undefined" !== typeof MIXPANEL_CUSTOM_LIB_URL ?
+					MIXPANEL_CUSTOM_LIB_URL : "file:" === c.location.protocol && "//cdn4.mxpnl.com/libs/mixpanel-2-latest.min.js".match(/^\/\//) ? "https://cdn4.mxpnl.com/libs/mixpanel-2-latest.min.js" : "//cdn4.mxpnl.com/libs/mixpanel-2-latest.min.js";
+				d = c.getElementsByTagName("script")[0];
+				d.parentNode.insertBefore(b, d)
+			}
+		})(document, window.mixpanel || []);
+		mixpanel.init("5974bde1c90a5606add2695a17b2db10");
+
+	</script>
+	<!-- end Mixpanel -->
 </head>
 
 <body>
@@ -26,11 +132,21 @@
 
 		<main class="main" id="app">
 			<div class="shell">
-				<div class="form">
+				<div class="form" v-bind:class="{ loading: isLoading, error: errorMsg }">
 
 					<form @submit.prevent="submit">
 						<header class="form__head">
 							<h2 class="form__title">Get in on the easy, breezy bookkeeping experience.</h2>
+
+							<div class="form__error-main">
+								<figure class="form__error__icon">
+									<i class="ico-danger"></i>
+								</figure>
+
+								<div class="form__error__text">
+									<p>Uh oh. It seems there are errors below. Please fix and hit that green button again.</p>
+								</div>
+							</div>
 						</header>
 
 						<div class="form__body">
@@ -42,7 +158,7 @@
 										</div>
 
 										<div class="form__section__body">
-											<p v-if="errorMsg.length" class="form__error__text">{{ errorMsg }}</p>
+											<p v-if="errorMsg.length" class="form__error__text" v-text="errorMsg"></p>
 
 											<div class="form__row">
 												<label for="first_name" class="form__label">First Name</label>
@@ -118,13 +234,23 @@
 									<div class="form__section">
 										<div class="form__section__body">
 											<div class="form__agree">
-												<p>By clicking the green button you agree to the <a href="#">Terms of Service</a>, <a href="#">Privacy</a>, and <a href="#">Refund</a> policies.</p>
+												<p>By clicking the green button you agree to the <a href="https://skyclerk.com/terms-of-service">Terms of Service</a>, <a href="https://skyclerk.com/privacy-policy">Privacy</a>, and <a href="https://skyclerk.com/refunds">Refund</a>
+													policies.</p>
 											</div>
 
 											<div class="form__actions">
 												<button type="submit" class="form__btn">Sign me up!</button>
+
+												<div class="form__loader">
+													<figure class="form__loader__icon">
+														<img src="assets/images/loader.gif" alt="Loader Icon">
+													</figure>
+
+													<div class="form__loader__text">
+														<p>Processing your info. Thanks for your patience!</p>
+													</div>
+												</div>
 											</div>
-											<p v-if="errorMsg.length" class="form__error__text" style="margin-top: 10px;">{{ errorMsg }}</p>
 										</div>
 									</div>
 								</div>

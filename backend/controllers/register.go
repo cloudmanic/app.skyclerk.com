@@ -38,6 +38,7 @@ func (t *Controller) DoRegister(c *gin.Context) {
 		First    string `json:"first"`
 		Last     string `json:"last"`
 		Email    string `json:"email"`
+		Company  string `json:"company"`
 		Password string `json:"password"`
 		ClientId string `json:"client_id"`
 	}
@@ -95,10 +96,16 @@ func (t *Controller) DoRegister(c *gin.Context) {
 	now := time.Now()
 	tExpire := now.Add(time.Hour * 24 * time.Duration(daysToExpire))
 
+	// Figure out name.
+	name := post.First + "'s Skyclerk"
+	if len(post.Company) > 0 {
+		name = post.Company
+	}
+
 	// Add the account entry
 	acct := models.Account{
 		OwnerId:      user.Id,
-		Name:         post.First + "'s Skyclerk",
+		Name:         name,
 		Status:       "Trial",
 		LastActivity: time.Now(),
 		SignupIp:     realip.RealIP(c.Request),

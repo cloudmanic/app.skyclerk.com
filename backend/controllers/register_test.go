@@ -369,4 +369,79 @@ func TestDoRegister08(t *testing.T) {
 	st.Expect(t, w1.Body.String(), `{"error":"Looks like you already have an account."}`)
 }
 
+//
+// TestDoRegister09 Test registring a new user. With company name.
+//
+func TestDoRegister09(t *testing.T) {
+	// Start the db connection.
+	db, dbName, _ := models.NewTestDB("")
+	defer models.TestingTearDown(db, dbName)
+
+	// Create applicaiton.
+	app := test.GetRandomApplication()
+	app.GrantType = "password"
+	db.Save(&app)
+
+	// Create controller
+	c := &Controller{}
+	c.SetDB(db)
+
+	// Get JSON
+	postStr := fmt.Sprintf(`{ "first": "%s", "last": "%s", "email": "%s", "password": "%s", "client_id": "%s", "company": "%s" }`, "Jane", "Wells", "jane@wells.com", "foobar123", app.ClientId, "ABC Inc.")
+
+	// Setup request
+	req, _ := http.NewRequest("POST", "/register", bytes.NewBuffer([]byte(postStr)))
+
+	// Setup writer.
+	w := httptest.NewRecorder()
+	gin.SetMode("release")
+	gin.DisableConsoleColor()
+
+	r := gin.New()
+	r.POST("/register", c.DoRegister)
+	r.ServeHTTP(w, req)
+
+	// Decode response.
+	type Response struct {
+		UserId      uint   `json:"user_id"`
+		AccessToken string `json:"access_token"`
+		AccountId   uint   `json:"account_id"`
+	}
+	var res Response
+	json.Unmarshal(w.Body.Bytes(), &res)
+
+	// Check the database that proper entries where created
+	u := models.AcctToUsers{}
+	db.Where("acct_id = ? AND user_id = ?", 1, 1).First(&u)
+
+	// Check the database that proper entries where created
+	s := models.Session{}
+	db.Where("user_id = ? AND application_id = ?", 1, 1).First(&s)
+
+	// Check the database that proper entries where created
+	m := models.User{}
+	db.Where("id = ?", 1).First(&m)
+
+	// Check the database that proper entries where created
+	a := models.Account{}
+	db.Where("owner_id = ?", 1).First(&a)
+
+	// Test results
+	st.Expect(t, w.Code, 200)
+	st.Expect(t, res.UserId, uint(1))
+	st.Expect(t, res.AccountId, uint(1))
+	st.Expect(t, res.AccessToken, s.AccessToken)
+	st.Expect(t, u.Id, uint(1))
+	st.Expect(t, s.Id, uint(1))
+	st.Expect(t, m.Id, uint(1))
+	st.Expect(t, m.FirstName, "Jane")
+	st.Expect(t, m.LastName, "Wells")
+	st.Expect(t, m.Email, "jane@wells.com")
+	st.Expect(t, a.Name, "ABC Inc.")
+
+	// Test password.
+	err := bcrypt.CompareHashAndPassword([]byte(m.Password), []byte("foobar123"))
+	st.Expect(t, err, nil)
+}
+
 /* End File */
