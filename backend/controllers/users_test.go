@@ -108,7 +108,7 @@ func TestInviteUser01(t *testing.T) {
 
 	// Create account.
 	acct := test.GetRandomAccount(33)
-	db.Save(acct)
+	db.Save(&acct)
 
 	// Create test users.
 	u1 := test.GetRandomUser(33)
@@ -142,8 +142,6 @@ func TestInviteUser01(t *testing.T) {
 	r.POST("/api/v3/33/users/invite", c.InviteUser)
 	r.ServeHTTP(w, req)
 
-	fmt.Println(w.Body.String())
-
 	// Check the database that proper entries where created
 	u := models.AcctToUsers{}
 	db.Where("acct_id = ? AND user_id = ?", 33, u2.Id).First(&u)
@@ -152,6 +150,69 @@ func TestInviteUser01(t *testing.T) {
 	st.Expect(t, w.Code, 204)
 	st.Expect(t, u.AcctId, uint(33))
 	st.Expect(t, u.UserId, u2.Id)
+}
+
+//
+// Test invite user 02
+//
+func TestInviteUser02(t *testing.T) {
+	// Start the db connection.
+	db, dbName, _ := models.NewTestDB("testing_db")
+	defer models.TestingTearDown(db, dbName)
+
+	// Create controller
+	c := &Controller{}
+	c.SetDB(db)
+
+	// Create account.
+	acct := test.GetRandomAccount(33)
+	db.Save(&acct)
+
+	// Create test users.
+	u1 := test.GetRandomUser(33)
+	u2 := test.GetRandomUser(22)
+	u3 := test.GetRandomUser(33)
+
+	db.Save(&u1)
+	db.Save(&u2)
+	db.Save(&u3)
+
+	db.Save(&models.AcctToUsers{AcctId: uint(33), UserId: u1.Id})
+	db.Save(&models.AcctToUsers{AcctId: uint(22), UserId: u2.Id})
+	db.Save(&models.AcctToUsers{AcctId: uint(33), UserId: u3.Id})
+
+	// Get JSON
+	postStr := fmt.Sprintf(`{ "first_name": "%s", "last_name": "%s", "email": "%s", "message": "Woots this is a message." }`, "Bob", "Rosso", "bob@example.com")
+
+	// Setup request
+	req, _ := http.NewRequest("POST", "/api/v3/33/users/invite", bytes.NewBuffer([]byte(postStr)))
+
+	// Setup writer.
+	w := httptest.NewRecorder()
+	gin.SetMode("release")
+	gin.DisableConsoleColor()
+
+	r := gin.New()
+	r.Use(func(c *gin.Context) {
+		c.Set("accountId", 33)
+		c.Set("userId", int(u1.Id))
+	})
+	r.POST("/api/v3/33/users/invite", c.InviteUser)
+	r.ServeHTTP(w, req)
+
+	// Check the database that proper entries where created
+	i := models.Invite{}
+	db.Where("account_id = ?", 33).First(&i)
+
+	// Check the database that proper entries where created
+	u := models.AcctToUsers{}
+	db.Where("acct_id = ? AND user_id = ?", 33, u2.Id).First(&u)
+
+	// Test results
+	st.Expect(t, w.Code, 204)
+	st.Expect(t, i.AccountId, uint(33))
+	st.Expect(t, u.AcctId, uint(0))
+	st.Expect(t, u.UserId, uint(0))
 }
 
 /* End File */

@@ -13,6 +13,7 @@ import (
 	"io/ioutil"
 	"net/http"
 	"os"
+	"time"
 
 	"github.com/gin-gonic/gin"
 	"github.com/tidwall/gjson"
@@ -48,7 +49,7 @@ func (t *Controller) InviteUser(c *gin.Context) {
 	var firstName string
 	var lastName string
 	var emailAddress string
-	//var message string
+	var message string
 
 	// Get account id
 	accountId := uint(c.MustGet("accountId").(int))
@@ -77,7 +78,7 @@ func (t *Controller) InviteUser(c *gin.Context) {
 	firstName = gjson.Get(string(body), "first_name").String()
 	lastName = gjson.Get(string(body), "last_name").String()
 	emailAddress = gjson.Get(string(body), "email").String()
-	//message = gjson.Get(string(body), "message").String()
+	message = gjson.Get(string(body), "message").String()
 
 	// Poor man's validation
 	if (len(firstName) == 0) || (len(lastName) == 0) || (len(emailAddress) == 0) {
@@ -103,39 +104,64 @@ func (t *Controller) InviteUser(c *gin.Context) {
 
 	// Not a new user. We should create a create user invite entry.
 	if err != nil {
-		services.InfoMsg(fmt.Sprintf("New user invited to Skyclerk: AccountId - %d, Email: %s", accountId, emailAddress))
-
 		// Store the user in our invite table
+		now := time.Now()
+		tExpire := now.Add(time.Hour * 24 * time.Duration(7))
 
-		// Send a welcome email to user. This is different than the welcome email below.
+		// Create an invite token
+		invite := models.Invite{
+			AccountId: account.Id,
+			Email:     emailAddress,
+			FirstName: firstName,
+			LastName:  lastName,
+			Message:   message,
+			Token:     "abc123",
+			ExpiresAt: tExpire,
+		}
+		t.db.New().Save(&invite)
 
-		return
-	}
+		// // Send a welcome email to user. This is different than the welcome email below.
+		// html := emails.GetInviteCurrentUserHTML(name, account.Name, url)
+		// text := emails.GetInviteCurrentUserText(name, account.Name, url)
+		//
+		// // Send welcome email to user already in the system.
+		// if flag.Lookup("test.v") != nil {
+		// 	email.Send(emailAddress, subject, html, text)
+		// } else {
+		// 	go email.Send(emailAddress, subject, html, text)
+		// }
 
-	// Validate this user is not already part of the account.
-	u := models.AcctToUsers{}
-	t.db.New().Where("acct_id = ? AND  user_id = ?", account.Id, user.Id).First(&u)
+		// Log
+		services.InfoMsg(fmt.Sprintf("New user invited to Skyclerk: AccountId - %d, Email: %s", accountId, emailAddress))
+	} else { // current user
+		// Validate this user is not already part of the account.
+		u := models.AcctToUsers{}
+		t.db.New().Where("acct_id = ? AND  user_id = ?", account.Id, user.Id).First(&u)
 
-	if u.Id > 0 {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "User is already part of this account."})
-		return
-	}
+		if u.Id > 0 {
+			c.JSON(http.StatusBadRequest, gin.H{"error": "User is already part of this account."})
+			return
+		}
 
-	// User already in the system let's just assign them to the account.
-	t.db.New().Save(&models.AcctToUsers{
-		AcctId: accountId,
-		UserId: user.Id,
-	})
+		// User already in the system let's just assign them to the account.
+		t.db.New().Save(&models.AcctToUsers{
+			AcctId: accountId,
+			UserId: user.Id,
+		})
 
-	// Setup emails to send.
-	html := emails.GetInviteCurrentUserHTML(name, account.Name, url)
-	text := emails.GetInviteCurrentUserText(name, account.Name, url)
+		// Setup emails to send for current user
+		html := emails.GetInviteCurrentUserHTML(name, account.Name, url)
+		text := emails.GetInviteCurrentUserText(name, account.Name, url)
 
-	// Send welcome email to user already in the system.
-	if flag.Lookup("test.v") != nil {
-		email.Send(emailAddress, subject, html, text)
-	} else {
-		go email.Send(emailAddress, subject, html, text)
+		// Send welcome email to user already in the system.
+		if flag.Lookup("test.v") != nil {
+			email.Send(emailAddress, subject, html, text)
+		} else {
+			go email.Send(emailAddress, subject, html, text)
+		}
+
+		// Log
+		services.InfoMsg(fmt.Sprintf("Current user invited to Skyclerk: AccountId - %d, Email: %s", accountId, emailAddress))
 	}
 
 	// Return happy.
