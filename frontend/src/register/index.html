@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+	<title>Skyclerk Register Page</title>
+
+	<link rel="shortcut icon" type="image/x-icon" href="assets/images/favicon.ico">
+	<link rel="stylesheet" type="text/css" href="assets/css/bundle.css">
+</head>
+
+<body>
+	<div class="wrapper">
+		<header class="header">
+			<div class="shell">
+				<div class="header__inner">
+					<a href="https://skyclerk.com" class="logo">
+						<img src="assets/images/logo-skyclerk@2x.png" alt="Skyclerk Logo" width="96" height="27" />
+						Skyclerk Signup
+					</a>
+				</div>
+			</div>
+		</header>
+
+		<main class="main" id="app">
+			<div class="shell">
+				<div class="form">
+
+					<form @submit.prevent="submit">
+						<header class="form__head">
+							<h2 class="form__title">Get in on the easy, breezy bookkeeping experience.</h2>
+						</header>
+
+						<div class="form__body">
+							<div class="container">
+								<div class="content">
+									<div class="form__section">
+										<div class="form__section__head">
+											<h4 class="form__section__title">Your Basic Info</h4>
+										</div>
+
+										<div class="form__section__body">
+											<p v-if="errorMsg.length" class="form__error__text">{{ errorMsg }}</p>
+
+											<div class="form__row">
+												<label for="first_name" class="form__label">First Name</label>
+
+												<div class="form__controls">
+													<input type="text" class="field" name="first_name" id="first_name" v-model="first" />
+													<span class="form__error">Your first name is required</span>
+												</div>
+											</div>
+
+											<div class="form__row">
+												<label for="last_name" class="form__label">Last Name</label>
+
+												<div class="form__controls">
+													<input type="text" class="field" name="last_name" id="last_name" v-model="last" />
+													<span class="form__error">Your last name is required</span>
+												</div>
+											</div>
+
+											<div class="form__row">
+												<label for="email" class="form__label">Email</label>
+
+												<div class="form__controls">
+													<input type="email" class="field" name="email" id="email" v-model="email" />
+													<span class="form__error">Your email is required</span>
+												</div>
+											</div>
+
+											<div class="form__entry">
+												<h5>Choose a password. Your email will be your username. We like to keep things simple around here.</h5>
+											</div>
+
+											<div class="form__row">
+												<label for="password" class="form__label">Password</label>
+
+												<div class="form__controls">
+													<input type="password" class="field" name="password" id="password" v-model="password" />
+													<span class="form__error">Your password is required</span>
+												</div>
+
+												<div class="form__meta">6 characters or more with at least one number is best.</div>
+											</div>
+
+											<div class="form__row">
+												<label for="password_repeat" class="form__label">Enter Your Password Again</label>
+
+												<div class="form__controls">
+													<input type="password" class="field" name="password_repeat" id="password_repeat" v-model="passwordConfirmed" />
+													<span class="form__error">This password is not the same</span>
+												</div>
+											</div>
+										</div>
+									</div>
+
+									<div class="form__section">
+										<div class="form__section__head">
+											<h4 class="form__section__title">Your Company Info</h4>
+										</div>
+
+										<div class="form__section__body">
+											<div class="form__row">
+												<label for="company_name" class="form__label">Company Name</label>
+
+												<div class="form__controls">
+													<input type="text" class="field" name="company_name" id="company_name" v-model="company" />
+												</div>
+												<div class="form__meta">(Or non-profit, organization, group, school, etc.)</div>
+											</div>
+
+										</div>
+									</div>
+
+									<div class="form__section">
+										<div class="form__section__body">
+											<div class="form__agree">
+												<p>By clicking the green button you agree to the <a href="#">Terms of Service</a>, <a href="#">Privacy</a>, and <a href="#">Refund</a> policies.</p>
+											</div>
+
+											<div class="form__actions">
+												<button type="submit" class="form__btn">Sign me up!</button>
+											</div>
+											<p v-if="errorMsg.length" class="form__error__text" style="margin-top: 10px;">{{ errorMsg }}</p>
+										</div>
+									</div>
+								</div>
+
+								<aside class="sidebar">
+									<div class="widget-features">
+										<div class="widget__head">
+											<h2 class="widget__title">Why <strong>Skyclerk?</strong></h2><!-- /.widget__title -->
+
+											<h3 class="widget__subtitle">We have a few good reasons:</h3><!-- /.widget__subtitle -->
+										</div><!-- /.widget__head -->
+
+										<div class="widget__body">
+											<div class="feature-simple">
+												<figure class="feature__icon">
+													<i class="ico-dolar"></i>
+												</figure><!-- /.feature__icon -->
+
+												<div class="feature__content">
+													<h4 class="feature__title">Millions managed every day.</h4><!-- /.feature__title -->
+
+													<div class="feature__entry">
+														<p>Our users trust us with their transactions.</p>
+													</div><!-- /.feature__entry -->
+												</div><!-- /.feature__content -->
+											</div><!-- /.feature-simple -->
+
+											<div class="feature-simple">
+												<figure class="feature__icon">
+													<i class="ico-phone"></i>
+												</figure><!-- /.feature__icon -->
+
+												<div class="feature__content">
+													<h5 class="feature__title">Great customer service.</h5><!-- /.feature__title -->
+
+													<div class="feature__entry">
+														<p>We’re always here to help.</p>
+													</div><!-- /.feature__entry -->
+												</div><!-- /.feature__content -->
+											</div><!-- /.feature-simple -->
+
+											<div class="feature-simple">
+												<figure class="feature__icon">
+													<i class="ico-lock"></i>
+												</figure><!-- /.feature__icon -->
+
+												<div class="feature__content">
+													<h5 class="feature__title">Always secure. Always reliable.</h5><!-- /.feature__title -->
+
+													<div class="feature__entry">
+														<p>Your data gets backed up every day.</p>
+													</div><!-- /.feature__entry -->
+												</div><!-- /.feature__content -->
+											</div><!-- /.feature-simple -->
+										</div><!-- /.widget__body -->
+									</div><!-- /.widget-features -->
+								</aside><!-- /.sidebar -->
+							</div><!-- /.container -->
+						</div><!-- /.form__body -->
+					</form>
+
+				</div><!-- /.form -->
+			</div><!-- /.shell -->
+		</main><!-- /.main -->
+
+		<footer class="footer">
+			<div class="shell">
+				<div class="footer__copyright">
+					<p>Skyclerk is a registered trademark of <a href="https://cloudmanic.com">Cloudmanic Labs, LLC</a>. © 2019 Copyright. All rights reserved.</p>
+				</div><!-- /.footer__copyright -->
+			</div><!-- /.shell -->
+		</footer><!-- /.footer -->
+
+	</div><!-- /.wrapper -->
+
+	<script src="https://cdn.jsdelivr.net/npm/vue"></script>
+	<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+	<script src="assets/js/app.js"></script>
+</body>
+
+</html>

@@ -39,6 +39,7 @@ export class AuthService {
 				// Store access token in local storage.
 				localStorage.setItem('user_id', res["user_id"].toString());
 				localStorage.setItem('access_token', res["access_token"]);
+				localStorage.setItem('user_email', email);
 
 				return {
 					user_id: res["user_id"],
