@@ -41,6 +41,7 @@ func (t *Controller) DoRegister(c *gin.Context) {
 		Company  string `json:"company"`
 		Password string `json:"password"`
 		ClientId string `json:"client_id"`
+		Token    string `json:"token"`
 	}
 
 	var post RegisterPost
@@ -78,6 +79,28 @@ func (t *Controller) DoRegister(c *gin.Context) {
 		return
 	}
 
+	// Validate invite token
+	invite := models.Invite{}
+
+	if len(post.Token) > 0 {
+		t.db.New().Where("token = ? AND expires_at > ?", post.Token, time.Now()).First(&invite)
+
+		if invite.Id == 0 {
+			// Respond with error
+			c.JSON(http.StatusBadRequest, gin.H{"error": "Your invite token is not found."})
+			return
+		}
+
+		// Get the account (this is more or less making sure the account is still there)
+		_, err := t.db.GetAccountById(invite.AccountId)
+
+		if err != nil {
+			// Respond with error
+			c.JSON(http.StatusBadRequest, gin.H{"error": "Your invite token is not found. Unknown account."})
+			return
+		}
+	}
+
 	// Install new user.
 	user, err := t.db.CreateUser(post.First, post.Last, post.Email, post.Password, app.Id, c.Request.UserAgent(), realip.RealIP(c.Request))
 
@@ -102,16 +125,27 @@ func (t *Controller) DoRegister(c *gin.Context) {
 		name = post.Company
 	}
 
+	// Setup the account
+	var acct models.Account
+
 	// Add the account entry
-	acct := models.Account{
-		OwnerId:      user.Id,
-		Name:         name,
-		Status:       "Trial",
-		LastActivity: time.Now(),
-		SignupIp:     realip.RealIP(c.Request),
-		TrialExpire:  tExpire,
+	if len(post.Token) == 0 {
+		acct = models.Account{
+			OwnerId:      user.Id,
+			Name:         name,
+			Status:       "Trial",
+			LastActivity: time.Now(),
+			SignupIp:     realip.RealIP(c.Request),
+			TrialExpire:  tExpire,
+		}
+		t.db.New().Save(&acct)
+	} else {
+		// We know there is no error because this is checked above.
+		acct, _ = t.db.GetAccountById(invite.AccountId)
+
+		// Delete invite.
+		t.db.New().Delete(&invite)
 	}
-	t.db.New().Save(&acct)
 
 	// Add the account look up.
 	au := models.AcctToUsers{
