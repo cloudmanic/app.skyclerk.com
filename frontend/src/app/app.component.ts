@@ -28,6 +28,17 @@ export class AppComponent {
 			if (event instanceof NavigationEnd) {
 				// We give it a timeout so we give time for the title to update.
 				setTimeout(() => {
+					// Set user id for piwik
+					let email = localStorage.getItem('user_email');
+
+					if (email.length) {
+						//_paq.push(['setUserId', email]);
+
+						// We do this instead of "setUserId" since it creates new logs for the user if they are
+						// not logged in and we want to track public website actions too.
+						_paq.push(['setCustomVariable', 1, "Email", email, "visit"]);
+					}
+
 					_paq.push(['setCustomUrl', event.urlAfterRedirects]);
 					_paq.push(['setDocumentTitle', this.titleService.getTitle()]);
 					_paq.push(['setGenerationTimeMs', 0]);
