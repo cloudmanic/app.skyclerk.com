@@ -23,6 +23,7 @@ const pageTitle: string = environment.title_prefix + "Settings Users";
 export class UsersComponent implements OnInit {
 	me: Me = new Me();
 	users: User[] = [];
+	invites: User[] = [];
 	successMsg: string = "";
 
 	//
@@ -50,11 +51,49 @@ export class UsersComponent implements OnInit {
 		});
 
 		// Get the users.
+		this.loadUsers();
+
+		// Load invites.
+		this.loadInvites();
+
+		// TODO(spicer): Get the account and the owner. We can't delete an account owner.
+	}
+
+	//
+	// load users
+	//
+	loadUsers() {
 		this.userService.get().subscribe((res) => {
 			this.users = res;
 		});
+	}
 
-		// TODO(spicer): Get the account and the owner. We can't delete an account owner.
+	//
+	// Load invites
+	//
+	loadInvites() {
+		// Get the invited users.
+		this.userService.getInvites().subscribe((res) => {
+			this.invites = res;
+		});
+	}
+
+	//
+	// Remove a user from this account..
+	//
+	removeUser(id: number) {
+		this.userService.deleteUser(id).subscribe(() => {
+			this.loadUsers();
+		});
+	}
+
+	//
+	// Remove an invite.
+	//
+	removeInvite(id: number) {
+		this.userService.deleteInvite(id).subscribe(() => {
+			this.loadInvites();
+		});
 	}
 }
 

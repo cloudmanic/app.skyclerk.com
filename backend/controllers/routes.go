@@ -29,7 +29,10 @@ func (t *Controller) DoRoutes(r *gin.Engine) {
 
 		// users
 		apiV1.GET("/:account/users", t.GetUsers)
+		apiV1.GET("/:account/users/invite", t.GetInvitedUsers)
 		apiV1.POST("/:account/users/invite", t.InviteUser)
+		apiV1.DELETE("/:account/users/:id", t.DeleteUser)
+		apiV1.DELETE("/:account/user-invite/:id", t.DeleteInvite)
 
 		// Ledger
 		apiV1.GET("/:account/ledger", t.GetLedgers)

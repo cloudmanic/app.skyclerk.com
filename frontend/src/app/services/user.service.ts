@@ -34,15 +34,55 @@ export class UserService {
 	}
 
 	//
+	// Returns a list of non-expired invites.
+	//
+	getInvites(): Observable<User[]> {
+		let accountId = localStorage.getItem('account_id');
+
+		return this.http.get<User[]>(`${environment.app_server}/api/v3/${accountId}/users/invite`)
+			.pipe(map(res => res.map(res => new User().deserialize(res))));
+	}
+
+	//
 	// Invite a new user to the application
 	//
 	invite(first: string, last: string, email: string, message: string): Observable<boolean> {
 		let accountId = localStorage.getItem('account_id');
 
-		return this.http.post<number>(`${environment.app_server}/api/v3/${accountId}/users/invite`, { first_name: first, last_name: last, email: email, message: message })
-			.pipe(map(res => {
+		return this.http.post<boolean>(`${environment.app_server}/api/v3/${accountId}/users/invite`, { first_name: first, last_name: last, email: email, message: message })
+			.pipe(map(() => {
 				// Track event.
 				this.trackService.event('user-invite', { app: "web", "accountId": accountId });
+
+				return true;
+			}));
+	}
+
+	//
+	// Delete a Invite
+	//
+	deleteInvite(id: number): Observable<Boolean> {
+		let accountId = localStorage.getItem('account_id');
+
+		return this.http.delete<Boolean>(`${environment.app_server}/api/v3/${accountId}/user-invite/${id}`, {})
+			.pipe(map(() => {
+				// Track event.
+				this.trackService.event('user-invite-delete', { app: "web", "accountId": accountId });
+
+				return true;
+			}));
+	}
+
+	//
+	// Delete a User
+	//
+	deleteUser(id: number): Observable<Boolean> {
+		let accountId = localStorage.getItem('account_id');
+
+		return this.http.delete<Boolean>(`${environment.app_server}/api/v3/${accountId}/users/${id}`, {})
+			.pipe(map(() => {
+				// Track event.
+				this.trackService.event('user-delete', { app: "web", "accountId": accountId });
 
 				return true;
 			}));
@@ -68,22 +108,6 @@ export class UserService {
 	// 			this.trackService.event('label-update', { app: "web", "accountId": accountId });
 	//
 	// 			return lb;
-	// 		}));
-	// }
-	//
-	// //
-	// // Delete a label
-	// //
-	// delete(label: Label): Observable<Boolean> {
-	// 	let accountId = localStorage.getItem('account_id');
-	// 	label.AccountId = Number(accountId);
-	//
-	// 	return this.http.delete<Boolean>(`${environment.app_server}/api/v3/${accountId}/labels/${label.Id}`, {})
-	// 		.pipe(map(() => {
-	// 			// Track event.
-	// 			this.trackService.event('label-delete', { app: "web", "accountId": accountId });
-	//
-	// 			return true;
 	// 		}));
 	// }
 }

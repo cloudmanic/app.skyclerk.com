@@ -13,6 +13,7 @@ import (
 	"io/ioutil"
 	"net/http"
 	"os"
+	"strconv"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -39,6 +40,67 @@ func (t *Controller) GetUsers(c *gin.Context) {
 
 	// Return happy.
 	response.Results(c, users, nil)
+}
+
+//
+// DeleteUser - This does not delete a user just removes from this account.
+//
+func (t *Controller) DeleteUser(c *gin.Context) {
+	// Get the invite id
+	id, err := strconv.ParseInt(c.Param("id"), 10, 32)
+
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"errors": err})
+		return
+	}
+
+	// AccountId.
+	accountId := uint(c.MustGet("accountId").(int))
+
+	// Delete AcctToUsers.
+	i := models.AcctToUsers{}
+	t.db.New().Where("user_id = ? AND acct_id = ?", id, accountId).Delete(&i)
+
+	// Return happy.
+	response.RespondDeleted(c, nil)
+}
+
+//
+// GetInvitedUsers - Return a list of invited users.
+//
+func (t *Controller) GetInvitedUsers(c *gin.Context) {
+	// Get account id
+	accountId := uint(c.MustGet("accountId").(int))
+
+	// list of invited users
+	list := []models.Invite{}
+	t.db.New().Where("expires_at > ? AND account_id = ?", time.Now(), accountId).Find(&list)
+
+	// Return happy.
+	response.Results(c, list, nil)
+}
+
+//
+// DeleteInvite an invite that has been sent out already.
+//
+func (t *Controller) DeleteInvite(c *gin.Context) {
+	// Get the invite id
+	id, err := strconv.ParseInt(c.Param("id"), 10, 32)
+
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"errors": err})
+		return
+	}
+
+	// AccountId.
+	accountId := uint(c.MustGet("accountId").(int))
+
+	// Delete invite.
+	i := models.Invite{}
+	t.db.New().Where("id = ? AND account_id = ?", id, accountId).Delete(&i)
+
+	// Return happy.
+	response.RespondDeleted(c, nil)
 }
 
 //

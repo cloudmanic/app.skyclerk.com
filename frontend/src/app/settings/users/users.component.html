@@ -45,6 +45,20 @@
                             <th *ngIf="users.length <= 1">&nbsp;</th>
                           </tr>
 
+                          <tr *ngFor="let row of invites">
+                            <td>{{ row.FirstName }}</td>
+
+                            <td>{{ row.LastName }}</td>
+
+                            <td><a href="mailto:{{ row.Email }}">{{ row.Email }}</a></td>
+
+                            <td>Pending...</td>
+
+                            <td>
+                              <a (click)="removeInvite(row.Id)" class="remove-user">Remove</a>
+                            </td>
+                          </tr>
+
                           <tr *ngFor="let row of users">
                             <td>{{ row.FirstName }}</td>
 
@@ -56,7 +70,7 @@
 
                             <td *ngIf="me.Id == row.Id">&nbsp;</td>
                             <td *ngIf="me.Id != row.Id">
-                              <a href="#" class="remove-user">Remove User</a>
+                              <a (click)="removeUser(row.Id)" class="remove-user">Remove</a>
                             </td>
                           </tr>
 
