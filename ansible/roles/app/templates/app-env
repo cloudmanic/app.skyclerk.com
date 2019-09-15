@@ -9,6 +9,7 @@ FONT_PATH=/fonts
 
 SITE_URL={{ site_url }}
 SITE_DOMAIN={{ site_domain }}
+REGISTER_URL={{ register_url }}
 ENCRYPTION_KEY={{ encryption_key }}
 CACHE_DIR=/cache
 

@@ -7,6 +7,7 @@
 app_env: production
 site_domain: app.skyclerk.com
 site_url: https://app.skyclerk.com
+register_url: https://app.skyclerk.com/register/index.html
 
 site_dir: /sites/skyclerk/app.skyclerk.com
 
