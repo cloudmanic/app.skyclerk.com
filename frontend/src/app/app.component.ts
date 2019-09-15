@@ -10,6 +10,7 @@ import { Router, NavigationEnd } from '@angular/router';
 import { Title } from '@angular/platform-browser';
 
 declare let _paq: any;
+declare let gtag: Function;
 
 @Component({
 	selector: 'app-root',
@@ -44,6 +45,9 @@ export class AppComponent {
 					_paq.push(['setGenerationTimeMs', 0]);
 					_paq.push(['trackPageView']);
 					_paq.push(['enableLinkTracking']); // Should be at end.
+
+					// Google Analytics
+					gtag('config', 'UA-102266466-2', { 'page_path': event.urlAfterRedirects });
 				}, 50);
 			}
 		});

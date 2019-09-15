@@ -7,6 +7,10 @@
 import { Component, OnInit } from '@angular/core';
 import { UserService } from 'src/app/services/user.service';
 import { Router } from '@angular/router';
+import { environment } from 'src/environments/environment';
+import { Title } from '@angular/platform-browser';
+
+const pageTitle: string = environment.title_prefix + "Settings User Add";
 
 @Component({
 	selector: 'app-add',
@@ -23,12 +27,15 @@ export class AddComponent implements OnInit {
 	//
 	// Constructor
 	//
-	constructor(public router: Router, public userService: UserService) { }
+	constructor(public router: Router, public userService: UserService, public titleService: Title) { }
 
 	//
 	// ngOnInit
 	//
-	ngOnInit() { }
+	ngOnInit() {
+		// Set page title.
+		this.titleService.setTitle(pageTitle);
+	}
 
 	//
 	// Submit invite request.
