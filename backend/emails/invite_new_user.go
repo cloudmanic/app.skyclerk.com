@@ -413,7 +413,7 @@ func GetInviteNewUserHTML(name string, accountName string, url string, invite mo
 																									<font face="Roboto, Times New Roman, sans-serif" style="line-height: 1.2;">Hi ` + invite.FirstName + `,</font>
 																									<div style="line-height: 1.2;"><b style="font-family: Times; font-size: 16px;"><br></b></div>
 																									<div style="line-height: 1.2;">
-																										<font face="Roboto, Times New Roman, sans-serif"><b style="font-size: 16px;">` + name + `</b><span style="font-size: 16px;">&nbsp;invited you to the&nbsp;</span><b style="font-size: 16px;">` + accountName + `</b><span style="font-size: 16px;">account.</span></font><span style="font-family: Roboto, &quot;Times New Roman&quot;, sans-serif;">&nbsp;</span>
+																										<font face="Roboto, Times New Roman, sans-serif"><b style="font-size: 16px;">` + name + `</b><span style="font-size: 16px;">&nbsp;invited you to the&nbsp;</span><b style="font-size: 16px;">` + accountName + `</b><span style="font-size: 16px;"> account.</span></font><span style="font-family: Roboto, &quot;Times New Roman&quot;, sans-serif;">&nbsp;</span>
 																									</div>
 																									<div style="line-height: 1.2;"><span style="font-family: Roboto, &quot;Times New Roman&quot;, sans-serif;"><br></span></div>
 																									<div style="line-height: 1.2;"><span style="font-family: Roboto, helvetica, &quot;Times New Roman&quot;, sans-serif; font-size: 15px; font-style: italic;">` + invite.Message + `</span></div>
