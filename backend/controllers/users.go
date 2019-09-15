@@ -20,6 +20,7 @@ import (
 
 	"app.skyclerk.com/backend/emails"
 	"app.skyclerk.com/backend/library/email"
+	"app.skyclerk.com/backend/library/helpers"
 	"app.skyclerk.com/backend/library/response"
 	"app.skyclerk.com/backend/models"
 	"app.skyclerk.com/backend/services"
@@ -95,7 +96,7 @@ func (t *Controller) InviteUser(c *gin.Context) {
 	}
 
 	// Setup the basic vars for sending emails.
-	url := os.Getenv("SITE_URL")
+	url := os.Getenv("REGISTER_URL")
 	name := me.FirstName + " " + me.LastName
 	subject := fmt.Sprintf("%s %s invited you to Skyclerk (%s)", me.FirstName, me.LastName, account.Name)
 
@@ -108,6 +109,9 @@ func (t *Controller) InviteUser(c *gin.Context) {
 		now := time.Now()
 		tExpire := now.Add(time.Hour * 24 * time.Duration(7))
 
+		// Set token
+		token := helpers.RandStr(36)
+
 		// Create an invite token
 		invite := models.Invite{
 			AccountId: account.Id,
@@ -115,21 +119,24 @@ func (t *Controller) InviteUser(c *gin.Context) {
 			FirstName: firstName,
 			LastName:  lastName,
 			Message:   message,
-			Token:     "abc123",
+			Token:     token,
 			ExpiresAt: tExpire,
 		}
 		t.db.New().Save(&invite)
 
-		// // Send a welcome email to user. This is different than the welcome email below.
-		// html := emails.GetInviteCurrentUserHTML(name, account.Name, url)
-		// text := emails.GetInviteCurrentUserText(name, account.Name, url)
-		//
-		// // Send welcome email to user already in the system.
-		// if flag.Lookup("test.v") != nil {
-		// 	email.Send(emailAddress, subject, html, text)
-		// } else {
-		// 	go email.Send(emailAddress, subject, html, text)
-		// }
+		// Update the URL to include our token and names
+		url = fmt.Sprintf("%s?email=%s&first=%s&last=%s&token=%s", url, emailAddress, firstName, lastName, token)
+
+		// Send a welcome email to user. This is different than the welcome email below.
+		html := emails.GetInviteNewUserHTML(name, account.Name, url, invite)
+		text := emails.GetInviteNewUserText(name, account.Name, url, invite)
+
+		// Send welcome email to user already in the system.
+		if flag.Lookup("test.v") != nil {
+			email.Send(emailAddress, subject, html, text)
+		} else {
+			go email.Send(emailAddress, subject, html, text)
+		}
 
 		// Log
 		services.InfoMsg(fmt.Sprintf("New user invited to Skyclerk: AccountId - %d, Email: %s", accountId, emailAddress))
@@ -149,9 +156,21 @@ func (t *Controller) InviteUser(c *gin.Context) {
 			UserId: user.Id,
 		})
 
+		// Set URL
+		url = os.Getenv("SITE_URL")
+
+		// Create an invite token
+		invite := models.Invite{
+			AccountId: account.Id,
+			Email:     emailAddress,
+			FirstName: firstName,
+			LastName:  lastName,
+			Message:   message,
+		}
+
 		// Setup emails to send for current user
-		html := emails.GetInviteCurrentUserHTML(name, account.Name, url)
-		text := emails.GetInviteCurrentUserText(name, account.Name, url)
+		html := emails.GetInviteCurrentUserHTML(name, account.Name, url, invite)
+		text := emails.GetInviteCurrentUserText(name, account.Name, url, invite)
 
 		// Send welcome email to user already in the system.
 		if flag.Lookup("test.v") != nil {
