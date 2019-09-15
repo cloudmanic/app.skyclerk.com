@@ -17,12 +17,25 @@ DB_USERNAME={{ app_db_username }}
 DB_PASSWORD={{ app_db_password }}
 DB_DATABASE={{ app_db_database }}
 
+# Object store
 OBJECT_REGION={{ object_region }}
 OBJECT_BUCKET={{ object_bucket }}
 OBJECT_ACCESS_KEY_ID={{ object_access_key }}
 OBJECT_SECRET_ACCESS_KEY={{ object_secret_key }}
 OBJECT_ENDPOINT={{ object_endpoint }}
 OBJECT_BASE_URL={{ object_base_url }}
+
+# Email
+MAIL_DRIVER=mailgun
+MAIL_HOST=127.0.0.1
+MAIL_PORT=1025
+MAIL_USERNAME=
+MAIL_PASSWORD=
+MAIL_ENCRYPTION=null
+
+# Mailgun
+MAILGUN_DOMAIN={{ mailgun_domain }}
+MAILGUN_API_KEY={{ mailgun_api_key }}
 
 AWS_CLOUDFRONT_KEY_ID={{ aws_cloudfront_key_id }}
 AWS_CLOUDFRONT_PRIVATE_SIGN_KEY={{ aws_cloudfront_private_sign_key }}

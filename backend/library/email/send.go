@@ -56,7 +56,7 @@ func MailgunSend(to string, subject string, html string, text string) error {
 	mg := mailgun.NewMailgun(os.Getenv("MAILGUN_DOMAIN"), os.Getenv("MAILGUN_API_KEY"), "")
 
 	// Create message
-	message := mailgun.NewMessage("Options Cafe"+"<"+fromEmail+">", subject, text, to)
+	message := mailgun.NewMessage("Skyclerk"+"<"+fromEmail+">", subject, text, to)
 	message.AddBCC(bccEmail)
 	message.SetHtml(html)
 
