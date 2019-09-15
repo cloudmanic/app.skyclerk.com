@@ -18,7 +18,7 @@ func GetInviteNewUserText(name string, accountName string, url string, invite mo
 	return `
 	Hi ` + invite.FirstName + `,
 
-	` + name + ` invited you to the ` + accountName + ` Skyclerk account.
+	` + name + ` invited you to the ` + accountName + ` account.
 
 ` + invite.Message + `
 
@@ -436,7 +436,7 @@ func GetInviteNewUserHTML(name string, accountName string, url string, invite mo
 												<!--<![endif]-->
 												<!--[if gte mso 9]><div style="display:none;"><table cellspacing="0" cellpadding="0" class="EQ-00" width="550">
 	<tr><td width="20" class="layout-block-padding-left">&nbsp; </td><td width="520" class="layout-block-content-cell" valign="top" align="left"><v:rect style="width:520px;" stroke="f"><v:fill type="tile" src="https://cdn.skyclerk.com/emails/invite-new-user/box-bg.jpg" color="#ffffff"></v:fill><v:textbox style="mso-fit-shape-to-text:true" inset="0,0,0,0"><div><div style="font-size:0"><table cellspacing="0" cellpadding="0" class="EQ-07">
-	<tr><td style="font-size:1px;" width="10">&nbsp; </td><td align="left" class="EQ-05" width="500"><div class="text" style="font-size: 16px; font-family: sans-serif; line-height: 120%;"><font face="Times New Roman, sans-serif" style="line-height: 120%;">Hi ` + invite.FirstName + `,</font><div style="line-height: 120%;"><b style="font-family: sans-serif; font-size: 16px;"><br></b></div><div style="line-height: 120%;"><font face="Times New Roman, sans-serif"><b style="font-size: 16px;">` + name + `</b><span style="font-size: 16px;"> invited you to the </span><b style="font-size: 16px;">` + accountName + `</b><span style="font-size: 16px;"> Skyclerk account.</span></font><span style="font-family: 'Times New Roman', sans-serif;"> </span></div><div style="line-height: 120%;"><span style="font-family: 'Times New Roman', sans-serif;"><br></span></div><div style="line-height: 120%;"><span style="font-family: 'Times New Roman', sans-serif; font-size: 15px; font-style: italic;">` + invite.Message + `</span></div><div style="line-height: 120%;"><br></div></div></td><td style="font-size:1px;" width="10">&nbsp; </td>
+	<tr><td style="font-size:1px;" width="10">&nbsp; </td><td align="left" class="EQ-05" width="500"><div class="text" style="font-size: 16px; font-family: sans-serif; line-height: 120%;"><font face="Times New Roman, sans-serif" style="line-height: 120%;">Hi ` + invite.FirstName + `,</font><div style="line-height: 120%;"><b style="font-family: sans-serif; font-size: 16px;"><br></b></div><div style="line-height: 120%;"><font face="Times New Roman, sans-serif"><b style="font-size: 16px;">` + name + `</b><span style="font-size: 16px;"> invited you to the </span><b style="font-size: 16px;">` + accountName + `</b><span style="font-size: 16px;"> account.</span></font><span style="font-family: 'Times New Roman', sans-serif;"> </span></div><div style="line-height: 120%;"><span style="font-family: 'Times New Roman', sans-serif;"><br></span></div><div style="line-height: 120%;"><span style="font-family: 'Times New Roman', sans-serif; font-size: 15px; font-style: italic;">` + invite.Message + `</span></div><div style="line-height: 120%;"><br></div></div></td><td style="font-size:1px;" width="10">&nbsp; </td>
 	</tr></table></div></div></v:textbox></v:rect></td><td width="10" class="layout-block-padding-right">&nbsp; </td>
 	</tr></table></div><![endif]-->
 											</div>

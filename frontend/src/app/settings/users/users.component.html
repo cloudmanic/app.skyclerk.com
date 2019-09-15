@@ -21,14 +21,13 @@
                     <div class="section-head">
                       <h1>Manage Users</h1>
 
-                      <h2 class="message-success">User added!</h2><!-- /.masege-success -->
+                      <h2 class="message-success" *ngIf="successMsg">{{ successMsg }}</h2>
 
-                      <a href="#" class="add-link" data-popout="add-contact">
+                      <a routerLink="/settings/users/add" class="add-link" data-popout="add-contact">
                         <span class="plus-box"></span>
-
                         New User
                       </a>
-                    </div><!-- /.section-head -->
+                    </div>
 
                     <div class="section-body">
                       <div class="table-users">
@@ -40,61 +39,50 @@
 
                             <th>Email Address</th>
 
-                            <th>Actions</th>
+                            <th>Last Activity</th>
+
+                            <th *ngIf="users.length > 1">Actions</th>
+                            <th *ngIf="users.length <= 1">&nbsp;</th>
                           </tr>
 
-                          <tr>
-                            <td>Spicer</td>
+                          <tr *ngFor="let row of users">
+                            <td>{{ row.FirstName }}</td>
 
-                            <td>Matthews</td>
+                            <td>{{ row.LastName }}</td>
 
-                            <td><a href="mailto:spicermatthews@cloudmanic.com">spicermatthews@cloudmanic.com</a></td>
+                            <td><a href="mailto:{{ row.Email }}">{{ row.Email }}</a></td>
 
-                            <td>&nbsp;</td>
+                            <td>{{ row.LastActivity |  date:'shortDate' }}</td>
+
+                            <td *ngIf="me.Id == row.Id">&nbsp;</td>
+                            <td *ngIf="me.Id != row.Id">
+                              <a href="#" class="remove-user">Remove User</a>
+                            </td>
                           </tr>
 
-                          <tr>
-                            <td>Matthew</td>
-
-                            <td>Dabrowiak</td>
-
-                            <td><a href="mailto:mattdabrowiak@gmail.com">mattdabrowiak@gmail.com</a></td>
-
-                            <td><a href="#" class="remove-user">Remove User</a></td>
-                          </tr>
-
-                          <tr>
-                            <td>Jenny</td>
-
-                            <td>Day</td>
-
-                            <td><a href="mailto:jennyday3456@gmail.com">jennyday3456@gmail.com</a></td>
-
-                            <td><a href="#" class="remove-user">Remove User</a></td>
-                          </tr>
                         </table>
-                      </div><!-- /.table-users -->
-                    </div><!-- /.section-body -->
-                  </div><!-- /.section-secondary -->
-                </div><!-- /.tab -->
+                      </div>
+                    </div>
+                  </div>
+                </div>
 
                 <div class="tab" id="tab2">
 
-                </div><!-- /.tab -->
+                </div>
 
                 <div class="tab" id="tab3">
 
-                </div><!-- /.tab -->
-              </div><!-- /.tabs-body -->
-            </div><!-- /.tabs -->
-          </div><!-- /.overview-body -->
-        </div><!-- /.overview -->
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
 
-      </div><!-- /.contentbox -->
+      </div>
 
-    </div><!-- /.content -->
+    </div>
 
     <app-layouts-sidebar></app-layouts-sidebar>
 
   </div>
-</div><!-- /.main -->
+</div>

@@ -13,6 +13,7 @@ import { SafeHtmlPipe } from './pipes/safe-html.pipe';
 
 // Services
 import { MeService } from './services/me.service';
+import { UserService } from './services/user.service';
 import { AuthService } from './services/auth.service';
 import { TokenInterceptor } from './services/token.interceptor';
 import { ReportService } from './services/report.service';
@@ -61,6 +62,7 @@ import { NextPaymentComponent } from './settings/billing/next-payment/next-payme
 import { HistoryComponent } from './settings/billing/history/history.component';
 import { CategoriesComponent } from './settings/categories-labels/categories/categories.component';
 import { LabelsComponent } from './settings/categories-labels/labels/labels.component';
+import { AddComponent as SettingsUsersAdd } from './settings/users/add/add.component';
 
 @NgModule({
 	declarations: [
@@ -106,7 +108,8 @@ import { LabelsComponent } from './settings/categories-labels/labels/labels.comp
 		NextPaymentComponent,
 		HistoryComponent,
 		CategoriesComponent,
-		LabelsComponent
+		LabelsComponent,
+		SettingsUsersAdd
 	],
 	imports: [
 		FormsModule,
@@ -119,6 +122,7 @@ import { LabelsComponent } from './settings/categories-labels/labels/labels.comp
 	],
 	providers: [
 		MeService,
+		UserService,
 		AuthService,
 		ReportService,
 		ContactService,

@@ -28,6 +28,7 @@ import { EditComponent as LedgerEditComponent } from './ledger/edit/edit.compone
 import { ActivityComponent } from './activity/activity.component';
 import { GraphsComponent } from './dashboard/graphs/graphs.component';
 import { ReportsComponent } from './dashboard/reports/reports.component';
+import { AddComponent as SettingsUsersAdd } from './settings/users/add/add.component';
 
 const routes: Routes = [
 
@@ -53,6 +54,7 @@ const routes: Routes = [
 
 			// settings
 			{ path: 'settings/users', component: SettingsUsersComponent, canActivate: [SessionGuard] },
+			{ path: 'settings/users/add', component: SettingsUsersAdd, canActivate: [SessionGuard] },
 			{ path: 'settings/billing', component: SettingsBillingComponent, canActivate: [SessionGuard] },
 			{ path: 'settings/account', component: SettingsAccountComponent, canActivate: [SessionGuard] },
 			{ path: 'settings/contacts', component: SettingsContactsComponent, canActivate: [SessionGuard] },

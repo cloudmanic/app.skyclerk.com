@@ -1,0 +1,116 @@
+<div class="main">
+  <div class="shell clearfix">
+    <div class="content">
+
+      <div class="contentbox">
+        <div class="overview">
+          <div class="overview-head">
+            <div class="overview-label">
+              <h4>Settings</h4>
+            </div>
+          </div>
+
+          <div class="overview-body">
+            <div class="tabs">
+
+              <app-settings-sub-nav current="users"></app-settings-sub-nav>
+
+              <div class="tabs-body">
+                <div class="tab current" id="tab1">
+                  <div class="section-secondary">
+                    <div class="section-head">
+                      <h1>Manage Users</h1>
+                    </div>
+                  </div>
+
+                  <div class="section-secondary section-new-user section-new-user-primary">
+                    <div class="section-head">
+                      <h1>New User</h1>
+                      <a routerLink="/settings/users" class="btn-close">Close</a>
+                    </div>
+
+                    <div class="section-body">
+                      <div class="form-new-user">
+
+                        <form (submit)="submit()">
+
+                          <div class="form-body">
+                            <div class="error-message" *ngIf="errMsg">{{ errMsg }}</div>
+
+                            <div class="form-col form-col-size1">
+                              <div class="form-row">
+                                <label for="first" class="form-label">First Name</label>
+
+                                <div class="form-controls">
+                                  <input type="text" class="field" name="first" id="first" [(ngModel)]="first" />
+                                </div>
+                              </div>
+
+                              <div class="form-row">
+                                <label for="last" class="form-label">Last Name</label>
+
+                                <div class="form-controls">
+                                  <input type="text" class="field" name="last" id="last" [(ngModel)]="last" />
+                                </div>
+                              </div>
+
+                              <div class="form-row">
+                                <label for="email" class="form-label">Email</label>
+
+                                <div class="form-controls">
+                                  <input type="email" class="field" name="email" id="email" [(ngModel)]="email" />
+                                </div>
+                              </div>
+
+                              <div class="form-row">
+                                <label for="message" class="form-label">Message</label>
+
+                                <div class="form-controls">
+                                  <textarea class="textarea field" name="message" id="message" [(ngModel)]="message"></textarea>
+                                </div>
+                              </div>
+                            </div>
+
+                            <div class="form-col form-col-size2">
+                              <p>Invite a user to join your Skyclerk account! </p>
+                              <p>They will be granted full access to view and edit account entries.</p>
+                              <p>When you click the ‘Add User’ button we will send an email to <br> the address you provided with instructions on how to proceed.</p>
+                            </div>
+                          </div>
+
+                          <div class="form-actions">
+                            <button type="submit" class="btn btn-block btn-large btn-darkgreen" value="ADD USER">
+                              <span class="ico-plus-circle">&nbsp;</span> ADD USER
+                            </button>
+
+                            <strong class="or">Or</strong>
+
+                            <input type="reset" class="btn-cancel" value="Cancel" data-popout-hide="add-contact">
+                          </div>
+                        </form>
+
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="tab" id="tab2">
+
+                </div>
+
+                <div class="tab" id="tab3">
+
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+
+    <app-layouts-sidebar></app-layouts-sidebar>
+
+  </div>
+</div>
