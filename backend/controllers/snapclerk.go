@@ -126,7 +126,7 @@ func (t *Controller) CreateSnapClerk(c *gin.Context) {
 }
 
 //
-// GetSnapClerk - Return a list of snapclerk. We limit to 50 mainly so we do not overload the
+// GetSnapClerk - Return a list of snapclerk. We limit to 100 mainly so we do not overload the
 // system, but enough so the front-end does not have to page
 //
 func (t *Controller) GetSnapClerk(c *gin.Context) {

@@ -86,5 +86,5 @@
   unused-packages = true
 
 [[constraint]]
-  revision = "7a0656ff3ee8f764cdcc16b678076750875e5c4d"
+  revision = "01ec452cbe43774f989516272881441cae40c16b"
   name = "jaytaylor.com/html2text"

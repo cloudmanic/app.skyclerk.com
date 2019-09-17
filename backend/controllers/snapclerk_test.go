@@ -232,9 +232,9 @@ func TestGetSnapClerk01(t *testing.T) {
 	// Test results
 	st.Expect(t, err, nil)
 	st.Expect(t, w.Code, 200)
-	st.Expect(t, len(results), 50)
+	st.Expect(t, len(results), 100)
 	st.Expect(t, w.HeaderMap["X-Offset"][0], "0")
-	st.Expect(t, w.HeaderMap["X-Limit"][0], "50")
+	st.Expect(t, w.HeaderMap["X-Limit"][0], "100")
 	st.Expect(t, w.HeaderMap["X-No-Limit-Count"][0], "105")
 	st.Expect(t, w.HeaderMap["X-Last-Page"][0], "false")
 

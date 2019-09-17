@@ -37,14 +37,6 @@
   version = "v1.23.18"
 
 [[projects]]
-  branch = "master"
-  digest = "1:e24c1fff55d60372b1c6d9185e5ff9d7e683b193de78846be7ea9da45267b595"
-  name = "github.com/cloudmanic/app.options.cafe"
-  packages = ["backend/library/helpers"]
-  pruneopts = "UT"
-  revision = "7a0656ff3ee8f764cdcc16b678076750875e5c4d"
-
-[[projects]]
   digest = "1:80154261f3a8bd25b0c4f229fa007ebe8f1fef3b7be9363512b0e72b1543ce70"
   name = "github.com/disintegration/imaging"
   packages = ["."]
@@ -512,7 +504,6 @@
   version = "v2.2.2"
 
 [[projects]]
-  branch = "master"
   digest = "1:c6b699ea3bbd8b76012a8feca9ea85bcca794ae5c1157724d1b524066d5d59b0"
   name = "jaytaylor.com/html2text"
   packages = ["."]
@@ -528,7 +519,6 @@
     "github.com/araddon/dateparse",
     "github.com/asaskevich/govalidator",
     "github.com/aws/aws-sdk-go/service/cloudfront/sign",
-    "github.com/cloudmanic/app.options.cafe/backend/library/helpers",
     "github.com/disintegration/imaging",
     "github.com/eefret/gravatar",
     "github.com/gin-contrib/cors",
