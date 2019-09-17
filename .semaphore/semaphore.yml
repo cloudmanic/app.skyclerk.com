@@ -42,7 +42,7 @@ blocks:
         - name: MAIL_HOST
           value: 127.0.0.1
         - name: MAIL_PORT
-          value: 1025                 
+          value: "1025"                 
 
       jobs:
       - name: Get app code, get packages, test and build
