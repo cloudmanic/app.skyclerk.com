@@ -46,9 +46,7 @@ blocks:
         - name: MAIL_USERNAME
           value:
         - name: MAIL_PASSWORD
-          value:
-        - name: MAIL_ENCRYPTION
-          value: null                       
+          value:                  
 
       jobs:
       - name: Get app code, get packages, test and build
