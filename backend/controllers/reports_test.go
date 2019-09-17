@@ -655,7 +655,7 @@ func TestReportsCurrentPnl01(t *testing.T) {
 	// Test results
 	st.Expect(t, err, nil)
 	st.Expect(t, results.Year, 2019)
-	st.Expect(t, results.Value, helpers.Round(total, 2))
+	st.Expect(t, helpers.Round(results.Value, 2), helpers.Round(total, 2))
 }
 
 /* End File */
