@@ -8,7 +8,7 @@ spec:
     - name: "Skyclerk Slack Notification"
       filter:
         projects:
-          - skyclerk.com
+          - app.skyclerk.com
         results:
           - failed
       notify:
