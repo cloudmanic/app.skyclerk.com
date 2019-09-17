@@ -27,7 +27,7 @@ import (
 //
 func TestDoRegister01(t *testing.T) {
 	// Start the db connection.
-	db, dbName, _ := models.NewTestDB("")
+	db, dbName, _ := models.NewTestDB("testing_db")
 	defer models.TestingTearDown(db, dbName)
 
 	// Create applicaiton.
@@ -79,6 +79,14 @@ func TestDoRegister01(t *testing.T) {
 	a := models.Account{}
 	db.Where("owner_id = ?", 1).First(&a)
 
+	// Check the database that proper entries where created
+	b := models.Billing{}
+	db.Where("id = ?", 1).First(&b)
+
+	// Check the database that proper entries where created
+	ab := models.AcctToBilling{}
+	db.Where("acct_id = ? AND billing_id = ?", 1, uint(1)).First(&ab)
+
 	// Test results
 	st.Expect(t, w.Code, 200)
 	st.Expect(t, res.UserId, uint(1))
@@ -91,6 +99,8 @@ func TestDoRegister01(t *testing.T) {
 	st.Expect(t, m.LastName, "Wells")
 	st.Expect(t, m.Email, "jane@wells.com")
 	st.Expect(t, a.Name, "Jane's Skyclerk")
+	st.Expect(t, b.Id, uint(1))
+	st.Expect(t, ab.Id, uint(1))
 
 	// Test password.
 	err := bcrypt.CompareHashAndPassword([]byte(m.Password), []byte("foobar123"))

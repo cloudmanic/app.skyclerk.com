@@ -112,13 +112,6 @@ func (t *Controller) DoRegister(c *gin.Context) {
 		return
 	}
 
-	// Days to expire
-	daysToExpire := helpers.StringToInt(os.Getenv("TRIAL_DAY_COUNT"))
-
-	// Trail expire
-	now := time.Now()
-	tExpire := now.Add(time.Hour * 24 * time.Duration(daysToExpire))
-
 	// Figure out name.
 	name := post.First + "'s Skyclerk"
 	if len(post.Company) > 0 {
@@ -133,12 +126,30 @@ func (t *Controller) DoRegister(c *gin.Context) {
 		acct = models.Account{
 			OwnerId:      user.Id,
 			Name:         name,
-			Status:       "Trial",
 			LastActivity: time.Now(),
-			SignupIp:     realip.RealIP(c.Request),
-			TrialExpire:  tExpire,
 		}
 		t.db.New().Save(&acct)
+
+		// Days to expire
+		daysToExpire := helpers.StringToInt(os.Getenv("TRIAL_DAY_COUNT"))
+
+		// Trail expire
+		now := time.Now()
+		tExpire := now.Add(time.Hour * 24 * time.Duration(daysToExpire))
+
+		// Setup the billing profile for this account.
+		bp := models.Billing{
+			Status:      "Trial",
+			TrialExpire: tExpire,
+		}
+		t.db.New().Save(&bp)
+
+		// Add the account look up.
+		abp := models.AcctToBilling{
+			AcctId:    acct.Id,
+			BillingId: bp.Id,
+		}
+		t.db.New().Save(&abp)
 	} else {
 		// We know there is no error because this is checked above.
 		acct, _ = t.db.GetAccountById(invite.AccountId)

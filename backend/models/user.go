@@ -24,8 +24,8 @@ import (
 // User struct
 type User struct {
 	Id           uint      `gorm:"primary_key" json:"id"`
-	CreatedAt    time.Time `json:"-"`
-	UpdatedAt    time.Time `json:"-"`
+	CreatedAt    time.Time `sql:"not null" json:"-"`
+	UpdatedAt    time.Time `sql:"not null" json:"-"`
 	FirstName    string    `sql:"not null" json:"first_name"`
 	LastName     string    `sql:"not null" json:"last_name"`
 	Email        string    `sql:"not null" json:"email"`
@@ -34,6 +34,7 @@ type User struct {
 	Md5Salt      string    `sql:"not null" json:"-"`
 	Status       string    `sql:"not null;type:ENUM('Active', 'Disable');default:'Active'" json:"-"`
 	LastActivity time.Time `sql:"not null" json:"last_activity"`
+	SignupIp     string    `sql:"not null" json:"-"`
 	Accounts     []Account `json:"accounts"`
 	Session      Session   `json:"-"`
 }
@@ -172,7 +173,7 @@ func (t *DB) CreateUser(first string, last string, email string, password string
 	var _first = template.HTMLEscapeString(first)
 	var _last = template.HTMLEscapeString(last)
 
-	user := User{FirstName: _first, LastName: _last, Email: email, Password: string(hash), Status: "Active", LastActivity: time.Now()}
+	user := User{FirstName: _first, LastName: _last, Email: email, Password: string(hash), Status: "Active", LastActivity: time.Now(), SignupIp: ipAddress}
 	t.Create(&user)
 
 	// Log user creation.
