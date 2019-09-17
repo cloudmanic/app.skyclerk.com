@@ -15,9 +15,11 @@ import (
 	"app.skyclerk.com/backend/services"
 	"gopkg.in/gomail.v2"
 	"gopkg.in/mailgun/mailgun-go.v1"
+	"jaytaylor.com/html2text"
 )
 
 var (
+	fromName  = "Skyclerk"
 	fromEmail = "help@skyclerk.com"
 	bccEmail  = "bcc@skyclerk.com"
 )
@@ -27,7 +29,13 @@ var (
 // If we have a SMTP in our configs we use that if not we use
 // Mailgun's library for sending mail.
 //
-func Send(to string, subject string, html string, text string) error {
+func Send(to string, subject string, html string) error {
+	// Setup text email
+	text, err := html2text.FromString(html, html2text.Options{})
+
+	if err != nil {
+		return err
+	}
 
 	// Are we sending as SMTP or via Mailgun? Typically we
 	// send as SMTP for local development so we can use Mailhog
@@ -41,7 +49,7 @@ func Send(to string, subject string, html string, text string) error {
 	}
 
 	// We should never get here if we are configured correctly.
-	var err = errors.New("No mail driver found.")
+	err = errors.New("No mail driver found.")
 	services.Info(errors.New(err.Error() + "library/email/Send/Send() - No mail driver found."))
 	return err
 
@@ -51,12 +59,11 @@ func Send(to string, subject string, html string, text string) error {
 // MailgunSend - Send via Mailgun.
 //
 func MailgunSend(to string, subject string, html string, text string) error {
-
 	// Setup mailgun
 	mg := mailgun.NewMailgun(os.Getenv("MAILGUN_DOMAIN"), os.Getenv("MAILGUN_API_KEY"), "")
 
 	// Create message
-	message := mailgun.NewMessage("Skyclerk"+"<"+fromEmail+">", subject, text, to)
+	message := mailgun.NewMessage(fromName+"<"+fromEmail+">", subject, text, to)
 	message.AddBCC(bccEmail)
 	message.SetHtml(html)
 
@@ -70,14 +77,12 @@ func MailgunSend(to string, subject string, html string, text string) error {
 
 	// Everything went well!
 	return nil
-
 }
 
 //
 // SmtpSend - Send as SMTP.
 //
 func SmtpSend(to string, subject string, html string, text string) error {
-
 	// Setup the email to send.
 	m := gomail.NewMessage()
 	m.SetHeader("From", fromEmail)
@@ -104,7 +109,6 @@ func SmtpSend(to string, subject string, html string, text string) error {
 
 	// Everything went well!
 	return nil
-
 }
 
 /* End File */

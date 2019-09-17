@@ -12,41 +12,6 @@ import (
 )
 
 //
-// GetInviteNewUserText will set text
-//
-func GetInviteNewUserText(name string, accountName string, url string, invite models.Invite) string {
-	return `
-	Hi ` + invite.FirstName + `,
-
-	` + name + ` invited you to the ` + accountName + ` account.
-
-` + invite.Message + `
-
-	If you’re new to Skyclerk, check out this 60 second video to learn more or visit our website at https://skyclerk.com.
-
-	Thanks!
-	- The Skyclerk Team
-
-	Skyclerk, 901 Brutscher St, D112, Newberg, OR, 97132
-	For additional help please visit https://skyclerk.com/support.
-
-
-	` + url + `
-
-	` + url + `
-
-	check out this 60 second video
-	https://www.youtube.com/watch?v=ahQgNssTNrs
-
-	https://skyclerk.com
-	https://skyclerk.com
-
-	skyclerk.com/support
-	http://skyclerk.com/support
-	`
-}
-
-//
 // GetInviteNewUserHTML will set html
 //
 func GetInviteNewUserHTML(name string, accountName string, url string, invite models.Invite) string {

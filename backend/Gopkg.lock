@@ -37,6 +37,14 @@
   version = "v1.23.18"
 
 [[projects]]
+  branch = "master"
+  digest = "1:e24c1fff55d60372b1c6d9185e5ff9d7e683b193de78846be7ea9da45267b595"
+  name = "github.com/cloudmanic/app.options.cafe"
+  packages = ["backend/library/helpers"]
+  pruneopts = "UT"
+  revision = "7a0656ff3ee8f764cdcc16b678076750875e5c4d"
+
+[[projects]]
   digest = "1:80154261f3a8bd25b0c4f229fa007ebe8f1fef3b7be9363512b0e72b1543ce70"
   name = "github.com/disintegration/imaging"
   packages = ["."]
@@ -232,6 +240,14 @@
   version = "v0.0.9"
 
 [[projects]]
+  digest = "1:0356f3312c9bd1cbeda81505b7fd437501d8e778ab66998ef69f00d7f9b3a0d7"
+  name = "github.com/mattn/go-runewidth"
+  packages = ["."]
+  pruneopts = "UT"
+  revision = "3ee7d812e62a0804a7d0a324e0249ca2db3476d3"
+  version = "v0.0.4"
+
+[[projects]]
   branch = "master"
   digest = "1:2b32af4d2a529083275afc192d1067d8126b578c7a9613b26600e4df9c735155"
   name = "github.com/mgutz/ansi"
@@ -287,6 +303,14 @@
   revision = "e9e8d9816f3268def6dcbd2dea03301f40e9de94"
 
 [[projects]]
+  digest = "1:abcdbf03ca6ca13d3697e2186edc1f33863bbdac2b3a44dfa39015e8903f7409"
+  name = "github.com/olekukonko/tablewriter"
+  packages = ["."]
+  pruneopts = "UT"
+  revision = "e6d60cf7ba1f42d86d54cdf5508611c4aafb3970"
+  version = "v0.0.1"
+
+[[projects]]
   digest = "1:cf31692c14422fa27c83a05292eb5cbe0fb2775972e8f1f8446a71549bd8980b"
   name = "github.com/pkg/errors"
   packages = ["."]
@@ -301,6 +325,14 @@
   pruneopts = "UT"
   revision = "839c75faf7f98a33d445d181f3018b5c3409a45e"
   version = "v1.4.2"
+
+[[projects]]
+  branch = "master"
+  digest = "1:362b269942e8508aed33025593090ad4cdbd9077de4b1cd505e6124728e9e856"
+  name = "github.com/ssor/bom"
+  packages = ["."]
+  pruneopts = "UT"
+  revision = "6386211fdfcf24c0bfbdaceafd02849ed9a8a509"
 
 [[projects]]
   digest = "1:46aea6ffe39c3d95c13640c2515236ed3c5cdffc3c78c6c0ed4edec2caf7a0dc"
@@ -336,13 +368,15 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:b8af341d6471abe7de254393fba1d088ca1fa487dee0b3dfa3595ea3e066da79"
+  digest = "1:e36371e36b77f7ed6cb049b8bea77c784c5577b5d9e1eedbdff7c10ed299bd6a"
   name = "golang.org/x/crypto"
   packages = [
     "acme",
     "acme/autocert",
     "argon2",
+    "bcrypt",
     "blake2b",
+    "blowfish",
   ]
   pruneopts = "UT"
   revision = "094676da4a83be5288d281081bba63a173ce6772"
@@ -364,9 +398,11 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:ad6608bdf7382247c03fcbb6caedbce6f487fe1f243201514195d06d0ab23284"
+  digest = "1:2e6ea62049f1f73573def91448d29a2b231ad2486026d072b25c3c059aca59f4"
   name = "golang.org/x/net"
   packages = [
+    "html",
+    "html/atom",
     "http/httpguts",
     "http2",
     "http2/hpack",
@@ -475,6 +511,14 @@
   revision = "51d6538a90f86fe93ac480b35f37b2be17fef232"
   version = "v2.2.2"
 
+[[projects]]
+  branch = "master"
+  digest = "1:c6b699ea3bbd8b76012a8feca9ea85bcca794ae5c1157724d1b524066d5d59b0"
+  name = "jaytaylor.com/html2text"
+  packages = ["."]
+  pruneopts = "UT"
+  revision = "01ec452cbe43774f989516272881441cae40c16b"
+
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
@@ -484,6 +528,7 @@
     "github.com/araddon/dateparse",
     "github.com/asaskevich/govalidator",
     "github.com/aws/aws-sdk-go/service/cloudfront/sign",
+    "github.com/cloudmanic/app.options.cafe/backend/library/helpers",
     "github.com/disintegration/imaging",
     "github.com/eefret/gravatar",
     "github.com/gin-contrib/cors",
@@ -504,10 +549,12 @@
     "github.com/nbio/st",
     "github.com/tidwall/gjson",
     "golang.org/x/crypto/acme/autocert",
+    "golang.org/x/crypto/bcrypt",
     "golang.org/x/image/font",
     "gopkg.in/gomail.v2",
     "gopkg.in/h2non/gock.v1",
     "gopkg.in/mailgun/mailgun-go.v1",
+    "jaytaylor.com/html2text",
   ]
   solver-name = "gps-cdcl"
   solver-version = 1

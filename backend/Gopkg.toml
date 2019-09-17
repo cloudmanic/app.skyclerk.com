@@ -84,3 +84,7 @@
 [prune]
   go-tests = true
   unused-packages = true
+
+[[constraint]]
+  revision = "7a0656ff3ee8f764cdcc16b678076750875e5c4d"
+  name = "jaytaylor.com/html2text"

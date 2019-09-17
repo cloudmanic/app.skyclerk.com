@@ -215,4 +215,72 @@ func TestInviteUser02(t *testing.T) {
 	st.Expect(t, u.UserId, uint(0))
 }
 
+//
+// Test invite user 03 -- Message with new line.
+//
+func TestInviteUser03(t *testing.T) {
+	// Start the db connection.
+	db, dbName, _ := models.NewTestDB("")
+	defer models.TestingTearDown(db, dbName)
+
+	// Create controller
+	c := &Controller{}
+	c.SetDB(db)
+
+	// Create account.
+	acct := test.GetRandomAccount(33)
+	db.Save(&acct)
+
+	// Create test users.
+	u1 := test.GetRandomUser(33)
+	u2 := test.GetRandomUser(22)
+	u3 := test.GetRandomUser(33)
+
+	db.Save(&u1)
+	db.Save(&u2)
+	db.Save(&u3)
+
+	db.Save(&models.AcctToUsers{AcctId: uint(33), UserId: u1.Id})
+	db.Save(&models.AcctToUsers{AcctId: uint(22), UserId: u2.Id})
+	db.Save(&models.AcctToUsers{AcctId: uint(33), UserId: u3.Id})
+
+	// Multi line message with bad HTML.
+	msg := `
+		line #1
+		line #2
+		line #3
+		<script>alert("bad js")</script>
+		line #4
+		line #5
+	`
+
+	// Get JSON
+	postStr := fmt.Sprintf(`{ "first_name": "%s", "last_name": "%s", "email": "%s", "message": "%s" }`, u2.FirstName, u2.LastName, u2.Email, msg)
+
+	// Setup request
+	req, _ := http.NewRequest("POST", "/api/v3/33/users/invite", bytes.NewBuffer([]byte(postStr)))
+
+	// Setup writer.
+	w := httptest.NewRecorder()
+	gin.SetMode("release")
+	gin.DisableConsoleColor()
+
+	r := gin.New()
+	r.Use(func(c *gin.Context) {
+		c.Set("accountId", 33)
+		c.Set("userId", int(u1.Id))
+	})
+	r.POST("/api/v3/33/users/invite", c.InviteUser)
+	r.ServeHTTP(w, req)
+
+	// Check the database that proper entries where created
+	u := models.AcctToUsers{}
+	db.Where("acct_id = ? AND user_id = ?", 33, u2.Id).First(&u)
+
+	// Test results
+	st.Expect(t, w.Code, 204)
+	st.Expect(t, u.AcctId, uint(33))
+	st.Expect(t, u.UserId, u2.Id)
+}
+
 /* End File */

@@ -10,10 +10,12 @@ package controllers
 import (
 	"flag"
 	"fmt"
+	"html/template"
 	"io/ioutil"
 	"net/http"
 	"os"
 	"strconv"
+	"strings"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -165,6 +167,9 @@ func (t *Controller) InviteUser(c *gin.Context) {
 	// First we check if this user is already in the system
 	user, err := t.db.GetUserByEmail(emailAddress)
 
+	// Clean up the message since it is user input
+	msg := strings.Replace(template.HTMLEscapeString(message), "\n", "<br>", -1)
+
 	// Not a new user. We should create a create user invite entry.
 	if err != nil {
 		// Store the user in our invite table
@@ -180,7 +185,7 @@ func (t *Controller) InviteUser(c *gin.Context) {
 			Email:     emailAddress,
 			FirstName: firstName,
 			LastName:  lastName,
-			Message:   message,
+			Message:   msg,
 			Token:     token,
 			ExpiresAt: tExpire,
 		}
@@ -189,15 +194,11 @@ func (t *Controller) InviteUser(c *gin.Context) {
 		// Update the URL to include our token and names
 		url = fmt.Sprintf("%s?email=%s&first=%s&last=%s&token=%s", url, emailAddress, firstName, lastName, token)
 
-		// Send a welcome email to user. This is different than the welcome email below.
-		html := emails.GetInviteNewUserHTML(name, account.Name, url, invite)
-		text := emails.GetInviteNewUserText(name, account.Name, url, invite)
-
 		// Send welcome email to user already in the system.
 		if flag.Lookup("test.v") != nil {
-			email.Send(emailAddress, subject, html, text)
+			email.Send(emailAddress, subject, emails.GetInviteNewUserHTML(name, account.Name, url, invite))
 		} else {
-			go email.Send(emailAddress, subject, html, text)
+			go email.Send(emailAddress, subject, emails.GetInviteNewUserHTML(name, account.Name, url, invite))
 		}
 
 		// Log
@@ -227,18 +228,14 @@ func (t *Controller) InviteUser(c *gin.Context) {
 			Email:     emailAddress,
 			FirstName: firstName,
 			LastName:  lastName,
-			Message:   message,
+			Message:   msg,
 		}
-
-		// Setup emails to send for current user
-		html := emails.GetInviteCurrentUserHTML(name, account.Name, url, invite)
-		text := emails.GetInviteCurrentUserText(name, account.Name, url, invite)
 
 		// Send welcome email to user already in the system.
 		if flag.Lookup("test.v") != nil {
-			email.Send(emailAddress, subject, html, text)
+			email.Send(emailAddress, subject, emails.GetInviteCurrentUserHTML(name, account.Name, url, invite))
 		} else {
-			go email.Send(emailAddress, subject, html, text)
+			go email.Send(emailAddress, subject, emails.GetInviteCurrentUserHTML(name, account.Name, url, invite))
 		}
 
 		// Log

@@ -10,50 +10,6 @@ package emails
 import "app.skyclerk.com/backend/models"
 
 //
-// GetInviteCurrentUserText will set text
-//
-func GetInviteCurrentUserText(name string, accountName string, url string, invite models.Invite) string {
-	return `
-	Hi ` + invite.FirstName + `,
-
-	` + name + ` added you to the ` + accountName + ` account.
-
-	` + invite.Message + `
-
-	Sign in to your account:
-	` + url + `
-
-	Username:
-	` + invite.Email + `
-
-	If you’re new to Skyclerk, check out this 60 second video to learn more or visit our website at https://skyclerk.com.
-
-	Thanks!
-	- The Skyclerk Team
-
-	Skyclerk, 901 Brutscher St, D112, Newberg, OR, 97132
-	For additional help please visit https://skyclerk.com/support.
-
-
-	https://skyclerk.com
-
-	https://app.skyclerk.com
-
-	` + invite.Email + `
-	mailto:` + invite.Email + `
-
-	check out this 60 second video
-	https://www.youtube.com/watch?v=ahQgNssTNrs
-
-	https://skyclerk.com
-	https://skyclerk.com
-
-	skyclerk.com/support
-	http://skyclerk.com/support
-`
-}
-
-//
 // GetInviteCurrentUserHtml will set html
 //
 func GetInviteCurrentUserHTML(name string, accountName string, url string, invite models.Invite) string {
