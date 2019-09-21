@@ -123,6 +123,9 @@ func (t *Controller) ClearAccount(c *gin.Context) {
 	// Clear the account.
 	t.db.ClearAccount(account.Id)
 
+	// Put default categories back in.
+	t.db.LoadDefaultCategories(account.Id)
+
 	// Return happy.
 	c.JSON(http.StatusNoContent, nil)
 }

@@ -72,6 +72,21 @@ export class AccountService {
 				return a;
 			}));
 	}
+
+	//
+	// Clear account - clears all account data.
+	//
+	clear(): Observable<Boolean> {
+		let accountId = localStorage.getItem('account_id');
+
+		return this.http.post<Boolean>(`${environment.app_server}/api/v3/${accountId}/account/clear`, {})
+			.pipe(map(() => {
+				// Track event.
+				this.trackService.event('account-clear', { app: "web", "accountId": accountId });
+
+				return true;
+			}));
+	}
 }
 
 /* End File */

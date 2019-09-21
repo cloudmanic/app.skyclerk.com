@@ -159,4 +159,44 @@ func (db *DB) GetCategoryUsageByAccount(accountId uint) []CategoryUsage {
 	return rt
 }
 
+//
+// LoadDefaultCategories - install the default categories we get on a new account.
+//
+func (db *DB) LoadDefaultCategories(accountId uint) {
+	// Default cats
+	cats := []Category{
+		// Expenses
+		{Name: "Advertising", Type: "1", AccountId: accountId},
+		{Name: "Car & Truck Expenses", Type: "1", AccountId: accountId},
+		{Name: "Commissions & Fees", Type: "1", AccountId: accountId},
+		{Name: "Insurance", Type: "1", AccountId: accountId},
+		{Name: "Mortgage", Type: "1", AccountId: accountId},
+		{Name: "Meals & Entertainment", Type: "1", AccountId: accountId},
+		{Name: "Office Expense", Type: "1", AccountId: accountId},
+		{Name: "Professional Services", Type: "1", AccountId: accountId},
+		{Name: "Supplies", Type: "1", AccountId: accountId},
+		{Name: "Travel", Type: "1", AccountId: accountId},
+		{Name: "Maintenance", Type: "1", AccountId: accountId},
+		{Name: "Contractors & Freelancers", Type: "1", AccountId: accountId},
+		{Name: "Cost of Goods Sold'", Type: "1", AccountId: accountId},
+		{Name: "Equipment Rental", Type: "1", AccountId: accountId},
+		{Name: "Utilities", Type: "1", AccountId: accountId},
+		{Name: "Employee Wage", Type: "1", AccountId: accountId},
+		{Name: "Taxes and Licenses", Type: "1", AccountId: accountId},
+		{Name: "Pension & Profit-Sharing Plans", Type: "1", AccountId: accountId},
+		{Name: "Rent Or Lease'", Type: "1", AccountId: accountId},
+		{Name: "Other Expense", Type: "1", AccountId: accountId},
+
+		// income
+		{Name: "Sales", Type: "2", AccountId: accountId},
+		{Name: "Returns", Type: "2", AccountId: accountId},
+		{Name: "Other Income", Type: "2", AccountId: accountId},
+	}
+
+	// Save to database
+	for _, row := range cats {
+		db.New().Create(&row)
+	}
+}
+
 /* End File */

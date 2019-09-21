@@ -22,14 +22,14 @@
         <label class="form-label hidden">Clear Account</label>
 
         <label class="checkbox">
-          <input type="checkbox">
+          <input type="checkbox" name="confirm" [(ngModel)]="confirm" />
 
           I understand that by clicking the button below I will clear my entire account of all data and restore it to the state when I first signed up. All data will be deleted forever.
         </label>
       </div>
 
       <div class="form-actions">
-        <button type="submit" class="btn btn-yellow">Clear Account</button>
+        <button type="submit" class="btn btn-yellow" (click)="submit()">Clear Account</button>
 
         <a class="red-txt" (click)="editModeToggle()"><strong>Cancel</strong></a>
       </div>

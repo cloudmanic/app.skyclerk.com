@@ -427,7 +427,7 @@ func TestUpdateAccount06(t *testing.T) {
 	r.ServeHTTP(w, req)
 
 	// Test results
-	st.Expect(t, w.Code, 404)
+	st.Expect(t, w.Code, 400)
 	st.Expect(t, w.Body.String(), `{"errors":{"name":"The name field is required.","owner_id":"Invalid owner_id was posted."}}`)
 }
 
@@ -493,9 +493,14 @@ func TestClearAccount01(t *testing.T) {
 		st.Expect(t, (row.AccountId == uint(33)), false)
 	}
 
+	// Get the Category entries.
+	cats := []models.Category{}
+	db.Where("CategoriesAccountId = ?", 33).Find(&cats)
+
 	// Test results
 	st.Expect(t, w.Code, 204)
 	st.Expect(t, len(l), 10)
+	st.Expect(t, len(cats), 23)
 }
 
 //
@@ -503,7 +508,7 @@ func TestClearAccount01(t *testing.T) {
 //
 func TestClearAccount02(t *testing.T) {
 	// Start the db connection.
-	db, dbName, _ := models.NewTestDB("testing_db")
+	db, dbName, _ := models.NewTestDB("")
 	defer models.TestingTearDown(db, dbName)
 
 	// Create controller
