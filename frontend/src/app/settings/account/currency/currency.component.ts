@@ -8,6 +8,7 @@
 import { Component } from '@angular/core';
 import { AccountService } from 'src/app/services/account.service';
 import { Account } from 'src/app/models/account.model';
+import { Subject } from 'rxjs';
 
 @Component({
 	selector: 'app-settings-account-currency',
@@ -19,6 +20,7 @@ export class CurrencyComponent {
 	currencyCode: string = "";
 	currencyName: string = "";
 	currencyLocale: string = "";
+	destory: Subject<boolean> = new Subject<boolean>();
 
 	currencyNames = [
 		{
@@ -782,6 +784,26 @@ export class CurrencyComponent {
 	// Constructor
 	//
 	constructor(public accountService: AccountService) {
+		this.refreshAccount();
+
+		// Listen for account changes.
+		this.accountService.accountChange.takeUntil(this.destory).subscribe(() => {
+			this.refreshAccount();
+		});
+	}
+
+	//
+	// OnDestroy
+	//
+	ngOnDestroy() {
+		this.destory.next();
+		this.destory.complete();
+	}
+
+	//
+	// Refresh account.
+	//
+	refreshAccount() {
 		// Get the active account.
 		this.accountService.getAccount().subscribe(res => {
 			this.account = res;
@@ -821,13 +843,16 @@ export class CurrencyComponent {
 		this.account.Currency = this.currencyCode;
 		this.account.Locale = this.currencyLocale;
 
-		// Close currency.
-		this.editModeToggle();
-
 		// Send updated account to server.
 		this.accountService.update(this.account).subscribe(() => {
 			// Reset the current account.
 			this.accountService.setActiveAccount();
+
+			// Tell the rest of the app to update the account.
+			this.accountService.accountChange.emit(this.account.Id);
+
+			// Close currency.
+			this.editModeToggle();
 		});
 	}
 
@@ -836,6 +861,7 @@ export class CurrencyComponent {
 	//
 	editModeToggle() {
 		this.editMode = !this.editMode;
+		this.refreshAccount();
 	}
 }
 

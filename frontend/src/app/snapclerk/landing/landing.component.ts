@@ -12,6 +12,7 @@ import { MeService } from 'src/app/services/me.service';
 import { File as FileModel } from 'src/app/models/file.model';
 import { Title } from '@angular/platform-browser';
 import { environment } from 'src/environments/environment';
+import { AccountService } from 'src/app/services/account.service';
 
 const pageTitle: string = environment.title_prefix + "Snap!Clerk";
 
@@ -29,7 +30,7 @@ export class LandingComponent implements OnInit {
 	//
 	// Constructor
 	//
-	constructor(public snapClerkService: SnapClerkService, public meService: MeService, public titleService: Title) { }
+	constructor(public snapClerkService: SnapClerkService, public meService: MeService, public titleService: Title, public accountService: AccountService) { }
 
 	//
 	// NgOnInit
@@ -42,7 +43,7 @@ export class LandingComponent implements OnInit {
 		this.refreshPage();
 
 		// Listen for account changes.
-		this.meService.accountChange.takeUntil(this.destory).subscribe(() => {
+		this.accountService.accountChange.takeUntil(this.destory).subscribe(() => {
 			this.refreshPage();
 		});
 	}

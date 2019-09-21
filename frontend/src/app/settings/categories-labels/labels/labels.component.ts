@@ -8,6 +8,8 @@
 import { Component } from '@angular/core';
 import { LabelService } from 'src/app/services/label.service';
 import { Label } from 'src/app/models/label.model';
+import { AccountService } from 'src/app/services/account.service';
+import { Subject } from 'rxjs';
 
 @Component({
 	selector: 'app-settings-categories-labels-labels',
@@ -16,17 +18,31 @@ import { Label } from 'src/app/models/label.model';
 
 export class LabelsComponent {
 	labels: Label[] = [];
+	destory: Subject<boolean> = new Subject<boolean>();
 
 	//
 	// Constructor
 	//
-	constructor(public labelService: LabelService) { }
+	constructor(public labelService: LabelService, public accountService: AccountService) { }
 
 	//
 	// ngOnInit - since we have Input()'s we have to use ngOnInit instead of constructor
 	//
 	ngOnInit() {
 		this.refreshLabels();
+
+		// Listen for account changes.
+		this.accountService.accountChange.takeUntil(this.destory).subscribe(() => {
+			this.refreshLabels();
+		});
+	}
+
+	//
+	// OnDestroy
+	//
+	ngOnDestroy() {
+		this.destory.next();
+		this.destory.complete();
 	}
 
 	//

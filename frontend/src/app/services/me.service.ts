@@ -18,9 +18,6 @@ import { TrackService } from './track.service';
 })
 
 export class MeService {
-	// Used when account change happens.
-	accountChange = new EventEmitter<number>();
-
 	//
 	// Constructor
 	//

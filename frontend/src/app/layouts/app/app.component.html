@@ -18,7 +18,7 @@
 			<div class="status">
 				<div class="status-right" *ngIf="pnl.Year > 0">
 					<span class="status-label">{{ pnl.Year }} PROFIT &amp; LOSS:</span>
-					<span class="status-total"><span *ngIf="pnl.Value > 0">+</span>{{ pnl.Value | currency:'USD':true:'1.0-0' }}</span>
+					<span class="status-total"><span *ngIf="pnl.Value > 0">+</span>{{ pnl.Value | currencyFormat }}</span>
 				</div>
 
 				<div class="status-title">

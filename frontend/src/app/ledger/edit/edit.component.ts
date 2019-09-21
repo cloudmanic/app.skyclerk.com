@@ -16,6 +16,7 @@ import { Category } from 'src/app/models/category.model';
 import { File as FileModel } from 'src/app/models/file.model';
 import { MeService } from 'src/app/services/me.service';
 import { Subject } from 'rxjs';
+import { AccountService } from 'src/app/services/account.service';
 
 @Component({
 	selector: 'app-ledger-edit',
@@ -34,7 +35,7 @@ export class EditComponent implements OnInit {
 	//
 	// Constructor
 	//
-	constructor(public ledgerService: LedgerService, public route: ActivatedRoute, public router: Router, public meService: MeService) { }
+	constructor(public ledgerService: LedgerService, public route: ActivatedRoute, public router: Router, public meService: MeService, public accountService: AccountService) { }
 
 	//
 	// ngOnInit
@@ -54,7 +55,7 @@ export class EditComponent implements OnInit {
 		});
 
 		// Listen for account changes.
-		this.meService.accountChange.takeUntil(this.destory).subscribe(() => {
+		this.accountService.accountChange.takeUntil(this.destory).subscribe(() => {
 			this.router.navigate([`/`]);
 		});
 	}

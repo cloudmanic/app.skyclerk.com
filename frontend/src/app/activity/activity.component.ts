@@ -10,9 +10,9 @@ import { Component, OnInit } from '@angular/core';
 import { Activity } from '../models/activity.model';
 import { ActivityService, ActivityResponse } from '../services/activity.service';
 import { Subject } from 'rxjs';
-import { MeService } from '../services/me.service';
 import { environment } from 'src/environments/environment';
 import { Title } from '@angular/platform-browser';
+import { AccountService } from '../services/account.service';
 
 const pageTitle: string = environment.title_prefix + "Activity";
 
@@ -31,7 +31,7 @@ export class ActivityComponent implements OnInit {
 	//
 	// Constructor
 	//
-	constructor(public activityService: ActivityService, public meService: MeService, public titleService: Title) { }
+	constructor(public activityService: ActivityService, public accountService: AccountService, public titleService: Title) { }
 
 	//
 	// ngOnInit
@@ -44,7 +44,7 @@ export class ActivityComponent implements OnInit {
 		this.loadActivity();
 
 		// Listen for account changes.
-		this.meService.accountChange.takeUntil(this.destory).subscribe(() => {
+		this.accountService.accountChange.takeUntil(this.destory).subscribe(() => {
 			this.loadActivity();
 		});
 	}

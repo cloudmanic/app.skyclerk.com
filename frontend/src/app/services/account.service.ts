@@ -5,7 +5,7 @@
 //
 
 import { map } from "rxjs/operators";
-import { Injectable } from '@angular/core';
+import { Injectable, EventEmitter } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
 import { Observable } from 'rxjs';
@@ -17,6 +17,9 @@ import { TrackService } from './track.service';
 })
 
 export class AccountService {
+	// Used when account change happens.
+	accountChange = new EventEmitter<number>();
+
 	public activeAccount: Account = new Account();
 
 	//

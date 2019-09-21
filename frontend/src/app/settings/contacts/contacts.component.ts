@@ -10,6 +10,8 @@ import { ContactService } from 'src/app/services/contact.service';
 import { Contact } from 'src/app/models/contact.model';
 import { environment } from 'src/environments/environment';
 import { Title } from '@angular/platform-browser';
+import { AccountService } from 'src/app/services/account.service';
+import { Subject } from 'rxjs';
 
 const pageTitle: string = environment.title_prefix + "Settings Contacts";
 
@@ -23,11 +25,12 @@ export class ContactsComponent implements OnInit {
 	limit: number = 50;
 	search: string = "";
 	contacts: Contact[] = [];
+	destory: Subject<boolean> = new Subject<boolean>();
 
 	//
 	// Constructor
 	//
-	constructor(public contactService: ContactService, public titleService: Title) { }
+	constructor(public contactService: ContactService, public titleService: Title, public accountService: AccountService) { }
 
 	//
 	// ngOnInit
@@ -36,8 +39,21 @@ export class ContactsComponent implements OnInit {
 		// Set page title.
 		this.titleService.setTitle(pageTitle);
 
-		// Refresh contacts		
+		// Refresh contacts
 		this.refreshContacts();
+
+		// Listen for account changes.
+		this.accountService.accountChange.takeUntil(this.destory).subscribe(() => {
+			this.refreshContacts();
+		});
+	}
+
+	//
+	// OnDestroy
+	//
+	ngOnDestroy() {
+		this.destory.next();
+		this.destory.complete();
 	}
 
 	//

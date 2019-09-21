@@ -16,6 +16,7 @@ import { Router } from '@angular/router';
 import { LedgerService } from 'src/app/services/ledger.service';
 import { MeService } from 'src/app/services/me.service';
 import { Subject } from 'rxjs';
+import { AccountService } from 'src/app/services/account.service';
 
 @Component({
 	selector: 'app-ledger-add',
@@ -35,14 +36,14 @@ export class AddComponent implements OnInit {
 	//
 	// Constructor
 	//
-	constructor(public ledgerService: LedgerService, public router: Router, public meService: MeService) { }
+	constructor(public ledgerService: LedgerService, public router: Router, public meService: MeService, public accountService: AccountService) { }
 
 	//
 	// ngOnInit
 	//
 	ngOnInit() {
 		// Listen for account changes.
-		this.meService.accountChange.takeUntil(this.destory).subscribe(() => {
+		this.accountService.accountChange.takeUntil(this.destory).subscribe(() => {
 			this.router.navigate([`/ledger`]);
 		});
 	}

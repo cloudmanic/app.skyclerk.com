@@ -13,6 +13,7 @@ import { Me } from 'src/app/models/me.model';
 import { AccountService } from 'src/app/services/account.service';
 import { Account } from 'src/app/models/account.model';
 import { Router } from '@angular/router';
+import { Subject } from 'rxjs';
 
 @Component({
 	selector: 'app-settings-account-account-owner',
@@ -25,6 +26,7 @@ export class AccountOwnerComponent {
 	users: User[] = [];
 	account: Account = new Account();
 	userName: string = "";
+	destory: Subject<boolean> = new Subject<boolean>();
 
 	//
 	// Constructor
@@ -41,13 +43,35 @@ export class AccountOwnerComponent {
 		});
 
 		// Get the active account.
+		this.refreshAccount();
+
+		// Get the users.
+		this.loadUsers();
+
+		// Listen for account changes.
+		this.accountService.accountChange.takeUntil(this.destory).subscribe(() => {
+			this.loadUsers();
+			this.refreshAccount();
+		});
+	}
+
+	//
+	// OnDestroy
+	//
+	ngOnDestroy() {
+		this.destory.next();
+		this.destory.complete();
+	}
+
+	//
+	// Refresh account.
+	//
+	refreshAccount() {
+		// Get the active account.
 		this.accountService.getAccount().subscribe(res => {
 			this.account = res;
 			this.setDisplayName();
 		});
-
-		// Get the users.
-		this.loadUsers();
 	}
 
 	//
@@ -76,7 +100,6 @@ export class AccountOwnerComponent {
 	// Update the user title in the selector.
 	//
 	onChange() {
-		console.log(this.account.OwnerId);
 		this.setDisplayName();
 	}
 
@@ -85,6 +108,7 @@ export class AccountOwnerComponent {
 	//
 	editModeToggle() {
 		this.editMode = !this.editMode;
+		this.refreshAccount();
 	}
 
 	//
@@ -97,12 +121,10 @@ export class AccountOwnerComponent {
 			return;
 		}
 
-		// Close widget.
-		this.editModeToggle();
-
 		// Send updated account to server.
 		this.accountService.update(this.account).subscribe(() => {
 			// Reset the current account.
+			this.editModeToggle();
 			this.accountService.setActiveAccount();
 			this.router.navigate(['/']);
 		});

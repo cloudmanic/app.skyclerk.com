@@ -36,7 +36,7 @@ export class AppComponent implements OnInit {
 		this.loadPageData();
 
 		// Listen for account changes.
-		this.meService.accountChange.subscribe(() => {
+		this.accountService.accountChange.subscribe(() => {
 			this.loadPageData();
 		});
 	}
@@ -73,7 +73,7 @@ export class AppComponent implements OnInit {
 		this.accountService.setActiveAccount();
 
 		// Tell the rest of the app the account switched.
-		this.meService.accountChange.emit(account.Id);
+		this.accountService.accountChange.emit(account.Id);
 	}
 
 	//

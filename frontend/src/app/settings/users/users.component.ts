@@ -12,6 +12,8 @@ import { User } from 'src/app/models/user.model';
 import { Me } from 'src/app/models/me.model';
 import { MeService } from 'src/app/services/me.service';
 import { ActivatedRoute } from '@angular/router';
+import { AccountService } from 'src/app/services/account.service';
+import { Subject } from 'rxjs';
 
 const pageTitle: string = environment.title_prefix + "Settings Users";
 
@@ -25,11 +27,12 @@ export class UsersComponent implements OnInit {
 	users: User[] = [];
 	invites: User[] = [];
 	successMsg: string = "";
+	destory: Subject<boolean> = new Subject<boolean>();
 
 	//
 	// Construct.
 	//
-	constructor(public titleService: Title, public meService: MeService, public userService: UserService, public route: ActivatedRoute) { }
+	constructor(public titleService: Title, public meService: MeService, public userService: UserService, public route: ActivatedRoute, public accountService: AccountService) { }
 
 	//
 	// ngOnInit
@@ -57,6 +60,21 @@ export class UsersComponent implements OnInit {
 		this.loadInvites();
 
 		// TODO(spicer): Get the account and the owner. We can't delete an account owner.
+
+
+		// Listen for account changes.
+		this.accountService.accountChange.takeUntil(this.destory).subscribe(() => {
+			this.loadUsers();
+			this.loadInvites();
+		});
+	}
+
+	//
+	// OnDestroy
+	//
+	ngOnDestroy() {
+		this.destory.next();
+		this.destory.complete();
 	}
 
 	//

@@ -16,6 +16,7 @@ import { MeService } from 'src/app/services/me.service';
 import { Subject } from 'rxjs';
 import { Title } from '@angular/platform-browser';
 import { environment } from 'src/environments/environment';
+import { AccountService } from 'src/app/services/account.service';
 
 const pageTitle: string = environment.title_prefix + "Ledger View";
 
@@ -32,7 +33,7 @@ export class ViewComponent implements OnInit {
 	//
 	// Constructor
 	//
-	constructor(public ledgerService: LedgerService, public route: ActivatedRoute, public router: Router, public activityService: ActivityService, public meService: MeService, private titleService: Title) { }
+	constructor(public ledgerService: LedgerService, public route: ActivatedRoute, public router: Router, public activityService: ActivityService, public meService: MeService, private titleService: Title, public accountService: AccountService) { }
 
 	//
 	// ngOnInit
@@ -51,7 +52,7 @@ export class ViewComponent implements OnInit {
 		this.loadActivity(ledgerId);
 
 		// Listen for account changes.
-		this.meService.accountChange.takeUntil(this.destory).subscribe(() => {
+		this.accountService.accountChange.takeUntil(this.destory).subscribe(() => {
 			this.router.navigate([`/`]);
 		});
 	}

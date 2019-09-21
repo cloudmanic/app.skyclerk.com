@@ -15,6 +15,7 @@ import { trigger, transition, animate, style } from '@angular/animations';
 import { Ledger } from 'src/app/models/ledger.model';
 import { Title } from '@angular/platform-browser';
 import { environment } from 'src/environments/environment';
+import { AccountService } from 'src/app/services/account.service';
 
 const pageTitle: string = environment.title_prefix + "Ledger";
 
@@ -53,7 +54,7 @@ export class LandingComponent implements OnInit {
 	//
 	// Construct
 	//
-	constructor(public ledgerService: LedgerService, public meService: MeService, public activeRoute: ActivatedRoute, private titleService: Title) { }
+	constructor(public ledgerService: LedgerService, public meService: MeService, public activeRoute: ActivatedRoute, private titleService: Title, public accountService: AccountService) { }
 
 	//
 	// ngOnInit
@@ -66,7 +67,7 @@ export class LandingComponent implements OnInit {
 		this.refreshLedger();
 
 		// Listen for account changes.
-		this.meService.accountChange.subscribe(() => {
+		this.accountService.accountChange.subscribe(() => {
 			this.refreshLedger();
 		});
 

@@ -40,7 +40,7 @@ func (a Account) Validate(db Datastore, action string, userId uint, accountId ui
 		// Name
 		validation.Field(&a.Name,
 			validation.Required.Error("The name field is required."),
-			validation.Length(1, 25).Error("The name is too long."),
+			validation.Length(1, 50).Error("The name is too long."),
 		),
 
 		// Locale

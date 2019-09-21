@@ -8,6 +8,8 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { CategoryService } from 'src/app/services/category.service';
 import { Category } from 'src/app/models/category.model';
+import { AccountService } from 'src/app/services/account.service';
+import { Subject } from 'rxjs';
 
 @Component({
 	selector: 'app-settings-categories-labels-categories',
@@ -18,17 +20,31 @@ export class CategoriesComponent implements OnInit {
 	@Input() type: string = "income";
 
 	categories: Category[] = [];
+	destory: Subject<boolean> = new Subject<boolean>();
 
 	//
 	// Constructor
 	//
-	constructor(public categoryService: CategoryService) { }
+	constructor(public categoryService: CategoryService, public accountService: AccountService) { }
 
 	//
 	// ngOnInit - since we have Input()'s we have to use ngOnInit instead of constructor
 	//
 	ngOnInit() {
 		this.refreshCategories();
+
+		// Listen for account changes.
+		this.accountService.accountChange.takeUntil(this.destory).subscribe(() => {
+			this.refreshCategories();
+		});
+	}
+
+	//
+	// OnDestroy
+	//
+	ngOnDestroy() {
+		this.destory.next();
+		this.destory.complete();
 	}
 
 	//

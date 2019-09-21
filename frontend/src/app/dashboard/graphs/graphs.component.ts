@@ -12,8 +12,8 @@ import { AngularCsv } from 'angular7-csv/dist/Angular-csv'
 import { Component, OnInit, ElementRef, ViewChild } from '@angular/core';
 import { ReportService, PnlNameAmount } from 'src/app/services/report.service';
 import { Subject } from 'rxjs';
-import { MeService } from 'src/app/services/me.service';
 import { Title } from '@angular/platform-browser';
+import { AccountService } from 'src/app/services/account.service';
 
 declare var Pikaday: any;
 
@@ -84,7 +84,7 @@ export class GraphsComponent implements OnInit {
 	//
 	// Constructor
 	//
-	constructor(public reportService: ReportService, public meService: MeService, private titleService: Title) { }
+	constructor(public reportService: ReportService, public accountService: AccountService, public titleService: Title) { }
 
 	//
 	// ngOnInit
@@ -100,7 +100,7 @@ export class GraphsComponent implements OnInit {
 		this.refreshPageData();
 
 		// Listen for account changes.
-		this.meService.accountChange.takeUntil(this.destory).subscribe(() => {
+		this.accountService.accountChange.takeUntil(this.destory).subscribe(() => {
 			this.refreshPageData();
 		});
 	}

@@ -12,9 +12,9 @@ import { Component, OnInit } from '@angular/core';
 import { ActivityService } from 'src/app/services/activity.service';
 import { Activity } from 'src/app/models/activity.model';
 import { ReportService } from 'src/app/services/report.service';
-import { MeService } from 'src/app/services/me.service';
 import { Subject } from 'rxjs';
 import { Title } from '@angular/platform-browser';
+import { AccountService } from 'src/app/services/account.service';
 
 @Component({
 	selector: 'app-dashboard-summary',
@@ -144,7 +144,7 @@ export class SummaryComponent implements OnInit {
 	//
 	// Constructor
 	//
-	constructor(public activityService: ActivityService, public reportService: ReportService, public meService: MeService, private titleService: Title) { }
+	constructor(public activityService: ActivityService, public reportService: ReportService, public accountService: AccountService, private titleService: Title) { }
 
 	//
 	// ngOnInit
@@ -157,7 +157,7 @@ export class SummaryComponent implements OnInit {
 		this.refreshPage();
 
 		// Listen for account changes.
-		this.meService.accountChange.takeUntil(this.destory).subscribe(() => {
+		this.accountService.accountChange.takeUntil(this.destory).subscribe(() => {
 			this.refreshPage();
 		});
 	}
