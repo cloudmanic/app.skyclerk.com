@@ -1,0 +1,55 @@
+//
+// Date: 2019-09-20
+// Author: Spicer Matthews (spicer@skyclerk.com)
+// Copyright: 2019 Cloudmanic Labs, LLC. All rights reserved.
+//
+
+import { map } from "rxjs/operators";
+import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { environment } from 'src/environments/environment';
+import { Observable } from 'rxjs';
+import { Account } from '../models/account.model';
+
+@Injectable({
+	providedIn: 'root'
+})
+
+export class AccountService {
+	public activeAccount: Account = new Account();
+
+	//
+	// Constructor
+	//
+	constructor(private http: HttpClient) {
+		this.setActiveAccount();
+	}
+
+	//
+	// Get the active account.
+	//
+	getActiveAccount(): Account {
+		return this.activeAccount;
+	}
+
+	//
+	// Set active account.
+	//
+	setActiveAccount() {
+		// Get the active account.
+		this.getAccount().subscribe(res => {
+			this.activeAccount = res;
+		});
+	}
+
+	//
+	// Get by ID
+	//
+	getAccount(): Observable<Account> {
+		let accountId = localStorage.getItem('account_id');
+		let url = `${environment.app_server}/api/v3/${accountId}/account`;
+		return this.http.get<Account>(url).pipe(map(res => new Account().deserialize(res)));
+	}
+}
+
+/* End File */

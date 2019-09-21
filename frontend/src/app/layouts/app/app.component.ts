@@ -11,6 +11,7 @@ import { Me } from 'src/app/models/me.model';
 import { Router } from '@angular/router';
 import { Account } from 'src/app/models/account.model';
 import { ReportService, PnlCurrentYear } from 'src/app/services/report.service';
+import { AccountService } from 'src/app/services/account.service';
 
 @Component({
 	selector: 'app-layouts-app',
@@ -25,7 +26,7 @@ export class AppComponent implements OnInit {
 	//
 	// Constructor.
 	//
-	constructor(public meService: MeService, public router: Router, public reportService: ReportService) { }
+	constructor(public meService: MeService, public accountService: AccountService, public router: Router, public reportService: ReportService) { }
 
 	//
 	// NgOnInit
@@ -67,6 +68,9 @@ export class AppComponent implements OnInit {
 		localStorage.setItem('account_id', account.Id.toString());
 		this.account = account;
 		this.accountToggle = false;
+
+		// Reset the current account.
+		this.accountService.setActiveAccount();
 
 		// Tell the rest of the app the account switched.
 		this.meService.accountChange.emit(account.Id);

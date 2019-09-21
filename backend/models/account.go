@@ -20,12 +20,14 @@ type Account struct {
 	UpdatedAt    time.Time `sql:"not null" json:"-"`
 	OwnerId      uint      `sql:"not null" json:"owner_id"`
 	Name         string    `sql:"not null" json:"name"`
-	Address      string    `sql:"not null;type:TEXT" json:"_"`
-	City         string    `sql:"not null" json:"_"`
-	State        string    `sql:"not null" json:"_"`
-	Zip          string    `sql:"not null" json:"_"`
-	Country      string    `sql:"not null" json:"_"`
-	LastActivity time.Time `sql:"not null" json:"_"`
+	Address      string    `sql:"not null;type:TEXT" json:"-"`
+	City         string    `sql:"not null" json:"-"`
+	State        string    `sql:"not null" json:"-"`
+	Zip          string    `sql:"not null" json:"-"`
+	Country      string    `sql:"not null" json:"-"`
+	Locale       string    `sql:"not null;default:'en-US'" json:"locale"` // BCP 47 language tag
+	Currency     string    `sql:"not null;default:'USD'" json:"currency"` // The ISO 4217 currency code, such as USD for the US dollar and EUR for the euro.
+	LastActivity time.Time `sql:"not null" json:"-"`
 }
 
 //

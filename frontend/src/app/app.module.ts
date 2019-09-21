@@ -10,6 +10,7 @@ import { AgmCoreModule } from '@agm/core';
 // Pipes
 import { CallbackPipe } from './pipes/callback.pipe';
 import { SafeHtmlPipe } from './pipes/safe-html.pipe';
+import { CurrencyFormatPipe } from './pipes/currency-format.pipe';
 
 // Services
 import { MeService } from './services/me.service';
@@ -19,6 +20,7 @@ import { TokenInterceptor } from './services/token.interceptor';
 import { ReportService } from './services/report.service';
 import { ContactService } from './services/contact.service';
 import { ActivityService } from './services/activity.service';
+import { AccountService } from './services/account.service';
 
 // Components
 import { AppComponent } from './app.component';
@@ -68,6 +70,7 @@ import { AddComponent as SettingsUsersAdd } from './settings/users/add/add.compo
 	declarations: [
 		CallbackPipe,
 		SafeHtmlPipe,
+		CurrencyFormatPipe,
 		AppComponent,
 		LoginComponent,
 		LayoutAuthComponent,
@@ -125,6 +128,7 @@ import { AddComponent as SettingsUsersAdd } from './settings/users/add/add.compo
 		UserService,
 		AuthService,
 		ReportService,
+		AccountService,
 		ContactService,
 		ActivityService,
 		{ provide: HTTP_INTERCEPTORS, useClass: TokenInterceptor, multi: true },

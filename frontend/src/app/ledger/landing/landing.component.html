@@ -32,17 +32,17 @@
               <ul class="prices">
                 <li class="price">
                   <p>Profit &amp; Loss</p>
-                  <strong>{{ plSummary.Profit | currency:'USD':true:'1.0-0' }}</strong>
+                  <strong>{{ plSummary.Profit | currency:'USD':'symbol':'1.0-0' }}</strong>
                 </li>
 
                 <li class="price price-green">
                   <p>Total Income</p>
-                  <strong>{{ plSummary.Income | currency:'USD':true:'1.0-0' }}</strong>
+                  <strong>{{ plSummary.Income | currency:'USD':'symbol':'1.0-0' }}</strong>
                 </li>
 
                 <li class="price price-red">
                   <p>Total Expense</p>
-                  <strong>{{ plSummary.Expense | currency:'USD':true:'1.0-0' }}</strong>
+                  <strong>{{ plSummary.Expense | currency:'USD':'symbol':'1.0-0' }}</strong>
                 </li>
               </ul>
 
@@ -112,7 +112,7 @@
                     </td>
 
                     <td>
-                      <small [ngClass]="{ green: (row.Amount > 0) }">{{ row.Amount | currency }}</small>
+                      <small [ngClass]="{ green: (row.Amount > 0) }">{{ row.Amount | currencyFormat }}</small>
                     </td>
 
                     <td>

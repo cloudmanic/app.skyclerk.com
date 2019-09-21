@@ -8,8 +8,12 @@
 import { Serializable } from './serializable.model';
 
 export class Account implements Serializable {
-	Id: number;
-	Name: string;
+	Id: number = 0;
+	Name: string = "";
+	OwnerId: number = 0;
+	Locale: string = "en-US";
+	Currency: string = "USD";
+
 
 	//
 	// Json to Object.
@@ -17,6 +21,9 @@ export class Account implements Serializable {
 	deserialize(json: Object): this {
 		this.Id = json["id"];
 		this.Name = json["name"];
+		this.OwnerId = json["owner_id"];
+		this.Locale = json["locale"];
+		this.Currency = json["currency"];
 		return this;
 	}
 
@@ -26,7 +33,10 @@ export class Account implements Serializable {
 	serialize(obj: Account): Object {
 		let rt = {
 			id: obj.Id,
-			name: obj.Name
+			name: obj.Name,
+			owner_id: obj.OwnerId,
+			locale: obj.Locale,
+			currency: obj.Currency,
 		}
 		return rt;
 	}

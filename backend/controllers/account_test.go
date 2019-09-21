@@ -23,7 +23,7 @@ import (
 //
 func TestGetAccount01(t *testing.T) {
 	// Start the db connection.
-	db, dbName, _ := models.NewTestDB("")
+	db, dbName, _ := models.NewTestDB("testing_db")
 	defer models.TestingTearDown(db, dbName)
 
 	// Create controller
@@ -74,6 +74,8 @@ func TestGetAccount01(t *testing.T) {
 	st.Expect(t, result.Id, uint(33))
 	st.Expect(t, result.OwnerId, uint(1))
 	st.Expect(t, result.Name, account1.Name)
+	st.Expect(t, result.Locale, "en-US")
+	st.Expect(t, result.Currency, "USD")
 }
 
 /* End File */
