@@ -53,13 +53,21 @@ func (t *Controller) UpdateAccount(c *gin.Context) {
 		return
 	}
 
+	// We must be the account owner to proceed
+	if account.OwnerId != uint(userId) {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "You must be the account owner."})
+		return
+	}
+
 	// we are only allowed to update certain things.
 	body, _ := ioutil.ReadAll(c.Request.Body)
 	name := gjson.Get(string(body), "name").String()
 	currency := gjson.Get(string(body), "currency").String()
 	locale := gjson.Get(string(body), "locale").String()
+	ownerId := gjson.Get(string(body), "owner_id").Int()
 
 	// Update object
+	account.OwnerId = uint(ownerId)
 	account.Name = strings.Trim(name, " ")
 	account.Locale = strings.Trim(locale, " ")
 	account.Currency = strings.Trim(currency, " ")

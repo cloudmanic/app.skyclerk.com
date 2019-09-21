@@ -52,7 +52,30 @@ func (a Account) Validate(db Datastore, action string, userId uint, accountId ui
 		validation.Field(&a.Currency,
 			validation.Required.Error("The currency field is required."),
 		),
+
+		// OwnerId
+		validation.Field(&a.OwnerId,
+			validation.Required.Error("The owner_id field is required."),
+			validation.By(func(value interface{}) error { return db.ValidateOwnerId(a, accountId, objId, action) }),
+		),
 	)
+}
+
+//
+// ValidateOwnerId - is this a valid owner id?
+//
+func (db *DB) ValidateOwnerId(acct Account, accountId uint, objId uint, action string) error {
+	// Default error message
+	const errMsg = "Invalid owner_id was posted."
+
+	// Make sure this user is part of the account.
+	c := AcctToUsers{}
+	if db.New().Where("acct_id = ? AND user_id = ?", accountId, acct.OwnerId).First(&c).RecordNotFound() {
+		return errors.New(errMsg)
+	}
+
+	// All good in the hood
+	return nil
 }
 
 //

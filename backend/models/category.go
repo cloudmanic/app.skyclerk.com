@@ -61,7 +61,7 @@ func (a Category) Validate(db Datastore, action string, userId uint, accountId u
 }
 
 //
-// Validate Duplicate Name
+// ValidateDuplicateCategoryName - Validate Duplicate Name
 //
 func (db *DB) ValidateDuplicateCategoryName(cat Category, accountId uint, objId uint, action string) error {
 

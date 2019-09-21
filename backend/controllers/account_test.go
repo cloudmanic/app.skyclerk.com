@@ -158,7 +158,7 @@ func TestUpdateAccount01(t *testing.T) {
 //
 func TestUpdateAccount02(t *testing.T) {
 	// Start the db connection.
-	db, dbName, _ := models.NewTestDB("testing_db")
+	db, dbName, _ := models.NewTestDB("")
 	defer models.TestingTearDown(db, dbName)
 
 	// Create controller
@@ -205,6 +205,229 @@ func TestUpdateAccount02(t *testing.T) {
 	// Test results
 	st.Expect(t, err, nil)
 	st.Expect(t, w.Body.String(), `{"errors":{"currency":"The currency field is required.","locale":"The locale field is required.","name":"The name field is required."}}`)
+}
+
+//
+// TestUpdateAccount03 - Not Owner - errors
+//
+func TestUpdateAccount03(t *testing.T) {
+	// Start the db connection.
+	db, dbName, _ := models.NewTestDB("")
+	defer models.TestingTearDown(db, dbName)
+
+	// Create controller
+	c := &Controller{}
+	c.SetDB(db)
+
+	// Setup test data
+	user := test.GetRandomUser(33)
+	db.Save(&user)
+
+	account1 := test.GetRandomAccount(33)
+	account1.OwnerId = uint(55)
+	db.Save(&account1)
+	db.Save(&models.AcctToUsers{AcctId: account1.Id, UserId: user.Id})
+
+	// Change account data.
+	account1.Name = ""
+	account1.Currency = ""
+	account1.Locale = ""
+
+	// Get JSON
+	putStr, _ := json.Marshal(account1)
+
+	// Setup request
+	req, _ := http.NewRequest("PUT", "/api/v3/33/account", bytes.NewBuffer(putStr))
+
+	// Setup writer.
+	w := httptest.NewRecorder()
+	gin.SetMode("release")
+	gin.DisableConsoleColor()
+
+	r := gin.New()
+	r.Use(func(c *gin.Context) {
+		c.Set("accountId", 33)
+		c.Set("userId", int(user.Id))
+	})
+	r.PUT("/api/v3/33/account", c.UpdateAccount)
+	r.ServeHTTP(w, req)
+
+	// Test results
+	st.Expect(t, w.Body.String(), `{"error":"You must be the account owner."}`)
+}
+
+//
+// TestUpdateAccount04 - Get updating account owner
+//
+func TestUpdateAccount04(t *testing.T) {
+	// Start the db connection.
+	db, dbName, _ := models.NewTestDB("")
+	defer models.TestingTearDown(db, dbName)
+
+	// Create controller
+	c := &Controller{}
+	c.SetDB(db)
+
+	// Setup test data
+	user1 := test.GetRandomUser(33)
+	user2 := test.GetRandomUser(33)
+	user3 := test.GetRandomUser(33)
+	db.Save(&user1)
+	db.Save(&user2)
+	db.Save(&user3)
+
+	account1 := test.GetRandomAccount(33)
+	account1.OwnerId = user1.Id
+	db.Save(&account1)
+	db.Save(&models.AcctToUsers{AcctId: account1.Id, UserId: user1.Id})
+	db.Save(&models.AcctToUsers{AcctId: account1.Id, UserId: user2.Id})
+	db.Save(&models.AcctToUsers{AcctId: account1.Id, UserId: user3.Id})
+
+	// Change account data.
+	account1.OwnerId = user3.Id
+
+	// Get JSON
+	putStr, _ := json.Marshal(account1)
+
+	// Setup request
+	req, _ := http.NewRequest("PUT", "/api/v3/33/account", bytes.NewBuffer(putStr))
+
+	// Setup writer.
+	w := httptest.NewRecorder()
+	gin.SetMode("release")
+	gin.DisableConsoleColor()
+
+	r := gin.New()
+	r.Use(func(c *gin.Context) {
+		c.Set("accountId", 33)
+		c.Set("userId", int(user1.Id))
+	})
+	r.PUT("/api/v3/33/account", c.UpdateAccount)
+	r.ServeHTTP(w, req)
+
+	// Grab result and convert to strut
+	result := models.Account{}
+	err := json.Unmarshal([]byte(w.Body.String()), &result)
+
+	// Test results
+	st.Expect(t, err, nil)
+	st.Expect(t, result.Id, uint(33))
+	st.Expect(t, result.OwnerId, uint(3))
+
+	// Check database
+	a := models.Account{}
+	db.New().Find(&a, 33)
+
+	// Test results.
+	st.Expect(t, a.Id, uint(33))
+	st.Expect(t, a.OwnerId, uint(3))
+}
+
+//
+// TestUpdateAccount05 - Get updating account owner - error
+//
+func TestUpdateAccount05(t *testing.T) {
+	// Start the db connection.
+	db, dbName, _ := models.NewTestDB("")
+	defer models.TestingTearDown(db, dbName)
+
+	// Create controller
+	c := &Controller{}
+	c.SetDB(db)
+
+	// Setup test data
+	user1 := test.GetRandomUser(33)
+	user2 := test.GetRandomUser(33)
+	user3 := test.GetRandomUser(33)
+	db.Save(&user1)
+	db.Save(&user2)
+	db.Save(&user3)
+
+	account1 := test.GetRandomAccount(33)
+	account1.OwnerId = user1.Id
+	db.Save(&account1)
+	db.Save(&models.AcctToUsers{AcctId: account1.Id, UserId: user1.Id})
+	db.Save(&models.AcctToUsers{AcctId: account1.Id, UserId: user2.Id})
+	db.Save(&models.AcctToUsers{AcctId: uint(44), UserId: user3.Id})
+
+	// Change account data.
+	account1.OwnerId = user3.Id
+
+	// Get JSON
+	putStr, _ := json.Marshal(account1)
+
+	// Setup request
+	req, _ := http.NewRequest("PUT", "/api/v3/33/account", bytes.NewBuffer(putStr))
+
+	// Setup writer.
+	w := httptest.NewRecorder()
+	gin.SetMode("release")
+	gin.DisableConsoleColor()
+
+	r := gin.New()
+	r.Use(func(c *gin.Context) {
+		c.Set("accountId", 33)
+		c.Set("userId", int(user1.Id))
+	})
+	r.PUT("/api/v3/33/account", c.UpdateAccount)
+	r.ServeHTTP(w, req)
+
+	// Test results
+	st.Expect(t, w.Body.String(), `{"errors":{"owner_id":"Invalid owner_id was posted."}}`)
+}
+
+//
+// TestUpdateAccount06 - Get updating account owner - error, more than one field.
+//
+func TestUpdateAccount06(t *testing.T) {
+	// Start the db connection.
+	db, dbName, _ := models.NewTestDB("")
+	defer models.TestingTearDown(db, dbName)
+
+	// Create controller
+	c := &Controller{}
+	c.SetDB(db)
+
+	// Setup test data
+	user1 := test.GetRandomUser(33)
+	user2 := test.GetRandomUser(33)
+	user3 := test.GetRandomUser(33)
+	db.Save(&user1)
+	db.Save(&user2)
+	db.Save(&user3)
+
+	account1 := test.GetRandomAccount(33)
+	account1.OwnerId = user1.Id
+	account1.Name = ""
+	db.Save(&account1)
+	db.Save(&models.AcctToUsers{AcctId: account1.Id, UserId: user1.Id})
+	db.Save(&models.AcctToUsers{AcctId: account1.Id, UserId: user2.Id})
+	db.Save(&models.AcctToUsers{AcctId: uint(44), UserId: user3.Id})
+
+	// Change account data.
+	account1.OwnerId = user3.Id
+
+	// Get JSON
+	putStr, _ := json.Marshal(account1)
+
+	// Setup request
+	req, _ := http.NewRequest("PUT", "/api/v3/33/account", bytes.NewBuffer(putStr))
+
+	// Setup writer.
+	w := httptest.NewRecorder()
+	gin.SetMode("release")
+	gin.DisableConsoleColor()
+
+	r := gin.New()
+	r.Use(func(c *gin.Context) {
+		c.Set("accountId", 33)
+		c.Set("userId", int(user1.Id))
+	})
+	r.PUT("/api/v3/33/account", c.UpdateAccount)
+	r.ServeHTTP(w, req)
+
+	// Test results
+	st.Expect(t, w.Body.String(), `{"errors":{"name":"The name field is required.","owner_id":"Invalid owner_id was posted."}}`)
 }
 
 /* End File */

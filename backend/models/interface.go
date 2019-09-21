@@ -23,6 +23,7 @@ type Datastore interface {
 
 	// Account
 	GetAccountById(id uint) (Account, error)
+	ValidateOwnerId(acct Account, accountId uint, objId uint, action string) error
 
 	// Application
 	ValidateClientIdGrantType(clientId string, grantType string) (Application, error)
