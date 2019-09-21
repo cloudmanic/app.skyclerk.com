@@ -1,11 +1,11 @@
 <div class="tabs-head">
   <nav class="tabs-nav">
     <ul>
-      <li [ngClass]="{ current: (current == 'account') }">
+      <li [ngClass]="{ current: (current == 'account') }" *ngIf="isOwner">
         <a routerLink="/settings/account">Account</a>
       </li>
 
-      <li [ngClass]="{ current: (current == 'billing') }">
+      <li [ngClass]="{ current: (current == 'billing') }" *ngIf="isOwner">
         <a routerLink="/settings/billing">Billing</a>
       </li>
 

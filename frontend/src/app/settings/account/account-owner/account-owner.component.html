@@ -5,7 +5,7 @@
   </div>
 
   <div class="section__body">
-    <p>Spicer Matthews</p>
+    <p>{{ userName }}</p>
   </div>
 </div>
 
@@ -17,18 +17,16 @@
 
   <div class="section__body">
     <div class="form-settings form-settings--select form-settings--select-big">
-      <form action="?" method="post">
+
+      <form (submit)="onSave()">
         <div class="form-row">
           <label class="form-label hidden">Account Owner</label>
 
           <div class="select">
-            <select>
-              <option>Option 1</option>
-              <option>Option 2</option>
-              <option>Option 3</option>
-              <option>Option 4</option>
+            <select name="OwnerId" [(ngModel)]="account.OwnerId" (change)="onChange()">
+              <option value="{{ row.Id }}" *ngFor="let row of users">{{ row.FirstName }} {{ row.LastName }}</option>
             </select>
-            <span class="select-value">Spicer Matthews</span>
+            <span class="select-value">{{ userName }}</span>
           </div>
         </div>
 
@@ -38,6 +36,7 @@
           <a class="red-txt" (click)="editModeToggle()"><strong>Cancel</strong></a>
         </div>
       </form>
+
     </div>
   </div>
 </div>
