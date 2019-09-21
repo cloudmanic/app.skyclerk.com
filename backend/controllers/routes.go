@@ -29,6 +29,7 @@ func (t *Controller) DoRoutes(r *gin.Engine) {
 
 		// Accounts
 		apiV1.GET("/:account/account", t.GetAccount)
+		apiV1.PUT("/:account/account", t.UpdateAccount)
 
 		// users
 		apiV1.GET("/:account/users", t.GetUsers)

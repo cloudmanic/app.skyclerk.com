@@ -11,6 +11,8 @@ package models
 import (
 	"errors"
 	"time"
+
+	validation "github.com/go-ozzo/ozzo-validation"
 )
 
 // Account struct
@@ -28,6 +30,29 @@ type Account struct {
 	Locale       string    `sql:"not null;default:'en-US'" json:"locale"` // BCP 47 language tag
 	Currency     string    `sql:"not null;default:'USD'" json:"currency"` // The ISO 4217 currency code, such as USD for the US dollar and EUR for the euro.
 	LastActivity time.Time `sql:"not null" json:"-"`
+}
+
+//
+// Validate for this model.
+//
+func (a Account) Validate(db Datastore, action string, userId uint, accountId uint, objId uint) error {
+	return validation.ValidateStruct(&a,
+		// Name
+		validation.Field(&a.Name,
+			validation.Required.Error("The name field is required."),
+			validation.Length(1, 25).Error("The name is too long."),
+		),
+
+		// Locale
+		validation.Field(&a.Locale,
+			validation.Required.Error("The locale field is required."),
+		),
+
+		// Currency
+		validation.Field(&a.Currency,
+			validation.Required.Error("The currency field is required."),
+		),
+	)
 }
 
 //

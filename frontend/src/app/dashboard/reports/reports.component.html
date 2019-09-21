@@ -191,14 +191,14 @@
 
                           <tr *ngFor="let row of nameAmount | callback: incomeEntries">
                             <td>{{ row.Name }}</td>
-                            <td>{{ row.Amount | currency }}</td>
+                            <td>{{ row.Amount | currencyFormat }}</td>
                           </tr>
 
                           <tr>
                             <td>&nbsp;</td>
 
                             <td>
-                              <strong>{{ incomeTotal | currency }}</strong>
+                              <strong>{{ incomeTotal | currencyFormat }}</strong>
                             </td>
                           </tr>
                         </table>
@@ -212,14 +212,14 @@
 
                           <tr *ngFor="let row of nameAmount | callback: expenseEntries">
                             <td>{{ row.Name }}</td>
-                            <td>{{ row.Amount | currency }}</td>
+                            <td>{{ row.Amount | currencyFormat }}</td>
                           </tr>
 
                           <tr>
                             <td>&nbsp;</td>
 
                             <td>
-                              <strong>{{ expenseTotal | currency }}</strong>
+                              <strong>{{ expenseTotal | currencyFormat }}</strong>
                             </td>
                           </tr>
 
@@ -229,7 +229,7 @@
                             </td>
 
                             <td>
-                              <strong>{{ (incomeTotal - expenseTotal) | currency }}</strong>
+                              <strong>{{ (incomeTotal - expenseTotal) | currencyFormat }}</strong>
                             </td>
                           </tr>
                         </table>

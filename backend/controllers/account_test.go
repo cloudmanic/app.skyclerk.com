@@ -7,6 +7,7 @@
 package controllers
 
 import (
+	"bytes"
 	"encoding/json"
 	"net/http"
 	"net/http/httptest"
@@ -23,7 +24,7 @@ import (
 //
 func TestGetAccount01(t *testing.T) {
 	// Start the db connection.
-	db, dbName, _ := models.NewTestDB("testing_db")
+	db, dbName, _ := models.NewTestDB("")
 	defer models.TestingTearDown(db, dbName)
 
 	// Create controller
@@ -76,6 +77,134 @@ func TestGetAccount01(t *testing.T) {
 	st.Expect(t, result.Name, account1.Name)
 	st.Expect(t, result.Locale, "en-US")
 	st.Expect(t, result.Currency, "USD")
+}
+
+//
+// TestUpdateAccount01 - update account
+//
+func TestUpdateAccount01(t *testing.T) {
+	// Start the db connection.
+	db, dbName, _ := models.NewTestDB("")
+	defer models.TestingTearDown(db, dbName)
+
+	// Create controller
+	c := &Controller{}
+	c.SetDB(db)
+
+	// Setup test data
+	user := test.GetRandomUser(33)
+	db.Save(&user)
+
+	account1 := test.GetRandomAccount(33)
+	account1.OwnerId = user.Id
+	db.Save(&account1)
+	db.Save(&models.AcctToUsers{AcctId: account1.Id, UserId: user.Id})
+
+	account2 := test.GetRandomAccount(34)
+	account2.OwnerId = user.Id
+	db.Save(&account2)
+	db.Save(&models.AcctToUsers{AcctId: account2.Id, UserId: user.Id})
+
+	// Change account data.
+	account1.Name = "Unit Test"
+	account1.Currency = "BRL"
+	account1.Locale = "pt-BR"
+
+	// Get JSON
+	putStr, _ := json.Marshal(account1)
+
+	// Setup request
+	req, _ := http.NewRequest("PUT", "/api/v3/33/account", bytes.NewBuffer(putStr))
+
+	// Setup writer.
+	w := httptest.NewRecorder()
+	gin.SetMode("release")
+	gin.DisableConsoleColor()
+
+	r := gin.New()
+	r.Use(func(c *gin.Context) {
+		c.Set("accountId", 33)
+		c.Set("userId", int(user.Id))
+	})
+	r.PUT("/api/v3/33/account", c.UpdateAccount)
+	r.ServeHTTP(w, req)
+
+	// Grab result and convert to strut
+	result := models.Account{}
+	err := json.Unmarshal([]byte(w.Body.String()), &result)
+
+	// Test results
+	st.Expect(t, err, nil)
+	st.Expect(t, result.Id, uint(33))
+	st.Expect(t, result.OwnerId, uint(1))
+	st.Expect(t, result.Name, "Unit Test")
+	st.Expect(t, result.Locale, "pt-BR")
+	st.Expect(t, result.Currency, "BRL")
+
+	// Check database
+	a := models.Account{}
+	db.New().Find(&a, 33)
+
+	// Test results.
+	st.Expect(t, a.Id, uint(33))
+	st.Expect(t, a.OwnerId, uint(1))
+	st.Expect(t, a.Name, "Unit Test")
+	st.Expect(t, a.Locale, "pt-BR")
+	st.Expect(t, a.Currency, "BRL")
+}
+
+//
+// TestUpdateAccount02 - update account - errors
+//
+func TestUpdateAccount02(t *testing.T) {
+	// Start the db connection.
+	db, dbName, _ := models.NewTestDB("testing_db")
+	defer models.TestingTearDown(db, dbName)
+
+	// Create controller
+	c := &Controller{}
+	c.SetDB(db)
+
+	// Setup test data
+	user := test.GetRandomUser(33)
+	db.Save(&user)
+
+	account1 := test.GetRandomAccount(33)
+	account1.OwnerId = user.Id
+	db.Save(&account1)
+	db.Save(&models.AcctToUsers{AcctId: account1.Id, UserId: user.Id})
+
+	// Change account data.
+	account1.Name = ""
+	account1.Currency = ""
+	account1.Locale = ""
+
+	// Get JSON
+	putStr, _ := json.Marshal(account1)
+
+	// Setup request
+	req, _ := http.NewRequest("PUT", "/api/v3/33/account", bytes.NewBuffer(putStr))
+
+	// Setup writer.
+	w := httptest.NewRecorder()
+	gin.SetMode("release")
+	gin.DisableConsoleColor()
+
+	r := gin.New()
+	r.Use(func(c *gin.Context) {
+		c.Set("accountId", 33)
+		c.Set("userId", int(user.Id))
+	})
+	r.PUT("/api/v3/33/account", c.UpdateAccount)
+	r.ServeHTTP(w, req)
+
+	// Grab result and convert to strut
+	result := models.Account{}
+	err := json.Unmarshal([]byte(w.Body.String()), &result)
+
+	// Test results
+	st.Expect(t, err, nil)
+	st.Expect(t, w.Body.String(), `{"errors":{"currency":"The currency field is required.","locale":"The locale field is required.","name":"The name field is required."}}`)
 }
 
 /* End File */

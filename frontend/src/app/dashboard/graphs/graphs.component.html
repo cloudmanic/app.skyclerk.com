@@ -203,7 +203,7 @@
 
                           <tr *ngFor="let row of nameAmount">
                             <td>{{ row.Name }}</td>
-                            <td>{{ row.Amount | currency }}</td>
+                            <td>{{ row.Amount | currencyFormat }}</td>
                           </tr>
                         </table>
                       </div>

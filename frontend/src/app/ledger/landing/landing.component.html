@@ -32,17 +32,17 @@
               <ul class="prices">
                 <li class="price">
                   <p>Profit &amp; Loss</p>
-                  <strong>{{ plSummary.Profit | currency:'USD':'symbol':'1.0-0' }}</strong>
+                  <strong>{{ plSummary.Profit | currencyFormat }}</strong>
                 </li>
 
                 <li class="price price-green">
                   <p>Total Income</p>
-                  <strong>{{ plSummary.Income | currency:'USD':'symbol':'1.0-0' }}</strong>
+                  <strong>{{ plSummary.Income | currencyFormat }}</strong>
                 </li>
 
                 <li class="price price-red">
                   <p>Total Expense</p>
-                  <strong>{{ plSummary.Expense | currency:'USD':'symbol':'1.0-0' }}</strong>
+                  <strong>{{ plSummary.Expense | currencyFormat }}</strong>
                 </li>
               </ul>
 

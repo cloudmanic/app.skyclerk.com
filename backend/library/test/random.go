@@ -42,6 +42,8 @@ func GetRandomAccount(accountId int64) models.Account {
 		State:        state[rand.Intn(len(state))],
 		Zip:          zip[rand.Intn(len(zip))],
 		Country:      "USA",
+		Currency:     "USD",
+		Locale:       "en-US",
 		LastActivity: dates[rand.Intn(len(dates))],
 		UpdatedAt:    time.Now(),
 		CreatedAt:    time.Now(),

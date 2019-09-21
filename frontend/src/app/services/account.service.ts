@@ -10,6 +10,7 @@ import { HttpClient } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
 import { Observable } from 'rxjs';
 import { Account } from '../models/account.model';
+import { TrackService } from './track.service';
 
 @Injectable({
 	providedIn: 'root'
@@ -21,7 +22,7 @@ export class AccountService {
 	//
 	// Constructor
 	//
-	constructor(private http: HttpClient) {
+	constructor(private http: HttpClient, private trackService: TrackService) {
 		this.setActiveAccount();
 	}
 
@@ -49,6 +50,24 @@ export class AccountService {
 		let accountId = localStorage.getItem('account_id');
 		let url = `${environment.app_server}/api/v3/${accountId}/account`;
 		return this.http.get<Account>(url).pipe(map(res => new Account().deserialize(res)));
+	}
+
+	//
+	// Update the account update
+	//
+	update(acct: Account): Observable<Account> {
+		let accountId = localStorage.getItem('account_id');
+		acct.Id = Number(accountId);
+
+		return this.http.put<Account>(`${environment.app_server}/api/v3/${accountId}/account`, new Account().serialize(acct))
+			.pipe(map(res => {
+				let a = new Account().deserialize(res);
+
+				// Track event.
+				this.trackService.event('account-update', { app: "web", "accountId": accountId });
+
+				return a;
+			}));
 	}
 }
 

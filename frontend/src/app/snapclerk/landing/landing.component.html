@@ -48,7 +48,7 @@
                       </td>
                       <td rowspan=2>{{ row.CreatedAt | date:'shortDate' }}</td>
                       <td>{{ row.Contact }}</td>
-                      <td>{{ (row.Amount * -1) | currency }}</td>
+                      <td>{{ (row.Amount * -1) | currencyFormat }}</td>
                       <td>
                         <span class="label" *ngIf="row.Status == 'Pending'">Pending</span>
                         <span class="label label-green" *ngIf="row.Status == 'Processed'">Processed</span>
