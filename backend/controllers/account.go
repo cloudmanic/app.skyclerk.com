@@ -96,4 +96,35 @@ func (t *Controller) UpdateAccount(c *gin.Context) {
 	response.RespondUpdated(c, accountNew, nil)
 }
 
+//
+// ClearAccount - Clear account.
+//
+func (t *Controller) ClearAccount(c *gin.Context) {
+	// Make sure the UserId is correct.
+	userId := c.MustGet("userId").(int)
+
+	// Get account id
+	accountId := uint(c.MustGet("accountId").(int))
+
+	// Get account.
+	account, err := t.db.GetAccountById(accountId)
+
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Account not found."})
+		return
+	}
+
+	// We must be the account owner to proceed
+	if account.OwnerId != uint(userId) {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "You must be the account owner."})
+		return
+	}
+
+	// Clear the account.
+	t.db.ClearAccount(account.Id)
+
+	// Return happy.
+	c.JSON(http.StatusNoContent, nil)
+}
+
 /* End File */

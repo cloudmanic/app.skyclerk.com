@@ -92,4 +92,37 @@ func (t *DB) GetAccountById(id uint) (Account, error) {
 	return u, nil
 }
 
+//
+// ClearAccount
+//
+func (t *DB) ClearAccount(accountId uint) {
+	// Ledger Ids.
+	var ledgerIds []uint
+
+	// Clear labels to ledger.
+	l := []Ledger{}
+	t.New().Select("LedgerId").Where("LedgerAccountId = ?", accountId).Find(&l)
+
+	// Loop through and build ledger id list
+	for _, row := range l {
+		ledgerIds = append(ledgerIds, row.Id)
+	}
+
+	// Delete look up tables.
+	t.New().Where("FilesToLedgerLedgerId IN (?)", ledgerIds).Delete(FilesToLedger{})
+	t.New().Where("LabelsToLedgerLedgerId IN (?)", ledgerIds).Delete(LabelsToLedger{})
+
+	// Clear database tables.
+	t.New().Exec("DELETE FROM activities WHERE account_id = ?", accountId)
+	t.New().Exec("DELETE FROM invites WHERE account_id = ?", accountId)
+	t.New().Exec("DELETE FROM Labels WHERE LabelsAccountId = ?", accountId)
+	t.New().Exec("DELETE FROM Ledger WHERE LedgerAccountId = ?", accountId)
+	t.New().Exec("DELETE FROM Files WHERE FilesAccountId = ?", accountId)
+	t.New().Exec("DELETE FROM Contacts WHERE ContactsAccountId = ?", accountId)
+	t.New().Exec("DELETE FROM Categories WHERE CategoriesAccountId = ?", accountId)
+	t.New().Exec("DELETE FROM SnapClerk WHERE SnapClerkAccountId = ?", accountId)
+
+	// TODO(spicer): delete files at AWS too.
+}
+
 /* End File */

@@ -22,6 +22,7 @@ type Datastore interface {
 	GetQueryMetaData(noLimitCount int, params QueryParam) QueryMetaData
 
 	// Account
+	ClearAccount(accountId uint)
 	GetAccountById(id uint) (Account, error)
 	ValidateOwnerId(acct Account, accountId uint, objId uint, action string) error
 

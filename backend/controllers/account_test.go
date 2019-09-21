@@ -427,7 +427,136 @@ func TestUpdateAccount06(t *testing.T) {
 	r.ServeHTTP(w, req)
 
 	// Test results
+	st.Expect(t, w.Code, 404)
 	st.Expect(t, w.Body.String(), `{"errors":{"name":"The name field is required.","owner_id":"Invalid owner_id was posted."}}`)
+}
+
+//
+// TestClearAccount01 - Clear account.
+//
+func TestClearAccount01(t *testing.T) {
+	// Start the db connection.
+	db, dbName, _ := models.NewTestDB("testing_db")
+	defer models.TestingTearDown(db, dbName)
+
+	// Create controller
+	c := &Controller{}
+	c.SetDB(db)
+
+	// Setup test data
+	user1 := test.GetRandomUser(33)
+	user2 := test.GetRandomUser(33)
+	user3 := test.GetRandomUser(33)
+	db.Save(&user1)
+	db.Save(&user2)
+	db.Save(&user3)
+
+	account1 := test.GetRandomAccount(33)
+	account1.OwnerId = user1.Id
+	db.Save(&account1)
+	db.Save(&models.AcctToUsers{AcctId: account1.Id, UserId: user1.Id})
+	db.Save(&models.AcctToUsers{AcctId: account1.Id, UserId: user2.Id})
+	db.Save(&models.AcctToUsers{AcctId: uint(44), UserId: user3.Id})
+
+	// Create like 10 ledger entries.
+	for i := 0; i < 10; i++ {
+		l := test.GetRandomLedger(33)
+		db.LedgerCreate(&l)
+	}
+
+	// Create like 10 ledger entries. - Different account.
+	for i := 0; i < 10; i++ {
+		l := test.GetRandomLedger(34)
+		db.LedgerCreate(&l)
+	}
+
+	// Setup request
+	req, _ := http.NewRequest("POST", "/api/v3/33/account/clear", nil)
+
+	// Setup writer.
+	w := httptest.NewRecorder()
+	gin.SetMode("release")
+	gin.DisableConsoleColor()
+
+	r := gin.New()
+	r.Use(func(c *gin.Context) {
+		c.Set("accountId", 33)
+		c.Set("userId", int(user1.Id))
+	})
+	r.POST("/api/v3/33/account/clear", c.ClearAccount)
+	r.ServeHTTP(w, req)
+
+	// Get the ledger entries. There should not be any with account 33
+	l := []models.Ledger{}
+	db.Find(&l)
+	for _, row := range l {
+		st.Expect(t, (row.AccountId == uint(33)), false)
+	}
+
+	// Test results
+	st.Expect(t, w.Code, 204)
+	st.Expect(t, len(l), 10)
+}
+
+//
+// TestClearAccount02 - Clear account - not owner.
+//
+func TestClearAccount02(t *testing.T) {
+	// Start the db connection.
+	db, dbName, _ := models.NewTestDB("testing_db")
+	defer models.TestingTearDown(db, dbName)
+
+	// Create controller
+	c := &Controller{}
+	c.SetDB(db)
+
+	// Setup test data
+	user1 := test.GetRandomUser(33)
+	user2 := test.GetRandomUser(33)
+	user3 := test.GetRandomUser(33)
+	db.Save(&user1)
+	db.Save(&user2)
+	db.Save(&user3)
+
+	account1 := test.GetRandomAccount(33)
+	account1.OwnerId = user1.Id
+	db.Save(&account1)
+	db.Save(&models.AcctToUsers{AcctId: account1.Id, UserId: user1.Id})
+	db.Save(&models.AcctToUsers{AcctId: account1.Id, UserId: user2.Id})
+	db.Save(&models.AcctToUsers{AcctId: uint(44), UserId: user3.Id})
+
+	// Create like 5 ledger entries.
+	for i := 0; i < 5; i++ {
+		l := test.GetRandomLedger(33)
+		db.LedgerCreate(&l)
+	}
+
+	// Setup request
+	req, _ := http.NewRequest("POST", "/api/v3/33/account/clear", nil)
+
+	// Setup writer.
+	w := httptest.NewRecorder()
+	gin.SetMode("release")
+	gin.DisableConsoleColor()
+
+	r := gin.New()
+	r.Use(func(c *gin.Context) {
+		c.Set("accountId", 33)
+		c.Set("userId", int(user2.Id))
+	})
+	r.POST("/api/v3/33/account/clear", c.ClearAccount)
+	r.ServeHTTP(w, req)
+
+	// Test results
+	st.Expect(t, w.Code, 400)
+	st.Expect(t, w.Body.String(), `{"error":"You must be the account owner."}`)
+
+	// Get the ledger entries. There should not be any with account 33
+	l := []models.Ledger{}
+	db.Find(&l)
+
+	// Test results
+	st.Expect(t, len(l), 5)
 }
 
 /* End File */
