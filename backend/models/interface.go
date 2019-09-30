@@ -23,6 +23,7 @@ type Datastore interface {
 
 	// Account
 	ClearAccount(accountId uint)
+	DeleteAccount(accountId uint)
 	GetAccountById(id uint) (Account, error)
 	ValidateOwnerId(acct Account, accountId uint, objId uint, action string) error
 

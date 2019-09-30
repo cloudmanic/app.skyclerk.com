@@ -31,6 +31,7 @@ func (t *Controller) DoRoutes(r *gin.Engine) {
 		apiV1.GET("/:account/account", t.GetAccount)
 		apiV1.PUT("/:account/account", t.UpdateAccount)
 		apiV1.POST("/:account/account/clear", t.ClearAccount)
+		apiV1.POST("/:account/account/delete", t.DeleteAccount)
 
 		// users
 		apiV1.GET("/:account/users", t.GetUsers)

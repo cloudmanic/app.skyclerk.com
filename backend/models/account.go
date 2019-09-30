@@ -125,4 +125,29 @@ func (t *DB) ClearAccount(accountId uint) {
 	// TODO(spicer): delete files at AWS too.
 }
 
+//
+// DeleteAccount
+//
+func (t *DB) DeleteAccount(accountId uint) {
+	// Clear users not used else where.
+	a2u := []AcctToUsers{}
+	t.New().Where("acct_id = ?", accountId).Find(&a2u)
+
+	// Loop through users delete if needed
+	for _, row := range a2u {
+		u := []AcctToUsers{}
+		t.New().Where("user_id = ?", row.UserId).Find(&u)
+
+		if len(u) == 1 {
+			t.New().Exec("DELETE FROM users WHERE id = ?", row.UserId)
+			t.New().Exec("DELETE FROM sessions WHERE user_id = ?", row.UserId)
+		}
+	}
+
+	// Clear database tables.
+	t.New().Exec("DELETE FROM acct_to_users WHERE acct_id = ?", accountId)
+	t.New().Exec("DELETE FROM acct_to_billings WHERE acct_id = ?", accountId)
+	t.New().Exec("DELETE FROM accounts WHERE id = ?", accountId)
+}
+
 /* End File */

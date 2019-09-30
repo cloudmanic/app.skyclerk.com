@@ -130,4 +130,41 @@ func (t *Controller) ClearAccount(c *gin.Context) {
 	c.JSON(http.StatusNoContent, nil)
 }
 
+//
+// DeleteAccount - Delete account.
+//
+func (t *Controller) DeleteAccount(c *gin.Context) {
+	// Make sure the UserId is correct.
+	userId := c.MustGet("userId").(int)
+
+	// Get account id
+	accountId := uint(c.MustGet("accountId").(int))
+
+	// Get account.
+	account, err := t.db.GetAccountById(accountId)
+
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Account not found."})
+		return
+	}
+
+	// We must be the account owner to proceed
+	if account.OwnerId != uint(userId) {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "You must be the account owner."})
+		return
+	}
+
+	// Clear the account.
+	t.db.ClearAccount(account.Id)
+
+	// Delete the account.
+	t.db.DeleteAccount(account.Id)
+
+	// Get the accounts left for this user.
+	u, _ := t.db.GetUserById(uint(userId))
+
+	// Return happy JSON
+	c.JSON(200, u.Accounts)
+}
+
 /* End File */

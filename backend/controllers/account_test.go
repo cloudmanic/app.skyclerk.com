@@ -436,7 +436,7 @@ func TestUpdateAccount06(t *testing.T) {
 //
 func TestClearAccount01(t *testing.T) {
 	// Start the db connection.
-	db, dbName, _ := models.NewTestDB("testing_db")
+	db, dbName, _ := models.NewTestDB("")
 	defer models.TestingTearDown(db, dbName)
 
 	// Create controller
@@ -562,6 +562,170 @@ func TestClearAccount02(t *testing.T) {
 
 	// Test results
 	st.Expect(t, len(l), 5)
+}
+
+//
+// TestDeleteAccount01 - Delete account.
+//
+func TestDeleteAccount01(t *testing.T) {
+	// Start the db connection.
+	db, dbName, _ := models.NewTestDB("")
+	defer models.TestingTearDown(db, dbName)
+
+	// Create controller
+	c := &Controller{}
+	c.SetDB(db)
+
+	// Setup test data
+	user1 := test.GetRandomUser(33)
+	user2 := test.GetRandomUser(33)
+	user3 := test.GetRandomUser(33)
+	user4 := test.GetRandomUser(33)
+	db.Save(&user1)
+	db.Save(&user2)
+	db.Save(&user3)
+	db.Save(&user4)
+
+	account1 := test.GetRandomAccount(33)
+	account1.OwnerId = user1.Id
+	db.Save(&account1)
+	db.Save(&models.AcctToUsers{AcctId: account1.Id, UserId: user1.Id})
+	db.Save(&models.AcctToUsers{AcctId: account1.Id, UserId: user2.Id})
+	db.Save(&models.AcctToUsers{AcctId: account1.Id, UserId: user4.Id})
+
+	account2 := test.GetRandomAccount(34)
+	account2.OwnerId = user1.Id
+	db.Save(&account2)
+	db.Save(&models.AcctToUsers{AcctId: account2.Id, UserId: user1.Id})
+	db.Save(&models.AcctToUsers{AcctId: account2.Id, UserId: user2.Id})
+
+	// Create like 10 ledger entries.
+	for i := 0; i < 10; i++ {
+		l := test.GetRandomLedger(33)
+		db.LedgerCreate(&l)
+	}
+
+	// Create like 10 ledger entries. - Different account.
+	for i := 0; i < 10; i++ {
+		l := test.GetRandomLedger(34)
+		db.LedgerCreate(&l)
+	}
+
+	// Setup request
+	req, _ := http.NewRequest("POST", "/api/v3/33/account/delete", nil)
+
+	// Setup writer.
+	w := httptest.NewRecorder()
+	gin.SetMode("release")
+	gin.DisableConsoleColor()
+
+	r := gin.New()
+	r.Use(func(c *gin.Context) {
+		c.Set("accountId", 33)
+		c.Set("userId", int(user1.Id))
+	})
+	r.POST("/api/v3/33/account/delete", c.DeleteAccount)
+	r.ServeHTTP(w, req)
+
+	// Get the ledger entries. There should not be any with account 33
+	l := []models.Ledger{}
+	db.Find(&l)
+	for _, row := range l {
+		st.Expect(t, (row.AccountId == uint(33)), false)
+	}
+
+	// Get the Category entries.
+	cats := []models.Category{}
+	db.Where("CategoriesAccountId = ?", 33).Find(&cats)
+
+	// Get the AcctToUsers entries.
+	a2u := []models.AcctToUsers{}
+	db.Where("acct_id = ?", 33).Find(&a2u)
+
+	// Get the Account entries.
+	acc := []models.Account{}
+	db.Where("id = ?", 33).Find(&acc)
+
+	// Grab result and convert to strut
+	results := []models.Account{}
+	err := json.Unmarshal([]byte(w.Body.String()), &results)
+
+	// Test results
+	st.Expect(t, err, nil)
+	st.Expect(t, w.Code, 200)
+	st.Expect(t, len(l), 10)
+	st.Expect(t, len(a2u), 0)
+	st.Expect(t, len(acc), 0)
+	st.Expect(t, len(cats), 0)
+	st.Expect(t, len(results), 1)
+}
+
+//
+// TestDeleteAccount02 - Delete account.
+//
+func TestDeleteAccount02(t *testing.T) {
+	// Start the db connection.
+	db, dbName, _ := models.NewTestDB("")
+	defer models.TestingTearDown(db, dbName)
+
+	// Create controller
+	c := &Controller{}
+	c.SetDB(db)
+
+	// Setup test data
+	user1 := test.GetRandomUser(33)
+	db.Save(&user1)
+
+	account1 := test.GetRandomAccount(33)
+	account1.OwnerId = user1.Id
+	db.Save(&account1)
+	db.Save(&models.AcctToUsers{AcctId: account1.Id, UserId: user1.Id})
+
+	// Create like 10 ledger entries.
+	for i := 0; i < 10; i++ {
+		l := test.GetRandomLedger(33)
+		db.LedgerCreate(&l)
+	}
+
+	// Setup request
+	req, _ := http.NewRequest("POST", "/api/v3/33/account/delete", nil)
+
+	// Setup writer.
+	w := httptest.NewRecorder()
+	gin.SetMode("release")
+	gin.DisableConsoleColor()
+
+	r := gin.New()
+	r.Use(func(c *gin.Context) {
+		c.Set("accountId", 33)
+		c.Set("userId", int(user1.Id))
+	})
+	r.POST("/api/v3/33/account/delete", c.DeleteAccount)
+	r.ServeHTTP(w, req)
+
+	// Get the Category entries.
+	cats := []models.Category{}
+	db.Where("CategoriesAccountId = ?", 33).Find(&cats)
+
+	// Get the AcctToUsers entries.
+	a2u := []models.AcctToUsers{}
+	db.Where("acct_id = ?", 33).Find(&a2u)
+
+	// Get the Account entries.
+	acc := []models.Account{}
+	db.Where("id = ?", 33).Find(&acc)
+
+	// Grab result and convert to strut
+	results := []models.Account{}
+	err := json.Unmarshal([]byte(w.Body.String()), &results)
+
+	// Test results
+	st.Expect(t, err, nil)
+	st.Expect(t, w.Code, 200)
+	st.Expect(t, len(a2u), 0)
+	st.Expect(t, len(acc), 0)
+	st.Expect(t, len(cats), 0)
+	st.Expect(t, len(results), 0)
 }
 
 /* End File */
