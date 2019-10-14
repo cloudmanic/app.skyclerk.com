@@ -10,6 +10,7 @@ import (
 	"io/ioutil"
 	"net/http"
 	"strings"
+	"time"
 
 	"app.skyclerk.com/backend/library/response"
 	"app.skyclerk.com/backend/models"
@@ -171,6 +172,57 @@ func (t *Controller) DeleteAccount(c *gin.Context) {
 
 	// Return happy JSON
 	c.JSON(200, u.Accounts)
+}
+
+//
+// NewAccount will create a new account from an account that is already set.
+// Sometimes users want to have more accounts under the same billing profile.
+//
+func (t *Controller) NewAccount(c *gin.Context) {
+	// Get body of JSON
+	body, _ := ioutil.ReadAll(c.Request.Body)
+	name := gjson.Get(string(body), "name").String()
+
+	defer c.Request.Body.Close()
+
+	// Make sure the UserId is correct.
+	userID := c.MustGet("userId").(int)
+
+	// Get account id
+	accountID := uint(c.MustGet("accountId").(int))
+
+	// Create new account.
+	acct := models.Account{
+		OwnerId:      uint(userID),
+		Name:         strings.Trim(name, " "),
+		LastActivity: time.Now(),
+	}
+	t.db.New().Save(&acct)
+
+	// Add the account look up.
+	au := models.AcctToUsers{
+		AcctId: acct.Id,
+		UserId: uint(userID),
+	}
+	t.db.New().Save(&au)
+
+	// Get Billing profile by account id.
+	billing, err := t.db.GetBillingByAccountId(accountID)
+
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Account not found."})
+		return
+	}
+
+	// Add the account look up.
+	abp := models.AcctToBilling{
+		AcctId:    acct.Id,
+		BillingId: billing.Id,
+	}
+	t.db.New().Save(&abp)
+
+	// Return happy JSON
+	c.JSON(200, nil)
 }
 
 /* End File */

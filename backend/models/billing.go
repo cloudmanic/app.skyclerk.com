@@ -7,6 +7,7 @@
 package models
 
 import (
+	"errors"
 	"time"
 )
 
@@ -21,18 +22,25 @@ type Billing struct {
 	TrialExpire        time.Time `sql:"not null" json:"trial_expire"`
 }
 
-// //
-// // GetAccountById - Get a account by Id.
-// //
-// func (t *DB) GetAccountById(id uint) (Account, error) {
-// 	var u Account
 //
-// 	if t.Where("id = ?", id).First(&u).RecordNotFound() {
-// 		return u, errors.New("Record not found")
-// 	}
+// GetBillingByAccountId - Get a billing by account id
 //
-// 	// Return the user.
-// 	return u, nil
-// }
+func (t *DB) GetBillingByAccountId(id uint) (Billing, error) {
+	var b Billing
+	var u AcctToBilling
+
+	// Find in loop up table.
+	if t.Where("acct_id = ?", id).First(&u).RecordNotFound() {
+		return b, errors.New("Record not found")
+	}
+
+	// Look up the billing.
+	if t.Where("id = ?", u.BillingId).First(&b).RecordNotFound() {
+		return b, errors.New("Record not found")
+	}
+
+	// Return the user.
+	return b, nil
+}
 
 /* End File */

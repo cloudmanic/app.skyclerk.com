@@ -9,6 +9,7 @@ package controllers
 import (
 	"bytes"
 	"encoding/json"
+	"fmt"
 	"net/http"
 	"net/http/httptest"
 	"testing"
@@ -726,6 +727,89 @@ func TestDeleteAccount02(t *testing.T) {
 	st.Expect(t, len(acc), 0)
 	st.Expect(t, len(cats), 0)
 	st.Expect(t, len(results), 0)
+}
+
+//
+// TestNewAccount01 - Add new account.
+//
+func TestNewAccount01(t *testing.T) {
+	// Start the db connection.
+	db, dbName, _ := models.NewTestDB("testing_db")
+	defer models.TestingTearDown(db, dbName)
+
+	// Create controller
+	c := &Controller{}
+	c.SetDB(db)
+
+	// Setup test data
+	user1 := test.GetRandomUser(33)
+	db.Save(&user1)
+
+	account1 := test.GetRandomAccount(33)
+	account1.OwnerId = user1.Id
+	db.Save(&account1)
+	db.Save(&models.AcctToUsers{AcctId: account1.Id, UserId: user1.Id})
+
+	// Add billing profile
+	b := models.Billing{}
+	db.Save(&b)
+
+	// Add account to billing
+	atb := models.AcctToBilling{AcctId: account1.Id, BillingId: b.Id}
+	db.Save(&atb)
+
+	// Get JSON
+	postStr := fmt.Sprintf(`{ "name": "%s" }`, "Unit Test Account")
+
+	// Setup request
+	req, _ := http.NewRequest("POST", "/api/v3/33/account/new", bytes.NewBuffer([]byte(postStr)))
+
+	// Setup writer.
+	w := httptest.NewRecorder()
+	gin.SetMode("release")
+	gin.DisableConsoleColor()
+
+	r := gin.New()
+	r.Use(func(c *gin.Context) {
+		c.Set("accountId", 33)
+		c.Set("userId", int(user1.Id))
+	})
+	r.POST("/api/v3/33/account/new", c.NewAccount)
+	r.ServeHTTP(w, req)
+
+	// // Get the ledger entries. There should not be any with account 33
+	// l := []models.Ledger{}
+	// db.Find(&l)
+	// for _, row := range l {
+	// 	st.Expect(t, (row.AccountId == uint(33)), false)
+	// }
+	//
+	// // Get the Category entries.
+	// cats := []models.Category{}
+	// db.Where("CategoriesAccountId = ?", 33).Find(&cats)
+	//
+	// // Get the AcctToUsers entries.
+	// a2u := []models.AcctToUsers{}
+	// db.Where("acct_id = ?", 33).Find(&a2u)
+	//
+	// // Get the Account entries.
+	// acc := []models.Account{}
+	// db.Where("id = ?", 33).Find(&acc)
+
+	// // Grab result and convert to strut
+	// results := []models.Account{}
+	// err := json.Unmarshal([]byte(w.Body.String()), &results)
+
+	fmt.Println(w.Body.String())
+
+	// Test results
+	//st.Expect(t, err, nil)
+	st.Expect(t, w.Code, 200)
+	// st.Expect(t, len(l), 10)
+	// st.Expect(t, len(a2u), 0)
+	// st.Expect(t, len(acc), 0)
+	// st.Expect(t, len(cats), 0)
+	// st.Expect(t, len(results), 1)
 }
 
 /* End File */
