@@ -11,6 +11,8 @@ import { environment } from 'src/environments/environment';
 import { Observable } from 'rxjs';
 import { Account } from '../models/account.model';
 import { TrackService } from './track.service';
+import { Me } from '../models/me.model';
+import { User } from '../models/user.model';
 
 @Injectable({
 	providedIn: 'root'
@@ -85,6 +87,27 @@ export class AccountService {
 				this.trackService.event('account-clear', { app: "web", "accountId": accountId });
 
 				return true;
+			}));
+	}
+
+	//
+	// Delete account - delete account.
+	//
+	delete(): Observable<Account[]> {
+		let accountId = localStorage.getItem('account_id');
+
+		return this.http.post<Account[]>(`${environment.app_server}/api/v3/${accountId}/account/delete`, {})
+			.pipe(map((res) => {
+				// Track event.
+				this.trackService.event('account-delete', { app: "web", "accountId": accountId });
+
+				let a = [];
+
+				for (let i = 0; i < res.length; i++) {
+					a.push(new Account().deserialize(res[i]));
+				}
+
+				return a;
 			}));
 	}
 }

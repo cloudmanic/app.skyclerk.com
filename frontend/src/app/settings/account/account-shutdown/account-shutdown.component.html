@@ -16,27 +16,25 @@
   </div>
 
   <div class="section__body">
-    <p>We are sorry to see you go! <br> If you have a paid account you won’t be charged again after your official cancellation date. </p>
+    <p>We are sorry to see you go! <br> If you have a paid account you won’t be charged again. </p>
 
     <div class="form-settings form-settings--checkboxes">
       <div class="form-row">
         <label class="form-label hidden">Clear Account</label>
 
         <label class="checkbox">
-          <input type="checkbox">
-
+          <input type="checkbox" name="confirm" [(ngModel)]="confirm" />
           I acknowledge that my information will be immediately and permanently delated.
         </label>
 
         <label class="checkbox">
-          <input type="checkbox">
-
-          I am familiar with the <a href="">refund policy.</a>
+          <input type="checkbox" name="confirm" [(ngModel)]="confirmRefund" />
+          I am familiar with the <a href="https://skyclerk.com/refunds" target="_blank">refund policy.</a>
         </label>
       </div>
 
       <div class="form-actions">
-        <button type="submit" class="btn btn-yellow">Delete Account</button>
+        <button type="submit" class="btn btn-yellow" (click)="submit()">Delete Account</button>
 
         <a class="red-txt" (click)="editModeToggle()"><strong>Cancel</strong></a>
       </div>
