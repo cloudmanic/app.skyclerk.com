@@ -18,6 +18,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/nbio/st"
 	"github.com/tidwall/gjson"
+	"golang.org/x/crypto/bcrypt"
 )
 
 //
@@ -110,6 +111,31 @@ func TestDoOauthToken01(t *testing.T) {
 	st.Expect(t, err, nil)
 	st.Expect(t, len(u.Accounts), 1)
 	st.Expect(t, u.Accounts[0].Name, account.Name)
+
+	// --------- Double check because the md5 hash turned into  ======= //
+
+	// Setup request
+	req2, _ := http.NewRequest("POST", "/oauth/token", bytes.NewBuffer(postStr))
+
+	// Setup writer.
+	w2 := httptest.NewRecorder()
+	gin.SetMode("release")
+	gin.DisableConsoleColor()
+
+	r2 := gin.New()
+	r2.POST("/oauth/token", c.DoOauthToken)
+	r2.ServeHTTP(w2, req2)
+
+	// Get results from json.
+	userId = gjson.Get(w2.Body.String(), "user_id").Int()
+	tokenType = gjson.Get(w2.Body.String(), "token_type").String()
+	accessToken = gjson.Get(w2.Body.String(), "access_token").String()
+
+	// Test results
+	st.Expect(t, w.Code, 200)
+	st.Expect(t, tokenType, "bearer")
+	st.Expect(t, uint(userId), user.Id)
+	st.Expect(t, len(accessToken), 50)
 }
 
 //
@@ -399,6 +425,94 @@ func TestDoOauthToken06(t *testing.T) {
 	st.Expect(t, u.Accounts[0].Name, account.Name)
 	st.Expect(t, u.Accounts[1].Name, a2.Name)
 	st.Expect(t, u.Accounts[2].Name, a1.Name)
+}
+
+//
+// TestDoOauthToken07 test to make sure auth works with new hashing system. - Success login
+//
+func TestDoOauthToken07(t *testing.T) {
+	// Start the db connection.
+	db, dbName, _ := models.NewTestDB("")
+	defer models.TestingTearDown(db, dbName)
+
+	// Create controller
+	c := &Controller{}
+	c.SetDB(db)
+
+	// Generate "hash" of a new modern password.
+	hash, _ := bcrypt.GenerateFromPassword([]byte("F00bAr123"), bcrypt.DefaultCost)
+
+	// Setup test data
+	user := test.GetRandomUser(33)
+	user.Md5Password = ""
+	user.Md5Salt = ""
+	user.Password = string(hash)
+	db.Save(&user)
+
+	account := test.GetRandomAccount(33)
+	account.OwnerId = user.Id
+	db.Save(&account)
+
+	app := test.GetRandomApplication()
+	db.Save(&app)
+
+	// Set new user account to users
+	lu := models.AcctToUsers{AcctId: account.Id, UserId: user.Id}
+	db.Save(&lu)
+
+	// Build stuct that we convert to json.
+	type PostStruct struct {
+		Username  string `json:"username"`
+		Password  string `json:"password"`
+		GrantType string `json:"grant_type"`
+		ClientID  string `json:"client_id"`
+	}
+
+	pS := PostStruct{
+		Username:  user.Email,
+		Password:  "F00bAr123",
+		GrantType: "password",
+		ClientID:  app.ClientId,
+	}
+
+	// Get JSON
+	postStr, _ := json.Marshal(pS)
+
+	// Setup request
+	req, _ := http.NewRequest("POST", "/oauth/token", bytes.NewBuffer(postStr))
+
+	// Setup writer.
+	w := httptest.NewRecorder()
+	gin.SetMode("release")
+	gin.DisableConsoleColor()
+
+	r := gin.New()
+	r.POST("/oauth/token", c.DoOauthToken)
+	r.ServeHTTP(w, req)
+
+	// Get results from json.
+	userId := gjson.Get(w.Body.String(), "user_id").Int()
+	tokenType := gjson.Get(w.Body.String(), "token_type").String()
+	accessToken := gjson.Get(w.Body.String(), "access_token").String()
+
+	// Test results
+	st.Expect(t, w.Code, 200)
+	st.Expect(t, tokenType, "bearer")
+	st.Expect(t, uint(userId), user.Id)
+	st.Expect(t, len(accessToken), 50)
+
+	// Look in the sessions table for the correct access token
+	sess, err := db.GetByAccessToken(accessToken)
+	st.Expect(t, err, nil)
+	st.Expect(t, sess.UserId, user.Id)
+	st.Expect(t, sess.ApplicationId, app.Id)
+	st.Expect(t, sess.AccessToken, accessToken)
+
+	// Let's get the user to make sure the accounts are added
+	u, err := db.GetUserById(user.Id)
+	st.Expect(t, err, nil)
+	st.Expect(t, len(u.Accounts), 1)
+	st.Expect(t, u.Accounts[0].Name, account.Name)
 }
 
 //

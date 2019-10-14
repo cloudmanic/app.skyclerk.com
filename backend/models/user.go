@@ -82,6 +82,8 @@ func (t *DB) GetUserByEmail(email string) (User, error) {
 // login request came from. Same with ipAddress.
 //
 func (t *DB) LoginUserByEmailPass(email string, password string, appId uint, userAgent string, ipAddress string) (User, Session, error) {
+	const errMsg = "Sorry, we were unable to find our account."
+
 	var user User
 	var session Session
 
@@ -89,22 +91,36 @@ func (t *DB) LoginUserByEmailPass(email string, password string, appId uint, use
 	user, err := t.GetUserByEmail(email)
 
 	if err != nil {
-		return user, Session{}, errors.New("Sorry, we were unable to find our account.")
+		return user, Session{}, errors.New(errMsg)
 	}
 
-	// Do MD5 login
-	passMd5 := helpers.GetMd5(password + user.Md5Salt)
-	if passMd5 != user.Md5Password {
-		return user, Session{}, errors.New("Sorry, we were unable to find our account.")
-	}
+	// Validate password here by comparing hashes nil means success
+	err = bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(password))
 
-	// TODO(spicer): Support non-md5 passwords
-	// // Validate password here by comparing hashes nil means success
-	// err = bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(password))
-	//
-	// if err != nil {
-	// 	return user, err
-	// }
+	if err != nil {
+		// Check MD5 login
+		if (len(user.Md5Salt) > 0) && (len(user.Md5Password) > 0) {
+			passMd5 := helpers.GetMd5(password + user.Md5Salt)
+			if passMd5 != user.Md5Password {
+				return user, Session{}, errors.New(errMsg)
+			} else {
+				// Create new hash
+				hash, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
+
+				if err != nil {
+					return user, Session{}, errors.New(err.Error() + "LoginUserByEmailPass - Unable to create password hash (password hash)")
+				}
+
+				// Remove MD5 password and add new hash
+				user.Password = string(hash)
+				user.Md5Salt = ""
+				user.Md5Password = ""
+				t.New().Save(&user)
+			}
+		} else {
+			return user, Session{}, errors.New(errMsg)
+		}
+	}
 
 	// Create a session so we get an access_token (if we passed in an appId)
 	if appId > 0 {

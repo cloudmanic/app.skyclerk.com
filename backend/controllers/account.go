@@ -12,6 +12,7 @@ import (
 	"strings"
 
 	"app.skyclerk.com/backend/library/response"
+	"app.skyclerk.com/backend/models"
 	"github.com/gin-gonic/gin"
 	"github.com/tidwall/gjson"
 )
@@ -162,6 +163,11 @@ func (t *Controller) DeleteAccount(c *gin.Context) {
 
 	// Get the accounts left for this user.
 	u, _ := t.db.GetUserById(uint(userId))
+
+	// Hack for empty accounts.
+	if u.Accounts == nil {
+		u.Accounts = []models.Account{}
+	}
 
 	// Return happy JSON
 	c.JSON(200, u.Accounts)
