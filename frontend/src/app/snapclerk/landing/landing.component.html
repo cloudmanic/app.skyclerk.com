@@ -2,7 +2,44 @@
   <div class="shell clearfix">
     <div class="content">
 
-      <div class="contentbox">
+      <div class="contentbox" *ngIf="firstRun">
+
+        <div class="contentbox-inner clearfix">
+          <div class="contentbox-fullcontent">
+            <div class="alert-bar">
+              <div class="alertbox alertbox-intro">
+                <div class="alertbox-body">
+                  <h3>Scan your receipts and your data will be entered automatically!</h3>
+                  <p>Get started right now:</p>
+                  <a (click)="closeFirstRun()" class="btn btn-yellow btn-large"><span class="ico-plus-circle">&nbsp;</span> Get Started</a>
+                </div>
+              </div>
+            </div>
+
+            <div class="dash-intro">
+              <h2>Welcome to <strong>Snap!</strong>Clerk</h2>
+              <img src="/images/intro-image.png" class="dash-intro-image" alt="" />
+            </div>
+
+            <div class="callout">
+              <p>To really live it up, get the mobile app and scan on-the-go!</p>
+              <p>
+                <a href="https://apps.apple.com/us/app/skyclerk-bookkeeping-and-accounting/id483718116" target="_blank">
+                  <img src="/images/logo-appstore.png" alt="" width="117" height="39" />
+                </a>
+
+                <a href="https://play.google.com/store/apps/details?id=com.cloudmanic.skyclerk" target="_blank">
+                  <img src="/images/logo-gp.png" alt="" width="118" height="39" />
+                </a>
+            </div>
+
+          </div>
+
+        </div>
+      </div>
+
+
+      <div class="contentbox" *ngIf="showSnapClerk">
 
         <div class="contentbox-inner clearfix">
           <div class="contentbox-center">

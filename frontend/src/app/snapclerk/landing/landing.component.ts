@@ -22,6 +22,8 @@ const pageTitle: string = environment.title_prefix + "Snap!Clerk";
 })
 
 export class LandingComponent implements OnInit {
+	firstRun: boolean = false;
+	showSnapClerk: boolean = false;
 	snapclerks: SnapClerkResponse = new SnapClerkResponse(false, 0, 50, 0, []);
 	page: number = 1;
 	usage: number = 0;
@@ -62,6 +64,15 @@ export class LandingComponent implements OnInit {
 	refreshPage() {
 		// Get the list of snapclerks
 		this.snapClerkService.get(this.page, 25, "SnapClerkId", "DESC").subscribe(res => {
+			// Logic to see if this is the first time we are calling this.
+			if ((!this.showSnapClerk) && (!this.firstRun)) {
+				if (res.Data.length == 0) {
+					this.firstRun = true;
+				} else {
+					this.showSnapClerk = true;
+				}
+			}
+
 			this.snapclerks = res;
 		});
 
@@ -69,6 +80,14 @@ export class LandingComponent implements OnInit {
 		this.snapClerkService.getUsage().subscribe(res => {
 			this.usage = res;
 		});
+	}
+
+	//
+	// Close the first run.
+	//
+	closeFirstRun() {
+		this.firstRun = false;
+		this.showSnapClerk = true;
 	}
 
 	//
