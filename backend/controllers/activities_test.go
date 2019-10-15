@@ -278,7 +278,7 @@ func TestGetActivities04(t *testing.T) {
 	dMap := make(map[uint]models.Activity)
 
 	// Start the db connection.
-	db, dbName, _ := models.NewTestDB("testing_db")
+	db, dbName, _ := models.NewTestDB("")
 	defer models.TestingTearDown(db, dbName)
 
 	// Create controller

@@ -86,6 +86,7 @@ export class AccountShutdownComponent implements OnInit {
 			if (res.length > 0) {
 				this.doSelectAccount(res[0]);
 				this.editModeToggle();
+				this.router.navigate(['/']);
 				return;
 			}
 

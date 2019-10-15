@@ -110,6 +110,23 @@ export class AccountService {
 				return a;
 			}));
 	}
+
+	//
+	// New account - create new account.
+	//
+	create(name: string): Observable<Account> {
+		let accountId = localStorage.getItem('account_id');
+
+		return this.http.post<Account>(`${environment.app_server}/api/v3/${accountId}/account/new`, { name: name })
+			.pipe(map(res => {
+				let a = new Account().deserialize(res);
+
+				// Track event.
+				this.trackService.event('account-new', { app: "web", "accountId": a.Id });
+
+				return a;
+			}));
+	}
 }
 
 /* End File */

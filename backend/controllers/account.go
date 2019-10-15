@@ -7,6 +7,8 @@
 package controllers
 
 import (
+	"errors"
+	"fmt"
 	"io/ioutil"
 	"net/http"
 	"strings"
@@ -16,6 +18,7 @@ import (
 	"app.skyclerk.com/backend/models"
 	"github.com/gin-gonic/gin"
 	"github.com/tidwall/gjson"
+	"optionsnews.com/services"
 )
 
 //
@@ -210,7 +213,8 @@ func (t *Controller) NewAccount(c *gin.Context) {
 	billing, err := t.db.GetBillingByAccountId(accountID)
 
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Account not found."})
+		services.Critical(errors.New(fmt.Sprintf("Billing account not found. AccountId: %d", accountID)))
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Account not found (001)."})
 		return
 	}
 
@@ -221,8 +225,17 @@ func (t *Controller) NewAccount(c *gin.Context) {
 	}
 	t.db.New().Save(&abp)
 
+	// Get the new account.
+	a, err := t.db.GetAccountById(acct.Id)
+
+	if err != nil {
+		services.Critical(errors.New(fmt.Sprintf("New account not found. AccountId: %d", accountID)))
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Account not found (002)."})
+		return
+	}
+
 	// Return happy JSON
-	c.JSON(200, nil)
+	c.JSON(200, a)
 }
 
 /* End File */

@@ -28,17 +28,16 @@
     </h6>
   </div>
 
-  <div class="section__body">
+  <div class="section__body mt-15">
     <p>Have more than one business? <br>Click add to create a new instance of Skyclerk (no additional costs). </p>
 
     <div class="form-settings">
-      <form action="?" method="post">
+
+      <form (submit)="submit()">
         <div class="form-row form--error">
-          <span class="form__error red-txt"><strong>Not a valid account name</strong></span>
-
+          <span class="form__error red-txt mt-10" *ngIf="errMsg"><strong>{{ errMsg }}</strong></span>
           <label class="form-label"><strong>Account Name</strong></label>
-
-          <input type="text" class="field" placeholder="SkyClerk">
+          <input type="text" class="field" name="name" [(ngModel)]="name" />
         </div>
 
         <div class="form-actions">
@@ -49,6 +48,7 @@
           </a>
         </div>
       </form>
+
     </div>
 
     <p>You will be directed to your new account.</p>

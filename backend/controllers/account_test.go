@@ -734,7 +734,7 @@ func TestDeleteAccount02(t *testing.T) {
 //
 func TestNewAccount01(t *testing.T) {
 	// Start the db connection.
-	db, dbName, _ := models.NewTestDB("testing_db")
+	db, dbName, _ := models.NewTestDB("")
 	defer models.TestingTearDown(db, dbName)
 
 	// Create controller
@@ -777,39 +777,21 @@ func TestNewAccount01(t *testing.T) {
 	r.POST("/api/v3/33/account/new", c.NewAccount)
 	r.ServeHTTP(w, req)
 
-	// // Get the ledger entries. There should not be any with account 33
-	// l := []models.Ledger{}
-	// db.Find(&l)
-	// for _, row := range l {
-	// 	st.Expect(t, (row.AccountId == uint(33)), false)
-	// }
-	//
-	// // Get the Category entries.
-	// cats := []models.Category{}
-	// db.Where("CategoriesAccountId = ?", 33).Find(&cats)
-	//
-	// // Get the AcctToUsers entries.
-	// a2u := []models.AcctToUsers{}
-	// db.Where("acct_id = ?", 33).Find(&a2u)
-	//
-	// // Get the Account entries.
-	// acc := []models.Account{}
-	// db.Where("id = ?", 33).Find(&acc)
+	// Grab result and convert to strut
+	result := models.Account{}
+	err := json.Unmarshal([]byte(w.Body.String()), &result)
 
-	// // Grab result and convert to strut
-	// results := []models.Account{}
-	// err := json.Unmarshal([]byte(w.Body.String()), &results)
-
-	fmt.Println(w.Body.String())
+	// Get the Account entries.
+	au := []models.AcctToUsers{}
+	db.Where("acct_id = ?", 34).Find(&au)
 
 	// Test results
-	//st.Expect(t, err, nil)
+	st.Expect(t, err, nil)
 	st.Expect(t, w.Code, 200)
-	// st.Expect(t, len(l), 10)
-	// st.Expect(t, len(a2u), 0)
-	// st.Expect(t, len(acc), 0)
-	// st.Expect(t, len(cats), 0)
-	// st.Expect(t, len(results), 1)
+	st.Expect(t, result.Name, "Unit Test Account")
+	st.Expect(t, result.Id, uint(34))
+	st.Expect(t, len(au), 1)
+	st.Expect(t, au[0].UserId, uint(1))
 }
 
 /* End File */

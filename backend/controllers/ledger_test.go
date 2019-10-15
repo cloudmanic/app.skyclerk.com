@@ -32,7 +32,7 @@ func TestGetLedgers01(t *testing.T) {
 	dMap := make(map[uint]models.Ledger)
 
 	// Start the db connection.
-	db, dbName, _ := models.NewTestDB("testing_db")
+	db, dbName, _ := models.NewTestDB("")
 	defer models.TestingTearDown(db, dbName)
 
 	// Create controller
@@ -549,7 +549,7 @@ func TestGetLedgers07(t *testing.T) {
 	dMap := make(map[uint]models.Ledger)
 
 	// Start the db connection.
-	db, dbName, _ := models.NewTestDB("testing_db")
+	db, dbName, _ := models.NewTestDB("")
 	defer models.TestingTearDown(db, dbName)
 
 	// Create controller
@@ -1030,7 +1030,7 @@ func TestCreateLedger04(t *testing.T) {
 //
 func TestUpdateLedger01(t *testing.T) {
 	// Start the db connection.
-	db, dbName, _ := models.NewTestDB("testing_db")
+	db, dbName, _ := models.NewTestDB("")
 	defer models.TestingTearDown(db, dbName)
 
 	// Create controller
