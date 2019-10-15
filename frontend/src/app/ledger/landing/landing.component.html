@@ -2,7 +2,29 @@
   <div class="shell clearfix">
     <div class="content">
 
-      <div class="contentbox">
+      <div class="contentbox contentbox-primary" *ngIf="firstRun">
+        <section class="section">
+          <div class="section-inner">
+            <h1>Welcome to your new Skyclerk Account!</h1>
+
+            <h4>Let’s get started by adding some expenses or income.</h4>
+
+            <a [routerLink]="['/ledger']" [queryParams]="{add: 'expense'}" class="btn btn-block btn-large btn-red">
+              <span class="ico-plus-circle">&nbsp;</span>
+              ADD EXPENSE
+            </a>
+
+            <a [routerLink]="['/ledger']" [queryParams]="{add: 'income'}" class="btn btn-block btn-large btn-darkgreen">
+              <span class="ico-plus-circle">&nbsp;</span>
+              ADD INCOME
+            </a>
+
+            <p>You can always access these buttons later over in the left hand sidebar.</p>
+          </div>
+        </section>
+      </div>
+
+      <div class="contentbox" *ngIf="showLedger">
 
         <div class="contentbox-inner clearfix">
           <div class="contentbox-center">

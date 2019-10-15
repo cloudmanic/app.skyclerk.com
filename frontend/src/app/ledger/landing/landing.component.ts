@@ -31,6 +31,8 @@ const pageTitle: string = environment.title_prefix + "Ledger";
 })
 
 export class LandingComponent implements OnInit {
+	firstRun: boolean = false;
+	showLedger: boolean = false;
 	pageTitle: string = "Skyclerk | Dashboard Reports";
 	page: number = 1;
 	selected: Ledger[] = [];
@@ -78,6 +80,9 @@ export class LandingComponent implements OnInit {
 				return;
 			}
 
+			this.firstRun = false;
+			this.showLedger = true;
+
 			this.showAddEditType = params['add'];
 			this.showAddEditLedger = true;
 		});
@@ -122,6 +127,16 @@ export class LandingComponent implements OnInit {
 	loadLedgerData() {
 		// Load ledger entries
 		this.ledgerService.get(this.page, this.type, this.search, this.activeCategory, this.activeLabels, this.activeYear).subscribe(res => {
+			// Do we show the first run? If both are false we know we have already checked.
+			if ((!this.firstRun) && (!this.showLedger)) {
+				if (res.Data.length == 0) {
+					this.firstRun = true;
+				} else {
+					this.showLedger = true;
+				}
+			}
+
+			// Set ledgers from the data return.
 			this.ledgers = res;
 			this.pageRangeSelect = this.page;
 		});
