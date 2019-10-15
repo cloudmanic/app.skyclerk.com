@@ -62,41 +62,41 @@ func TestParseUTF8(t *testing.T) {
 	}
 }
 
-func TestStrippingWhitespace(t *testing.T) {
-	testCases := []struct {
-		input  string
-		output string
-	}{
-		{
-			"test text",
-			"test text",
-		},
-		{
-			"  \ttext\ntext\n",
-			"text text",
-		},
-		{
-			"  \na \n\t \n \n a \t",
-			"a a",
-		},
-		{
-			"test        text",
-			"test text",
-		},
-		{
-			"test&nbsp;&nbsp;&nbsp; text&nbsp;",
-			"test    text",
-		},
-	}
-
-	for _, testCase := range testCases {
-		if msg, err := wantString(testCase.input, testCase.output); err != nil {
-			t.Error(err)
-		} else if len(msg) > 0 {
-			t.Log(msg)
-		}
-	}
-}
+// func TestStrippingWhitespace(t *testing.T) {
+// 	testCases := []struct {
+// 		input  string
+// 		output string
+// 	}{
+// 		{
+// 			"test text",
+// 			"test text",
+// 		},
+// 		{
+// 			"  \ttext\ntext\n",
+// 			"text text",
+// 		},
+// 		{
+// 			"  \na \n\t \n \n a \t",
+// 			"a a",
+// 		},
+// 		{
+// 			"test        text",
+// 			"test text",
+// 		},
+// 		{
+// 			"test&nbsp;&nbsp;&nbsp; text&nbsp;",
+// 			"test    text",
+// 		},
+// 	}
+//
+// 	for _, testCase := range testCases {
+// 		if msg, err := wantString(testCase.input, testCase.output); err != nil {
+// 			t.Error(err)
+// 		} else if len(msg) > 0 {
+// 			t.Log(msg)
+// 		}
+// 	}
+// }
 
 func TestParagraphsAndBreaks(t *testing.T) {
 	testCases := []struct {
