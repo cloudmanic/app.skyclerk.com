@@ -12,10 +12,10 @@ import (
 	"os"
 	"strconv"
 
+	"app.skyclerk.com/backend/library/html2text"
 	"app.skyclerk.com/backend/services"
 	"gopkg.in/gomail.v2"
 	"gopkg.in/mailgun/mailgun-go.v1"
-	"jaytaylor.com/html2text"
 )
 
 var (

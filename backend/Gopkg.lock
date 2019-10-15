@@ -503,13 +503,6 @@
   revision = "51d6538a90f86fe93ac480b35f37b2be17fef232"
   version = "v2.2.2"
 
-[[projects]]
-  digest = "1:c6b699ea3bbd8b76012a8feca9ea85bcca794ae5c1157724d1b524066d5d59b0"
-  name = "jaytaylor.com/html2text"
-  packages = ["."]
-  pruneopts = "UT"
-  revision = "01ec452cbe43774f989516272881441cae40c16b"
-
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
@@ -537,14 +530,17 @@
     "github.com/mgutz/ansi",
     "github.com/minio/minio-go",
     "github.com/nbio/st",
+    "github.com/olekukonko/tablewriter",
+    "github.com/ssor/bom",
     "github.com/tidwall/gjson",
     "golang.org/x/crypto/acme/autocert",
     "golang.org/x/crypto/bcrypt",
     "golang.org/x/image/font",
+    "golang.org/x/net/html",
+    "golang.org/x/net/html/atom",
     "gopkg.in/gomail.v2",
     "gopkg.in/h2non/gock.v1",
     "gopkg.in/mailgun/mailgun-go.v1",
-    "jaytaylor.com/html2text",
   ]
   solver-name = "gps-cdcl"
   solver-version = 1

@@ -80,11 +80,7 @@
 [[constraint]]
   name = "gopkg.in/mailgun/mailgun-go.v1"
   version = "1.1.1"
-
+  
 [prune]
   go-tests = true
   unused-packages = true
-
-[[constraint]]
-  revision = "01ec452cbe43774f989516272881441cae40c16b"
-  name = "jaytaylor.com/html2text"
