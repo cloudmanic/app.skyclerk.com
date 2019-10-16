@@ -35,7 +35,7 @@ func (t *Controller) DoRoutes(r *gin.Engine) {
 		apiV1.POST("/:account/account/delete", t.DeleteAccount)
 
 		// Me
-		apiV1.POST("/me/change-password", t.ChangePassword)
+		apiV1.POST("/:account/me/change-password", t.ChangePassword)
 
 		// Users
 		apiV1.GET("/:account/users", t.GetUsers)

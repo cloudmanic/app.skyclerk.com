@@ -106,7 +106,7 @@ func TestChangePassword01(t *testing.T) {
 	postStr := fmt.Sprintf(`{ "current": "%s", "password": "%s", "confirm": "%s" }`, "F00bAr123", "foobar2", "foobar2")
 
 	// Setup request
-	req, _ := http.NewRequest("POST", "/api/v3/me/change-password", bytes.NewBuffer([]byte(postStr)))
+	req, _ := http.NewRequest("POST", "/api/v3/33/me/change-password", bytes.NewBuffer([]byte(postStr)))
 
 	// Setup writer.
 	w := httptest.NewRecorder()
@@ -118,7 +118,7 @@ func TestChangePassword01(t *testing.T) {
 		c.Set("accountId", 33)
 		c.Set("userId", int(user.Id))
 	})
-	r.POST("/api/v3/me/change-password", c.ChangePassword)
+	r.POST("/api/v3/:account/me/change-password", c.ChangePassword)
 	r.ServeHTTP(w, req)
 
 	// Get user.
@@ -163,7 +163,7 @@ func TestChangePassword02(t *testing.T) {
 	postStr := fmt.Sprintf(`{ "current": "%s", "password": "%s", "confirm": "%s" }`, "F00bAr123", "foobar2", "foobar2")
 
 	// Setup request
-	req, _ := http.NewRequest("POST", "/api/v3/me/change-password", bytes.NewBuffer([]byte(postStr)))
+	req, _ := http.NewRequest("POST", "/api/v3/33/me/change-password", bytes.NewBuffer([]byte(postStr)))
 
 	// Setup writer.
 	w := httptest.NewRecorder()
@@ -175,7 +175,7 @@ func TestChangePassword02(t *testing.T) {
 		c.Set("accountId", 33)
 		c.Set("userId", int(user.Id))
 	})
-	r.POST("/api/v3/me/change-password", c.ChangePassword)
+	r.POST("/api/v3/:account/me/change-password", c.ChangePassword)
 	r.ServeHTTP(w, req)
 
 	// Get user.
@@ -220,7 +220,7 @@ func TestChangePassword03(t *testing.T) {
 	postStr := fmt.Sprintf(`{ "current": "%s", "password": "%s", "confirm": "%s" }`, "wrong", "foobar2", "foobar2")
 
 	// Setup request
-	req, _ := http.NewRequest("POST", "/api/v3/me/change-password", bytes.NewBuffer([]byte(postStr)))
+	req, _ := http.NewRequest("POST", "/api/v3/33/me/change-password", bytes.NewBuffer([]byte(postStr)))
 
 	// Setup writer.
 	w := httptest.NewRecorder()
@@ -232,7 +232,7 @@ func TestChangePassword03(t *testing.T) {
 		c.Set("accountId", 33)
 		c.Set("userId", int(user.Id))
 	})
-	r.POST("/api/v3/me/change-password", c.ChangePassword)
+	r.POST("/api/v3/:account/me/change-password", c.ChangePassword)
 	r.ServeHTTP(w, req)
 
 	// Get user.
@@ -270,7 +270,7 @@ func TestChangePassword04(t *testing.T) {
 	postStr := fmt.Sprintf(`{ "current": "%s", "password": "%s", "confirm": "%s" }`, "wrong", "foobar2", "foobar2")
 
 	// Setup request
-	req, _ := http.NewRequest("POST", "/api/v3/me/change-password", bytes.NewBuffer([]byte(postStr)))
+	req, _ := http.NewRequest("POST", "/api/v3/33/me/change-password", bytes.NewBuffer([]byte(postStr)))
 
 	// Setup writer.
 	w := httptest.NewRecorder()
@@ -282,7 +282,7 @@ func TestChangePassword04(t *testing.T) {
 		c.Set("accountId", 33)
 		c.Set("userId", int(user.Id))
 	})
-	r.POST("/api/v3/me/change-password", c.ChangePassword)
+	r.POST("/api/v3/:account/me/change-password", c.ChangePassword)
 	r.ServeHTTP(w, req)
 
 	// Get user.
@@ -322,7 +322,7 @@ func TestChangePassword05(t *testing.T) {
 	postStr := fmt.Sprintf(`{ "current": "%s", "password": "%s", "confirm": "%s" }`, "F00bAr123", "match 1", "match 2")
 
 	// Setup request
-	req, _ := http.NewRequest("POST", "/api/v3/me/change-password", bytes.NewBuffer([]byte(postStr)))
+	req, _ := http.NewRequest("POST", "/api/v3/33/me/change-password", bytes.NewBuffer([]byte(postStr)))
 
 	// Setup writer.
 	w := httptest.NewRecorder()
@@ -334,7 +334,7 @@ func TestChangePassword05(t *testing.T) {
 		c.Set("accountId", 33)
 		c.Set("userId", int(user.Id))
 	})
-	r.POST("/api/v3/me/change-password", c.ChangePassword)
+	r.POST("/api/v3/:account/me/change-password", c.ChangePassword)
 	r.ServeHTTP(w, req)
 
 	// Get user.
@@ -347,6 +347,58 @@ func TestChangePassword05(t *testing.T) {
 	st.Expect(t, u.Md5Password, user.Md5Password)
 	st.Expect(t, u.Password, "")
 	st.Expect(t, w.Body.String(), `{"error":"Passwords do not match."}`)
+}
+
+//
+// TestChangePassword06 - validate password for strongness
+//
+func TestChangePassword06(t *testing.T) {
+	// Start the db connection.
+	db, dbName, _ := models.NewTestDB("")
+	defer models.TestingTearDown(db, dbName)
+
+	// Create controller
+	c := &Controller{}
+	c.SetDB(db)
+
+	// Setup test data
+	user := test.GetRandomUser(33)
+	db.Save(&user)
+
+	account1 := test.GetRandomAccount(33)
+	account1.OwnerId = user.Id
+	db.Save(&account1)
+	db.Save(&models.AcctToUsers{AcctId: account1.Id, UserId: user.Id})
+
+	// Setup post string - F00bAr123 comes from the testing library
+	postStr := fmt.Sprintf(`{ "current": "%s", "password": "%s", "confirm": "%s" }`, "F00bAr123", "1", "1")
+
+	// Setup request
+	req, _ := http.NewRequest("POST", "/api/v3/33/me/change-password", bytes.NewBuffer([]byte(postStr)))
+
+	// Setup writer.
+	w := httptest.NewRecorder()
+	gin.SetMode("release")
+	gin.DisableConsoleColor()
+
+	r := gin.New()
+	r.Use(func(c *gin.Context) {
+		c.Set("accountId", 33)
+		c.Set("userId", int(user.Id))
+	})
+	r.POST("/api/v3/:account/me/change-password", c.ChangePassword)
+	r.ServeHTTP(w, req)
+
+	// Get user.
+	u := models.User{}
+	db.Find(&u, 1)
+
+	// Test results
+	st.Expect(t, w.Code, 400)
+	st.Expect(t, u.Md5Salt, user.Md5Salt)
+	st.Expect(t, u.Md5Password, user.Md5Password)
+	st.Expect(t, u.Password, "")
+	st.Expect(t, w.Body.String(), `{"error":"The password filed must be at least 6 characters long."}`)
 }
 
 /* End File */

@@ -62,6 +62,14 @@ func (t *Controller) ChangePassword(c *gin.Context) {
 		return
 	}
 
+	// Validate password
+	verr := t.db.ValidatePassword(password)
+
+	if verr != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": verr.Error()})
+		return
+	}
+
 	// Validate current password.
 	err = bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(current))
 
