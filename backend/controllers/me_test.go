@@ -406,7 +406,7 @@ func TestChangePassword06(t *testing.T) {
 //
 func TestUpdateMe01(t *testing.T) {
 	// Start the db connection.
-	db, dbName, _ := models.NewTestDB("testing_db")
+	db, dbName, _ := models.NewTestDB("")
 	defer models.TestingTearDown(db, dbName)
 
 	// Create controller
@@ -457,7 +457,7 @@ func TestUpdateMe01(t *testing.T) {
 //
 func TestUpdateMe02(t *testing.T) {
 	// Start the db connection.
-	db, dbName, _ := models.NewTestDB("testing_db")
+	db, dbName, _ := models.NewTestDB("")
 	defer models.TestingTearDown(db, dbName)
 
 	// Create controller
@@ -513,7 +513,7 @@ func TestUpdateMe02(t *testing.T) {
 //
 func TestUpdateMe03(t *testing.T) {
 	// Start the db connection.
-	db, dbName, _ := models.NewTestDB("testing_db")
+	db, dbName, _ := models.NewTestDB("")
 	defer models.TestingTearDown(db, dbName)
 
 	// Create controller
@@ -564,7 +564,7 @@ func TestUpdateMe03(t *testing.T) {
 //
 func TestUpdateMe04(t *testing.T) {
 	// Start the db connection.
-	db, dbName, _ := models.NewTestDB("testing_db")
+	db, dbName, _ := models.NewTestDB("")
 	defer models.TestingTearDown(db, dbName)
 
 	// Create controller
@@ -620,7 +620,7 @@ func TestUpdateMe04(t *testing.T) {
 //
 func TestUpdateMe05(t *testing.T) {
 	// Start the db connection.
-	db, dbName, _ := models.NewTestDB("testing_db")
+	db, dbName, _ := models.NewTestDB("")
 	defer models.TestingTearDown(db, dbName)
 
 	// Create controller
@@ -676,7 +676,7 @@ func TestUpdateMe05(t *testing.T) {
 //
 func TestUpdateMe06(t *testing.T) {
 	// Start the db connection.
-	db, dbName, _ := models.NewTestDB("testing_db")
+	db, dbName, _ := models.NewTestDB("")
 	defer models.TestingTearDown(db, dbName)
 
 	// Create controller
