@@ -401,4 +401,330 @@ func TestChangePassword06(t *testing.T) {
 	st.Expect(t, w.Body.String(), `{"error":"The password filed must be at least 6 characters long."}`)
 }
 
+//
+// TestUpdateMe01 - update user profile
+//
+func TestUpdateMe01(t *testing.T) {
+	// Start the db connection.
+	db, dbName, _ := models.NewTestDB("testing_db")
+	defer models.TestingTearDown(db, dbName)
+
+	// Create controller
+	c := &Controller{}
+	c.SetDB(db)
+
+	// Setup test data
+	user := test.GetRandomUser(33)
+	db.Save(&user)
+
+	account1 := test.GetRandomAccount(33)
+	account1.OwnerId = user.Id
+	db.Save(&account1)
+	db.Save(&models.AcctToUsers{AcctId: account1.Id, UserId: user.Id})
+
+	// Update user profile
+	postStr := fmt.Sprintf(`{ "first_name": "%s", "last_name": "%s", "email": "%s" }`, "Jane", "Wells", "jane@woots.com")
+
+	// Setup request
+	req, _ := http.NewRequest("PUT", "/api/v3/33/me", bytes.NewBuffer([]byte(postStr)))
+
+	// Setup writer.
+	w := httptest.NewRecorder()
+	gin.SetMode("release")
+	gin.DisableConsoleColor()
+
+	r := gin.New()
+	r.Use(func(c *gin.Context) {
+		c.Set("accountId", 33)
+		c.Set("userId", int(user.Id))
+	})
+	r.PUT("/api/v3/:account/me", c.UpdateMe)
+	r.ServeHTTP(w, req)
+
+	// Get user.
+	u := models.User{}
+	db.Find(&u, 1)
+
+	// Test results
+	st.Expect(t, w.Code, 204)
+	st.Expect(t, u.FirstName, "Jane")
+	st.Expect(t, u.LastName, "Wells")
+	st.Expect(t, u.Email, "jane@woots.com")
+}
+
+//
+// TestUpdateMe02 - update user profile - conflict in email
+//
+func TestUpdateMe02(t *testing.T) {
+	// Start the db connection.
+	db, dbName, _ := models.NewTestDB("testing_db")
+	defer models.TestingTearDown(db, dbName)
+
+	// Create controller
+	c := &Controller{}
+	c.SetDB(db)
+
+	// Setup test data
+	user := test.GetRandomUser(33)
+	db.Save(&user)
+
+	// Setup test data
+	user2 := test.GetRandomUser(33)
+	db.Save(&user2)
+
+	account1 := test.GetRandomAccount(33)
+	account1.OwnerId = user.Id
+	db.Save(&account1)
+	db.Save(&models.AcctToUsers{AcctId: account1.Id, UserId: user.Id})
+
+	// Update user profile
+	postStr := fmt.Sprintf(`{ "first_name": "%s", "last_name": "%s", "email": "%s" }`, "Jane", "Wells", user2.Email)
+
+	// Setup request
+	req, _ := http.NewRequest("PUT", "/api/v3/33/me", bytes.NewBuffer([]byte(postStr)))
+
+	// Setup writer.
+	w := httptest.NewRecorder()
+	gin.SetMode("release")
+	gin.DisableConsoleColor()
+
+	r := gin.New()
+	r.Use(func(c *gin.Context) {
+		c.Set("accountId", 33)
+		c.Set("userId", int(user.Id))
+	})
+	r.PUT("/api/v3/:account/me", c.UpdateMe)
+	r.ServeHTTP(w, req)
+
+	// Get user.
+	u := models.User{}
+	db.Find(&u, 1)
+
+	// Test results
+	st.Expect(t, w.Code, 400)
+	st.Expect(t, u.FirstName, user.FirstName)
+	st.Expect(t, u.LastName, user.LastName)
+	st.Expect(t, u.Email, user.Email)
+	st.Expect(t, w.Body.String(), `{"error":"Email already in use."}`)
+}
+
+//
+// TestUpdateMe03 - make sure there are no issues with not updateing the email address
+//
+func TestUpdateMe03(t *testing.T) {
+	// Start the db connection.
+	db, dbName, _ := models.NewTestDB("testing_db")
+	defer models.TestingTearDown(db, dbName)
+
+	// Create controller
+	c := &Controller{}
+	c.SetDB(db)
+
+	// Setup test data
+	user := test.GetRandomUser(33)
+	db.Save(&user)
+
+	account1 := test.GetRandomAccount(33)
+	account1.OwnerId = user.Id
+	db.Save(&account1)
+	db.Save(&models.AcctToUsers{AcctId: account1.Id, UserId: user.Id})
+
+	// Update user profile
+	postStr := fmt.Sprintf(`{ "first_name": "%s", "last_name": "%s", "email": "%s" }`, "Jane", "Wells", user.Email)
+
+	// Setup request
+	req, _ := http.NewRequest("PUT", "/api/v3/33/me", bytes.NewBuffer([]byte(postStr)))
+
+	// Setup writer.
+	w := httptest.NewRecorder()
+	gin.SetMode("release")
+	gin.DisableConsoleColor()
+
+	r := gin.New()
+	r.Use(func(c *gin.Context) {
+		c.Set("accountId", 33)
+		c.Set("userId", int(user.Id))
+	})
+	r.PUT("/api/v3/:account/me", c.UpdateMe)
+	r.ServeHTTP(w, req)
+
+	// Get user.
+	u := models.User{}
+	db.Find(&u, 1)
+
+	// Test results
+	st.Expect(t, w.Code, 204)
+	st.Expect(t, u.FirstName, "Jane")
+	st.Expect(t, u.LastName, "Wells")
+	st.Expect(t, u.Email, user.Email)
+}
+
+//
+// TestUpdateMe04 - update user profile - Make sure we have a first name
+//
+func TestUpdateMe04(t *testing.T) {
+	// Start the db connection.
+	db, dbName, _ := models.NewTestDB("testing_db")
+	defer models.TestingTearDown(db, dbName)
+
+	// Create controller
+	c := &Controller{}
+	c.SetDB(db)
+
+	// Setup test data
+	user := test.GetRandomUser(33)
+	db.Save(&user)
+
+	// Setup test data
+	user2 := test.GetRandomUser(33)
+	db.Save(&user2)
+
+	account1 := test.GetRandomAccount(33)
+	account1.OwnerId = user.Id
+	db.Save(&account1)
+	db.Save(&models.AcctToUsers{AcctId: account1.Id, UserId: user.Id})
+
+	// Update user profile
+	postStr := fmt.Sprintf(`{ "last_name": "%s", "email": "%s" }`, "Wells", user2.Email)
+
+	// Setup request
+	req, _ := http.NewRequest("PUT", "/api/v3/33/me", bytes.NewBuffer([]byte(postStr)))
+
+	// Setup writer.
+	w := httptest.NewRecorder()
+	gin.SetMode("release")
+	gin.DisableConsoleColor()
+
+	r := gin.New()
+	r.Use(func(c *gin.Context) {
+		c.Set("accountId", 33)
+		c.Set("userId", int(user.Id))
+	})
+	r.PUT("/api/v3/:account/me", c.UpdateMe)
+	r.ServeHTTP(w, req)
+
+	// Get user.
+	u := models.User{}
+	db.Find(&u, 1)
+
+	// Test results
+	st.Expect(t, w.Code, 400)
+	st.Expect(t, u.FirstName, user.FirstName)
+	st.Expect(t, u.LastName, user.LastName)
+	st.Expect(t, u.Email, user.Email)
+	st.Expect(t, w.Body.String(), `{"error":"First name field is required."}`)
+}
+
+//
+// TestUpdateMe05 - update user profile - Make sure we have a last name
+//
+func TestUpdateMe05(t *testing.T) {
+	// Start the db connection.
+	db, dbName, _ := models.NewTestDB("testing_db")
+	defer models.TestingTearDown(db, dbName)
+
+	// Create controller
+	c := &Controller{}
+	c.SetDB(db)
+
+	// Setup test data
+	user := test.GetRandomUser(33)
+	db.Save(&user)
+
+	// Setup test data
+	user2 := test.GetRandomUser(33)
+	db.Save(&user2)
+
+	account1 := test.GetRandomAccount(33)
+	account1.OwnerId = user.Id
+	db.Save(&account1)
+	db.Save(&models.AcctToUsers{AcctId: account1.Id, UserId: user.Id})
+
+	// Update user profile
+	postStr := fmt.Sprintf(`{ "first_name": "%s", "email": "%s" }`, "Wells", user2.Email)
+
+	// Setup request
+	req, _ := http.NewRequest("PUT", "/api/v3/33/me", bytes.NewBuffer([]byte(postStr)))
+
+	// Setup writer.
+	w := httptest.NewRecorder()
+	gin.SetMode("release")
+	gin.DisableConsoleColor()
+
+	r := gin.New()
+	r.Use(func(c *gin.Context) {
+		c.Set("accountId", 33)
+		c.Set("userId", int(user.Id))
+	})
+	r.PUT("/api/v3/:account/me", c.UpdateMe)
+	r.ServeHTTP(w, req)
+
+	// Get user.
+	u := models.User{}
+	db.Find(&u, 1)
+
+	// Test results
+	st.Expect(t, w.Code, 400)
+	st.Expect(t, u.FirstName, user.FirstName)
+	st.Expect(t, u.LastName, user.LastName)
+	st.Expect(t, u.Email, user.Email)
+	st.Expect(t, w.Body.String(), `{"error":"Last name field is required."}`)
+}
+
+//
+// TestUpdateMe06 - update user profile - Make sure we have an email
+//
+func TestUpdateMe06(t *testing.T) {
+	// Start the db connection.
+	db, dbName, _ := models.NewTestDB("testing_db")
+	defer models.TestingTearDown(db, dbName)
+
+	// Create controller
+	c := &Controller{}
+	c.SetDB(db)
+
+	// Setup test data
+	user := test.GetRandomUser(33)
+	db.Save(&user)
+
+	// Setup test data
+	user2 := test.GetRandomUser(33)
+	db.Save(&user2)
+
+	account1 := test.GetRandomAccount(33)
+	account1.OwnerId = user.Id
+	db.Save(&account1)
+	db.Save(&models.AcctToUsers{AcctId: account1.Id, UserId: user.Id})
+
+	// Update user profile
+	postStr := fmt.Sprintf(`{ "first_name": "%s", "last_name": "%s" }`, "Wells", "Wells")
+
+	// Setup request
+	req, _ := http.NewRequest("PUT", "/api/v3/33/me", bytes.NewBuffer([]byte(postStr)))
+
+	// Setup writer.
+	w := httptest.NewRecorder()
+	gin.SetMode("release")
+	gin.DisableConsoleColor()
+
+	r := gin.New()
+	r.Use(func(c *gin.Context) {
+		c.Set("accountId", 33)
+		c.Set("userId", int(user.Id))
+	})
+	r.PUT("/api/v3/:account/me", c.UpdateMe)
+	r.ServeHTTP(w, req)
+
+	// Get user.
+	u := models.User{}
+	db.Find(&u, 1)
+
+	// Test results
+	st.Expect(t, w.Code, 400)
+	st.Expect(t, u.FirstName, user.FirstName)
+	st.Expect(t, u.LastName, user.LastName)
+	st.Expect(t, u.Email, user.Email)
+	st.Expect(t, w.Body.String(), `{"error":"Email field is required."}`)
+}
+
 /* End File */
