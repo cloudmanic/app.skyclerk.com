@@ -2,29 +2,31 @@ version: '2.1'
 
 services:
 
-  # App
-  web:
+  # mariadb 10.2
+  mariadb102:
+    image: mariadb:10.2
 
-    hostname: ${COMPOSE_PROJECT_NAME}
+    container_name: mariadb-10.2.app.skyclerk.com
 
-    container_name: ${COMPOSE_PROJECT_NAME}
-
-    image: golang:1.11-alpine
-
-    working_dir: /go/src/backend
-
-    entrypoint: go run main.go
+    ports:
+      - 127.0.0.1:9306:3306
 
     volumes:
-      - ../:/go/src/backend
+      - ./mariadb102_data:/var/lib/mysql
 
-    expose:
-      - "9090"
+    restart: always
 
-    networks:
-      - shared
+    environment:
+      MYSQL_DATABASE: app_skyclerk_com
+      MYSQL_ROOT_PASSWORD: foobar
 
-networks:
-  shared:
-    external:
-      name: shared
+  # Mailhog
+  mailhog:
+
+    image: mailhog/mailhog
+
+    container_name: mailhog.app.skyclerk.com
+
+    ports:
+      - 127.0.0.1:9025:8025
+      - 127.0.0.1:9125:1025

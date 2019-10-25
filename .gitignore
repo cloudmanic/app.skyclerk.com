@@ -10,3 +10,6 @@ backups.retry
 bootstrap.retry
 server-config.retry
 imaginary.retry
+
+# Docker stuff
+backend/docker/mariadb102_data
