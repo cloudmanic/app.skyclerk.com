@@ -29,6 +29,7 @@ import { ActivityComponent } from './activity/activity.component';
 import { GraphsComponent } from './dashboard/graphs/graphs.component';
 import { ReportsComponent } from './dashboard/reports/reports.component';
 import { AddComponent as SettingsUsersAdd } from './settings/users/add/add.component';
+import { ForgotPasswordComponent } from './auth/forgot-password/forgot-password.component';
 
 const routes: Routes = [
 
@@ -65,7 +66,8 @@ const routes: Routes = [
 	// login
 	{
 		path: '', component: LayoutAuthComponent, children: [
-			{ path: 'login', component: LoginComponent }
+			{ path: 'login', component: LoginComponent },
+			{ path: 'forget-password', component: ForgotPasswordComponent }
 		]
 	},
 

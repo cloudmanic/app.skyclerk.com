@@ -65,6 +65,7 @@ import { HistoryComponent } from './settings/billing/history/history.component';
 import { CategoriesComponent } from './settings/categories-labels/categories/categories.component';
 import { LabelsComponent } from './settings/categories-labels/labels/labels.component';
 import { AddComponent as SettingsUsersAdd } from './settings/users/add/add.component';
+import { ForgotPasswordComponent } from './auth/forgot-password/forgot-password.component';
 
 @NgModule({
 	declarations: [
@@ -112,7 +113,8 @@ import { AddComponent as SettingsUsersAdd } from './settings/users/add/add.compo
 		HistoryComponent,
 		CategoriesComponent,
 		LabelsComponent,
-		SettingsUsersAdd
+		SettingsUsersAdd,
+		ForgotPasswordComponent
 	],
 	imports: [
 		FormsModule,

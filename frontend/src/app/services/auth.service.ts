@@ -47,6 +47,22 @@ export class AuthService {
 				};
 			}));
 	}
+
+	//
+	// Forgot password request
+	//
+	forgotPassword(email: string): Observable<boolean> {
+		// Build POST
+		let post = {
+			email: email
+		}
+
+		// Send Request to BE.
+		return this.http.post<boolean>(environment.app_server + '/forgot-password', post)
+			.pipe(map(() => {
+				return true;
+			}));
+	}
 }
 
 // Response from a register request.
