@@ -14,8 +14,6 @@ services:
     volumes:
       - ./mariadb102_data:/var/lib/mysql
 
-    restart: always
-
     environment:
       MYSQL_DATABASE: app_skyclerk_com
       MYSQL_ROOT_PASSWORD: foobar

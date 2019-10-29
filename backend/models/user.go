@@ -7,10 +7,10 @@
 package models
 
 import (
+	"crypto/rand"
 	"errors"
-	"time"
-
 	"html/template"
+	"time"
 
 	"golang.org/x/crypto/bcrypt"
 
@@ -280,6 +280,35 @@ func (t *DB) ValidateCreateUser(first string, last string, email string, googleA
 	return nil
 }
 
+//
+// ResetUserPassword - Reset a user password.
+//
+func (t *DB) ResetUserPassword(id uint, password string) error {
+	// Get the user.
+	user, err := t.GetUserById(id)
+
+	if err != nil {
+		return err
+	}
+
+	// Build the new password hash.
+	hash, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
+
+	if err != nil {
+		services.InfoMsg(err.Error() + "ResetUserPassword - Unable to create password hash (password hash)")
+		return err
+	}
+
+	// Update the database with the new password
+	if err := t.Model(&user).Update("password", hash).Update("md5_password", "").Update("md5_salt", "").Error; err != nil {
+		services.InfoMsg(err.Error() + "ResetUserPassword - Unable update the password (mysql query)")
+		return err
+	}
+
+	// Success.
+	return nil
+}
+
 // ------------------ Helper Functions --------------------- //
 
 //
@@ -292,6 +321,47 @@ func (t *DB) doPostUserRegisterStuff(user User, ipAddress string) {
 
 	// Tell slack about this.
 	go slack.Notify("#events", "New Skyclerk User Account : "+user.Email)
+}
+
+//
+// GenerateRandomString returns a securely generated random string.
+// It will return an error if the system's secure random
+// number generator fails to function correctly, in which
+// case the caller should not continue.
+//
+func (t *DB) GenerateRandomString(n int) (string, error) {
+	const letters = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz-"
+
+	bytes, err := t.GenerateRandomBytes(n)
+
+	if err != nil {
+		return "", err
+	}
+
+	for i, b := range bytes {
+		bytes[i] = letters[b%byte(len(letters))]
+	}
+
+	return string(bytes), nil
+}
+
+//
+// GenerateRandomBytes returns securely generated random bytes.
+// It will return an error if the system's secure random
+// number generator fails to function correctly, in which
+// case the caller should not continue.
+//
+func (t *DB) GenerateRandomBytes(n int) ([]byte, error) {
+	b := make([]byte, n)
+
+	_, err := rand.Read(b)
+
+	// Note that err == nil only if we read len(b) bytes.
+	if err != nil {
+		return nil, err
+	}
+
+	return b, nil
 }
 
 /* End File */

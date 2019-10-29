@@ -105,6 +105,8 @@ func (t *Controller) DoRoutes(r *gin.Engine) {
 
 	// Other Auth Routes
 	r.POST("/register", t.DoRegister)
+	r.POST("/reset-password", t.DoResetPassword)
+	r.POST("/forgot-password", t.DoForgotPassword)
 
 	// -------- Static Files ------------ //
 

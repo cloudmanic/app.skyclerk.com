@@ -69,6 +69,7 @@ type Datastore interface {
 	GetUserByEmail(email string) (User, error)
 	ValidatePassword(password string) error
 	ValidateEmailAddress(email string) error
+	ResetUserPassword(id uint, password string) error
 	ValidateUserLogin(email string, password string) error
 	ValidateCreateUser(first string, last string, email string, googleAuth bool) error
 	LoginUserByEmailPass(email string, password string, appId uint, userAgent string, ipAddress string) (User, Session, error)
@@ -76,6 +77,11 @@ type Datastore interface {
 
 	// AcctToUsers
 	GetUsersByAccount(accountId uint) []User
+
+	// Forget password stuff
+	GetUserFromToken(token string) (User, error)
+	DeleteForgotPasswordByToken(token string) error
+	DoResetPassword(user_email string, ip string) error
 
 	// File
 	GetSignedFileUrl(path string) string

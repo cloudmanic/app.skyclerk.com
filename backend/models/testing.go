@@ -118,6 +118,7 @@ func truncateAllTables(db *gorm.DB) {
 	db.Exec("TRUNCATE TABLE FilesToLedger;")
 	db.Exec("TRUNCATE TABLE billings;")
 	db.Exec("TRUNCATE TABLE acct_to_billings;")
+	db.Exec("TRUNCATE TABLE forgot_passwords;")
 }
 
 //
