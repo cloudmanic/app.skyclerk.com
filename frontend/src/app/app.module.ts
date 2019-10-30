@@ -66,6 +66,7 @@ import { CategoriesComponent } from './settings/categories-labels/categories/cat
 import { LabelsComponent } from './settings/categories-labels/labels/labels.component';
 import { AddComponent as SettingsUsersAdd } from './settings/users/add/add.component';
 import { ForgotPasswordComponent } from './auth/forgot-password/forgot-password.component';
+import { ResetPasswordComponent } from './auth/reset-password/reset-password.component';
 
 @NgModule({
 	declarations: [
@@ -114,7 +115,8 @@ import { ForgotPasswordComponent } from './auth/forgot-password/forgot-password.
 		CategoriesComponent,
 		LabelsComponent,
 		SettingsUsersAdd,
-		ForgotPasswordComponent
+		ForgotPasswordComponent,
+		ResetPasswordComponent
 	],
 	imports: [
 		FormsModule,
