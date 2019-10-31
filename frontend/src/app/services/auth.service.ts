@@ -64,21 +64,22 @@ export class AuthService {
 			}));
 	}
 
-	// //
-	// // Reset password request
-	// //
-	// resetPassword(email: string): Observable<boolean> {
-	// 	// Build POST
-	// 	let post = {
-	// 		email: email
-	// 	}
 	//
-	// 	// Send Request to BE.
-	// 	return this.http.post<boolean>(environment.app_server + '/forgot-password', post)
-	// 		.pipe(map(() => {
-	// 			return true;
-	// 		}));
-	// }
+	// Reset password request
+	//
+	resetPassword(password: string, hash: string): Observable<boolean> {
+		// Build POST
+		let post = {
+			password: password,
+			hash: hash
+		}
+
+		// Send Request to BE.
+		return this.http.post<boolean>(environment.app_server + '/reset-password', post)
+			.pipe(map(() => {
+				return true;
+			}));
+	}
 }
 
 // Response from a register request.

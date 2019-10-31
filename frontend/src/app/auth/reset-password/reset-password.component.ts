@@ -9,6 +9,8 @@ import { Component, OnInit } from '@angular/core';
 import { Params, Router, ActivatedRoute } from '@angular/router';
 import { environment } from 'src/environments/environment';
 import { Title } from '@angular/platform-browser';
+import { AuthService } from 'src/app/services/auth.service';
+import { HttpErrorResponse } from '@angular/common/http';
 
 const pageTitle: string = environment.title_prefix + "Reset Password";
 
@@ -24,7 +26,7 @@ export class ResetPasswordComponent implements OnInit {
 	passwordConfirm: string = "";
 	successMsg: string = "";
 
-	constructor(private router: Router, private activatedRoute: ActivatedRoute, private titleService: Title) { }
+	constructor(private router: Router, private activatedRoute: ActivatedRoute, private titleService: Title, private authService: AuthService) { }
 
 	//
 	// OnInit...
@@ -64,9 +66,8 @@ export class ResetPasswordComponent implements OnInit {
 		this.authService.resetPassword(this.password, this.hash).subscribe(
 			// Success - Redirect to dashboard.
 			() => {
-				this.successMsg = "Please check your email for further instructions.";
-				this.password = "";
-				this.passwordConfirm = "";
+				this.router.navigate(['/login'], { queryParams: { success: "Your password was successfully reset." } });
+
 			},
 
 			// Error
@@ -74,46 +75,6 @@ export class ResetPasswordComponent implements OnInit {
 				this.errorMsg = err.error.error;
 			}
 		);
-
-		// // First make sure the passwords match.
-		// if (form.value.password != form.value.password_again) {
-		// 	this.errorMsg = "Opps, the passwords do not match.";
-		// 	return;
-		// }
-		//
-		// // Clear post error.
-		// this.errorMsg = "";
-		//
-		// // Update submit button
-		// this.submitBtn = "Saving...";
-		//
-		// // Add the hash to the post.
-		// form.value.hash = this.hash;
-		//
-		// // Make the the HTTP request:
-		// this.http.post(environment.app_server + '/reset-password', form.value).subscribe(
-		//
-		// 	// Success redirect to login
-		// 	data => {
-		// 		this.router.navigate(['/login'], { queryParams: { success: "Your password was successfully reset." } });
-		// 	},
-		//
-		// 	// Error
-		// 	(err: HttpErrorResponse) => {
-		//
-		// 		// Change button back.
-		// 		this.submitBtn = "Reset Password";
-		//
-		// 		if (err.error instanceof Error) {
-		// 			console.log('A client-side error occurred:', err.error.message);
-		// 		} else {
-		// 			this.errorMsg = err.error.error;
-		// 		}
-		//
-		// 	}
-		//
-		// );
-
 	}
 
 
