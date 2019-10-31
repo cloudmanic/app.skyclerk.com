@@ -15,6 +15,7 @@ import { ReportService } from 'src/app/services/report.service';
 import { Subject } from 'rxjs';
 import { Title } from '@angular/platform-browser';
 import { AccountService } from 'src/app/services/account.service';
+import { LedgerService } from 'src/app/services/ledger.service';
 
 @Component({
 	selector: 'app-dashboard-summary',
@@ -22,6 +23,8 @@ import { AccountService } from 'src/app/services/account.service';
 })
 
 export class SummaryComponent implements OnInit {
+	firstRun: boolean = false;
+	normalPage: boolean = false;
 	pageTitle: string = "Skyclerk | Dashboard";
 	activity: Activity[] = [];
 	destory: Subject<boolean> = new Subject<boolean>();
@@ -144,7 +147,7 @@ export class SummaryComponent implements OnInit {
 	//
 	// Constructor
 	//
-	constructor(public activityService: ActivityService, public reportService: ReportService, public accountService: AccountService, private titleService: Title) { }
+	constructor(public activityService: ActivityService, public reportService: ReportService, public accountService: AccountService, private titleService: Title, private ledgerService: LedgerService) { }
 
 	//
 	// ngOnInit
@@ -177,9 +180,28 @@ export class SummaryComponent implements OnInit {
 		// Load page data
 		this.loadActivity();
 
+		// Ledger data
+		this.loadLedgerData();
+
 		// Build charts
 		this.buildChart1();
 		this.buildChart2();
+	}
+
+	//
+	// Load ledger data.
+	//
+	loadLedgerData() {
+		// Load ledger entries
+		this.ledgerService.get(0, "", "", null, [], null).subscribe(res => {
+			if (res.Data.length == 0) {
+				this.firstRun = true;
+				this.normalPage = false;
+			} else {
+				this.firstRun = false;
+				this.normalPage = true;
+			}
+		});
 	}
 
 	//

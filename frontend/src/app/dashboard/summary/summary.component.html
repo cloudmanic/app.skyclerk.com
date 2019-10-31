@@ -1,4 +1,58 @@
-<div class="main">
+<div class="main" *ngIf="firstRun">
+  <div class="shell clearfix">
+    <div class="content">
+
+      <div class="contentbox">
+        <div class="overview">
+          <!-- <div class="overview-head">
+            <div class="overview-label">
+              <h4>Overview</h4>
+            </div>
+          </div> -->
+
+          <div class="overview-body">
+            <section class="section section-overview">
+              <div class="section-inner">
+                <h1>Welcome to your new Skyclerk Account!</h1>
+
+                <h4>Let’s get started by adding some expenses or income.</h4>
+
+                <a [routerLink]="['/ledger']" [queryParams]="{add: 'expense'}" class="btn btn-block btn-large btn-red">
+                  <span class="ico-plus-circle">&nbsp;</span>
+                  ADD EXPENSE
+                </a>
+
+                <a [routerLink]="['/ledger']" [queryParams]="{add: 'income'}" class="btn btn-block btn-large btn-darkgreen">
+                  <span class="ico-plus-circle">&nbsp;</span>
+                  ADD INCOME
+                </a>
+
+                <p>You can always access these buttons later over in the left hand sidebar.</p>
+
+                <h4>Or you can upload a receipt with Snap!Clerk and we’ll process the information for you.</h4>
+              </div>
+
+              <div class="section-actions">
+                <a routerLink="/snapclerk" class="btn btn-large btn-yellow">
+                  <span class="ico-plus-circle">&nbsp;</span>
+                  ADD RECEIPT
+                </a>
+              </div>
+
+            </section>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+
+    <app-layouts-sidebar current="dashboard"></app-layouts-sidebar>
+  </div>
+</div>
+
+
+<div class="main" *ngIf="normalPage">
   <div class="shell clearfix">
     <div class="content">
 

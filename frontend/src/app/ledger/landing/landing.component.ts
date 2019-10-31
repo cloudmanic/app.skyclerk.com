@@ -70,6 +70,8 @@ export class LandingComponent implements OnInit {
 
 		// Listen for account changes.
 		this.accountService.accountChange.subscribe(() => {
+			this.firstRun = false;
+			this.showLedger = false;
 			this.refreshLedger();
 		});
 
