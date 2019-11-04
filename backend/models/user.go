@@ -35,6 +35,7 @@ type User struct {
 	Status       string    `sql:"not null;type:ENUM('Active', 'Disable');default:'Active'" json:"-"`
 	LastActivity time.Time `sql:"not null" json:"last_activity"`
 	SignupIp     string    `sql:"not null" json:"-"`
+	Admin        string    `sql:"not null;type:ENUM('Yes', 'No');default:'No'" json:"-"`
 	Accounts     []Account `json:"accounts"`
 	Session      Session   `json:"-"`
 }

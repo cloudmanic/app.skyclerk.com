@@ -22,6 +22,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"golang.org/x/crypto/acme/autocert"
 
+	"app.skyclerk.com/backend/controllers/admin"
 	"app.skyclerk.com/backend/models"
 	"app.skyclerk.com/backend/services"
 )
@@ -91,7 +92,7 @@ func (t *Controller) ValidateRequest(c *gin.Context, obj ValidateRequest, action
 }
 
 //
-// Start the webserver
+// StartWebServer - Start the webserver
 //
 func (t *Controller) StartWebServer() {
 
@@ -134,6 +135,13 @@ func (t *Controller) StartWebServer() {
 
 	// Register Routes
 	t.DoRoutes(router)
+
+	// Start admin controllers
+	a := &admin.Controller{}
+	a.SetDB(t.db)
+
+	// Do admin routes
+	a.DoRoutes(router)
 
 	// Setup http server
 	if os.Getenv("APP_ENV") == "local" {
