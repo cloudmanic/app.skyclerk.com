@@ -55,3 +55,18 @@
 
 .centcom .centcom-table { padding: 20px 40px; border: #efefef solid 1px; }
 .centcom .centcom-table tr { text-align: left; }
+
+.centcom .fields-cont .form-group { display: flex; flex-direction: column; margin-bottom: 15px; }
+.centcom .fields-cont .form-group label { font-size: 16px; font-weight: bold; margin-bottom: 3px; }
+.centcom .fields-cont .form-group select { height: 35px; }
+.centcom .fields-cont .form-group input { height: 35px; padding-left: 10px; }
+.centcom .fields-cont .form-group textarea { padding: 10px; border: 2px #efefef solid; }
+
+.centcom .snapclerk-view .body { display: flex; justify-content: space-between; }
+.centcom .snapclerk-view .body .img-cont { width: 800px; }
+.centcom .snapclerk-view .body .fields-cont { width: 400px; padding: 0px 20px; }
+.centcom .snapclerk-view .body .img-cont img { width: 100%; }
+.centcom .snapclerk-view .body .button-row { display: flex; flex-direction: row; justify-content: space-between; }
+.centcom .snapclerk-view .body .button-row button { width: 100px; height: 30px; }
+.centcom .snapclerk-view .body .button-row a { font-size: 15px; }
+.centcom .snapclerk-view .body .button-row a.red { color: red; }
