@@ -82,6 +82,7 @@ func (t *Controller) ValidateRequest(c *gin.Context, obj ValidateRequest, action
 		}
 
 	} else {
+		services.Info(err)
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid JSON in body. There is a chance the JSON maybe valid but does not match the data type requirements. For example maybe you passed a string in for an integer."})
 		return err
 	}

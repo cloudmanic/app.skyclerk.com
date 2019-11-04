@@ -31,6 +31,8 @@ import { ReportsComponent } from './dashboard/reports/reports.component';
 import { AddComponent as SettingsUsersAdd } from './settings/users/add/add.component';
 import { ForgotPasswordComponent } from './auth/forgot-password/forgot-password.component';
 import { ResetPasswordComponent } from './auth/reset-password/reset-password.component';
+import { ViewComponent as CentcomSnapClerkView } from './centcom/snapclerk/view/view.component';
+import { CoreComponent as CentcomCoreComponent } from './centcom/layout/core/core.component';
 
 const routes: Routes = [
 
@@ -63,6 +65,19 @@ const routes: Routes = [
 			{ path: 'settings/categories-labels', component: SettingsCategoriesLabelsComponent, canActivate: [SessionGuard] },
 		]
 	},
+
+	// Centcom
+	{
+		path: 'centcom', component: CentcomCoreComponent, children: [
+
+			// snapclerk
+			{ path: 'snapclerk', component: CentcomSnapClerkView, canActivate: [SessionGuard] },
+
+			// redirect
+			{ path: '**', redirectTo: 'snapclerk' }
+		]
+	},
+
 
 	// login
 	{

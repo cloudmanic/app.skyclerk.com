@@ -67,6 +67,8 @@ import { LabelsComponent } from './settings/categories-labels/labels/labels.comp
 import { AddComponent as SettingsUsersAdd } from './settings/users/add/add.component';
 import { ForgotPasswordComponent } from './auth/forgot-password/forgot-password.component';
 import { ResetPasswordComponent } from './auth/reset-password/reset-password.component';
+import { ViewComponent as CentcomSnapClerkView } from './centcom/snapclerk/view/view.component';
+import { CoreComponent as CentcomCoreComponent } from './centcom/layout/core/core.component';
 
 @NgModule({
 	declarations: [
@@ -116,7 +118,9 @@ import { ResetPasswordComponent } from './auth/reset-password/reset-password.com
 		LabelsComponent,
 		SettingsUsersAdd,
 		ForgotPasswordComponent,
-		ResetPasswordComponent
+		ResetPasswordComponent,
+		CentcomSnapClerkView,
+		CentcomCoreComponent
 	],
 	imports: [
 		FormsModule,

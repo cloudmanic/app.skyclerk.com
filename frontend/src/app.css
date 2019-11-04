@@ -45,3 +45,13 @@
 .settings .mod { display: block; margin-top: 20px; }
 .settings .mod:first-child { margin-top: unset; }
 .form-actions { padding: 0 10px 0 10px; }
+
+/* -------------------- Centcom ---------------- */
+.centcom { width: 1200px; margin: 0 auto; display: block; margin-top: 20px; }
+.centcom h1 { font-size: 40px }
+.centcom .header-wrap { display: flex; flex-direction: row; justify-content: space-between; }
+.centcom ul { list-style: none; display: flex; flex-direction: row; justify-content: flex-start; margin: auto 0; }
+.centcom ul li { display: block; margin-right: 20px; }
+
+.centcom .centcom-table { padding: 20px 40px; border: #efefef solid 1px; }
+.centcom .centcom-table tr { text-align: left; }

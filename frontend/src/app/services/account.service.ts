@@ -22,7 +22,7 @@ export class AccountService {
 	// Used when account change happens.
 	accountChange = new EventEmitter<number>();
 
-	public activeAccount: Account = new Account();
+	activeAccount: Account = new Account();
 
 	//
 	// Constructor
