@@ -6,53 +6,56 @@
     </div>
 
     <div class="fields-cont">
+      <form (submit)="save()">
 
-      <div class="form-group">
-        <label>Account</label>
-        <select name="account" [(ngModel)]="account" (change)="onAccountChange()">
-          <option [ngValue]="row" *ngFor="let row of user.Accounts">{{ row.Name }}</option>
-        </select>
-      </div>
+        <div class="form-group">
+          <label>Account</label>
+          <select name="account" [(ngModel)]="account" (change)="onAccountChange()">
+            <option [ngValue]="row" *ngFor="let row of user.Accounts">{{ row.Name }}</option>
+          </select>
+        </div>
 
-      <div class="form-group autocomplete">
-        <label>Contact</label>
-        <input type="text" name="input" [(ngModel)]="contactInput" (keyup)="onContactChange()" autocomplete="false" />
-        <ul *ngIf="contactsResults.length > 0">
-          <li *ngFor="let row of contactsResults"><a (click)="onContactSelect(row)">{{ displayContact(row) }}</a></li>
-        </ul>
-      </div>
+        <div class="form-group autocomplete">
+          <label>Contact</label>
+          <input type="text" name="contactInput" [(ngModel)]="contactInput" (keyup)="onContactChange()" autocomplete="false" />
+          <ul *ngIf="contactsResults.length > 0">
+            <li *ngFor="let row of contactsResults"><a (click)="onContactSelect(row)">{{ displayContact(row) }}</a></li>
+          </ul>
+        </div>
 
-      <div class="form-group">
-        <label>Date</label>
-        <input type="date" name="" />
-      </div>
+        <div class="form-group">
+          <label>Date</label>
+          <input type="date" name="" />
+        </div>
 
-      <div class="form-group">
-        <label>Category</label>
-        <select>
-          <option value="">Category #1</option>
-          <option value="">Category #2</option>
-        </select>
-      </div>
+        <div class="form-group autocomplete">
+          <label>Category</label>
+          <input type="text" name="categoriesInput" [(ngModel)]="categoriesInput" (keyup)="onCategoryChange()" autocomplete="false" />
+          <ul *ngIf="categoriesResults.length > 0">
+            <li *ngFor="let row of categoriesResults"><a (click)="onCategorySelect(row)">{{ row.Name }}</a></li>
+          </ul>
+        </div>
 
-      <div class="form-group">
-        <label>Amount</label>
-        <input type="number" name="" />
-      </div>
+        <div class="form-group">
+          <label>Amount</label>
+          <input type="number" name="Amount" [(ngModel)]="snapclerk.Amount" />
+        </div>
 
-      <div class="form-group">
-        <label>Note</label>
-        <textarea name="name" rows="8" cols="80"></textarea>
-      </div>
+        <div class="form-group">
+          <label>Note</label>
+          <textarea name="Note" rows="8" cols="80" [(ngModel)]="snapclerk.Note"></textarea>
+        </div>
 
-      <div class="form-group button-row">
-        <a href="" class="red">Reject</a>
-        <button>Save</button>
-      </div>
+        <div class="form-group button-row">
+          <a href="" class="red">Reject</a>
+          <button>Save</button>
+        </div>
 
-      <div class="count-cont" *ngIf="remaining > 0">
-        {{ remaining }} Remaining
-      </div>
+        <div class="count-cont" *ngIf="remaining > 0">
+          {{ remaining }} Remaining
+        </div>
+
+      </form>
 
     </div>
   </div>
