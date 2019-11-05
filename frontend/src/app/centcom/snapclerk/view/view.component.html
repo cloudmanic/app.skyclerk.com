@@ -9,9 +9,8 @@
 
       <div class="form-group">
         <label>Account</label>
-        <select>
-          <option value="">Account #1</option>
-          <option value="">Account #2</option>
+        <select name="account" [(ngModel)]="account" (change)="onAccountChange()">
+          <option [ngValue]="row" *ngFor="let row of user.Accounts">{{ row.Name }}</option>
         </select>
       </div>
 

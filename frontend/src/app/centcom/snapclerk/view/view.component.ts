@@ -11,6 +11,8 @@ import { environment } from 'src/environments/environment';
 import { Observable } from 'rxjs';
 import { Contact } from 'src/app/models/contact.model';
 import { map } from 'rxjs/operators';
+import { Me } from 'src/app/models/me.model';
+import { Account } from 'src/app/models/account.model';
 
 @Component({
 	selector: 'app-view',
@@ -18,7 +20,8 @@ import { map } from 'rxjs/operators';
 })
 
 export class ViewComponent implements OnInit {
-	accountID: number = 101;
+	user: Me = new Me();
+	account: Account = new Account();
 	contact: Contact = new Contact();
 	contactInput: string = "";
 	contactsResults: Contact[] = [];
@@ -32,7 +35,15 @@ export class ViewComponent implements OnInit {
 	// ngOnInit
 	//
 	ngOnInit() {
+		this.loadUser();
+	}
 
+	//
+	// On account change.
+	//
+	onAccountChange() {
+		this.contactsResults = [];
+		this.loadContacts();
 	}
 
 	//
@@ -63,6 +74,24 @@ export class ViewComponent implements OnInit {
 	}
 
 	//
+	// Load user
+	//
+	loadUser() {
+		this.requestUser().subscribe(res => {
+			this.user = res;
+			this.account = this.user.Accounts[0];
+		});
+	}
+
+	//
+	// Request User
+	//
+	requestUser(): Observable<Me> {
+		return this.http.get<Me>(environment.app_server + '/api/admin/users/109')
+			.pipe(map(res => { return new Me().deserialize(res); }));
+	}
+
+	//
 	// Load contacts.
 	//
 	loadContacts() {
@@ -82,7 +111,7 @@ export class ViewComponent implements OnInit {
 	// Request contacts
 	//
 	requestContacts(): Observable<Contact[]> {
-		let url = `${environment.app_server}/api/admin/contacts?limit=20&account_id=${this.accountID}`;
+		let url = `${environment.app_server}/api/admin/contacts?limit=20&account_id=${this.account.Id}`;
 
 		// Are we searching?
 		if (this.contactInput.length > 0) {

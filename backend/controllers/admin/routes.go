@@ -27,9 +27,9 @@ func (t *Controller) DoRoutes(r *gin.Engine) {
 		// Contacts
 		adminAPI.GET("/contacts", t.GetContacts)
 
-		// // Users
+		// Users
 		// adminApi.GET("/users", t.GetUsers)
-		// adminApi.DELETE("/users/:id", t.DeleteUser)
+		adminAPI.GET("/users/:id", t.GetUser)
 		// adminApi.POST("/users/login-as-user", t.LoginAsUser)
 	}
 
