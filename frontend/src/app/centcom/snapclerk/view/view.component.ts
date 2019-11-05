@@ -13,6 +13,7 @@ import { Contact } from 'src/app/models/contact.model';
 import { map } from 'rxjs/operators';
 import { Me } from 'src/app/models/me.model';
 import { Account } from 'src/app/models/account.model';
+import { SnapClerk } from 'src/app/models/snapclerk.model';
 
 @Component({
 	selector: 'app-view',
@@ -21,8 +22,10 @@ import { Account } from 'src/app/models/account.model';
 
 export class ViewComponent implements OnInit {
 	user: Me = new Me();
+	remaining: number = 0;
 	account: Account = new Account();
 	contact: Contact = new Contact();
+	snapclerk: SnapClerk = new SnapClerk();
 	contactInput: string = "";
 	contactsResults: Contact[] = [];
 
@@ -35,7 +38,7 @@ export class ViewComponent implements OnInit {
 	// ngOnInit
 	//
 	ngOnInit() {
-		this.loadUser();
+		this.loadSnapClerks();
 	}
 
 	//
@@ -74,12 +77,52 @@ export class ViewComponent implements OnInit {
 	}
 
 	//
+	// Load SnapClerk
+	//
+	loadSnapClerks() {
+		this.requestSnapClerks().subscribe(res => {
+			if (res.length == 0) {
+				this.remaining = 0;
+				this.snapclerk = new SnapClerk();
+				return;
+			}
+
+			// Set active snapclerk
+			this.snapclerk = res[0];
+			this.remaining = (res.length - 1);
+
+			// Set the account.
+			this.loadUser();
+		});
+	}
+
+	//
+	// Set active account.
+	//
+	setActiveAccount() {
+		for (let i = 0; i < this.user.Accounts.length; i++) {
+			if (this.snapclerk.AccountId == this.user.Accounts[i].Id) {
+				this.account = this.user.Accounts[i];
+			}
+		}
+	}
+
+	//
+	// Request Snapclerks
+	//
+	requestSnapClerks(): Observable<SnapClerk[]> {
+		return this.http.get<SnapClerk[]>(environment.app_server + '/api/admin/snapclerk')
+			.pipe(map(res => res.map(res => new SnapClerk().deserialize(res))));
+	}
+
+	//
 	// Load user
 	//
 	loadUser() {
 		this.requestUser().subscribe(res => {
 			this.user = res;
 			this.account = this.user.Accounts[0];
+			this.setActiveAccount();
 		});
 	}
 
@@ -87,7 +130,7 @@ export class ViewComponent implements OnInit {
 	// Request User
 	//
 	requestUser(): Observable<Me> {
-		return this.http.get<Me>(environment.app_server + '/api/admin/users/109')
+		return this.http.get<Me>(environment.app_server + '/api/admin/users/' + this.snapclerk.AddedById)
 			.pipe(map(res => { return new Me().deserialize(res); }));
 	}
 

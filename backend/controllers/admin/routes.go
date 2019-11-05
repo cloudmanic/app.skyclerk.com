@@ -27,6 +27,9 @@ func (t *Controller) DoRoutes(r *gin.Engine) {
 		// Contacts
 		adminAPI.GET("/contacts", t.GetContacts)
 
+		// Snapclerk
+		adminAPI.GET("/snapclerk", t.GetSnapClerks)
+
 		// Users
 		// adminApi.GET("/users", t.GetUsers)
 		adminAPI.GET("/users/:id", t.GetUser)

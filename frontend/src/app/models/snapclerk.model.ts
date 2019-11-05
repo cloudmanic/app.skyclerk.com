@@ -10,20 +10,21 @@ import { Serializable } from './serializable.model';
 import { File as FileModel } from './file.model';
 
 export class SnapClerk implements Serializable {
-	Id: number;
-	AccountId: number;
-	Status: string;
-	File: FileModel;
-	LedgerId: number;
-	Amount: number;
-	Contact: string;
-	Category: string;
-	Labels: string;
-	Note: string;
-	Lat: string;
-	Lon: string;
-	CreatedAt: Date;
-	ProcessedAt: Date;
+	Id: number = 0;
+	AccountId: number = 0;
+	AddedById: number = 0;
+	Status: string = "";
+	File: FileModel = new FileModel();
+	LedgerId: number = 0;
+	Amount: number = 0;
+	Contact: string = "";
+	Category: string = "";
+	Labels: string = "";
+	Note: string = "";
+	Lat: string = "";
+	Lon: string = "";
+	CreatedAt: Date = new Date();
+	ProcessedAt: Date = new Date();
 
 	//
 	// Json to Object.
@@ -31,6 +32,7 @@ export class SnapClerk implements Serializable {
 	deserialize(json: Object): this {
 		this.Id = json["id"];
 		this.AccountId = json["account_id"];
+		this.AddedById = json["added_by_id"];
 		this.Status = json["status"];
 		this.File = new FileModel().deserialize(json["file"]);
 		this.LedgerId = json["ledger_id"];
@@ -53,6 +55,7 @@ export class SnapClerk implements Serializable {
 		let rt = {
 			id: obj.Id,
 			account_id: obj.AccountId,
+			added_by_id: obj.AddedById,
 			status: obj.Status,
 			file: new FileModel().serialize(obj.File),
 			ledger_id: obj.LedgerId,

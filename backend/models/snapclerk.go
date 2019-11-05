@@ -22,7 +22,7 @@ import (
 type SnapClerk struct {
 	Id           uint      `gorm:"primary_key;column:SnapClerkId" json:"id"`
 	AccountId    uint      `gorm:"column:SnapClerkAccountId" sql:"not null" json:"account_id"`
-	AddedById    uint      `gorm:"column:SnapClerkAddedById" sql:"not null" json:"-"`
+	AddedById    uint      `gorm:"column:SnapClerkAddedById" sql:"not null" json:"added_by_id"`
 	ReviewedById uint      `gorm:"column:SnapClerkReviewedById" sql:"not null" json:"-"`
 	Status       string    `gorm:"column:SnapClerkStatus" sql:"not null;type:ENUM('Pending','Processed','Rejected');default:'Pending'" json:"status"`
 	FileId       uint      `gorm:"column:SnapClerkFileId" sql:"not null" json:"file_id"`

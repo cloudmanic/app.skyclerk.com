@@ -2,7 +2,7 @@
 
   <div class="body">
     <div class="img-cont">
-      <img src="https://d1czrtm2mp3lak.cloudfront.net/items/270H1L1n0A2l0u0q2q3U/20856_sc-mobile-1572734019089.jpeg" />
+      <img [src]="snapclerk.File.Url" />
     </div>
 
     <div class="fields-cont">
@@ -50,8 +50,8 @@
         <button>Save</button>
       </div>
 
-      <div class="count-cont">
-        45 Remaining
+      <div class="count-cont" *ngIf="remaining > 0">
+        {{ remaining }} Remaining
       </div>
 
     </div>
