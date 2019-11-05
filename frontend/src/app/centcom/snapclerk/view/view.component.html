@@ -15,14 +15,25 @@
         </select>
       </div>
 
-      <div class="form-group">
+      <div class="form-group autocomplete">
         <label>Contact</label>
-        <input type="text" name="" />
+        <input type="text" name="input" [(ngModel)]="contact" (keyup)="onContactChange()" autocomplete="false" />
+        <ul *ngIf="contactsResults.length > 0">
+          <li *ngFor="let row of contactsResults"><a (click)="onContactSelect(row)">{{ row }}</a></li>
+        </ul>
       </div>
 
       <div class="form-group">
         <label>Date</label>
         <input type="date" name="" />
+      </div>
+
+      <div class="form-group">
+        <label>Category</label>
+        <select>
+          <option value="">Category #1</option>
+          <option value="">Category #2</option>
+        </select>
       </div>
 
       <div class="form-group">

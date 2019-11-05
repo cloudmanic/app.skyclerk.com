@@ -15,6 +15,8 @@ import { environment } from 'src/environments/environment';
 })
 
 export class ViewComponent implements OnInit {
+	contact: string = "";
+	contactsResults: string[] = ["Spicer was here", "I was here", "jane was a runner"];
 
 	//
 	// Constructor
@@ -29,7 +31,20 @@ export class ViewComponent implements OnInit {
 
 	}
 
+	//
+	// onContactChange do search
+	//
+	onContactChange() {
+		console.log(this.contact);
+	}
 
+	//
+	// onContactSelect
+	//
+	onContactSelect(result: string) {
+		this.contact = result;
+		this.contactsResults = [];
+	}
 }
 
 /* End File */
