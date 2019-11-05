@@ -4,8 +4,7 @@
 // Copyright: 2019 Cloudmanic Labs, LLC. All rights reserved.
 //
 
-
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
 import { Observable } from 'rxjs';
@@ -21,7 +20,8 @@ import { Category } from 'src/app/models/category.model';
 	templateUrl: './view.component.html'
 })
 
-export class ViewComponent implements OnInit {
+export class ViewComponent {
+	haveReceipts: boolean = false;
 	user: Me = new Me();
 	remaining: number = 0;
 	account: Account = new Account();
@@ -36,12 +36,7 @@ export class ViewComponent implements OnInit {
 	//
 	// Constructor
 	//
-	constructor(public http: HttpClient) { }
-
-	//
-	// ngOnInit
-	//
-	ngOnInit() {
+	constructor(public http: HttpClient) {
 		this.loadSnapClerks();
 	}
 
@@ -53,6 +48,9 @@ export class ViewComponent implements OnInit {
 		this.snapclerk.Category = this.categoriesInput;
 
 		console.log(this.snapclerk);
+
+		// Call this after success.
+		//this.loadSnapClerks();
 	}
 
 	//
@@ -80,12 +78,14 @@ export class ViewComponent implements OnInit {
 	loadSnapClerks() {
 		this.requestSnapClerks().subscribe(res => {
 			if (res.length == 0) {
+				this.haveReceipts = false;
 				this.remaining = 0;
 				this.snapclerk = new SnapClerk();
 				return;
 			}
 
 			// Set active snapclerk
+			this.haveReceipts = true;
 			this.snapclerk = res[0];
 			this.remaining = (res.length - 1);
 

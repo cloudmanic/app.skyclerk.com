@@ -70,6 +70,7 @@
 .centcom .snapclerk-view .body .button-row button { width: 100px; height: 30px; }
 .centcom .snapclerk-view .body .button-row a { font-size: 15px; }
 .centcom .snapclerk-view .body .button-row a.red { color: red; }
+.centcom .snapclerk-view .no-results { padding: 20px 40px; background-color: white; margin-top: 20px; border: 2px #efefef solid; border-radius: 25px; }
 
 .centcom .autocomplete { position: relative; }
 .centcom .autocomplete ul { padding: 10px 0; border: 1px solid #efefef; background-color: white; left: 0; z-index: 10000; position: absolute; top: 62px; right: 0; }

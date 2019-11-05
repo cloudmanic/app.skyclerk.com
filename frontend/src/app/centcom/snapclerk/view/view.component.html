@@ -1,11 +1,15 @@
 <div class="snapclerk-view">
 
   <div class="body">
-    <div class="img-cont">
+    <div class="no-results" *ngIf="! haveReceipts">
+      <h1>We have no receipts that need to be reviewed.</h1>
+    </div>
+
+    <div class="img-cont" *ngIf="haveReceipts">
       <img [src]="snapclerk.File.Url" />
     </div>
 
-    <div class="fields-cont">
+    <div class="fields-cont" *ngIf="haveReceipts">
       <form (submit)="save()">
 
         <div class="form-group">
