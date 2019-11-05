@@ -17,9 +17,9 @@
 
       <div class="form-group autocomplete">
         <label>Contact</label>
-        <input type="text" name="input" [(ngModel)]="contact" (keyup)="onContactChange()" autocomplete="false" />
+        <input type="text" name="input" [(ngModel)]="contactInput" (keyup)="onContactChange()" autocomplete="false" />
         <ul *ngIf="contactsResults.length > 0">
-          <li *ngFor="let row of contactsResults"><a (click)="onContactSelect(row)">{{ row }}</a></li>
+          <li *ngFor="let row of contactsResults"><a (click)="onContactSelect(row)">{{ displayContact(row) }}</a></li>
         </ul>
       </div>
 
