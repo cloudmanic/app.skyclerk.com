@@ -147,7 +147,12 @@ export class SummaryComponent implements OnInit {
 	//
 	// Constructor
 	//
-	constructor(public activityService: ActivityService, public reportService: ReportService, public accountService: AccountService, private titleService: Title, private ledgerService: LedgerService) { }
+	constructor(
+		public activityService: ActivityService,
+		public reportService: ReportService,
+		public accountService: AccountService,
+		private titleService: Title,
+		private ledgerService: LedgerService) { }
 
 	//
 	// ngOnInit
@@ -182,10 +187,6 @@ export class SummaryComponent implements OnInit {
 
 		// Ledger data
 		this.loadLedgerData();
-
-		// Build charts
-		this.buildChart1();
-		this.buildChart2();
 	}
 
 	//
@@ -200,6 +201,10 @@ export class SummaryComponent implements OnInit {
 			} else {
 				this.firstRun = false;
 				this.normalPage = true;
+
+				// Build charts - Need to do this after we figure out if this is first run or not.
+				this.buildChart1();
+				this.buildChart2();
 			}
 		});
 	}
