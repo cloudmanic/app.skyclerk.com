@@ -222,6 +222,9 @@ func (t *Controller) NewAccount(c *gin.Context) {
 	acct.BillingId = billing.Id
 	t.db.New().Save(&acct)
 
+	// Put default categories in.
+	t.db.LoadDefaultCategories(acct.Id)
+
 	// Get the new account.
 	a, err := t.db.GetAccountById(acct.Id)
 
