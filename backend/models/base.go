@@ -78,7 +78,6 @@ func doMigrations(db *gorm.DB) {
 	db.AutoMigrate(&SnapClerk{})
 	db.AutoMigrate(&Invite{})
 	db.AutoMigrate(&Billing{})
-	db.AutoMigrate(&AcctToBilling{})
 	db.AutoMigrate(&ForgotPassword{})
 }
 
