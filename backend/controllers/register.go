@@ -144,12 +144,12 @@ func (t *Controller) DoRegister(c *gin.Context) {
 		}
 		t.db.New().Save(&bp)
 
-		// Add the account look up.
-		abp := models.AcctToBilling{
-			AccountId: acct.Id,
-			BillingId: bp.Id,
-		}
-		t.db.New().Save(&abp)
+		// Add billing profile to account.
+		acct.BillingId = bp.Id
+		t.db.New().Save(&acct)
+
+		// Load default categories.
+		t.db.LoadDefaultCategories(acct.Id)
 	} else {
 		// We know there is no error because this is checked above.
 		acct, _ = t.db.GetAccountById(invite.AccountId)
@@ -164,9 +164,6 @@ func (t *Controller) DoRegister(c *gin.Context) {
 		UserId:    user.Id,
 	}
 	t.db.New().Save(&au)
-
-	// Load default categories.
-	t.db.LoadDefaultCategories(acct.Id)
 
 	// JSON Response
 	type Response struct {

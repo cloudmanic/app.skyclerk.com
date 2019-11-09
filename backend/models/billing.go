@@ -27,15 +27,15 @@ type Billing struct {
 //
 func (t *DB) GetBillingByAccountId(id uint) (Billing, error) {
 	var b Billing
-	var u AcctToBilling
+	account := Account{}
 
 	// Find in loop up table.
-	if t.Where("account_id = ?", id).First(&u).RecordNotFound() {
-		return b, errors.New("Record not found")
+	if t.Where("id = ?", id).First(&account).RecordNotFound() {
+		return b, errors.New("Account not found")
 	}
 
 	// Look up the billing.
-	if t.Where("id = ?", u.BillingId).First(&b).RecordNotFound() {
+	if t.Where("id = ?", account.BillingId).First(&b).RecordNotFound() {
 		return b, errors.New("Record not found")
 	}
 

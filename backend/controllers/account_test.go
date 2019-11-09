@@ -570,7 +570,7 @@ func TestClearAccount02(t *testing.T) {
 //
 func TestDeleteAccount01(t *testing.T) {
 	// Start the db connection.
-	db, dbName, _ := models.NewTestDB("")
+	db, dbName, _ := models.NewTestDB("testing_db")
 	defer models.TestingTearDown(db, dbName)
 
 	// Create controller
@@ -587,8 +587,14 @@ func TestDeleteAccount01(t *testing.T) {
 	db.Save(&user3)
 	db.Save(&user4)
 
+	billing1 := models.Billing{}
+	db.Save(&billing1)
+	billing2 := models.Billing{}
+	db.Save(&billing2)
+
 	account1 := test.GetRandomAccount(33)
 	account1.OwnerId = user1.Id
+	account1.BillingId = billing1.Id
 	db.Save(&account1)
 	db.Save(&models.AcctToUsers{AccountId: account1.Id, UserId: user1.Id})
 	db.Save(&models.AcctToUsers{AccountId: account1.Id, UserId: user2.Id})
@@ -596,6 +602,7 @@ func TestDeleteAccount01(t *testing.T) {
 
 	account2 := test.GetRandomAccount(34)
 	account2.OwnerId = user1.Id
+	account2.BillingId = billing2.Id
 	db.Save(&account2)
 	db.Save(&models.AcctToUsers{AccountId: account2.Id, UserId: user1.Id})
 	db.Save(&models.AcctToUsers{AccountId: account2.Id, UserId: user2.Id})
@@ -651,6 +658,10 @@ func TestDeleteAccount01(t *testing.T) {
 	results := []models.Account{}
 	err := json.Unmarshal([]byte(w.Body.String()), &results)
 
+	// We should only have one billings not 2
+	bs := []models.Billing{}
+	db.Find(&bs)
+
 	// Test results
 	st.Expect(t, err, nil)
 	st.Expect(t, w.Code, 200)
@@ -659,6 +670,8 @@ func TestDeleteAccount01(t *testing.T) {
 	st.Expect(t, len(acc), 0)
 	st.Expect(t, len(cats), 0)
 	st.Expect(t, len(results), 1)
+	st.Expect(t, len(bs), 1)
+	st.Expect(t, bs[0].Id, uint(2))
 }
 
 //
@@ -755,8 +768,8 @@ func TestNewAccount01(t *testing.T) {
 	db.Save(&b)
 
 	// Add account to billing
-	atb := models.AcctToBilling{AccountId: account1.Id, BillingId: b.Id}
-	db.Save(&atb)
+	account1.BillingId = b.Id
+	db.Save(&account1)
 
 	// Get JSON
 	postStr := fmt.Sprintf(`{ "name": "%s" }`, "Unit Test Account")

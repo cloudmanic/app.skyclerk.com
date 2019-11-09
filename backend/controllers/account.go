@@ -218,12 +218,9 @@ func (t *Controller) NewAccount(c *gin.Context) {
 		return
 	}
 
-	// Add the account look up.
-	abp := models.AcctToBilling{
-		AccountId:    acct.Id,
-		BillingId: billing.Id,
-	}
-	t.db.New().Save(&abp)
+	// Update account with billing profile.
+	acct.BillingId = billing.Id
+	t.db.New().Save(&acct)
 
 	// Get the new account.
 	a, err := t.db.GetAccountById(acct.Id)

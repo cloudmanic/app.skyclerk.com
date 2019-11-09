@@ -11,7 +11,6 @@ package cmd
 import (
 	"flag"
 	"fmt"
-	"strings"
 	"time"
 
 	"app.skyclerk.com/backend/cmd/actions"
@@ -42,10 +41,10 @@ func Run(db models.Datastore) bool {
 		actions.CreateApplication(db, *name)
 		return true
 
-	// Loop through the accounts table and append "accounts" to the file name.
-	case "files-add-account-prefix":
-		FileAddAccountPrefix(db)
-		return true
+	// // Loop through the accounts table and append "accounts" to the file name.
+	// case "files-add-account-prefix":
+	// 	FileAddAccountPrefix(db)
+	// 	return true
 
 	// Loop through the contacts table and build an avatar for every contact
 	case "contacts-build-missing-avatars":
@@ -55,9 +54,14 @@ func Run(db models.Datastore) bool {
 		}
 		return true
 
-	// Copy app log
-	case "copy-app-log":
-		CopyAppLog(db)
+	// // Copy app log
+	// case "copy-app-log":
+	// 	CopyAppLog(db)
+	// 	return true
+
+	// Update billing table.
+	case "billing-update-entries":
+		UpdateBillingEntries(db)
 		return true
 
 	// Just a test
@@ -71,82 +75,128 @@ func Run(db models.Datastore) bool {
 }
 
 //
-// Copy applog stuff over to our new activities table - Delete one we run in production.
+// UpdateBillingEntries - Build script to make sure everyone has a billing account entry.
 //
-// go run main.go -cmd=copy-app-log
+// go run main.go -cmd=billing-update-entries
 //
-func CopyAppLog(db models.Datastore) {
+func UpdateBillingEntries(db models.Datastore) {
+	// Get all accounts
+	accounts := []models.Account{}
+	db.New().Where("billing_id = 0").Find(&accounts)
 
-	type Applog struct {
-		ApplogId        uint      `gorm:"column:ApplogId"`
-		ApplogAccountId uint      `gorm:"column:ApplogAccountId"`
-		ApplogAction    string    `gorm:"column:ApplogAction"`
-		ApplogText      string    `gorm:"column:ApplogText"`
-		ApplogPoster    int       `gorm:"column:ApplogPoster"`
-		ApplogCreatedAt time.Time `gorm:"column:ApplogCreatedAt"`
-	}
+	length := len(accounts)
 
-	a := []Applog{}
+	for key, row := range accounts {
 
-	db.New().Table("Applog").Find(&a)
+		fmt.Println(key, " / ", length)
 
-	for key, row := range a {
-		action := row.ApplogAction
-
-		if action == "Receipt" {
-			action = "snapclerk"
+		// See if we already have a billing profile
+		g := models.Account{}
+		db.New().Where("id = ? AND billing_id > 0", row.Id).Find(&g)
+		if row.Id == g.Id {
+			continue
 		}
 
-		if action == "Income" {
-			action = "income"
+		now := time.Now()
+		tExpire := now.Add(time.Hour * 24 * 85)
+
+		// Setup the billing profile for this account.
+		bp := models.Billing{
+			Status:      "Trial",
+			TrialExpire: tExpire,
+		}
+		db.New().Save(&bp)
+
+		// Get all accounts this user owns
+		acts := []models.Account{}
+		db.New().Where("owner_id = ?", row.OwnerId).Find(&acts)
+
+		for _, row2 := range acts {
+			row2.BillingId = bp.Id
+			db.New().Save(&row2)
 		}
 
-		if action == "Expense" {
-			action = "expense"
-		}
-
-		t := models.Activity{
-			CreatedAt: row.ApplogCreatedAt,
-			AccountId: row.ApplogAccountId,
-			Action:    action,
-			SubAction: "other",
-			Name:      row.ApplogText,
-		}
-
-		db.New().Save(&t)
-
-		// Append accounts and save to DB.
-		fmt.Println(key, " of ", len(a))
 	}
 
 }
 
+// //
+// // CopyAppLog - Copy applog stuff over to our new activities table - Delete one we run in production.
+// //
+// // go run main.go -cmd=copy-app-log
+// //
+// func CopyAppLog(db models.Datastore) {
 //
-// FileAddAccountPrefix - Once we deploy GO based skyclerk we can deleted this function.
+// 	type Applog struct {
+// 		ApplogId        uint      `gorm:"column:ApplogId"`
+// 		ApplogAccountId uint      `gorm:"column:ApplogAccountId"`
+// 		ApplogAction    string    `gorm:"column:ApplogAction"`
+// 		ApplogText      string    `gorm:"column:ApplogText"`
+// 		ApplogPoster    int       `gorm:"column:ApplogPoster"`
+// 		ApplogCreatedAt time.Time `gorm:"column:ApplogCreatedAt"`
+// 	}
 //
-func FileAddAccountPrefix(db models.Datastore) {
-	// Query and get files.
-	files := []models.File{}
-	db.New().Find(&files)
-
-	// Loop through files and append
-	for key, row := range files {
-		if strings.Contains(row.Path, "accounts/") {
-			continue
-		}
-
-		if row.Host != "amazon-s3" {
-			continue
-		}
-
-		// Append accounts and save to DB.
-		fmt.Println(row.Id, " - ", key, " - ", row.Path)
-
-		row.Path = "accounts/" + row.Path
-		row.ThumbPath = "accounts/" + row.ThumbPath
-		db.New().Save(&row)
-	}
-
-}
+// 	a := []Applog{}
+//
+// 	db.New().Table("Applog").Find(&a)
+//
+// 	for key, row := range a {
+// 		action := row.ApplogAction
+//
+// 		if action == "Receipt" {
+// 			action = "snapclerk"
+// 		}
+//
+// 		if action == "Income" {
+// 			action = "income"
+// 		}
+//
+// 		if action == "Expense" {
+// 			action = "expense"
+// 		}
+//
+// 		t := models.Activity{
+// 			CreatedAt: row.ApplogCreatedAt,
+// 			AccountId: row.ApplogAccountId,
+// 			Action:    action,
+// 			SubAction: "other",
+// 			Name:      row.ApplogText,
+// 		}
+//
+// 		db.New().Save(&t)
+//
+// 		// Append accounts and save to DB.
+// 		fmt.Println(key, " of ", len(a))
+// 	}
+//
+// }
+//
+// //
+// // FileAddAccountPrefix - Once we deploy GO based skyclerk we can deleted this function.
+// //
+// func FileAddAccountPrefix(db models.Datastore) {
+// 	// Query and get files.
+// 	files := []models.File{}
+// 	db.New().Find(&files)
+//
+// 	// Loop through files and append
+// 	for key, row := range files {
+// 		if strings.Contains(row.Path, "accounts/") {
+// 			continue
+// 		}
+//
+// 		if row.Host != "amazon-s3" {
+// 			continue
+// 		}
+//
+// 		// Append accounts and save to DB.
+// 		fmt.Println(row.Id, " - ", key, " - ", row.Path)
+//
+// 		row.Path = "accounts/" + row.Path
+// 		row.ThumbPath = "accounts/" + row.ThumbPath
+// 		db.New().Save(&row)
+// 	}
+//
+// }
 
 /* End File */

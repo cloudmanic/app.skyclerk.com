@@ -21,6 +21,7 @@ type Account struct {
 	CreatedAt    time.Time `sql:"not null" json:"-"`
 	UpdatedAt    time.Time `sql:"not null" json:"-"`
 	OwnerId      uint      `sql:"not null" json:"owner_id"`
+	BillingId    uint      `sql:"not null" json:"-"`
 	Name         string    `sql:"not null" json:"name"`
 	Address      string    `sql:"not null;type:TEXT" json:"-"`
 	City         string    `sql:"not null" json:"-"`
@@ -126,9 +127,31 @@ func (t *DB) ClearAccount(accountId uint) {
 }
 
 //
-// DeleteAccount
+// DeleteAccount will delete an account
 //
 func (t *DB) DeleteAccount(accountId uint) {
+	// Get the account
+	account := Account{}
+	t.New().Find(&account, accountId)
+
+	if account.Id != accountId {
+		return
+	}
+
+	// Get the billing profile.
+	billing := Billing{}
+	t.New().Find(&billing, account.BillingId)
+
+	// See if we have any other acccounts with this billing id
+	ba := []Account{}
+	t.New().Where("billing_id = ?", billing.Id).Find(&ba)
+
+	if len(ba) <= 1 {
+		t.New().Exec("DELETE FROM billings WHERE id = ?", billing.Id)
+
+		// TODO(spicer): Remove account at Stripe.
+	}
+
 	// Clear users not used else where.
 	a2u := []AcctToUsers{}
 	t.New().Where("account_id = ?", accountId).Find(&a2u)
@@ -146,7 +169,6 @@ func (t *DB) DeleteAccount(accountId uint) {
 
 	// Clear database tables.
 	t.New().Exec("DELETE FROM acct_to_users WHERE account_id = ?", accountId)
-	t.New().Exec("DELETE FROM acct_to_billings WHERE account_id = ?", accountId)
 	t.New().Exec("DELETE FROM accounts WHERE id = ?", accountId)
 }
 

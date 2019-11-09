@@ -83,10 +83,6 @@ func TestDoRegister01(t *testing.T) {
 	b := models.Billing{}
 	db.Where("id = ?", 1).First(&b)
 
-	// Check the database that proper entries where created
-	ab := models.AcctToBilling{}
-	db.Where("account_id = ? AND billing_id = ?", 1, uint(1)).First(&ab)
-
 	// Check the categories in the DB.
 	cats := []models.Category{}
 	db.Where("CategoriesAccountId = ?", 1).Find(&cats)
@@ -103,7 +99,7 @@ func TestDoRegister01(t *testing.T) {
 	st.Expect(t, m.Email, "jane@wells.com")
 	st.Expect(t, a.Name, "Jane's Skyclerk")
 	st.Expect(t, b.Id, uint(1))
-	st.Expect(t, ab.Id, uint(1))
+	st.Expect(t, a.BillingId, uint(1))
 	st.Expect(t, len(cats), 23)
 
 	// Test password.
