@@ -87,6 +87,10 @@ func TestDoRegister01(t *testing.T) {
 	ab := models.AcctToBilling{}
 	db.Where("account_id = ? AND billing_id = ?", 1, uint(1)).First(&ab)
 
+	// Check the categories in the DB.
+	cats := []models.Category{}
+	db.Where("CategoriesAccountId = ?", 1).Find(&cats)
+
 	// Test results
 	st.Expect(t, w.Code, 200)
 	st.Expect(t, res.UserId, uint(1))
@@ -100,6 +104,7 @@ func TestDoRegister01(t *testing.T) {
 	st.Expect(t, a.Name, "Jane's Skyclerk")
 	st.Expect(t, b.Id, uint(1))
 	st.Expect(t, ab.Id, uint(1))
+	st.Expect(t, len(cats), 23)
 
 	// Test password.
 	err := bcrypt.CompareHashAndPassword([]byte(m.Password), []byte("foobar123"))

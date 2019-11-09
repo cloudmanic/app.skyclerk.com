@@ -27,7 +27,7 @@ import (
 //
 func TestGetMe01(t *testing.T) {
 	// Start the db connection.
-	db, dbName, _ := models.NewTestDB("testing_db")
+	db, dbName, _ := models.NewTestDB("")
 	defer models.TestingTearDown(db, dbName)
 
 	// Create controller

@@ -146,7 +146,7 @@ func (t *Controller) DoRegister(c *gin.Context) {
 
 		// Add the account look up.
 		abp := models.AcctToBilling{
-			AccountId:    acct.Id,
+			AccountId: acct.Id,
 			BillingId: bp.Id,
 		}
 		t.db.New().Save(&abp)
@@ -164,6 +164,9 @@ func (t *Controller) DoRegister(c *gin.Context) {
 		UserId:    user.Id,
 	}
 	t.db.New().Save(&au)
+
+	// Load default categories.
+	t.db.LoadDefaultCategories(acct.Id)
 
 	// JSON Response
 	type Response struct {

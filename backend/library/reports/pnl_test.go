@@ -761,7 +761,7 @@ func TestGetCurrentYearPnL01(t *testing.T) {
 
 	// Test results
 	st.Expect(t, pl.Year, 2019)
-	st.Expect(t, pl.Value, helpers.Round(total, 2))
+	st.Expect(t, helpers.Round(pl.Value, 2), helpers.Round(total, 2))
 
 	// ---------- Test empty year ------------- //
 
