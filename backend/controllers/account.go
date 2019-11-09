@@ -204,8 +204,8 @@ func (t *Controller) NewAccount(c *gin.Context) {
 
 	// Add the account look up.
 	au := models.AcctToUsers{
-		AcctId: acct.Id,
-		UserId: uint(userID),
+		AccountId: acct.Id,
+		UserId:    uint(userID),
 	}
 	t.db.New().Save(&au)
 
@@ -220,7 +220,7 @@ func (t *Controller) NewAccount(c *gin.Context) {
 
 	// Add the account look up.
 	abp := models.AcctToBilling{
-		AcctId:    acct.Id,
+		AccountId:    acct.Id,
 		BillingId: billing.Id,
 	}
 	t.db.New().Save(&abp)

@@ -39,17 +39,17 @@ func TestGetAccount01(t *testing.T) {
 	account1 := test.GetRandomAccount(33)
 	account1.OwnerId = user.Id
 	db.Save(&account1)
-	db.Save(&models.AcctToUsers{AcctId: account1.Id, UserId: user.Id})
+	db.Save(&models.AcctToUsers{AccountId: account1.Id, UserId: user.Id})
 
 	account2 := test.GetRandomAccount(34)
 	account2.OwnerId = user.Id
 	db.Save(&account2)
-	db.Save(&models.AcctToUsers{AcctId: account2.Id, UserId: user.Id})
+	db.Save(&models.AcctToUsers{AccountId: account2.Id, UserId: user.Id})
 
 	account3 := test.GetRandomAccount(105)
 	account3.OwnerId = user.Id
 	db.Save(&account3)
-	db.Save(&models.AcctToUsers{AcctId: account3.Id, UserId: user.Id})
+	db.Save(&models.AcctToUsers{AccountId: account3.Id, UserId: user.Id})
 
 	// Setup request
 	req, _ := http.NewRequest("GET", "/api/v3/33/account", nil)
@@ -99,12 +99,12 @@ func TestUpdateAccount01(t *testing.T) {
 	account1 := test.GetRandomAccount(33)
 	account1.OwnerId = user.Id
 	db.Save(&account1)
-	db.Save(&models.AcctToUsers{AcctId: account1.Id, UserId: user.Id})
+	db.Save(&models.AcctToUsers{AccountId: account1.Id, UserId: user.Id})
 
 	account2 := test.GetRandomAccount(34)
 	account2.OwnerId = user.Id
 	db.Save(&account2)
-	db.Save(&models.AcctToUsers{AcctId: account2.Id, UserId: user.Id})
+	db.Save(&models.AcctToUsers{AccountId: account2.Id, UserId: user.Id})
 
 	// Change account data.
 	account1.Name = "Unit Test"
@@ -173,7 +173,7 @@ func TestUpdateAccount02(t *testing.T) {
 	account1 := test.GetRandomAccount(33)
 	account1.OwnerId = user.Id
 	db.Save(&account1)
-	db.Save(&models.AcctToUsers{AcctId: account1.Id, UserId: user.Id})
+	db.Save(&models.AcctToUsers{AccountId: account1.Id, UserId: user.Id})
 
 	// Change account data.
 	account1.Name = ""
@@ -227,7 +227,7 @@ func TestUpdateAccount03(t *testing.T) {
 	account1 := test.GetRandomAccount(33)
 	account1.OwnerId = uint(55)
 	db.Save(&account1)
-	db.Save(&models.AcctToUsers{AcctId: account1.Id, UserId: user.Id})
+	db.Save(&models.AcctToUsers{AccountId: account1.Id, UserId: user.Id})
 
 	// Change account data.
 	account1.Name = ""
@@ -280,9 +280,9 @@ func TestUpdateAccount04(t *testing.T) {
 	account1 := test.GetRandomAccount(33)
 	account1.OwnerId = user1.Id
 	db.Save(&account1)
-	db.Save(&models.AcctToUsers{AcctId: account1.Id, UserId: user1.Id})
-	db.Save(&models.AcctToUsers{AcctId: account1.Id, UserId: user2.Id})
-	db.Save(&models.AcctToUsers{AcctId: account1.Id, UserId: user3.Id})
+	db.Save(&models.AcctToUsers{AccountId: account1.Id, UserId: user1.Id})
+	db.Save(&models.AcctToUsers{AccountId: account1.Id, UserId: user2.Id})
+	db.Save(&models.AcctToUsers{AccountId: account1.Id, UserId: user3.Id})
 
 	// Change account data.
 	account1.OwnerId = user3.Id
@@ -347,9 +347,9 @@ func TestUpdateAccount05(t *testing.T) {
 	account1 := test.GetRandomAccount(33)
 	account1.OwnerId = user1.Id
 	db.Save(&account1)
-	db.Save(&models.AcctToUsers{AcctId: account1.Id, UserId: user1.Id})
-	db.Save(&models.AcctToUsers{AcctId: account1.Id, UserId: user2.Id})
-	db.Save(&models.AcctToUsers{AcctId: uint(44), UserId: user3.Id})
+	db.Save(&models.AcctToUsers{AccountId: account1.Id, UserId: user1.Id})
+	db.Save(&models.AcctToUsers{AccountId: account1.Id, UserId: user2.Id})
+	db.Save(&models.AcctToUsers{AccountId: uint(44), UserId: user3.Id})
 
 	// Change account data.
 	account1.OwnerId = user3.Id
@@ -401,9 +401,9 @@ func TestUpdateAccount06(t *testing.T) {
 	account1.OwnerId = user1.Id
 	account1.Name = ""
 	db.Save(&account1)
-	db.Save(&models.AcctToUsers{AcctId: account1.Id, UserId: user1.Id})
-	db.Save(&models.AcctToUsers{AcctId: account1.Id, UserId: user2.Id})
-	db.Save(&models.AcctToUsers{AcctId: uint(44), UserId: user3.Id})
+	db.Save(&models.AcctToUsers{AccountId: account1.Id, UserId: user1.Id})
+	db.Save(&models.AcctToUsers{AccountId: account1.Id, UserId: user2.Id})
+	db.Save(&models.AcctToUsers{AccountId: uint(44), UserId: user3.Id})
 
 	// Change account data.
 	account1.OwnerId = user3.Id
@@ -455,9 +455,9 @@ func TestClearAccount01(t *testing.T) {
 	account1 := test.GetRandomAccount(33)
 	account1.OwnerId = user1.Id
 	db.Save(&account1)
-	db.Save(&models.AcctToUsers{AcctId: account1.Id, UserId: user1.Id})
-	db.Save(&models.AcctToUsers{AcctId: account1.Id, UserId: user2.Id})
-	db.Save(&models.AcctToUsers{AcctId: uint(44), UserId: user3.Id})
+	db.Save(&models.AcctToUsers{AccountId: account1.Id, UserId: user1.Id})
+	db.Save(&models.AcctToUsers{AccountId: account1.Id, UserId: user2.Id})
+	db.Save(&models.AcctToUsers{AccountId: uint(44), UserId: user3.Id})
 
 	// Create like 10 ledger entries.
 	for i := 0; i < 10; i++ {
@@ -527,9 +527,9 @@ func TestClearAccount02(t *testing.T) {
 	account1 := test.GetRandomAccount(33)
 	account1.OwnerId = user1.Id
 	db.Save(&account1)
-	db.Save(&models.AcctToUsers{AcctId: account1.Id, UserId: user1.Id})
-	db.Save(&models.AcctToUsers{AcctId: account1.Id, UserId: user2.Id})
-	db.Save(&models.AcctToUsers{AcctId: uint(44), UserId: user3.Id})
+	db.Save(&models.AcctToUsers{AccountId: account1.Id, UserId: user1.Id})
+	db.Save(&models.AcctToUsers{AccountId: account1.Id, UserId: user2.Id})
+	db.Save(&models.AcctToUsers{AccountId: uint(44), UserId: user3.Id})
 
 	// Create like 5 ledger entries.
 	for i := 0; i < 5; i++ {
@@ -590,15 +590,15 @@ func TestDeleteAccount01(t *testing.T) {
 	account1 := test.GetRandomAccount(33)
 	account1.OwnerId = user1.Id
 	db.Save(&account1)
-	db.Save(&models.AcctToUsers{AcctId: account1.Id, UserId: user1.Id})
-	db.Save(&models.AcctToUsers{AcctId: account1.Id, UserId: user2.Id})
-	db.Save(&models.AcctToUsers{AcctId: account1.Id, UserId: user4.Id})
+	db.Save(&models.AcctToUsers{AccountId: account1.Id, UserId: user1.Id})
+	db.Save(&models.AcctToUsers{AccountId: account1.Id, UserId: user2.Id})
+	db.Save(&models.AcctToUsers{AccountId: account1.Id, UserId: user4.Id})
 
 	account2 := test.GetRandomAccount(34)
 	account2.OwnerId = user1.Id
 	db.Save(&account2)
-	db.Save(&models.AcctToUsers{AcctId: account2.Id, UserId: user1.Id})
-	db.Save(&models.AcctToUsers{AcctId: account2.Id, UserId: user2.Id})
+	db.Save(&models.AcctToUsers{AccountId: account2.Id, UserId: user1.Id})
+	db.Save(&models.AcctToUsers{AccountId: account2.Id, UserId: user2.Id})
 
 	// Create like 10 ledger entries.
 	for i := 0; i < 10; i++ {
@@ -641,7 +641,7 @@ func TestDeleteAccount01(t *testing.T) {
 
 	// Get the AcctToUsers entries.
 	a2u := []models.AcctToUsers{}
-	db.Where("acct_id = ?", 33).Find(&a2u)
+	db.Where("account_id = ?", 33).Find(&a2u)
 
 	// Get the Account entries.
 	acc := []models.Account{}
@@ -680,7 +680,7 @@ func TestDeleteAccount02(t *testing.T) {
 	account1 := test.GetRandomAccount(33)
 	account1.OwnerId = user1.Id
 	db.Save(&account1)
-	db.Save(&models.AcctToUsers{AcctId: account1.Id, UserId: user1.Id})
+	db.Save(&models.AcctToUsers{AccountId: account1.Id, UserId: user1.Id})
 
 	// Create like 10 ledger entries.
 	for i := 0; i < 10; i++ {
@@ -710,7 +710,7 @@ func TestDeleteAccount02(t *testing.T) {
 
 	// Get the AcctToUsers entries.
 	a2u := []models.AcctToUsers{}
-	db.Where("acct_id = ?", 33).Find(&a2u)
+	db.Where("account_id = ?", 33).Find(&a2u)
 
 	// Get the Account entries.
 	acc := []models.Account{}
@@ -748,14 +748,14 @@ func TestNewAccount01(t *testing.T) {
 	account1 := test.GetRandomAccount(33)
 	account1.OwnerId = user1.Id
 	db.Save(&account1)
-	db.Save(&models.AcctToUsers{AcctId: account1.Id, UserId: user1.Id})
+	db.Save(&models.AcctToUsers{AccountId: account1.Id, UserId: user1.Id})
 
 	// Add billing profile
 	b := models.Billing{}
 	db.Save(&b)
 
 	// Add account to billing
-	atb := models.AcctToBilling{AcctId: account1.Id, BillingId: b.Id}
+	atb := models.AcctToBilling{AccountId: account1.Id, BillingId: b.Id}
 	db.Save(&atb)
 
 	// Get JSON
@@ -783,7 +783,7 @@ func TestNewAccount01(t *testing.T) {
 
 	// Get the Account entries.
 	au := []models.AcctToUsers{}
-	db.Where("acct_id = ?", 34).Find(&au)
+	db.Where("account_id = ?", 34).Find(&au)
 
 	// Test results
 	st.Expect(t, err, nil)

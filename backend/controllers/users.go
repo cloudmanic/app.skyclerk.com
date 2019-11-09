@@ -61,7 +61,7 @@ func (t *Controller) DeleteUser(c *gin.Context) {
 
 	// Delete AcctToUsers.
 	i := models.AcctToUsers{}
-	t.db.New().Where("user_id = ? AND acct_id = ?", id, accountId).Delete(&i)
+	t.db.New().Where("user_id = ? AND account_id = ?", id, accountId).Delete(&i)
 
 	// Return happy.
 	response.RespondDeleted(c, nil)
@@ -206,17 +206,17 @@ func (t *Controller) InviteUser(c *gin.Context) {
 	} else { // current user
 		// Validate this user is not already part of the account.
 		u := models.AcctToUsers{}
-		t.db.New().Where("acct_id = ? AND  user_id = ?", account.Id, user.Id).First(&u)
+		t.db.New().Where("account_id = ? AND  user_id = ?", account.Id, user.Id).First(&u)
 
-		if u.Id > 0 {
+		if u.AccountId > 0 {
 			c.JSON(http.StatusBadRequest, gin.H{"error": "User is already part of this account."})
 			return
 		}
 
 		// User already in the system let's just assign them to the account.
 		t.db.New().Save(&models.AcctToUsers{
-			AcctId: accountId,
-			UserId: user.Id,
+			AccountId: accountId,
+			UserId:    user.Id,
 		})
 
 		// Set URL

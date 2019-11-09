@@ -51,13 +51,13 @@ func TestGetUsers01(t *testing.T) {
 	db.Save(&u6)
 	db.Save(&u7)
 
-	db.Save(&models.AcctToUsers{AcctId: uint(33), UserId: u1.Id})
-	db.Save(&models.AcctToUsers{AcctId: uint(33), UserId: u2.Id})
-	db.Save(&models.AcctToUsers{AcctId: uint(33), UserId: u3.Id})
-	db.Save(&models.AcctToUsers{AcctId: uint(33), UserId: u4.Id})
-	db.Save(&models.AcctToUsers{AcctId: uint(33), UserId: u5.Id})
-	db.Save(&models.AcctToUsers{AcctId: uint(22), UserId: u6.Id})
-	db.Save(&models.AcctToUsers{AcctId: uint(22), UserId: u7.Id})
+	db.Save(&models.AcctToUsers{AccountId: uint(33), UserId: u1.Id})
+	db.Save(&models.AcctToUsers{AccountId: uint(33), UserId: u2.Id})
+	db.Save(&models.AcctToUsers{AccountId: uint(33), UserId: u3.Id})
+	db.Save(&models.AcctToUsers{AccountId: uint(33), UserId: u4.Id})
+	db.Save(&models.AcctToUsers{AccountId: uint(33), UserId: u5.Id})
+	db.Save(&models.AcctToUsers{AccountId: uint(22), UserId: u6.Id})
+	db.Save(&models.AcctToUsers{AccountId: uint(22), UserId: u7.Id})
 
 	// Setup request
 	req, _ := http.NewRequest("GET", "/api/v3/33/users", nil)
@@ -119,9 +119,9 @@ func TestInviteUser01(t *testing.T) {
 	db.Save(&u2)
 	db.Save(&u3)
 
-	db.Save(&models.AcctToUsers{AcctId: uint(33), UserId: u1.Id})
-	db.Save(&models.AcctToUsers{AcctId: uint(22), UserId: u2.Id})
-	db.Save(&models.AcctToUsers{AcctId: uint(33), UserId: u3.Id})
+	db.Save(&models.AcctToUsers{AccountId: uint(33), UserId: u1.Id})
+	db.Save(&models.AcctToUsers{AccountId: uint(22), UserId: u2.Id})
+	db.Save(&models.AcctToUsers{AccountId: uint(33), UserId: u3.Id})
 
 	// Get JSON
 	postStr := fmt.Sprintf(`{ "first_name": "%s", "last_name": "%s", "email": "%s", "message": "Woots this is a message." }`, u2.FirstName, u2.LastName, u2.Email)
@@ -144,11 +144,11 @@ func TestInviteUser01(t *testing.T) {
 
 	// Check the database that proper entries where created
 	u := models.AcctToUsers{}
-	db.Where("acct_id = ? AND user_id = ?", 33, u2.Id).First(&u)
+	db.Where("account_id = ? AND user_id = ?", 33, u2.Id).First(&u)
 
 	// Test results
 	st.Expect(t, w.Code, 204)
-	st.Expect(t, u.AcctId, uint(33))
+	st.Expect(t, u.AccountId, uint(33))
 	st.Expect(t, u.UserId, u2.Id)
 }
 
@@ -177,9 +177,9 @@ func TestInviteUser02(t *testing.T) {
 	db.Save(&u2)
 	db.Save(&u3)
 
-	db.Save(&models.AcctToUsers{AcctId: uint(33), UserId: u1.Id})
-	db.Save(&models.AcctToUsers{AcctId: uint(22), UserId: u2.Id})
-	db.Save(&models.AcctToUsers{AcctId: uint(33), UserId: u3.Id})
+	db.Save(&models.AcctToUsers{AccountId: uint(33), UserId: u1.Id})
+	db.Save(&models.AcctToUsers{AccountId: uint(22), UserId: u2.Id})
+	db.Save(&models.AcctToUsers{AccountId: uint(33), UserId: u3.Id})
 
 	// Get JSON
 	postStr := fmt.Sprintf(`{ "first_name": "%s", "last_name": "%s", "email": "%s", "message": "Woots this is a message." }`, "Bob", "Rosso", "bob@example.com")
@@ -206,12 +206,12 @@ func TestInviteUser02(t *testing.T) {
 
 	// Check the database that proper entries where created
 	u := models.AcctToUsers{}
-	db.Where("acct_id = ? AND user_id = ?", 33, u2.Id).First(&u)
+	db.Where("account_id = ? AND user_id = ?", 33, u2.Id).First(&u)
 
 	// Test results
 	st.Expect(t, w.Code, 204)
 	st.Expect(t, i.AccountId, uint(33))
-	st.Expect(t, u.AcctId, uint(0))
+	st.Expect(t, u.AccountId, uint(0))
 	st.Expect(t, u.UserId, uint(0))
 }
 
@@ -240,9 +240,9 @@ func TestInviteUser03(t *testing.T) {
 	db.Save(&u2)
 	db.Save(&u3)
 
-	db.Save(&models.AcctToUsers{AcctId: uint(33), UserId: u1.Id})
-	db.Save(&models.AcctToUsers{AcctId: uint(22), UserId: u2.Id})
-	db.Save(&models.AcctToUsers{AcctId: uint(33), UserId: u3.Id})
+	db.Save(&models.AcctToUsers{AccountId: uint(33), UserId: u1.Id})
+	db.Save(&models.AcctToUsers{AccountId: uint(22), UserId: u2.Id})
+	db.Save(&models.AcctToUsers{AccountId: uint(33), UserId: u3.Id})
 
 	// Multi line message with bad HTML.
 	msg := `
@@ -275,11 +275,11 @@ func TestInviteUser03(t *testing.T) {
 
 	// Check the database that proper entries where created
 	u := models.AcctToUsers{}
-	db.Where("acct_id = ? AND user_id = ?", 33, u2.Id).First(&u)
+	db.Where("account_id = ? AND user_id = ?", 33, u2.Id).First(&u)
 
 	// Test results
 	st.Expect(t, w.Code, 204)
-	st.Expect(t, u.AcctId, uint(33))
+	st.Expect(t, u.AccountId, uint(33))
 	st.Expect(t, u.UserId, u2.Id)
 }
 

@@ -27,7 +27,7 @@ import (
 //
 func TestGetMe01(t *testing.T) {
 	// Start the db connection.
-	db, dbName, _ := models.NewTestDB("")
+	db, dbName, _ := models.NewTestDB("testing_db")
 	defer models.TestingTearDown(db, dbName)
 
 	// Create controller
@@ -36,22 +36,27 @@ func TestGetMe01(t *testing.T) {
 
 	// Setup test data
 	user := test.GetRandomUser(33)
-	db.Save(&user)
 
 	account1 := test.GetRandomAccount(33)
 	account1.OwnerId = user.Id
+	account1.Name = "Matthews Etc."
 	db.Save(&account1)
-	db.Save(&models.AcctToUsers{AcctId: account1.Id, UserId: user.Id})
+	user.Accounts = append(user.Accounts, account1)
 
 	account2 := test.GetRandomAccount(34)
 	account2.OwnerId = user.Id
+	account2.Name = "Cloudmanic Labs, LLC"
 	db.Save(&account2)
-	db.Save(&models.AcctToUsers{AcctId: account2.Id, UserId: user.Id})
+	user.Accounts = append(user.Accounts, account2)
 
 	account3 := test.GetRandomAccount(105)
 	account3.OwnerId = user.Id
+	account3.Name = "124 West Main Street"
 	db.Save(&account3)
-	db.Save(&models.AcctToUsers{AcctId: account3.Id, UserId: user.Id})
+	user.Accounts = append(user.Accounts, account3)
+
+	// Save user.
+	db.Save(&user)
 
 	// Setup request
 	req, _ := http.NewRequest("GET", "/oauth/me", nil)
@@ -79,6 +84,9 @@ func TestGetMe01(t *testing.T) {
 	st.Expect(t, result.LastName, user.LastName)
 	st.Expect(t, result.Email, user.Email)
 	st.Expect(t, len(result.Accounts), 3)
+	st.Expect(t, result.Accounts[0].Name, "124 West Main Street")
+	st.Expect(t, result.Accounts[1].Name, "Cloudmanic Labs, LLC")
+	st.Expect(t, result.Accounts[2].Name, "Matthews Etc.")
 }
 
 //
@@ -100,7 +108,7 @@ func TestChangePassword01(t *testing.T) {
 	account1 := test.GetRandomAccount(33)
 	account1.OwnerId = user.Id
 	db.Save(&account1)
-	db.Save(&models.AcctToUsers{AcctId: account1.Id, UserId: user.Id})
+	db.Save(&models.AcctToUsers{AccountId: account1.Id, UserId: user.Id})
 
 	// Setup post string - F00bAr123 comes from the testing library
 	postStr := fmt.Sprintf(`{ "current": "%s", "password": "%s", "confirm": "%s" }`, "F00bAr123", "foobar2", "foobar2")
@@ -157,7 +165,7 @@ func TestChangePassword02(t *testing.T) {
 	account1 := test.GetRandomAccount(33)
 	account1.OwnerId = user.Id
 	db.Save(&account1)
-	db.Save(&models.AcctToUsers{AcctId: account1.Id, UserId: user.Id})
+	db.Save(&models.AcctToUsers{AccountId: account1.Id, UserId: user.Id})
 
 	// Setup post string - F00bAr123 comes from the testing library
 	postStr := fmt.Sprintf(`{ "current": "%s", "password": "%s", "confirm": "%s" }`, "F00bAr123", "foobar2", "foobar2")
@@ -214,7 +222,7 @@ func TestChangePassword03(t *testing.T) {
 	account1 := test.GetRandomAccount(33)
 	account1.OwnerId = user.Id
 	db.Save(&account1)
-	db.Save(&models.AcctToUsers{AcctId: account1.Id, UserId: user.Id})
+	db.Save(&models.AcctToUsers{AccountId: account1.Id, UserId: user.Id})
 
 	// Setup post string - F00bAr123 comes from the testing library
 	postStr := fmt.Sprintf(`{ "current": "%s", "password": "%s", "confirm": "%s" }`, "wrong", "foobar2", "foobar2")
@@ -264,7 +272,7 @@ func TestChangePassword04(t *testing.T) {
 	account1 := test.GetRandomAccount(33)
 	account1.OwnerId = user.Id
 	db.Save(&account1)
-	db.Save(&models.AcctToUsers{AcctId: account1.Id, UserId: user.Id})
+	db.Save(&models.AcctToUsers{AccountId: account1.Id, UserId: user.Id})
 
 	// Setup post string - F00bAr123 comes from the testing library
 	postStr := fmt.Sprintf(`{ "current": "%s", "password": "%s", "confirm": "%s" }`, "wrong", "foobar2", "foobar2")
@@ -316,7 +324,7 @@ func TestChangePassword05(t *testing.T) {
 	account1 := test.GetRandomAccount(33)
 	account1.OwnerId = user.Id
 	db.Save(&account1)
-	db.Save(&models.AcctToUsers{AcctId: account1.Id, UserId: user.Id})
+	db.Save(&models.AcctToUsers{AccountId: account1.Id, UserId: user.Id})
 
 	// Setup post string - F00bAr123 comes from the testing library
 	postStr := fmt.Sprintf(`{ "current": "%s", "password": "%s", "confirm": "%s" }`, "F00bAr123", "match 1", "match 2")
@@ -368,7 +376,7 @@ func TestChangePassword06(t *testing.T) {
 	account1 := test.GetRandomAccount(33)
 	account1.OwnerId = user.Id
 	db.Save(&account1)
-	db.Save(&models.AcctToUsers{AcctId: account1.Id, UserId: user.Id})
+	db.Save(&models.AcctToUsers{AccountId: account1.Id, UserId: user.Id})
 
 	// Setup post string - F00bAr123 comes from the testing library
 	postStr := fmt.Sprintf(`{ "current": "%s", "password": "%s", "confirm": "%s" }`, "F00bAr123", "1", "1")
@@ -420,7 +428,7 @@ func TestUpdateMe01(t *testing.T) {
 	account1 := test.GetRandomAccount(33)
 	account1.OwnerId = user.Id
 	db.Save(&account1)
-	db.Save(&models.AcctToUsers{AcctId: account1.Id, UserId: user.Id})
+	db.Save(&models.AcctToUsers{AccountId: account1.Id, UserId: user.Id})
 
 	// Update user profile
 	postStr := fmt.Sprintf(`{ "first_name": "%s", "last_name": "%s", "email": "%s" }`, "Jane", "Wells", "jane@woots.com")
@@ -475,7 +483,7 @@ func TestUpdateMe02(t *testing.T) {
 	account1 := test.GetRandomAccount(33)
 	account1.OwnerId = user.Id
 	db.Save(&account1)
-	db.Save(&models.AcctToUsers{AcctId: account1.Id, UserId: user.Id})
+	db.Save(&models.AcctToUsers{AccountId: account1.Id, UserId: user.Id})
 
 	// Update user profile
 	postStr := fmt.Sprintf(`{ "first_name": "%s", "last_name": "%s", "email": "%s" }`, "Jane", "Wells", user2.Email)
@@ -527,7 +535,7 @@ func TestUpdateMe03(t *testing.T) {
 	account1 := test.GetRandomAccount(33)
 	account1.OwnerId = user.Id
 	db.Save(&account1)
-	db.Save(&models.AcctToUsers{AcctId: account1.Id, UserId: user.Id})
+	db.Save(&models.AcctToUsers{AccountId: account1.Id, UserId: user.Id})
 
 	// Update user profile
 	postStr := fmt.Sprintf(`{ "first_name": "%s", "last_name": "%s", "email": "%s" }`, "Jane", "Wells", user.Email)
@@ -582,7 +590,7 @@ func TestUpdateMe04(t *testing.T) {
 	account1 := test.GetRandomAccount(33)
 	account1.OwnerId = user.Id
 	db.Save(&account1)
-	db.Save(&models.AcctToUsers{AcctId: account1.Id, UserId: user.Id})
+	db.Save(&models.AcctToUsers{AccountId: account1.Id, UserId: user.Id})
 
 	// Update user profile
 	postStr := fmt.Sprintf(`{ "last_name": "%s", "email": "%s" }`, "Wells", user2.Email)
@@ -638,7 +646,7 @@ func TestUpdateMe05(t *testing.T) {
 	account1 := test.GetRandomAccount(33)
 	account1.OwnerId = user.Id
 	db.Save(&account1)
-	db.Save(&models.AcctToUsers{AcctId: account1.Id, UserId: user.Id})
+	db.Save(&models.AcctToUsers{AccountId: account1.Id, UserId: user.Id})
 
 	// Update user profile
 	postStr := fmt.Sprintf(`{ "first_name": "%s", "email": "%s" }`, "Wells", user2.Email)
@@ -694,7 +702,7 @@ func TestUpdateMe06(t *testing.T) {
 	account1 := test.GetRandomAccount(33)
 	account1.OwnerId = user.Id
 	db.Save(&account1)
-	db.Save(&models.AcctToUsers{AcctId: account1.Id, UserId: user.Id})
+	db.Save(&models.AcctToUsers{AccountId: account1.Id, UserId: user.Id})
 
 	// Update user profile
 	postStr := fmt.Sprintf(`{ "first_name": "%s", "last_name": "%s" }`, "Wells", "Wells")

@@ -30,6 +30,7 @@ func createTestUserInDB(db *models.DB) (models.User, models.Account, models.Appl
 	db.Save(&user)
 
 	account := test.GetRandomAccount(33)
+	account.Name = "Random Account"
 	account.OwnerId = user.Id
 	db.Save(&account)
 
@@ -37,7 +38,7 @@ func createTestUserInDB(db *models.DB) (models.User, models.Account, models.Appl
 	db.Save(&app)
 
 	// Set new user account to users
-	lu := models.AcctToUsers{AcctId: account.Id, UserId: user.Id}
+	lu := models.AcctToUsers{AccountId: account.Id, UserId: user.Id}
 	db.Save(&lu)
 
 	return user, account, app
@@ -351,23 +352,26 @@ func TestDoOauthToken06(t *testing.T) {
 	c.SetDB(db)
 
 	// Create a test user in DB
-	user, account, app := createTestUserInDB(db)
+	user, _, app := createTestUserInDB(db)
 
 	// Add more accounts.
 	a1 := test.GetRandomAccount(20)
+	a1.Name = "Matthews Etc."
 	db.Save(&a1)
 	a2 := test.GetRandomAccount(21)
+	a2.Name = "Cloudmanic Labs, LLC"
 	db.Save(&a2)
 	a3 := test.GetRandomAccount(23)
+	a3.Name = "Acme Inc."
 	db.Save(&a3)
 
-	lu1 := models.AcctToUsers{AcctId: a1.Id, UserId: user.Id}
+	lu1 := models.AcctToUsers{AccountId: a1.Id, UserId: user.Id}
 	db.Save(&lu1)
 
-	lu2 := models.AcctToUsers{AcctId: a2.Id, UserId: user.Id}
+	lu2 := models.AcctToUsers{AccountId: a2.Id, UserId: user.Id}
 	db.Save(&lu2)
 
-	lu3 := models.AcctToUsers{AcctId: a3.Id, UserId: uint(5)}
+	lu3 := models.AcctToUsers{AccountId: a3.Id, UserId: uint(5)}
 	db.Save(&lu3)
 
 	// Build stuct that we convert to json.
@@ -422,9 +426,9 @@ func TestDoOauthToken06(t *testing.T) {
 	u, err := db.GetUserById(user.Id)
 	st.Expect(t, err, nil)
 	st.Expect(t, len(u.Accounts), 3)
-	st.Expect(t, u.Accounts[0].Name, account.Name)
-	st.Expect(t, u.Accounts[1].Name, a2.Name)
-	st.Expect(t, u.Accounts[2].Name, a1.Name)
+	st.Expect(t, u.Accounts[0].Name, "Cloudmanic Labs, LLC")
+	st.Expect(t, u.Accounts[1].Name, "Matthews Etc.")
+	st.Expect(t, u.Accounts[2].Name, "Random Account")
 }
 
 //
@@ -457,7 +461,7 @@ func TestDoOauthToken07(t *testing.T) {
 	db.Save(&app)
 
 	// Set new user account to users
-	lu := models.AcctToUsers{AcctId: account.Id, UserId: user.Id}
+	lu := models.AcctToUsers{AccountId: account.Id, UserId: user.Id}
 	db.Save(&lu)
 
 	// Build stuct that we convert to json.

@@ -65,7 +65,7 @@ func TestDoRegister01(t *testing.T) {
 
 	// Check the database that proper entries where created
 	u := models.AcctToUsers{}
-	db.Where("acct_id = ? AND user_id = ?", 1, 1).First(&u)
+	db.Where("account_id = ? AND user_id = ?", 1, 1).First(&u)
 
 	// Check the database that proper entries where created
 	s := models.Session{}
@@ -85,14 +85,13 @@ func TestDoRegister01(t *testing.T) {
 
 	// Check the database that proper entries where created
 	ab := models.AcctToBilling{}
-	db.Where("acct_id = ? AND billing_id = ?", 1, uint(1)).First(&ab)
+	db.Where("account_id = ? AND billing_id = ?", 1, uint(1)).First(&ab)
 
 	// Test results
 	st.Expect(t, w.Code, 200)
 	st.Expect(t, res.UserId, uint(1))
 	st.Expect(t, res.AccountId, uint(1))
 	st.Expect(t, res.AccessToken, s.AccessToken)
-	st.Expect(t, u.Id, uint(1))
 	st.Expect(t, s.Id, uint(1))
 	st.Expect(t, m.Id, uint(1))
 	st.Expect(t, m.FirstName, "Jane")
@@ -423,7 +422,7 @@ func TestDoRegister09(t *testing.T) {
 
 	// Check the database that proper entries where created
 	u := models.AcctToUsers{}
-	db.Where("acct_id = ? AND user_id = ?", 1, 1).First(&u)
+	db.Where("account_id = ? AND user_id = ?", 1, 1).First(&u)
 
 	// Check the database that proper entries where created
 	s := models.Session{}
@@ -442,7 +441,6 @@ func TestDoRegister09(t *testing.T) {
 	st.Expect(t, res.UserId, uint(1))
 	st.Expect(t, res.AccountId, uint(1))
 	st.Expect(t, res.AccessToken, s.AccessToken)
-	st.Expect(t, u.Id, uint(1))
 	st.Expect(t, s.Id, uint(1))
 	st.Expect(t, m.Id, uint(1))
 	st.Expect(t, m.FirstName, "Jane")
@@ -520,7 +518,7 @@ func TestDoRegister10(t *testing.T) {
 
 	// Check the database that proper entries where created
 	u := models.AcctToUsers{}
-	db.Where("acct_id = ? AND user_id = ?", acct2.Id, 1).First(&u)
+	db.Where("account_id = ? AND user_id = ?", acct2.Id, 1).First(&u)
 
 	// Check the database that proper entries where created
 	s := models.Session{}
@@ -543,7 +541,6 @@ func TestDoRegister10(t *testing.T) {
 	st.Expect(t, res.UserId, uint(1))
 	st.Expect(t, res.AccountId, acct2.Id)
 	st.Expect(t, res.AccessToken, s.AccessToken)
-	st.Expect(t, u.Id, uint(1))
 	st.Expect(t, s.Id, uint(1))
 	st.Expect(t, m.Id, uint(1))
 	st.Expect(t, m.FirstName, "Jane")

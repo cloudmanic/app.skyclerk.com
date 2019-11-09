@@ -17,7 +17,7 @@ type AcctToBilling struct {
 	Id        uint      `gorm:"primary_key" json:"-"`
 	CreatedAt time.Time `sql:"not null" json:"-"`
 	UpdatedAt time.Time `sql:"not null" json:"-"`
-	AcctId    uint      `sql:"not null"  json:"-"`
+	AccountId uint      `sql:"not null"  json:"-"`
 	BillingId uint      `sql:"not null"  json:"-"`
 }
 

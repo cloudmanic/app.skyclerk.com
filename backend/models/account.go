@@ -70,7 +70,7 @@ func (db *DB) ValidateOwnerId(acct Account, accountId uint, objId uint, action s
 
 	// Make sure this user is part of the account.
 	c := AcctToUsers{}
-	if db.New().Where("acct_id = ? AND user_id = ?", accountId, acct.OwnerId).First(&c).RecordNotFound() {
+	if db.New().Where("account_id = ? AND user_id = ?", accountId, acct.OwnerId).First(&c).RecordNotFound() {
 		return errors.New(errMsg)
 	}
 
@@ -131,7 +131,7 @@ func (t *DB) ClearAccount(accountId uint) {
 func (t *DB) DeleteAccount(accountId uint) {
 	// Clear users not used else where.
 	a2u := []AcctToUsers{}
-	t.New().Where("acct_id = ?", accountId).Find(&a2u)
+	t.New().Where("account_id = ?", accountId).Find(&a2u)
 
 	// Loop through users delete if needed
 	for _, row := range a2u {
@@ -145,8 +145,8 @@ func (t *DB) DeleteAccount(accountId uint) {
 	}
 
 	// Clear database tables.
-	t.New().Exec("DELETE FROM acct_to_users WHERE acct_id = ?", accountId)
-	t.New().Exec("DELETE FROM acct_to_billings WHERE acct_id = ?", accountId)
+	t.New().Exec("DELETE FROM acct_to_users WHERE account_id = ?", accountId)
+	t.New().Exec("DELETE FROM acct_to_billings WHERE account_id = ?", accountId)
 	t.New().Exec("DELETE FROM accounts WHERE id = ?", accountId)
 }
 

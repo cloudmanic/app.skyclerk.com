@@ -162,7 +162,7 @@ func TestDoResetPassword01(t *testing.T) {
 	db.Save(&account)
 
 	// Set new user account to users
-	lu := models.AcctToUsers{AcctId: account.Id, UserId: u1.Id}
+	lu := models.AcctToUsers{AccountId: account.Id, UserId: u1.Id}
 	db.Save(&lu)
 
 	// Build stuct that we convert to json.

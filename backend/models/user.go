@@ -12,6 +12,7 @@ import (
 	"html/template"
 	"time"
 
+	"github.com/jinzhu/gorm"
 	"golang.org/x/crypto/bcrypt"
 
 	"app.skyclerk.com/backend/library/checkmail"
@@ -36,7 +37,7 @@ type User struct {
 	LastActivity time.Time `sql:"not null" json:"last_activity"`
 	SignupIp     string    `sql:"not null" json:"-"`
 	Admin        string    `sql:"not null;type:ENUM('Yes', 'No');default:'No'" json:"-"`
-	Accounts     []Account `json:"accounts"`
+	Accounts     []Account `gorm:"many2many:acct_to_users;" json:"accounts"`
 	Session      Session   `json:"-"`
 }
 
@@ -46,18 +47,10 @@ type User struct {
 func (t *DB) GetUserById(id uint) (User, error) {
 	var u User
 
-	if t.Where("id = ?", id).First(&u).RecordNotFound() {
+	if t.Preload("Accounts", func(db *gorm.DB) *gorm.DB {
+		return db.Order("accounts.name ASC")
+	}).Where("id = ?", id).First(&u).RecordNotFound() {
 		return u, errors.New("Record not found")
-	}
-
-	// Add in accounts TOOD(user): Clean this up to be more GORMY
-	aTU := []AcctToUsers{}
-	t.Where("user_id = ?", id).Order("acct_id DESC").Find(&aTU)
-
-	for _, row := range aTU {
-		a := Account{}
-		t.Find(&a, row.AcctId)
-		u.Accounts = append(u.Accounts, a)
 	}
 
 	// Return the user.

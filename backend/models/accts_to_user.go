@@ -8,17 +8,10 @@
 
 package models
 
-import (
-	"time"
-)
-
-// AcctUsersLu struct
+// AcctToUsers struct NOTE: We do not run this in our migrations. It is auto creeated.
 type AcctToUsers struct {
-	Id        uint      `gorm:"primary_key" json:"_"`
-	CreatedAt time.Time `json:"created_at"`
-	UpdatedAt time.Time `json:"updated_at"`
-	AcctId    uint      `sql:"not null"  json:"_"`
-	UserId    uint      `sql:"not null"  json:"_"`
+	AccountId uint `sql:"not null"  json:"_"`
+	UserId    uint `sql:"not null"  json:"_"`
 }
 
 //
@@ -28,7 +21,7 @@ func (t *DB) GetUsersByAccount(accountId uint) []User {
 	// SQL String
 	sql := "SELECT users.* FROM acct_to_users "
 	sql = sql + "JOIN users ON users.id = acct_to_users.user_id "
-	sql = sql + "WHERE acct_to_users.acct_id = ? ORDER BY users.id"
+	sql = sql + "WHERE acct_to_users.account_id = ? ORDER BY users.id"
 
 	// Struct we return
 	rt := []User{}
