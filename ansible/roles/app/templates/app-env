@@ -13,10 +13,14 @@ REGISTER_URL={{ register_url }}
 ENCRYPTION_KEY={{ encryption_key }}
 CACHE_DIR=/cache
 
+# Database
 DB_HOST=tcp({{ app_db_host }}:3306)
 DB_USERNAME={{ app_db_username }}
 DB_PASSWORD={{ app_db_password }}
 DB_DATABASE={{ app_db_database }}
+
+# Redis
+REDIS_HOST=127.0.0.1:6379
 
 # Object store
 OBJECT_REGION={{ object_region }}

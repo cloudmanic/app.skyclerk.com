@@ -17,12 +17,22 @@ import (
 	"testing"
 	"time"
 
+	"github.com/gin-gonic/gin"
+	"github.com/nbio/st"
+
+	"app.skyclerk.com/backend/library/cache"
 	"app.skyclerk.com/backend/library/helpers"
 	"app.skyclerk.com/backend/library/test"
 	"app.skyclerk.com/backend/models"
-	"github.com/gin-gonic/gin"
-	"github.com/nbio/st"
 )
+
+//
+// TestMain
+//
+func TestMain(m *testing.M) {
+	cache.StartRedis("127.0.0.1:9379")
+	m.Run()
+}
 
 //
 // TestGetLedgers01 Test get ledgers 01

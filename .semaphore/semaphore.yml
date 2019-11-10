@@ -42,7 +42,7 @@ blocks:
         - name: MAIL_HOST
           value: 127.0.0.1
         - name: MAIL_PORT
-          value: "1025"                 
+          value: "1025"
 
       jobs:
       - name: Get app code, get packages, test and build
@@ -53,7 +53,8 @@ blocks:
           - export "SEMAPHORE_GIT_DIR=$(go env GOPATH)/src/${SEMAPHORE_PROJECT_NAME}"
           - export "PATH=$GOBIN:${PATH}"
           - mkdir -vp "${SEMAPHORE_GIT_DIR}" "$(go env GOPATH)/bin"
-          - docker run --name skcylerk_com_testing_mailhog -p 127.0.0.1:1025:1025 -d mailhog/mailhog
+          - docker run --name skyclerk_com_testing_redis -p 127.0.0.1:9379:6379 -d redis:5.0.4
+          - docker run --name skyclerk_com_testing_mailhog -p 127.0.0.1:1025:1025 -d mailhog/mailhog
           - docker run --name skyclerk_com_testing -e MYSQL_ROOT_PASSWORD=foobar --tmpfs /var/lib/mysql -p 127.0.0.1:9907:3306 -d mariadb:10.2
           - checkout
           - sem-version go 1.11

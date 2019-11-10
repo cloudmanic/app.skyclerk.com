@@ -22,21 +22,21 @@ import (
 	"app.skyclerk.com/backend/services"
 )
 
-// Summary results
+// LedgerSummary struct Summary results
 type LedgerSummary struct {
 	Years      []LedgerYearSummaryResult `json:"years"`
 	Labels     []LedgerSummaryResult     `json:"labels"`
 	Categories []LedgerSummaryResult     `json:"categories"`
 }
 
-// LedgerSummaryResult
+// LedgerSummaryResult struct
 type LedgerSummaryResult struct {
 	Id    uint   `json:"id"`
 	Name  string `json:"name"`
 	Count int    `json:"count"`
 }
 
-// LedgerYearSummaryResult
+// LedgerYearSummaryResult struct
 type LedgerYearSummaryResult struct {
 	Year  int `json:"year"`
 	Count int `json:"count"`
@@ -47,6 +47,8 @@ type LedgerYearSummaryResult struct {
 // system, but enough so the front-end does not have to page
 //
 func (t *Controller) GetLedgers(c *gin.Context) {
+	//fmt.Println(c.Request.URL)
+
 	// Query database based on url parms.
 	results, meta, err := t.QueryLedgers(c, 25, []string{"Category", "Contact", "Labels", "Files"})
 
