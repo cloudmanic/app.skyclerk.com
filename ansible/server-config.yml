@@ -1,6 +1,6 @@
 ---
 
-- name: Deploys the server config for skyclerk.com to production (and imaginary.skyclerk.com)
+- name: Deploys the server config for app.skyclerk.com to production (and imaginary.skyclerk.com)
 
   hosts: web-servers
 

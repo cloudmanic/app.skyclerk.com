@@ -1,2 +1,2 @@
 [web-servers]
-web2.skyclerk.com ansible_user=spicer
+app.skyclerk.com ansible_user=spicer
