@@ -39,22 +39,24 @@ services:
     networks:
       - shared
 
-  # TODO(spicer): Currently we do not use redis. But if we start this is helpful.
+  # TODO(spicer): Currently we do not use redis.
   # But we should move it over to its own docker-compose so redis is not restarted
   # every time we deploy the app
-  # # Redis 4.0
-  # redis:
-  #   image: redis:5.0.4
-  #
-  #   hostname: redis.skyclerk.com
-  #
-  #   container_name: redis.skyclerk.com
-  #
-  #   ports:
-  #     - "127.0.0.1:6379:6379"
-  #
-  #   networks:
-  #     - shared
+
+  # Redis 4.0
+  redis:
+
+    image: redis:5.0.4
+
+    hostname: redis.skyclerk.com
+
+    container_name: redis.skyclerk.com
+
+    ports:
+      - "127.0.0.1:6379:6379"
+
+    networks:
+      - shared
 
 networks:
   shared:
