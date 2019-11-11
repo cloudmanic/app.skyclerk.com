@@ -78,6 +78,10 @@ export class AddComponent implements OnInit {
 			// Sucesss
 			res => {
 				this.refreshLedger.emit(res);
+
+				// Hack to refresh P&L
+				this.accountService.accountChange.emit(this.ledger.AccountId);
+
 				this.router.navigate(['/ledger']);
 			},
 

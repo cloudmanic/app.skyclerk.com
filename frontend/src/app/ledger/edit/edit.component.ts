@@ -17,6 +17,7 @@ import { File as FileModel } from 'src/app/models/file.model';
 import { MeService } from 'src/app/services/me.service';
 import { Subject } from 'rxjs';
 import { AccountService } from 'src/app/services/account.service';
+import { Numbers } from 'src/app/library/numbers';
 
 @Component({
 	selector: 'app-ledger-edit',
@@ -27,6 +28,7 @@ export class EditComponent implements OnInit {
 	type: string = "income";
 	ledger: Ledger = new Ledger();
 	destory: Subject<boolean> = new Subject<boolean>();
+	amount: string = "";
 
 	showAddLabel: boolean = false;
 	showAddContact: boolean = false;
@@ -52,6 +54,9 @@ export class EditComponent implements OnInit {
 			if (this.ledger.Amount < 0) {
 				this.type = "expense";
 			}
+
+			// Set amount
+			this.amount = String(this.ledger.Amount);
 		});
 
 		// Listen for account changes.
@@ -75,6 +80,9 @@ export class EditComponent implements OnInit {
 		// Clear errors
 		this.errors = [];
 
+		// Clean up ledger Amount
+		this.ledger.Amount = Numbers.toFloat(this.amount);
+
 		// Is this an expense
 		if (this.type == "expense") {
 			this.ledger.Amount = (this.ledger.Amount * -1);
@@ -84,6 +92,10 @@ export class EditComponent implements OnInit {
 		this.ledgerService.update(this.ledger).subscribe(
 			// Sucesss
 			() => {
+				// Hack to refresh P&L
+				this.accountService.accountChange.emit(this.ledger.AccountId);
+
+				// Navigate to static view
 				this.router.navigate([`/ledger/${this.ledger.Id}`]);
 			},
 

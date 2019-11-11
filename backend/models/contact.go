@@ -48,7 +48,6 @@ type Contact struct {
 	Twitter       string    `gorm:"column:ContactsTwitter" sql:"not null" json:"twitter"`
 	Facebook      string    `gorm:"column:ContactsFacebook" sql:"not null" json:"facebook"`
 	Linkedin      string    `gorm:"column:ContactsLinkedin" sql:"not null" json:"linkedin"`
-	Type          string    `gorm:"column:ContactsType" sql:"not null;type:ENUM('Customer', 'Vendor', 'Both');default:'Both'" json:"_"`
 	HrId          uint64    `gorm:"column:ContactsHrId" sql:"not null" json:"_"`
 	PricingPlanId uint      `gorm:"column:ContactsPricingPlanId" sql:"not null" json:"_"`
 	GatewayId     uint      `gorm:"column:ContactsGatewayId" sql:"not null" json:"_"`

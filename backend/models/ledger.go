@@ -216,7 +216,6 @@ func prepLedgerVars(db *DB, ledger *Ledger) {
 	ledger.Note = strings.Trim(ledger.Note, " ")
 
 	// Trim Contact
-	ledger.Contact.Type = "Both" // TODO(spicer): get rid of this column some day.
 	ledger.Contact.Name = strings.Trim(ledger.Contact.Name, " ")
 	ledger.Contact.FirstName = strings.Trim(ledger.Contact.FirstName, " ")
 	ledger.Contact.LastName = strings.Trim(ledger.Contact.LastName, " ")
@@ -238,7 +237,6 @@ func prepLedgerVars(db *DB, ledger *Ledger) {
 		db.Find(&contact, ledger.Contact.Id)
 
 		// Override the allowed updated fields.
-		contact.Type = ledger.Contact.Type
 		contact.Name = ledger.Contact.Name
 		contact.FirstName = ledger.Contact.FirstName
 		contact.LastName = ledger.Contact.LastName

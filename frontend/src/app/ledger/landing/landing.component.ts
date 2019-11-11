@@ -264,7 +264,16 @@ export class LandingComponent implements OnInit {
 		}
 
 		// Small delay before reloading
-		setTimeout(() => { this.loadPageData(); }, 1000);
+		setTimeout(() => {
+			this.loadPageData();
+		}, 1000);
+
+
+		// Hack to refresh P&L
+		setTimeout(() => {
+			let accountId = localStorage.getItem('account_id');
+			this.accountService.accountChange.emit(Number(accountId));
+		}, 2000);
 	}
 
 	// ------------- Filter Functions --------------- //
