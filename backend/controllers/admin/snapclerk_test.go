@@ -137,6 +137,14 @@ func TestGetSnapClerks01(t *testing.T) {
 	st.Expect(t, ac.Action, "expense")
 	st.Expect(t, ac.Name, "Home Depot")
 	st.Expect(t, ac.LedgerId, l.Id)
+
+	// Double check snapclerk
+	s := models.SnapClerk{}
+	db.New().Find(&s, 1)
+	st.Expect(t, s.ReviewedById, uint(109))
+	st.Expect(t, s.LedgerId, uint(1))
+	st.Expect(t, s.Status, "Processed")
+	st.Expect(t, s.Amount, lPost.Amount)
 }
 
 /* End File */

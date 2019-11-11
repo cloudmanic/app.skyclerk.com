@@ -99,6 +99,7 @@ func (t *Controller) ConvertSnapClerk(c *gin.Context) {
 	sc.Status = "Processed"
 	sc.LedgerId = ledger.Id
 	sc.ProcessedAt = time.Now()
+	sc.ReviewedById = uint(c.MustGet("userId").(int))
 	t.db.New().Save(&sc)
 
 	// Fresh lookup
@@ -140,6 +141,7 @@ func (t *Controller) RejectSnapClerk(c *gin.Context) {
 	// Mark rejected
 	sc.Status = "Rejected"
 	sc.ProcessedAt = time.Now()
+	sc.ReviewedById = uint(c.MustGet("userId").(int))
 	t.db.New().Save(&sc)
 
 	// Return happy JSON
