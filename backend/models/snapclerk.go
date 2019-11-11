@@ -24,6 +24,8 @@ import (
 type SnapClerk struct {
 	Id           uint      `gorm:"primary_key;column:SnapClerkId" json:"id"`
 	AccountId    uint      `gorm:"column:SnapClerkAccountId" sql:"not null" json:"account_id"`
+	UpdatedAt    time.Time `gorm:"column:SnapClerkUpdatedAt" sql:"not null" json:"-"`
+	CreatedAt    time.Time `gorm:"column:SnapClerkCreatedAt" sql:"not null" json:"created_at"`
 	AddedById    uint      `gorm:"column:SnapClerkAddedById" sql:"not null" json:"added_by_id"`
 	ReviewedById uint      `gorm:"column:SnapClerkReviewedById" sql:"not null" json:"-"`
 	Status       string    `gorm:"column:SnapClerkStatus" sql:"not null;type:ENUM('Pending','Processed','Rejected');default:'Pending'" json:"status"`
@@ -37,8 +39,6 @@ type SnapClerk struct {
 	Note         string    `gorm:"column:SnapClerkNote" sql:"not null;type:TEXT" json:"note"`
 	Lat          string    `gorm:"column:SnapClerkLat" sql:"not null;type:TEXT" json:"lat"`
 	Lon          string    `gorm:"column:SnapClerkLon" sql:"not null;type:TEXT" json:"lon"`
-	UpdatedAt    time.Time `gorm:"column:SnapClerkUpdatedAt" sql:"not null" json:"-"`
-	CreatedAt    time.Time `gorm:"column:SnapClerkCreatedAt" sql:"not null" json:"created_at"`
 	ProcessedAt  time.Time `gorm:"column:SnapClerkProcessedAt" sql:"not null" json:"processed_at"` // This has to be at the end GORM (auto update stuff)
 }
 

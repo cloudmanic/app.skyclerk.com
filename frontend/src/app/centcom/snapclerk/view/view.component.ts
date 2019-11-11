@@ -67,9 +67,22 @@ export class ViewComponent {
 				this.categoriesInput = "";
 				this.categoriesResults = [];
 
-				// Load next ledger
+				// Load next SC
 				this.loadSnapClerks();
 			})
+	}
+
+	//
+	// Reject snapclerk
+	//
+	reject() {
+		// Send to BE for processing
+		let url = `${environment.app_server}/api/admin/snapclerk/reject/${this.snapclerk.Id}`;
+
+		return this.http.post(url, {}).subscribe(_res => {
+			// Load next SC
+			this.loadSnapClerks();
+		})
 	}
 
 	//

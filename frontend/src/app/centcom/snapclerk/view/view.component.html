@@ -7,6 +7,10 @@
 
     <div class="img-cont" *ngIf="haveReceipts">
       <img [src]="snapclerk.File.Url" />
+
+      <div class="mt-5">
+        Id: {{ snapclerk.Id }}
+      </div>
     </div>
 
     <div class="fields-cont" *ngIf="haveReceipts">
@@ -51,7 +55,7 @@
         </div>
 
         <div class="form-group button-row">
-          <a href="" class="red">Reject</a>
+          <a (click)="reject()" class="red">Reject</a>
           <button>Save</button>
         </div>
 

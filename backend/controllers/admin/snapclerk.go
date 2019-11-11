@@ -11,6 +11,7 @@ import (
 	"net/http"
 	"strconv"
 	"strings"
+	"time"
 
 	"github.com/gin-gonic/gin"
 	"github.com/tidwall/gjson"
@@ -97,6 +98,7 @@ func (t *Controller) ConvertSnapClerk(c *gin.Context) {
 	sc.CreatedAt = uploadDate
 	sc.Status = "Processed"
 	sc.LedgerId = ledger.Id
+	sc.ProcessedAt = time.Now()
 	t.db.New().Save(&sc)
 
 	// Fresh lookup
@@ -109,6 +111,39 @@ func (t *Controller) ConvertSnapClerk(c *gin.Context) {
 
 	// Return happy JSON
 	c.JSON(200, l)
+}
+
+//
+// RejectSnapClerk - reject a snapclerk
+//
+func (t *Controller) RejectSnapClerk(c *gin.Context) {
+	// Get SnapClerk Id
+	id, err := strconv.ParseInt(c.Param("id"), 10, 32)
+
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"errors": err.Error()})
+		return
+	}
+
+	// Get OG snapclerk
+	og := models.SnapClerk{}
+	t.db.New().Find(&og, id)
+
+	// Get snapclerk by ID
+	sc, err := t.db.GetSnapClerkByAccountAndId(og.AccountId, uint(id))
+
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"errors": err.Error()})
+		return
+	}
+
+	// Mark rejected
+	sc.Status = "Rejected"
+	sc.ProcessedAt = time.Now()
+	t.db.New().Save(&sc)
+
+	// Return happy JSON
+	c.JSON(204, "")
 }
 
 /* End File */
