@@ -17,6 +17,7 @@ import { LedgerService } from 'src/app/services/ledger.service';
 import { MeService } from 'src/app/services/me.service';
 import { Subject } from 'rxjs';
 import { AccountService } from 'src/app/services/account.service';
+import { Numbers } from 'src/app/library/numbers';
 
 @Component({
 	selector: 'app-ledger-add',
@@ -27,6 +28,7 @@ export class AddComponent implements OnInit {
 	@Output() refreshLedger = new EventEmitter<Ledger>();
 
 	errors: any = [];
+	amount: string = "";
 	ledger: Ledger = new Ledger();
 	showAddLabel: boolean = false;
 	showAddContact: boolean = false;
@@ -62,6 +64,9 @@ export class AddComponent implements OnInit {
 	save() {
 		// Clear errors
 		this.errors = [];
+
+		// Clean up ledger Amount
+		this.ledger.Amount = Numbers.toFloat(this.amount);
 
 		// Is this an expense
 		if (this.type == "expense") {
