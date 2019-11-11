@@ -4,16 +4,18 @@
 // Copyright: 2019 Cloudmanic Labs, LLC. All rights reserved.
 //
 
+import * as moment from 'moment';
 import { Component } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
 import { Observable } from 'rxjs';
 import { Contact } from 'src/app/models/contact.model';
-import { map } from 'rxjs/operators';
+import { map } from "rxjs/operators";
 import { Me } from 'src/app/models/me.model';
 import { Account } from 'src/app/models/account.model';
 import { SnapClerk } from 'src/app/models/snapclerk.model';
 import { Category } from 'src/app/models/category.model';
+import { Ledger } from 'src/app/models/ledger.model';
 
 @Component({
 	selector: 'app-view',
@@ -44,13 +46,30 @@ export class ViewComponent {
 	// Save snapclerk
 	//
 	save() {
+		this.snapclerk.AccountId = this.account.Id;
 		this.snapclerk.Contact = this.contactInput;
 		this.snapclerk.Category = this.categoriesInput;
 
-		console.log(this.snapclerk);
+		let rt = new SnapClerk().serialize(this.snapclerk)
+		rt["created_at"] = moment(this.snapclerk.CreatedAt).toDate();
 
-		// Call this after success.
-		//this.loadSnapClerks();
+		// Send to BE for processing
+		let url = `${environment.app_server}/api/admin/snapclerk/convert/${this.snapclerk.Id}`;
+
+		return this.http.post<Ledger>(url, rt)
+			.pipe(map(res => { new Ledger().deserialize(res) }))
+			.subscribe(_res => {
+				// clear inputs
+				this.contact = new Contact();
+				this.contactInput = "";
+				this.contactsResults = [];
+				this.category = new Category();
+				this.categoriesInput = "";
+				this.categoriesResults = [];
+
+				// Load next ledger
+				this.loadSnapClerks();
+			})
 	}
 
 	//

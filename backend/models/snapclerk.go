@@ -158,6 +158,7 @@ func (db *DB) ConvertSnapclerkToLedger(sc SnapClerk) (Ledger, error) {
 
 	// Deal with labels.
 	lbArray := []Label{}
+	lbArray = append(lbArray, Label{Name: "Snap!Clerk", AccountId: sc.AccountId})
 	lbs := strings.Split(sc.Labels, ",")
 
 	for _, row := range lbs {
@@ -182,6 +183,24 @@ func (db *DB) ConvertSnapclerkToLedger(sc SnapClerk) (Ledger, error) {
 	if err != nil {
 		return ledger, err
 	}
+
+	// Get the contact name.
+	contactName := ledger.Contact.Name
+
+	if len(contactName) == 0 {
+		contactName = ledger.Contact.FirstName + " " + ledger.Contact.LastName
+	}
+
+	// Add to the activity log
+	db.New().Create(&Activity{
+		AccountId: ledger.AccountId,
+		UserId:    ledger.AddedById,
+		Action:    "expense",
+		SubAction: "create",
+		Name:      contactName,
+		Amount:    ledger.Amount,
+		LedgerId:  ledger.Id,
+	})
 
 	return ledger, nil
 }

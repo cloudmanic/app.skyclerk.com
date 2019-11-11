@@ -110,8 +110,9 @@ func TestGetSnapClerks01(t *testing.T) {
 	st.Expect(t, result.Lon, -122.93470961648806)
 	st.Expect(t, result.Contact.Name, lPost.Contact)
 	st.Expect(t, result.Category.Name, lPost.Category)
-	st.Expect(t, result.Labels[0].Name, "hahahah")
-	st.Expect(t, result.Labels[1].Name, "thanks")
+	st.Expect(t, result.Labels[0].Name, "Snap!Clerk")
+	st.Expect(t, result.Labels[1].Name, "hahahah")
+	st.Expect(t, result.Labels[2].Name, "thanks")
 	st.Expect(t, true, strings.Contains(result.Files[0].Url, "https://cdn-dev.skyclerk.com/accounts/33/1_money-2724241-1920.jpg?Expires="))
 
 	// Get ledger.
@@ -125,9 +126,17 @@ func TestGetSnapClerks01(t *testing.T) {
 	st.Expect(t, l.Lon, -122.93470961648806)
 	st.Expect(t, l.Contact.Name, lPost.Contact)
 	st.Expect(t, l.Category.Name, lPost.Category)
-	st.Expect(t, l.Labels[0].Name, "hahahah")
-	st.Expect(t, l.Labels[1].Name, "thanks")
+	st.Expect(t, l.Labels[0].Name, "Snap!Clerk")
+	st.Expect(t, l.Labels[1].Name, "hahahah")
+	st.Expect(t, l.Labels[2].Name, "thanks")
 	st.Expect(t, true, strings.Contains(l.Files[0].Url, "https://cdn-dev.skyclerk.com/accounts/33/1_money-2724241-1920.jpg?Expires="))
+
+	// Double check activity
+	ac := models.Activity{}
+	db.New().Find(&ac, 1)
+	st.Expect(t, ac.Action, "expense")
+	st.Expect(t, ac.Name, "Home Depot")
+	st.Expect(t, ac.LedgerId, l.Id)
 }
 
 /* End File */

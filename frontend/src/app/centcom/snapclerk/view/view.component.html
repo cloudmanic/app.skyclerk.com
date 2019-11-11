@@ -21,7 +21,7 @@
 
         <div class="form-group autocomplete">
           <label>Contact</label>
-          <input type="text" name="contactInput" [(ngModel)]="contactInput" (keyup)="onContactChange()" autocomplete="false" />
+          <input type="text" name="contactInput" [(ngModel)]="contactInput" (keyup)="onContactChange()" autocomplete="disabled" />
           <ul *ngIf="contactsResults.length > 0">
             <li *ngFor="let row of contactsResults"><a (click)="onContactSelect(row)">{{ displayContact(row) }}</a></li>
           </ul>
@@ -29,12 +29,12 @@
 
         <div class="form-group">
           <label>Date</label>
-          <input type="date" name="" />
+          <input type="date" name="CreatedAt" [ngModel]="snapclerk.CreatedAt | date:'yyyy-MM-dd'" (ngModelChange)="snapclerk.CreatedAt = $event" />
         </div>
 
         <div class="form-group autocomplete">
           <label>Category</label>
-          <input type="text" name="categoriesInput" [(ngModel)]="categoriesInput" (keyup)="onCategoryChange()" autocomplete="false" />
+          <input type="text" name="categoriesInput" [(ngModel)]="categoriesInput" (keyup)="onCategoryChange()" autocomplete="disabled" />
           <ul *ngIf="categoriesResults.length > 0">
             <li *ngFor="let row of categoriesResults"><a (click)="onCategorySelect(row)">{{ row.Name }}</a></li>
           </ul>
@@ -42,12 +42,12 @@
 
         <div class="form-group">
           <label>Amount</label>
-          <input type="number" name="Amount" [(ngModel)]="snapclerk.Amount" />
+          <input type="number" name="Amount" [(ngModel)]="snapclerk.Amount" autocomplete="disabled" />
         </div>
 
         <div class="form-group">
           <label>Note</label>
-          <textarea name="Note" rows="8" cols="80" [(ngModel)]="snapclerk.Note"></textarea>
+          <textarea name="Note" rows="8" cols="80" [(ngModel)]="snapclerk.Note" autocomplete="disabled"></textarea>
         </div>
 
         <div class="form-group button-row">

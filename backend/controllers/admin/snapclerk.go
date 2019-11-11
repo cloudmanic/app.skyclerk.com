@@ -47,7 +47,7 @@ func (t *Controller) ConvertSnapClerk(c *gin.Context) {
 	id, err := strconv.ParseInt(c.Param("id"), 10, 32)
 
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"errors": err})
+		c.JSON(http.StatusBadRequest, gin.H{"errors": err.Error()})
 		return
 	}
 
@@ -60,11 +60,15 @@ func (t *Controller) ConvertSnapClerk(c *gin.Context) {
 	createdAt := gjson.Get(string(body), "created_at").String()
 	note := gjson.Get(string(body), "note").String()
 
+	// Get OG snapclerk
+	og := models.SnapClerk{}
+	t.db.New().Find(&og, id)
+
 	// Get snapclerk by ID
-	sc, err := t.db.GetSnapClerkByAccountAndId(uint(accountID), uint(id))
+	sc, err := t.db.GetSnapClerkByAccountAndId(og.AccountId, uint(id))
 
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"errors": err})
+		c.JSON(http.StatusBadRequest, gin.H{"errors": err.Error()})
 		return
 	}
 
@@ -85,7 +89,7 @@ func (t *Controller) ConvertSnapClerk(c *gin.Context) {
 	ledger, err := t.db.ConvertSnapclerkToLedger(sc)
 
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"errors": err})
+		c.JSON(http.StatusBadRequest, gin.H{"errors": err.Error()})
 		return
 	}
 
@@ -99,7 +103,7 @@ func (t *Controller) ConvertSnapClerk(c *gin.Context) {
 	l, err := t.db.GetLedgerByAccountAndId(uint(accountID), ledger.Id)
 
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"errors": err})
+		c.JSON(http.StatusBadRequest, gin.H{"errors": err.Error()})
 		return
 	}
 
