@@ -11,6 +11,8 @@ import (
 	"errors"
 	"fmt"
 	"os"
+	"strconv"
+	"strings"
 	"time"
 
 	"app.skyclerk.com/backend/library/slack"
@@ -128,6 +130,60 @@ func (db *DB) SnapClerkMonthlyUsage(accountId uint) int {
 
 	// Return happy.
 	return rt.Count
+}
+
+//
+// ConvertSnapclerkToLedger takes a snapclerk model saves a ledger entry.
+//
+func (db *DB) ConvertSnapclerkToLedger(sc SnapClerk) (Ledger, error) {
+	ledger := Ledger{}
+
+	// Create category
+	ledger.Category = Category{Name: sc.Category, Type: "1", AccountId: sc.AccountId}
+
+	// Create contact
+	ledger.Contact = Contact{Name: sc.Contact, AccountId: sc.AccountId}
+
+	// Build lat / Lon
+	var lat float64
+	var lon float64
+
+	if l1, err := strconv.ParseFloat(sc.Lat, 64); err == nil {
+		lat = l1
+	}
+
+	if l2, err := strconv.ParseFloat(sc.Lon, 64); err == nil {
+		lon = l2
+	}
+
+	// Deal with labels.
+	lbArray := []Label{}
+	lbs := strings.Split(sc.Labels, ",")
+
+	for _, row := range lbs {
+		lb := Label{Name: strings.Trim(row, " "), AccountId: sc.AccountId}
+		lbArray = append(lbArray, lb)
+	}
+
+	// Build the ledger.
+	ledger.Date = sc.CreatedAt
+	ledger.Files = append(ledger.Files, sc.File)
+	ledger.AccountId = sc.AccountId
+	ledger.AddedById = sc.AddedById
+	ledger.Lat = lat
+	ledger.Lon = lon
+	ledger.Amount = sc.Amount
+	ledger.Note = sc.Note
+	ledger.Labels = lbArray
+
+	// Save ledger entry.
+	err := db.LedgerCreate(&ledger)
+
+	if err != nil {
+		return ledger, err
+	}
+
+	return ledger, nil
 }
 
 /* End File */

@@ -95,6 +95,7 @@ type Datastore interface {
 	// SnapClerk
 	SnapClerkCreate(sc *SnapClerk) error
 	SnapClerkMonthlyUsage(accountId uint) int
+	ConvertSnapclerkToLedger(sc SnapClerk) (Ledger, error)
 	GetSnapClerkByAccountAndId(accountId uint, id uint) (SnapClerk, error)
 
 	// Billing

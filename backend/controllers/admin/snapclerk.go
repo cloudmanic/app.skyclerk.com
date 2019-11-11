@@ -7,8 +7,15 @@
 package admin
 
 import (
-	"github.com/gin-gonic/gin"
+	"io/ioutil"
+	"net/http"
+	"strconv"
+	"strings"
 
+	"github.com/gin-gonic/gin"
+	"github.com/tidwall/gjson"
+
+	"app.skyclerk.com/backend/library/helpers"
 	"app.skyclerk.com/backend/models"
 )
 
@@ -30,6 +37,74 @@ func (t *Controller) GetSnapClerks(c *gin.Context) {
 
 	// Return happy JSON
 	c.JSON(200, results)
+}
+
+//
+// ConvertSnapClerk - convert a snapclerk to a ledger entry
+//
+func (t *Controller) ConvertSnapClerk(c *gin.Context) {
+	// Get SnapClerk Id
+	id, err := strconv.ParseInt(c.Param("id"), 10, 32)
+
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"errors": err})
+		return
+	}
+
+	// Read the JSON POSTed in.
+	body, _ := ioutil.ReadAll(c.Request.Body)
+	amount := gjson.Get(string(body), "amount").Float()
+	accountID := gjson.Get(string(body), "account_id").Int()
+	contact := gjson.Get(string(body), "contact").String()
+	category := gjson.Get(string(body), "category").String()
+	createdAt := gjson.Get(string(body), "created_at").String()
+	note := gjson.Get(string(body), "note").String()
+
+	// Get snapclerk by ID
+	sc, err := t.db.GetSnapClerkByAccountAndId(uint(accountID), uint(id))
+
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"errors": err})
+		return
+	}
+
+	// Store created at date.
+	uploadDate := sc.CreatedAt
+
+	// Update Snap!Clerk with the new values
+	sc.Amount = amount
+	sc.Note = strings.Trim(note, " ")
+	sc.Contact = strings.Trim(contact, " ")
+	sc.Category = strings.Trim(category, " ")
+	sc.AccountId = uint(accountID)
+
+	// Add in date from CreatedAt
+	sc.CreatedAt = helpers.ParseDateNoError(createdAt)
+
+	// Convert a snapclerk to a ledger entry.
+	ledger, err := t.db.ConvertSnapclerkToLedger(sc)
+
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"errors": err})
+		return
+	}
+
+	// Add in the ledger id, mark as done and save
+	sc.CreatedAt = uploadDate
+	sc.Status = "Processed"
+	sc.LedgerId = ledger.Id
+	t.db.New().Save(&sc)
+
+	// Fresh lookup
+	l, err := t.db.GetLedgerByAccountAndId(uint(accountID), ledger.Id)
+
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"errors": err})
+		return
+	}
+
+	// Return happy JSON
+	c.JSON(200, l)
 }
 
 /* End File */

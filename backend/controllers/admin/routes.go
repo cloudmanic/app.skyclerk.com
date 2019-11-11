@@ -32,6 +32,7 @@ func (t *Controller) DoRoutes(r *gin.Engine) {
 
 		// Snapclerk
 		adminAPI.GET("/snapclerk", t.GetSnapClerks)
+		adminAPI.POST("/snapclerk/convert/:id", t.ConvertSnapClerk)
 
 		// Users
 		// adminApi.GET("/users", t.GetUsers)
