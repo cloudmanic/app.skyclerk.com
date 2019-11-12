@@ -17,6 +17,7 @@ import (
 	"image/png"
 	"io/ioutil"
 	"os"
+	"regexp"
 	"strings"
 
 	"github.com/golang/freetype"
@@ -102,6 +103,15 @@ func getFont(fontPath string) (*truetype.Font, error) {
 }
 
 func createAvatar(initials string) (*image.RGBA, error) {
+	// Make a Regex to say we only want letters and numbers
+	reg, err := regexp.Compile(`[^a-zA-Z0-9\s]+`)
+
+	if err != nil {
+		return nil, err
+	}
+
+	initials = strings.TrimSpace(reg.ReplaceAllString(initials, ""))
+
 	// Make sure initials is not empty
 	if len(initials) <= 1 {
 		initials = "**"

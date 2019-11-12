@@ -48,6 +48,8 @@ services:
 
     image: redis:5.0.4
 
+    restart: always
+
     hostname: redis.skyclerk.com
 
     container_name: redis.skyclerk.com
