@@ -162,7 +162,13 @@ func (db *DB) ConvertSnapclerkToLedger(sc SnapClerk) (Ledger, error) {
 	lbs := strings.Split(sc.Labels, ",")
 
 	for _, row := range lbs {
-		lb := Label{Name: strings.Trim(row, " "), AccountId: sc.AccountId}
+		st := strings.Trim(row, " ")
+
+		if len(st) == 0 {
+			continue
+		}
+
+		lb := Label{Name: st, AccountId: sc.AccountId}
 		lbArray = append(lbArray, lb)
 	}
 
