@@ -102,6 +102,11 @@ func getFont(fontPath string) (*truetype.Font, error) {
 }
 
 func createAvatar(initials string) (*image.RGBA, error) {
+	// Make sure initials is not empty
+	if len(initials) <= 1 {
+		initials = "**"
+	}
+
 	// Make sure the string is OK
 	text := cleanString(initials)
 
