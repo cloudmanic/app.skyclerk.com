@@ -33,7 +33,14 @@ export class ViewComponent implements OnInit {
 	//
 	// Constructor
 	//
-	constructor(public ledgerService: LedgerService, public route: ActivatedRoute, public router: Router, public activityService: ActivityService, public meService: MeService, private titleService: Title, public accountService: AccountService) { }
+	constructor(
+		public ledgerService: LedgerService,
+		public route: ActivatedRoute,
+		public router: Router,
+		public activityService: ActivityService,
+		public meService: MeService,
+		public titleService: Title,
+		public accountService: AccountService) { }
 
 	//
 	// ngOnInit
