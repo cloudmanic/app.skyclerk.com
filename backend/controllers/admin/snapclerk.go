@@ -77,7 +77,7 @@ func (t *Controller) ConvertSnapClerk(c *gin.Context) {
 	uploadDate := sc.CreatedAt
 
 	// Update Snap!Clerk with the new values
-	sc.Amount = amount
+	sc.Amount = (amount * -1)
 	sc.Note = strings.Trim(note, " ")
 	sc.Contact = strings.Trim(contact, " ")
 	sc.Category = strings.Trim(category, " ")

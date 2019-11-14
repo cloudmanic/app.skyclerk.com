@@ -23,9 +23,9 @@ import (
 )
 
 //
-// TestGetSnapClerks01 - test converting a snapclerk to a ledger entry.
+// TestConvertSnapClerk01 - test converting a snapclerk to a ledger entry.
 //
-func TestGetSnapClerks01(t *testing.T) {
+func TestConvertSnapClerk01(t *testing.T) {
 	// test file.
 	destinationFile := "/tmp/money-2724241_1920.jpg"
 	sourceFile := build.Default.GOPATH + "/src/app.skyclerk.com/backend/library/test/files/money-2724241_1920.jpg"
@@ -104,7 +104,7 @@ func TestGetSnapClerks01(t *testing.T) {
 	// Test results
 	st.Expect(t, err, nil)
 	st.Expect(t, w.Code, 200)
-	st.Expect(t, result.Amount, lPost.Amount)
+	st.Expect(t, result.Amount, (lPost.Amount * -1))
 	st.Expect(t, result.Note, lPost.Note)
 	st.Expect(t, result.Lat, 45.28819058891675)
 	st.Expect(t, result.Lon, -122.93470961648806)
@@ -120,7 +120,7 @@ func TestGetSnapClerks01(t *testing.T) {
 	st.Expect(t, err, nil)
 
 	// Double check the db.
-	st.Expect(t, l.Amount, lPost.Amount)
+	st.Expect(t, l.Amount, (lPost.Amount * -1))
 	st.Expect(t, l.Note, lPost.Note)
 	st.Expect(t, l.Lat, 45.28819058891675)
 	st.Expect(t, l.Lon, -122.93470961648806)
@@ -144,7 +144,7 @@ func TestGetSnapClerks01(t *testing.T) {
 	st.Expect(t, s.ReviewedById, uint(109))
 	st.Expect(t, s.LedgerId, uint(1))
 	st.Expect(t, s.Status, "Processed")
-	st.Expect(t, s.Amount, lPost.Amount)
+	st.Expect(t, s.Amount, (lPost.Amount * -1))
 }
 
 /* End File */
