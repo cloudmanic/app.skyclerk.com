@@ -7,6 +7,8 @@
 
 import * as moment from 'moment';
 import { Serializable } from './serializable.model';
+import { User } from './user.model';
+import { Ledger } from './ledger.model';
 
 export class Activity implements Serializable {
 	Id: number = 0;
@@ -14,11 +16,13 @@ export class Activity implements Serializable {
 	Action: string = "";
 	SubAction: string = "";
 	Message: string = "";
+	User: User = new User();
+	Ledger: Ledger = new Ledger();
 	LedgerId: number = 0;
 	ContactId: number = 0;
 	LabelId: number = 0;
 	CategoryId: number = 0;
-	SnapSnapClerkId: number = 0;
+	SnapClerkId: number = 0;
 	CreatedAt: Date = new Date();
 
 	//
@@ -30,11 +34,13 @@ export class Activity implements Serializable {
 		this.Action = json["action"];
 		this.SubAction = json["sub_action"];
 		this.Message = json["message"];
+		this.User = new User().deserialize(json["user"]);
+		this.Ledger = new Ledger().deserialize(json["ledger"]);
 		this.LedgerId = json["ledger_id"];
 		this.ContactId = json["contact_id"];
 		this.LabelId = json["label_id"];
 		this.CategoryId = json["category_id"];
-		this.SnapSnapClerkId = json["snapclerk_id"];
+		this.SnapClerkId = json["snapclerk_id"];
 		this.CreatedAt = moment(json["created_at"]).toDate();
 		return this;
 	}

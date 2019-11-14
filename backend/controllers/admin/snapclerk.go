@@ -116,6 +116,9 @@ func (t *Controller) ConvertSnapClerk(c *gin.Context) {
 		return
 	}
 
+	// Add a activity to the log.
+	t.CreateActivityLogEntry(sc, l)
+
 	// Notify users the receipt has been Processed
 	t.NoifyReceiptWasProcessed(sc, l)
 
@@ -158,6 +161,21 @@ func (t *Controller) RejectSnapClerk(c *gin.Context) {
 
 	// Return happy JSON
 	c.JSON(204, "")
+}
+
+//
+// CreateActivityLogEntry records a entry in the app long table for the snapclerk that was uploaded.
+//
+func (t *Controller) CreateActivityLogEntry(snapClerk models.SnapClerk, ledger models.Ledger) {
+	// Add to the activity log
+	t.db.New().Create(&models.Activity{
+		AccountId:   snapClerk.AccountId,
+		UserId:      snapClerk.AddedById,
+		Action:      "snapclerk",
+		SubAction:   "update",
+		SnapClerkId: snapClerk.Id,
+		LedgerId:    ledger.Id,
+	})
 }
 
 //

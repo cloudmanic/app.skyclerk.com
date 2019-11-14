@@ -38,7 +38,7 @@ func TestConvertSnapClerk01(t *testing.T) {
 	st.Expect(t, err, nil)
 
 	// Start the db connection.
-	db, dbName, _ := models.NewTestDB("testing_db")
+	db, dbName, _ := models.NewTestDB("")
 	defer models.TestingTearDown(db, dbName)
 
 	// Create controller

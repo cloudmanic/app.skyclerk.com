@@ -35,7 +35,7 @@ func (t *Controller) GetActivities(c *gin.Context) {
 		Limit:            limit,
 		Page:             page,
 		AllowedOrderCols: []string{},
-		PreLoads:         []string{"User"},
+		PreLoads:         []string{"User", "Ledger"},
 		Wheres: []models.KeyValue{
 			{Key: "account_id", Compare: "=", ValueInt: c.MustGet("accountId").(int)},
 		},
@@ -62,7 +62,14 @@ func (t *Controller) GetActivities(c *gin.Context) {
 	meta, err := t.db.QueryMeta(&results, params)
 
 	// Add in the message
-	for key := range results {
+	for key, row := range results {
+		// Add in ledger contact
+		if row.Ledger.ContactId > 0 {
+			c, _ := t.db.GetContactByAccountAndId(row.AccountId, row.Ledger.ContactId)
+			results[key].Ledger.Contact = c
+		}
+
+		// Set message
 		results[key].SetMessage()
 	}
 

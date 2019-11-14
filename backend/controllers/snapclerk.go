@@ -78,7 +78,8 @@ func (t *Controller) CreateSnapClerkByFileId(c *gin.Context) {
 		return
 	}
 
-	// TODO(spicer): Add to AppLog
+	// Add to AppLog
+	t.CreateActivityLogEntry(sc)
 
 	// Notify users we received this.
 	t.NoifyReceiptWasReceived(sc)
@@ -132,7 +133,8 @@ func (t *Controller) CreateSnapClerk(c *gin.Context) {
 	// Store in DB
 	t.db.SnapClerkCreate(&sc)
 
-	// TODO(spicer): Add to AppLog
+	// Add to AppLog
+	t.CreateActivityLogEntry(sc)
 
 	// Notify users we received this.
 	t.NoifyReceiptWasReceived(sc)
@@ -177,6 +179,20 @@ func (t *Controller) GetSnapClerk(c *gin.Context) {
 
 	// Return json based on if this was a good result or not.
 	response.ResultsMeta(c, results, err, meta)
+}
+
+//
+// CreateActivityLogEntry records a entry in the app long table for the snapclerk that was uploaded.
+//
+func (t *Controller) CreateActivityLogEntry(snapClerk models.SnapClerk) {
+	// Add to the activity log
+	t.db.New().Create(&models.Activity{
+		AccountId:   snapClerk.AccountId,
+		UserId:      snapClerk.AddedById,
+		Action:      "snapclerk",
+		SubAction:   "create",
+		SnapClerkId: snapClerk.Id,
+	})
 }
 
 //

@@ -127,12 +127,36 @@ export class ActivityComponent implements OnInit {
 	// Format the message to our liking
 	//
 	printMessage(row: Activity) {
+		// Set contact name.
+		let contactName = "";
+		if (row.LedgerId > 0) {
+			contactName = row.Ledger.Contact.Name;
+
+			if (contactName.length == 0) {
+				contactName = `${row.Ledger.Contact.FirstName} ${row.Ledger.Contact.LastName}`;
+			}
+		}
+
+		// Snapclerk message
+		if (row.Action == "snapclerk") {
+			if (row.SubAction == "create") {
+				return row.Message.replace(row.User.FirstName, `<strong>${row.User.FirstName}</strong>`) + " To view " + `<a href="/snapclerk">click here</a>.`;
+			}
+
+			if (row.SubAction == "update") {
+				return row.Message.replace(row.User.FirstName, `<strong>${row.User.FirstName}</strong>`).replace(contactName, `<a href="/ledger/${row.LedgerId}">${contactName}</a>`);
+			}
+		}
+
+		// Process body
 		let a = row.Message.split(" ");
 		let first = a[0];
 		a.shift();
 		let body = a.join(" ");
 		body = body.split(row.Name)[0];
 
+
+		// Ledger processing
 		if (row.SubAction != "delete") {
 			body = `${body}<a href="/ledger/${row.LedgerId}">${row.Name}</a>`
 		} else {
