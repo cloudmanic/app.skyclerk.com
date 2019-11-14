@@ -8,12 +8,15 @@
 package controllers
 
 import (
+	"flag"
 	"net/http"
 	"strconv"
 	"time"
 
 	"github.com/gin-gonic/gin"
 
+	"app.skyclerk.com/backend/emails"
+	"app.skyclerk.com/backend/library/email"
 	"app.skyclerk.com/backend/library/request"
 	"app.skyclerk.com/backend/library/response"
 	"app.skyclerk.com/backend/models"
@@ -44,10 +47,10 @@ func (t *Controller) GetSnapClerkUsage(c *gin.Context) {
 //
 func (t *Controller) CreateSnapClerkByFileId(c *gin.Context) {
 	// UserId.
-	userId := uint(c.MustGet("userId").(int))
+	userID := uint(c.MustGet("userId").(int))
 
 	// AccountId.
-	accountId := uint(c.MustGet("accountId").(int))
+	accountID := uint(c.MustGet("accountId").(int))
 
 	// Setup Contact obj
 	o := models.SnapClerk{}
@@ -58,18 +61,26 @@ func (t *Controller) CreateSnapClerkByFileId(c *gin.Context) {
 	}
 
 	// Make sure the AccountId is correct.
-	o.AddedById = userId
-	o.AccountId = accountId
+	o.AddedById = userID
+	o.AccountId = accountID
 
 	// Store in DB
 	t.db.SnapClerkCreate(&o)
 
 	// Refresh object
-	sc, err := t.db.GetSnapClerkByAccountAndId(accountId, o.Id)
+	sc, err := t.db.GetSnapClerkByAccountAndId(accountID, o.Id)
 
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Snapclerk not found."})
 		return
+	}
+
+	// Get all users on this account.
+	users := t.db.GetUsersByAccount(accountID)
+
+	// Send notices to users that that receipt was received.
+	for _, row := range users {
+		sendSnapClerkReceipt(row)
 	}
 
 	// Return happy.
@@ -81,10 +92,10 @@ func (t *Controller) CreateSnapClerkByFileId(c *gin.Context) {
 //
 func (t *Controller) CreateSnapClerk(c *gin.Context) {
 	// UserId.
-	userId := uint(c.MustGet("userId").(int))
+	userID := uint(c.MustGet("userId").(int))
 
 	// AccountId.
-	accountId := uint(c.MustGet("accountId").(int))
+	accountID := uint(c.MustGet("accountId").(int))
 
 	// Do a file upload and return a file model object. Errors
 	// are written to the response within this function.
@@ -101,8 +112,8 @@ func (t *Controller) CreateSnapClerk(c *gin.Context) {
 	// Build skyclerk obj from optional fields.
 	sc := models.SnapClerk{
 		Amount:       amount,
-		AccountId:    accountId,
-		AddedById:    userId,
+		AccountId:    accountID,
+		AddedById:    userID,
 		Contact:      c.PostForm("contact"),
 		Category:     c.PostForm("category"),
 		Labels:       c.PostForm("labels"),
@@ -120,6 +131,14 @@ func (t *Controller) CreateSnapClerk(c *gin.Context) {
 
 	// Store in DB
 	t.db.SnapClerkCreate(&sc)
+
+	// Get all users on this account.
+	users := t.db.GetUsersByAccount(accountID)
+
+	// Send notices to users that that receipt was received.
+	for _, row := range users {
+		sendSnapClerkReceipt(row)
+	}
 
 	// Return happy.
 	response.RespondCreated(c, sc, nil)
@@ -161,6 +180,21 @@ func (t *Controller) GetSnapClerk(c *gin.Context) {
 
 	// Return json based on if this was a good result or not.
 	response.ResultsMeta(c, results, err, meta)
+}
+
+//
+// sendSnapClerkReceipt - send an email with receipt of snapclerk
+//
+func sendSnapClerkReceipt(user models.User) {
+	// Set subject.
+	subject := "We've Received Your Snap!Clerk Receipt"
+
+	// Send welcome email to user already in the system.
+	if flag.Lookup("test.v") != nil {
+		email.Send(user.Email, subject, emails.GetSnapClerkReceiptHTML(user))
+	} else {
+		go email.Send(user.Email, subject, emails.GetSnapClerkReceiptHTML(user))
+	}
 }
 
 /* End File */

@@ -89,12 +89,23 @@ func TestCreateSnapClerk01(t *testing.T) {
 	testFile := build.Default.GOPATH + "/src/app.skyclerk.com/backend/library/test/files/Image 2019-04-19 at 10.10.22 AM.png"
 
 	// Start the db connection.
-	db, dbName, _ := models.NewTestDB("")
+	db, dbName, _ := models.NewTestDB("testing_db")
 	defer models.TestingTearDown(db, dbName)
 
 	// Create controller
 	c := &Controller{}
 	c.SetDB(db)
+
+	// Create test users.
+	u1 := test.GetRandomUser(44)
+	u2 := test.GetRandomUser(44)
+	u3 := test.GetRandomUser(20)
+	db.Save(&u1)
+	db.Save(&u2)
+	db.Save(&u3)
+	db.Save(&models.AcctToUsers{AccountId: uint(44), UserId: u1.Id})
+	db.Save(&models.AcctToUsers{AccountId: uint(44), UserId: u2.Id})
+	db.Save(&models.AcctToUsers{AccountId: uint(20), UserId: u3.Id})
 
 	// Add in test snapclerks so all ids are not "1"
 	s1 := test.GetRandomSnapClerk(44)
