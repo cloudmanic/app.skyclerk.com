@@ -50,13 +50,15 @@ export class EditComponent implements OnInit {
 		this.ledgerService.getById(ledgerId).subscribe(res => {
 			this.ledger = res;
 
+			// Set amount
+			this.amount = String(this.ledger.Amount);
+
 			// Set type.
 			if (this.ledger.Amount < 0) {
 				this.type = "expense";
+				this.amount = String((this.ledger.Amount * -1).toFixed(2));
 			}
 
-			// Set amount
-			this.amount = String(this.ledger.Amount);
 		});
 
 		// Listen for account changes.
