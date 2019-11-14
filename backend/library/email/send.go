@@ -67,6 +67,11 @@ func MailgunSend(to string, subject string, html string, text string, attachment
 	message.AddBCC(bccEmail)
 	message.SetHtml(html)
 
+	// Include any attachements.
+	for _, row := range attachments {
+		message.AddAttachment(row)
+	}
+
 	// Send the message
 	_, _, err := mg.Send(message)
 
