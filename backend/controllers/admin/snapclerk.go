@@ -7,6 +7,8 @@
 package admin
 
 import (
+	"errors"
+	"flag"
 	"io/ioutil"
 	"net/http"
 	"strconv"
@@ -15,8 +17,12 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/tidwall/gjson"
+	"optionsnews.com/services"
 
+	"app.skyclerk.com/backend/emails"
+	"app.skyclerk.com/backend/library/email"
 	"app.skyclerk.com/backend/library/helpers"
+	"app.skyclerk.com/backend/library/store/object"
 	"app.skyclerk.com/backend/models"
 )
 
@@ -110,6 +116,9 @@ func (t *Controller) ConvertSnapClerk(c *gin.Context) {
 		return
 	}
 
+	// Notify users the receipt has been Processed
+	t.NoifyReceiptWasProcessed(sc, l)
+
 	// Return happy JSON
 	c.JSON(200, l)
 }
@@ -144,8 +153,98 @@ func (t *Controller) RejectSnapClerk(c *gin.Context) {
 	sc.ReviewedById = uint(c.MustGet("userId").(int))
 	t.db.New().Save(&sc)
 
+	// Notify users the receipt has been Rejected
+	t.NoifyReceiptWasRejected(sc)
+
 	// Return happy JSON
 	c.JSON(204, "")
+}
+
+//
+// NoifyReceiptWasProcessed send notices that we Processed.
+//
+//
+func (t *Controller) NoifyReceiptWasProcessed(snapClerk models.SnapClerk, ledger models.Ledger) {
+	// Make sure we have an account id.
+	if snapClerk.AccountId <= 0 {
+		services.Info(errors.New("no AccountId was passed into NoifyReceiptWasProcessed()"))
+		return
+	}
+	// Get all users on this account.
+	users := t.db.GetUsersByAccount(snapClerk.AccountId)
+
+	// Send notices to users that that receipt was received.
+	for _, row := range users {
+		sendSnapClerkProcessedEmail(row, ledger)
+	}
+}
+
+//
+// sendSnapClerkProcessedEmail - send an email with receipt of snapclerk
+//
+func sendSnapClerkProcessedEmail(user models.User, ledger models.Ledger) {
+	// Set subject.
+	subject := "Your Snap!Clerk Receipt Has Been Processed"
+
+	// Build attachments.
+	attachments := []string{}
+
+	// Send email that we Processed the receipt.
+	if flag.Lookup("test.v") != nil {
+		email.Send(user.Email, subject, emails.GetSnapClerkProcessedHTML(user, ledger), attachments)
+	} else {
+		go email.Send(user.Email, subject, emails.GetSnapClerkProcessedHTML(user, ledger), attachments)
+	}
+}
+
+//
+// NoifyReceiptWasRejected send notices that we Rejected.
+//
+//
+func (t *Controller) NoifyReceiptWasRejected(snapClerk models.SnapClerk) {
+	// If we do not have a file send an error.
+	if len(snapClerk.File.Path) == 0 {
+		services.Info(errors.New("no file was passed into NoifyReceiptWasRejected()"))
+	}
+
+	// Make sure we have an account id.
+	if snapClerk.AccountId <= 0 {
+		services.Info(errors.New("no AccountId was passed into NoifyReceiptWasRejected()"))
+		return
+	}
+
+	// Download file so we can cache it locally.
+	filePath, err := object.DownloadObject(snapClerk.File.Path)
+
+	if err != nil {
+		services.Info(err)
+	}
+
+	// Get all users on this account.
+	users := t.db.GetUsersByAccount(snapClerk.AccountId)
+
+	// Send notices to users that that receipt was received.
+	for _, row := range users {
+		sendSnapClerkRejectedEmail(row, filePath)
+	}
+}
+
+//
+// sendSnapClerkRejectedEmail - send an email with Rejected of snapclerk
+//
+func sendSnapClerkRejectedEmail(user models.User, filePath string) {
+	// Set subject.
+	subject := "Your Snap!Clerk Receipt Was Rejected"
+
+	// Build attachments.
+	attachments := []string{filePath}
+
+	// Send email that we Processed the receipt.
+	if flag.Lookup("test.v") != nil {
+		email.Send(user.Email, subject, emails.GetSnapClerkRejectedHTML(user), attachments)
+	} else {
+		go email.Send(user.Email, subject, emails.GetSnapClerkRejectedHTML(user), attachments)
+	}
 }
 
 /* End File */

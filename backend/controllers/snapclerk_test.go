@@ -89,7 +89,7 @@ func TestCreateSnapClerk01(t *testing.T) {
 	testFile := build.Default.GOPATH + "/src/app.skyclerk.com/backend/library/test/files/Image 2019-04-19 at 10.10.22 AM.png"
 
 	// Start the db connection.
-	db, dbName, _ := models.NewTestDB("testing_db")
+	db, dbName, _ := models.NewTestDB("")
 	defer models.TestingTearDown(db, dbName)
 
 	// Create controller

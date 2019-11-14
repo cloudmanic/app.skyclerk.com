@@ -38,7 +38,7 @@ func TestConvertSnapClerk01(t *testing.T) {
 	st.Expect(t, err, nil)
 
 	// Start the db connection.
-	db, dbName, _ := models.NewTestDB("")
+	db, dbName, _ := models.NewTestDB("testing_db")
 	defer models.TestingTearDown(db, dbName)
 
 	// Create controller
@@ -48,6 +48,7 @@ func TestConvertSnapClerk01(t *testing.T) {
 	// Setup test data
 	user := test.GetRandomUser(33)
 	db.Save(&user)
+	db.Save(&models.AcctToUsers{AccountId: uint(33), UserId: user.Id})
 
 	account := test.GetRandomAccount(33)
 	account.OwnerId = user.Id
