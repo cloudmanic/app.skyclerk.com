@@ -37,6 +37,12 @@ export class FieldComponent implements OnInit {
 	// Detect changes from properties.
 	//
 	ngOnChanges(changes: SimpleChanges) {
+		// If we are in edit mode we do not do anything.
+		if (this.theme == "edit") {
+			this.getCategories(false);
+			return;
+		}
+
 		// Detect type changes.
 		if (typeof changes.type != "undefined") {
 			this.category = new Category();
