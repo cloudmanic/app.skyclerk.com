@@ -196,9 +196,9 @@ func (t *Controller) InviteUser(c *gin.Context) {
 
 		// Send welcome email to user already in the system.
 		if flag.Lookup("test.v") != nil {
-			email.Send(emailAddress, subject, emails.GetInviteNewUserHTML(name, account.Name, url, invite))
+			email.Send(emailAddress, subject, emails.GetInviteNewUserHTML(name, account.Name, url, invite), []string{})
 		} else {
-			go email.Send(emailAddress, subject, emails.GetInviteNewUserHTML(name, account.Name, url, invite))
+			go email.Send(emailAddress, subject, emails.GetInviteNewUserHTML(name, account.Name, url, invite), []string{})
 		}
 
 		// Log
@@ -233,9 +233,9 @@ func (t *Controller) InviteUser(c *gin.Context) {
 
 		// Send welcome email to user already in the system.
 		if flag.Lookup("test.v") != nil {
-			email.Send(emailAddress, subject, emails.GetInviteCurrentUserHTML(name, account.Name, url, invite))
+			email.Send(emailAddress, subject, emails.GetInviteCurrentUserHTML(name, account.Name, url, invite), []string{})
 		} else {
-			go email.Send(emailAddress, subject, emails.GetInviteCurrentUserHTML(name, account.Name, url, invite))
+			go email.Send(emailAddress, subject, emails.GetInviteCurrentUserHTML(name, account.Name, url, invite), []string{})
 		}
 
 		// Log

@@ -27,9 +27,9 @@ var (
 //
 // Send - Pass in everything we need to send an email and we send it.
 // If we have a SMTP in our configs we use that if not we use
-// Mailgun's library for sending mail.
+// Mailgun's library for sending mail. Attachments are an array of local file paths.
 //
-func Send(to string, subject string, html string) error {
+func Send(to string, subject string, html string, attachments []string) error {
 	// Setup text email
 	text, err := html2text.FromString(html, html2text.Options{})
 
@@ -40,12 +40,12 @@ func Send(to string, subject string, html string) error {
 	// Are we sending as SMTP or via Mailgun? Typically we
 	// send as SMTP for local development so we can use Mailhog
 	if os.Getenv("MAIL_DRIVER") == "smtp" {
-		return SmtpSend(to, subject, html, text)
+		return SmtpSend(to, subject, html, text, attachments)
 	}
 
 	// Send via mailgun
 	if os.Getenv("MAIL_DRIVER") == "mailgun" {
-		return MailgunSend(to, subject, html, text)
+		return MailgunSend(to, subject, html, text, attachments)
 	}
 
 	// We should never get here if we are configured correctly.
@@ -58,7 +58,7 @@ func Send(to string, subject string, html string) error {
 //
 // MailgunSend - Send via Mailgun.
 //
-func MailgunSend(to string, subject string, html string, text string) error {
+func MailgunSend(to string, subject string, html string, text string, attachments []string) error {
 	// Setup mailgun
 	mg := mailgun.NewMailgun(os.Getenv("MAILGUN_DOMAIN"), os.Getenv("MAILGUN_API_KEY"), "")
 
@@ -82,7 +82,7 @@ func MailgunSend(to string, subject string, html string, text string) error {
 //
 // SmtpSend - Send as SMTP.
 //
-func SmtpSend(to string, subject string, html string, text string) error {
+func SmtpSend(to string, subject string, html string, text string, attachments []string) error {
 	// Setup the email to send.
 	m := gomail.NewMessage()
 	m.SetHeader("From", fromEmail)
@@ -91,6 +91,11 @@ func SmtpSend(to string, subject string, html string, text string) error {
 	m.SetHeader("Subject", subject)
 	m.SetBody("text/html", html)
 	m.AddAlternative("text/plain", text)
+
+	// Include any attachements.
+	for _, row := range attachments {
+		m.Attach(row)
+	}
 
 	// Configure the port to be an int.
 	port, _ := strconv.ParseInt(os.Getenv("MAIL_PORT"), 10, 64)

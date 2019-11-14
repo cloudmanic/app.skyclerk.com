@@ -94,11 +94,16 @@ func (t *DB) DoResetPassword(user_email string, ip string) error {
 	// Build the url to reset the password.
 	var url = os.Getenv("SITE_URL") + "/reset-password?hash=" + hash
 
+	// Build attachments.
+	attachments := []string{}
+
 	// Send email to user asking them to come to the site and reset the password.
 	err = email.Send(
 		user.Email,
 		"Reset Your Password",
-		t.GetForgotPasswordStepOneEmailHtml(user.FirstName, user.Email, url))
+		t.GetForgotPasswordStepOneEmailHtml(user.FirstName, user.Email, url),
+		attachments,
+	)
 
 	if err != nil {
 		return err

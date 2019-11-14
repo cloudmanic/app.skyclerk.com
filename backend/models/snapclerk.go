@@ -15,9 +15,10 @@ import (
 	"strings"
 	"time"
 
+	validation "github.com/go-ozzo/ozzo-validation"
+
 	"app.skyclerk.com/backend/library/slack"
 	"app.skyclerk.com/backend/services"
-	validation "github.com/go-ozzo/ozzo-validation"
 )
 
 // SnapClerk struct
@@ -68,10 +69,6 @@ func (a SnapClerk) Validate(db Datastore, action string, userId uint, accountId 
 func (db *DB) SnapClerkCreate(sc *SnapClerk) error {
 	// Store this entry.
 	db.Create(&sc)
-
-	// TODO(spicer): Add to AppLog
-
-	// TODO(spicer): Send email to customer
 
 	// Send Slack hook TODO(spicer): Add more information like email.
 	slack.Notify("#events", fmt.Sprintf("(%s) New Snap!Clerk submission. Account: %d, Id: %d", os.Getenv("APP_ENV"), sc.AccountId, sc.Id))

@@ -8,6 +8,7 @@
 package controllers
 
 import (
+	"errors"
 	"flag"
 	"net/http"
 	"strconv"
@@ -19,7 +20,9 @@ import (
 	"app.skyclerk.com/backend/library/email"
 	"app.skyclerk.com/backend/library/request"
 	"app.skyclerk.com/backend/library/response"
+	"app.skyclerk.com/backend/library/store/object"
 	"app.skyclerk.com/backend/models"
+	"app.skyclerk.com/backend/services"
 )
 
 //
@@ -75,13 +78,10 @@ func (t *Controller) CreateSnapClerkByFileId(c *gin.Context) {
 		return
 	}
 
-	// Get all users on this account.
-	users := t.db.GetUsersByAccount(accountID)
+	// TODO(spicer): Add to AppLog
 
-	// Send notices to users that that receipt was received.
-	for _, row := range users {
-		sendSnapClerkReceipt(row)
-	}
+	// Notify users we received this.
+	t.NoifyReceiptWasReceived(sc)
 
 	// Return happy.
 	response.RespondCreated(c, sc, nil)
@@ -132,13 +132,10 @@ func (t *Controller) CreateSnapClerk(c *gin.Context) {
 	// Store in DB
 	t.db.SnapClerkCreate(&sc)
 
-	// Get all users on this account.
-	users := t.db.GetUsersByAccount(accountID)
+	// TODO(spicer): Add to AppLog
 
-	// Send notices to users that that receipt was received.
-	for _, row := range users {
-		sendSnapClerkReceipt(row)
-	}
+	// Notify users we received this.
+	t.NoifyReceiptWasReceived(sc)
 
 	// Return happy.
 	response.RespondCreated(c, sc, nil)
@@ -183,17 +180,58 @@ func (t *Controller) GetSnapClerk(c *gin.Context) {
 }
 
 //
+// NoifyReceiptWasReceived send notices that we received.
+//
+// We send emails in the controller instead of the model as it seems
+// there might be times we want to do work within the models and not
+// send email. We assume the only time we need to send email is when the call
+// came via an API call.
+//
+// Also we do it in the controller because of circular import issues.
+//
+func (t *Controller) NoifyReceiptWasReceived(snapClerk models.SnapClerk) {
+	// If we do not have a file send an error.
+	if len(snapClerk.File.Path) == 0 {
+		services.Info(errors.New("no file was passed into NoifyReceiptWasReceived()"))
+	}
+
+	// Make sure we have an account id.
+	if snapClerk.AccountId <= 0 {
+		services.Info(errors.New("no AccountId was passed into NoifyReceiptWasReceived()"))
+		return
+	}
+
+	// Download file so we can cache it locally.
+	filePath, err := object.DownloadObject(snapClerk.File.Path)
+
+	if err != nil {
+		services.Info(err)
+	}
+
+	// Get all users on this account.
+	users := t.db.GetUsersByAccount(snapClerk.AccountId)
+
+	// Send notices to users that that receipt was received.
+	for _, row := range users {
+		sendSnapClerkReceipt(row, filePath)
+	}
+}
+
+//
 // sendSnapClerkReceipt - send an email with receipt of snapclerk
 //
-func sendSnapClerkReceipt(user models.User) {
+func sendSnapClerkReceipt(user models.User, filePath string) {
 	// Set subject.
 	subject := "We've Received Your Snap!Clerk Receipt"
 
+	// Build attachments.
+	attachments := []string{filePath}
+
 	// Send welcome email to user already in the system.
 	if flag.Lookup("test.v") != nil {
-		email.Send(user.Email, subject, emails.GetSnapClerkReceiptHTML(user))
+		email.Send(user.Email, subject, emails.GetSnapClerkReceiptHTML(user), attachments)
 	} else {
-		go email.Send(user.Email, subject, emails.GetSnapClerkReceiptHTML(user))
+		go email.Send(user.Email, subject, emails.GetSnapClerkReceiptHTML(user), attachments)
 	}
 }
 
