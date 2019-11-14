@@ -17,13 +17,13 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/tidwall/gjson"
-	"optionsnews.com/services"
 
 	"app.skyclerk.com/backend/emails"
 	"app.skyclerk.com/backend/library/email"
 	"app.skyclerk.com/backend/library/helpers"
 	"app.skyclerk.com/backend/library/store/object"
 	"app.skyclerk.com/backend/models"
+	"app.skyclerk.com/backend/services"
 )
 
 //
@@ -155,6 +155,9 @@ func (t *Controller) RejectSnapClerk(c *gin.Context) {
 	sc.ProcessedAt = time.Now()
 	sc.ReviewedById = uint(c.MustGet("userId").(int))
 	t.db.New().Save(&sc)
+
+	// Add a activity to the log.
+	t.CreateActivityLogEntry(sc, models.Ledger{})
 
 	// Notify users the receipt has been Rejected
 	t.NoifyReceiptWasRejected(sc)

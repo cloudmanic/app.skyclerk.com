@@ -144,7 +144,12 @@ export class ActivityComponent implements OnInit {
 			}
 
 			if (row.SubAction == "update") {
-				return row.Message.replace(row.User.FirstName, `<strong>${row.User.FirstName}</strong>`).replace(contactName, `<a href="/ledger/${row.LedgerId}">${contactName}</a>`);
+				return row.Message
+					.replace(row.User.FirstName, `<strong>${row.User.FirstName}</strong>`)
+					.replace('rejected', `<strong>rejected</strong>`)
+					.replace('processed', `<strong>processed</strong>`)
+					.replace('<strong>rejected</strong>', `<strong>rejected</strong>. To view <a href="/snapclerk">click here</a>`)
+					.replace(contactName, `<a href="/ledger/${row.LedgerId}">${contactName}</a>`);
 			}
 		}
 

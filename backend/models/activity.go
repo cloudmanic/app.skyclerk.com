@@ -77,18 +77,20 @@ func (a *Activity) SetMessage() {
 		a.Message = fmt.Sprintf("%s %s an %s ledger entry of %.2f %s %s.", userName, subAction, a.Action, a.Amount, mixWord, a.Name)
 	}
 
-	// See if this is a snapclerk activity. - Spicer, Uploaded a new receipt to be processed.
+	// See if this is a snapclerk activity.
 	if a.SnapClerkId > 0 {
 		// Create
 		if a.SubAction == "create" {
-			a.Message = fmt.Sprintf("%s uploaded a new receipt to be processed.", userName)
+			a.Message = fmt.Sprintf("%s uploaded a new receipt to be reviewed.", userName)
 		}
 
 		// Update
 		if a.SubAction == "update" {
-			// Success
+			// Success if we have an id. Rejected if we do not.
 			if a.LedgerId > 0 {
 				a.Message = fmt.Sprintf("%s's uploaded receipt has been processed for %s.", userName, contactName)
+			} else {
+				a.Message = fmt.Sprintf("%s's uploaded receipt was rejected.", userName)
 			}
 		}
 	}
