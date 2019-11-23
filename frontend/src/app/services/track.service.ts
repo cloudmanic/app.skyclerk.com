@@ -9,6 +9,8 @@ import { Injectable } from '@angular/core';
 import { Me } from '../models/me.model';
 import { environment } from 'src/environments/environment';
 
+declare let FS: any;
+
 @Injectable({
 	providedIn: 'root'
 })
@@ -35,6 +37,12 @@ export class TrackService {
 
 		mixpanel.people.set({ "$first_name": user.FirstName, "$last_name": user.LastName, "$email": user.Email });
 		mixpanel.identify(user.Id);
+
+		// Idenify the user for fullstory.com
+		FS.identify(user.Id, {
+			displayName: user.FirstName + ' ' + user.LastName,
+			email: user.Email
+		});
 	}
 
 	//
