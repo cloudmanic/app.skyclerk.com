@@ -87,8 +87,6 @@ export class ViewComponent implements OnInit {
 	loadActivity(ledgerId: number) {
 		this.activityService.getByLedgerId(ledgerId).subscribe(res => {
 			this.activity = res;
-
-			console.log(this.activity);
 		});
 	}
 

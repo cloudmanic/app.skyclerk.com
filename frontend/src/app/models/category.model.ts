@@ -28,7 +28,9 @@ export class Category implements Serializable {
 
 		if (json["type"] == "1") {
 			this.Type = "expense";
-		} else {
+		}
+
+		if (json["type"] == "2") {
 			this.Type = "income";
 		}
 
@@ -39,6 +41,7 @@ export class Category implements Serializable {
 	// Model to JS Object.
 	//
 	serialize(obj: Category): Object {
+
 		let rt = {
 			id: obj.Id,
 			account_id: obj.AccountId,
@@ -49,7 +52,9 @@ export class Category implements Serializable {
 
 		if (rt.type == "expense") {
 			rt.type = "1";
-		} else {
+		}
+
+		if (rt.type == "income") {
 			rt.type = "2";
 		}
 
