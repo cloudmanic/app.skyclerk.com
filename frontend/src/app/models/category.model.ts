@@ -25,6 +25,13 @@ export class Category implements Serializable {
 		this.Name = json["name"];
 		this.Type = json["type"];
 		this.Count = json["count"];
+
+		if (json["type"] == "1") {
+			this.Type = "expense";
+		} else {
+			this.Type = "income";
+		}
+
 		return this;
 	}
 

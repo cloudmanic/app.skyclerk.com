@@ -39,8 +39,8 @@ services:
     networks:
       - shared
 
-  # TODO(spicer): Currently we do not use redis.
-  # But we should move it over to its own docker-compose so redis is not restarted
+  # TODO(spicer):
+  # We should move it over to its own docker-compose so redis is not restarted
   # every time we deploy the app
 
   # Redis 4.0
