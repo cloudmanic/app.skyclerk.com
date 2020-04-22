@@ -1,0 +1,41 @@
+version: '2.1'
+
+services:
+
+  # mariadb 10.2
+  mariadb102:
+    image: jsurf/rpi-mariadb:latest
+
+    container_name: mariadb-10.2.app.skyclerk.com
+
+    ports:
+      - 127.0.0.1:9306:3306
+
+    volumes:
+      - ./mariadb102_data:/var/lib/mysql
+
+    environment:
+      MYSQL_DATABASE: app_skyclerk_com
+      MYSQL_ROOT_PASSWORD: foobar
+      
+  # Redis 4.0
+  redis:
+    image: arm32v7/redis:5.0.4
+
+    hostname: redis.skyclerk.com
+
+    container_name: redis.skyclerk.com
+
+    ports:
+      - "127.0.0.1:9379:6379"
+
+  # Mailhog
+  mailhog:
+
+    image: cd2team/mailhog:latest
+
+    container_name: mailhog.app.skyclerk.com
+
+    ports:
+      - 9025:8025
+      - 127.0.0.1:9125:1025
