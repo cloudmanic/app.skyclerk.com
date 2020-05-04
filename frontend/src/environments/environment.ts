@@ -10,7 +10,6 @@ export const environment = {
 	mixpanel_key: "",
 	//mixpanel_key: "5974bde1c90a5606add2695a17b2db10",
 	title_prefix: "Skyclerk | "
-	//app_server: "http://192.168.1.100:9090"
 };
 
 /*

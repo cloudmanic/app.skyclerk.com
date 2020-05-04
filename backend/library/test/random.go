@@ -53,6 +53,24 @@ func GetRandomAccount(accountId int64) models.Account {
 }
 
 //
+// GetRandomBilling returns a random billing entry.
+//
+func GetRandomBilling(billingID int64, accountID int64) models.Billing {
+	// Get billing model
+	b := models.Billing{
+		Id:                 uint(billingID),
+		UpdatedAt:          time.Now(),
+		CreatedAt:          time.Now(),
+		StripeCustomer:     "cus_HDNy0kYb6Q8Zh8",
+		StripeSubscription: "",
+		Status:             "Active",
+		TrialExpire:        time.Now().AddDate(0, 1, 0),
+	}
+
+	return b
+}
+
+//
 // GetRandomApplication returns a random application.
 //
 func GetRandomApplication() models.Application {

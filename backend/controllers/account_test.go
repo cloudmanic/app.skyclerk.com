@@ -14,6 +14,7 @@ import (
 	"net/http/httptest"
 	"testing"
 
+	"app.skyclerk.com/backend/library/stripe"
 	"app.skyclerk.com/backend/library/test"
 	"app.skyclerk.com/backend/models"
 	"github.com/gin-gonic/gin"
@@ -805,6 +806,74 @@ func TestNewAccount01(t *testing.T) {
 	st.Expect(t, result.Id, uint(34))
 	st.Expect(t, len(au), 1)
 	st.Expect(t, au[0].UserId, uint(1))
+}
+
+//
+// TestUpdateAccountStripeToken01 tests updating a stripe credit card
+//
+func TestUpdateAccountStripeToken01(t *testing.T) {
+	// Start the db connection.
+	db, dbName, _ := models.NewTestDB("testing_db")
+	defer models.TestingTearDown(db, dbName)
+
+	// Create controller
+	c := &Controller{}
+	c.SetDB(db)
+
+	// Setup test data
+	user := test.GetRandomUser(33)
+	db.Save(&user)
+
+	billing1 := test.GetRandomBilling(5, 33)
+	billing1.StripeCustomer = ""
+	db.Save(&billing1)
+	account1 := test.GetRandomAccount(33)
+	account1.OwnerId = user.Id
+	account1.BillingId = 5
+	db.Save(&account1)
+	db.Save(&models.AcctToUsers{AccountId: account1.Id, UserId: user.Id})
+
+	account2 := test.GetRandomAccount(34)
+	account2.OwnerId = user.Id
+	db.Save(&account2)
+	db.Save(&models.AcctToUsers{AccountId: account2.Id, UserId: user.Id})
+
+	// Setup request
+	req, _ := http.NewRequest("POST", "/api/v3/33/account/stripe-token", bytes.NewBuffer([]byte(`{ "token": "tok_amex", "plan": "monthly" }`)))
+
+	// Setup writer.
+	w := httptest.NewRecorder()
+	gin.SetMode("release")
+	gin.DisableConsoleColor()
+
+	r := gin.New()
+	r.Use(func(c *gin.Context) {
+		c.Set("accountId", 33)
+		c.Set("userId", int(user.Id))
+	})
+	r.POST("/api/v3/33/account/stripe-token", c.NewStripeToken)
+	r.ServeHTTP(w, req)
+
+	// Check database
+	a := models.Billing{}
+	db.New().Find(&a, 5)
+
+	// Test results.
+	st.Expect(t, w.Code, 204)
+	st.Expect(t, a.Id, uint(5))
+	st.Expect(t, len(a.StripeCustomer) > 0, true)
+	st.Expect(t, len(a.StripeSubscription) > 0, true)
+	st.Expect(t, a.Status, "Active")
+
+	// Get customer from stripe
+	stripeCust, err := stripe.GetCustomer(a.StripeCustomer)
+	st.Expect(t, err, nil)
+	st.Expect(t, stripeCust.ID, a.StripeCustomer)
+	st.Expect(t, stripeCust.Email, "bob@rosso.com")
+
+	// Clean up stripe side.
+	err = stripe.DeleteCustomer(a.StripeCustomer)
+	st.Expect(t, err, nil)
 }
 
 /* End File */

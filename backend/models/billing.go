@@ -29,7 +29,7 @@ func (t *DB) GetBillingByAccountId(id uint) (Billing, error) {
 	var b Billing
 	account := Account{}
 
-	// Find in loop up table.
+	// Find in look up table.
 	if t.Where("id = ?", id).First(&account).RecordNotFound() {
 		return b, errors.New("Account not found")
 	}

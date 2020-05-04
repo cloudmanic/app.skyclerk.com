@@ -21,7 +21,7 @@ import (
 )
 
 const (
-	dockerMysqlContainerName = "skyclerk_com_testing"
+	dockerMysqlContainerName = "mariadb-10.20-testing.app.skyclerk.com"
 )
 
 //
@@ -32,7 +32,7 @@ func NewTestDB(dbName string) (*DB, string, error) {
 
 	// Make sure our docker mysql container for testing is running.
 	if !isDockerMysqlRunning() {
-		log.Fatal(errors.New("Docker testing Mysql container is not running. Please run scripts/start_testing_db.sh."))
+		log.Fatal(errors.New("Docker testing Mysql container is not running. Please run scripts/start_testing_db.sh or run the docker-compose.yml."))
 	}
 
 	// If dbName is empty we create our own.

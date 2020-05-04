@@ -27,11 +27,12 @@ services:
     ports:
       - 127.0.0.1:9907:3306
 
-    # Memory file system, vs storing to the file system. Maybe don't need just delete container when done. 
+    # Memory file system, vs storing to the file system. Maybe don't need just delete container when done.
     tmpfs:
       - /var/lib/mysql
 
     environment:
+      MYSQL_DATABASE: testing_db
       MYSQL_ROOT_PASSWORD: foobar
 
   # Mailhog

@@ -11,10 +11,12 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
+	"os"
 	"strings"
 	"time"
 
 	"app.skyclerk.com/backend/library/response"
+	"app.skyclerk.com/backend/library/stripe"
 	"app.skyclerk.com/backend/models"
 	"app.skyclerk.com/backend/services"
 	"github.com/gin-gonic/gin"
@@ -236,6 +238,93 @@ func (t *Controller) NewAccount(c *gin.Context) {
 
 	// Return happy JSON
 	c.JSON(200, a)
+}
+
+//
+// NewStripeToken will update the credit card on file with stripe.
+//
+func (t *Controller) NewStripeToken(c *gin.Context) {
+	// we are only allowed to update certain things.
+	body, _ := ioutil.ReadAll(c.Request.Body)
+	plan := gjson.Get(string(body), "plan").String()
+	token := gjson.Get(string(body), "token").String()
+
+	// Make sure the UserId is correct.
+	userId := c.MustGet("userId").(int)
+
+	// Get account id
+	accountID := uint(c.MustGet("accountId").(int))
+
+	// Get account.
+	account, err := t.db.GetAccountById(accountID)
+
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Account not found."})
+		return
+	}
+
+	// We must be the account owner to proceed
+	if account.OwnerId != uint(userId) {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "You must be the account owner."})
+		return
+	}
+
+	// Make sure we have a token
+	if len(token) == 0 {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "You must include a token."})
+		return
+	}
+
+	// Get Billing profile by account id.
+	billing, err := t.db.GetBillingByAccountId(accountID)
+
+	if err != nil {
+		services.Critical(errors.New(fmt.Sprintf("NewStripeToken: Billing account not found. AccountId: %d", accountID)))
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Account not found (001)."})
+		return
+	}
+
+	// Create a new stripe customer.
+	custID, err := stripe.AddCustomer("Bob", "Rosso", "bob@rosso.com", int(accountID))
+
+	if err != nil {
+		services.Critical(errors.New(fmt.Sprintf("Error with Stripe new account. AccountId: %d - %s", accountID, err.Error())))
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Unknown error. Please contact help@skyclerk.com."})
+		return
+	}
+
+	// Add card to customer.
+	_, err = stripe.AddCreditCardByToken(custID, token)
+
+	if err != nil {
+		services.Critical(errors.New(fmt.Sprintf("Error with Stripe new card. AccountId: %d - %s", accountID, err.Error())))
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Unknown error. Please contact help@skyclerk.com."})
+		return
+	}
+
+	// Get planID yearly or monthly
+	planID := os.Getenv("STRIPE_MONTHLY_PLAN")
+	if plan == "yearly" {
+		planID = os.Getenv("STRIPE_YEARLY_PLAN")
+	}
+
+	// Create a new subscription
+	subID, err := stripe.AddSubscription(custID, planID, "")
+
+	if err != nil {
+		services.Critical(errors.New(fmt.Sprintf("Error with Stripe new subscription. AccountId: %d - %s", accountID, err.Error())))
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Unknown error. Please contact help@skyclerk.com."})
+		return
+	}
+
+	// Update billing profile.
+	billing.Status = "Active"
+	billing.StripeCustomer = custID
+	billing.StripeSubscription = subID
+	t.db.New().Save(&billing)
+
+	// Return happy.
+	c.JSON(http.StatusNoContent, nil)
 }
 
 /* End File */

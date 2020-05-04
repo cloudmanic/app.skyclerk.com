@@ -33,6 +33,7 @@ func (t *Controller) DoRoutes(r *gin.Engine) {
 		apiV1.POST("/:account/account/new", t.NewAccount)
 		apiV1.POST("/:account/account/clear", t.ClearAccount)
 		apiV1.POST("/:account/account/delete", t.DeleteAccount)
+		apiV1.POST("/:account/account/stripe-token", t.NewStripeToken)
 
 		// Me
 		apiV1.PUT("/:account/me", t.UpdateMe)
