@@ -67,7 +67,7 @@ blocks:
           - curl https://raw.githubusercontent.com/golang/dep/master/install.sh | sh
           - cd $SEMAPHORE_GIT_DIR/backend
           - cd docker
-          - cd docker-compose up -d
+          - docker-compose up -d
           - cd ..
           - dep ensure
           - go test ./...
