@@ -12,6 +12,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/http/httptest"
+	"os"
 	"testing"
 
 	"app.skyclerk.com/backend/library/stripe"
@@ -809,11 +810,11 @@ func TestNewAccount01(t *testing.T) {
 }
 
 //
-// TestUpdateAccountStripeToken01 tests updating a stripe credit card
+// TestUpdateAccountStripeToken01 tests add a stripe credit card
 //
 func TestUpdateAccountStripeToken01(t *testing.T) {
 	// Start the db connection.
-	db, dbName, _ := models.NewTestDB("testing_db")
+	db, dbName, _ := models.NewTestDB("")
 	defer models.TestingTearDown(db, dbName)
 
 	// Create controller
@@ -869,7 +870,83 @@ func TestUpdateAccountStripeToken01(t *testing.T) {
 	stripeCust, err := stripe.GetCustomer(a.StripeCustomer)
 	st.Expect(t, err, nil)
 	st.Expect(t, stripeCust.ID, a.StripeCustomer)
-	st.Expect(t, stripeCust.Email, "bob@rosso.com")
+	st.Expect(t, stripeCust.Email, user.Email)
+
+	// Clean up stripe side.
+	err = stripe.DeleteCustomer(a.StripeCustomer)
+	st.Expect(t, err, nil)
+}
+
+//
+// TestUpdateAccountStripeToken02 tests updating a stripe credit card with a user who already has a subscription
+//
+func TestUpdateAccountStripeToken02(t *testing.T) {
+	// Start the db connection.
+	db, dbName, _ := models.NewTestDB("testing_db")
+	defer models.TestingTearDown(db, dbName)
+
+	// Create controller
+	c := &Controller{}
+	c.SetDB(db)
+
+	// Setup test data
+	user := test.GetRandomUser(33)
+	db.Save(&user)
+
+	billing1 := test.GetRandomBilling(5, 33)
+	billing1.StripeCustomer = ""
+	billing1.StripeSubscription = ""
+	account1 := test.GetRandomAccount(33)
+	account1.OwnerId = user.Id
+	account1.BillingId = 5
+	db.Save(&account1)
+	db.Save(&models.AcctToUsers{AccountId: account1.Id, UserId: user.Id})
+
+	account2 := test.GetRandomAccount(34)
+	account2.OwnerId = user.Id
+	db.Save(&account2)
+	db.Save(&models.AcctToUsers{AccountId: account2.Id, UserId: user.Id})
+
+	// Create a customer and subscription
+	custID, _ := stripe.AddCustomer(user.FirstName, user.LastName, user.Email, 33)
+	stripe.AddCreditCardByToken(custID, "tok_mastercard")
+	subID, _ := stripe.AddSubscription(custID, os.Getenv("STRIPE_MONTHLY_PLAN"), "", false)
+	billing1.StripeCustomer = custID
+	billing1.StripeSubscription = subID
+	db.Save(&billing1)
+
+	// Setup request
+	req, _ := http.NewRequest("POST", "/api/v3/33/account/stripe-token", bytes.NewBuffer([]byte(`{ "token": "tok_amex", "plan": "monthly" }`)))
+
+	// Setup writer.
+	w := httptest.NewRecorder()
+	gin.SetMode("release")
+	gin.DisableConsoleColor()
+
+	r := gin.New()
+	r.Use(func(c *gin.Context) {
+		c.Set("accountId", 33)
+		c.Set("userId", int(user.Id))
+	})
+	r.POST("/api/v3/33/account/stripe-token", c.NewStripeToken)
+	r.ServeHTTP(w, req)
+
+	// Check database
+	a := models.Billing{}
+	db.New().Find(&a, 5)
+
+	// Test results.
+	st.Expect(t, w.Code, 204)
+	st.Expect(t, a.Id, uint(5))
+	st.Expect(t, len(a.StripeCustomer) > 0, true)
+	st.Expect(t, len(a.StripeSubscription) > 0, true)
+	st.Expect(t, a.Status, "Active")
+
+	// Get customer from stripe
+	stripeCust, err := stripe.GetCustomer(a.StripeCustomer)
+	st.Expect(t, err, nil)
+	st.Expect(t, stripeCust.ID, a.StripeCustomer)
+	st.Expect(t, stripeCust.Email, user.Email)
 
 	// Clean up stripe side.
 	err = stripe.DeleteCustomer(a.StripeCustomer)

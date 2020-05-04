@@ -250,7 +250,7 @@ func (t *Controller) NewStripeToken(c *gin.Context) {
 	token := gjson.Get(string(body), "token").String()
 
 	// Make sure the UserId is correct.
-	userId := c.MustGet("userId").(int)
+	userID := c.MustGet("userId").(int)
 
 	// Get account id
 	accountID := uint(c.MustGet("accountId").(int))
@@ -264,8 +264,16 @@ func (t *Controller) NewStripeToken(c *gin.Context) {
 	}
 
 	// We must be the account owner to proceed
-	if account.OwnerId != uint(userId) {
+	if account.OwnerId != uint(userID) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "You must be the account owner."})
+		return
+	}
+
+	// Get the user attached to this account.
+	user, err := t.db.GetUserById(uint(userID))
+
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Account not user."})
 		return
 	}
 
@@ -288,7 +296,7 @@ func (t *Controller) NewStripeToken(c *gin.Context) {
 	custID := billing.StripeCustomer
 
 	if len(billing.StripeCustomer) == 0 {
-		custID, err = stripe.AddCustomer("Bob", "Rosso", "bob@rosso.com", int(accountID))
+		custID, err = stripe.AddCustomer(user.FirstName, user.LastName, user.Email, int(accountID))
 
 		if err != nil {
 			services.Critical(errors.New(fmt.Sprintf("Error with Stripe new account. AccountId: %d - %s", accountID, err.Error())))
