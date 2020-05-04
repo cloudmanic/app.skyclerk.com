@@ -50,11 +50,12 @@ func AddCustomer(first string, last string, email string, accountID int) (string
 
 //
 // AddSubscription - Add a customer subscription.
+// By setting trialFromPlan whatever trial period the plan has will be set.
+// If not the customer will be charged right away.
 //
-func AddSubscription(custId string, plan string, coupon string) (string, error) {
+func AddSubscription(custId string, plan string, coupon string, trialFromPlan bool) (string, error) {
 	// Make sure we have a STRIPE_SECRET_KEY
 	if len(os.Getenv("STRIPE_SECRET_KEY")) == 0 {
-		//Critical(errors.New("No STRIPE_SECRET_KEY found in StripeAddSubscription"))
 		return "", errors.New("No STRIPE_SECRET_KEY found in StripeAddSubscription")
 	}
 
@@ -63,7 +64,8 @@ func AddSubscription(custId string, plan string, coupon string) (string, error) 
 
 	// Setup the customer object
 	subParams := &stripe.SubscriptionParams{
-		Customer: stripe.String(custId),
+		Customer:      stripe.String(custId),
+		TrialFromPlan: stripe.Bool(trialFromPlan),
 		Items: []*stripe.SubscriptionItemsParams{
 			{
 				Plan: stripe.String(plan),
@@ -74,14 +76,12 @@ func AddSubscription(custId string, plan string, coupon string) (string, error) 
 	// Do we have a coupon code?
 	if len(coupon) > 0 {
 		subParams.Coupon = stripe.String(coupon)
-		//Info(errors.New("Coupon code passed with subscribe token: " + coupon + " - " + custId))
 	}
 
 	// Create new subscription.
 	subscription, err := sub.New(subParams)
 
 	if err != nil {
-		//Info(errors.New("StripeAddSubscription : Unable to create a new subscription. (" + err.Error() + ")"))
 		return "", err
 	}
 

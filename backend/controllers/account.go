@@ -297,7 +297,24 @@ func (t *Controller) NewStripeToken(c *gin.Context) {
 		}
 	}
 
-	/// TODO(spicer): Delete all cards on file with stripe.
+	// Delete all cards on file with stripe.
+	cards, err := stripe.ListAllCreditCards(custID)
+
+	if err != nil {
+		services.Critical(errors.New(fmt.Sprintf("Error with Stripe listng cards. AccountId: %d - %s", accountID, err.Error())))
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Unknown error. Please contact help@skyclerk.com."})
+		return
+	}
+
+	for _, row := range cards {
+		err = stripe.DeleteCreditCard(custID, row)
+
+		if err != nil {
+			services.Critical(errors.New(fmt.Sprintf("Error with Stripe delete card. AccountId: %d - %s", accountID, err.Error())))
+			c.JSON(http.StatusBadRequest, gin.H{"error": "Unknown error. Please contact help@skyclerk.com."})
+			return
+		}
+	}
 
 	// Add card to customer.
 	_, err = stripe.AddCreditCardByToken(custID, token)
@@ -318,7 +335,7 @@ func (t *Controller) NewStripeToken(c *gin.Context) {
 	subID := billing.StripeSubscription
 
 	if len(billing.StripeSubscription) == 0 {
-		subID, err = stripe.AddSubscription(custID, planID, "")
+		subID, err = stripe.AddSubscription(custID, planID, "", false)
 
 		if err != nil {
 			services.Critical(errors.New(fmt.Sprintf("Error with Stripe new subscription. AccountId: %d - %s", accountID, err.Error())))

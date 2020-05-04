@@ -45,65 +45,59 @@ func AddCreditCardByToken(custID string, token string) (string, error) {
 }
 
 //
-// //
-// // List all credit cards on file.
-// //
-// func StripeListAllCreditCards(custId string) ([]string, error) {
+// ListAllCreditCards List all credit cards on file.
 //
-// 	cardList := []string{}
+func ListAllCreditCards(custID string) ([]string, error) {
+	cardList := []string{}
+
+	// Make sure we have a STRIPE_SECRET_KEY
+	if len(os.Getenv("STRIPE_SECRET_KEY")) == 0 {
+		return nil, errors.New("No STRIPE_SECRET_KEY found in ListAllCreditCards")
+	}
+
+	stripe.Key = os.Getenv("STRIPE_SECRET_KEY")
+
+	params := &stripe.CardListParams{
+		Customer: stripe.String(custID),
+	}
+
+	params.Filters.AddFilter("limit", "", "100")
+
+	list := card.List(params)
+
+	for list.Next() {
+		c := list.Card()
+		cardList = append(cardList, c.ID)
+	}
+
+	// Return the card list
+	return cardList, nil
+}
+
 //
-// 	// Make sure we have a STRIPE_SECRET_KEY
-// 	if len(os.Getenv("STRIPE_SECRET_KEY")) == 0 {
-// 		Critical(errors.New("No STRIPE_SECRET_KEY found in ListAllCreditCards"))
-// 		return nil, errors.New("No STRIPE_SECRET_KEY found in ListAllCreditCards")
-// 	}
+// DeleteCreditCard will delete credit cards on file.
 //
-// 	stripe.Key = os.Getenv("STRIPE_SECRET_KEY")
-//
-// 	params := &stripe.CardListParams{
-// 		Customer: stripe.String(custId),
-// 	}
-//
-// 	params.Filters.AddFilter("limit", "", "100")
-//
-// 	list := card.List(params)
-//
-// 	for list.Next() {
-// 		c := list.Card()
-// 		cardList = append(cardList, c.ID)
-// 	}
-//
-// 	// Return the card list
-// 	return cardList, nil
-//
-// }
-//
-// //
-// // Delete credit cards on file.
-// //
-// func StripeDeleteCreditCard(custId string, cardId string) error {
-//
-// 	// Make sure we have a STRIPE_SECRET_KEY
-// 	if len(os.Getenv("STRIPE_SECRET_KEY")) == 0 {
-// 		Critical(errors.New("No STRIPE_SECRET_KEY found in DeleteCreditCard"))
-// 		return errors.New("No STRIPE_SECRET_KEY found in DeleteCreditCard")
-// 	}
-//
-// 	stripe.Key = os.Getenv("STRIPE_SECRET_KEY")
-//
-// 	params := &stripe.CardParams{
-// 		Customer: stripe.String(custId),
-// 	}
-//
-// 	// Delete card at stripe
-// 	_, err := card.Del(cardId, params)
-//
-// 	if err != nil {
-// 		Info(errors.New("DeleteCreditCard : Unable to delete card. (" + err.Error() + ")"))
-// 		return err
-// 	}
-//
-// 	// Return happy
-// 	return nil
-//
-// }
+func DeleteCreditCard(custID string, cardID string) error {
+	// Make sure we have a STRIPE_SECRET_KEY
+	if len(os.Getenv("STRIPE_SECRET_KEY")) == 0 {
+		return errors.New("No STRIPE_SECRET_KEY found in DeleteCreditCard")
+	}
+
+	stripe.Key = os.Getenv("STRIPE_SECRET_KEY")
+
+	params := &stripe.CardParams{
+		Customer: stripe.String(custID),
+	}
+
+	// Delete card at stripe
+	_, err := card.Del(cardID, params)
+
+	if err != nil {
+		return err
+	}
+
+	// Return happy
+	return nil
+}
+
+/* End File */
