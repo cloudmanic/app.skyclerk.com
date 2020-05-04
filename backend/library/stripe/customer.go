@@ -117,7 +117,6 @@ func DeleteCustomer(custToken string) error {
 // GetCustomer get customer from totken.
 //
 func GetCustomer(custToken string) (*stripe.Customer, error) {
-
 	// Make sure we have a STRIPE_SECRET_KEY
 	if len(os.Getenv("STRIPE_SECRET_KEY")) == 0 {
 		return nil, errors.New("No STRIPE_SECRET_KEY found in StripeDeleteCustomer")

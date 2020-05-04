@@ -43,6 +43,12 @@ blocks:
           value: 127.0.0.1
         - name: MAIL_PORT
           value: "1025"
+        - name: STRIPE_MONTHLY_PLAN
+          value: "plan_HDPfCGXknOo9h7"
+        - name: STRIPE_YEARLY_PLAN
+          value: "plan_HDPf88xifqLHOf"
+        - name: STRIPE_SECRET_KEY
+          value: "sk_test_MX3WpaiQsY9aw5llMHZkBaIK00wiyXUzgd"
 
       jobs:
       - name: Get app code, get packages, test and build

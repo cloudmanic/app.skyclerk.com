@@ -285,13 +285,19 @@ func (t *Controller) NewStripeToken(c *gin.Context) {
 	}
 
 	// Create a new stripe customer.
-	custID, err := stripe.AddCustomer("Bob", "Rosso", "bob@rosso.com", int(accountID))
+	custID := billing.StripeCustomer
 
-	if err != nil {
-		services.Critical(errors.New(fmt.Sprintf("Error with Stripe new account. AccountId: %d - %s", accountID, err.Error())))
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Unknown error. Please contact help@skyclerk.com."})
-		return
+	if len(billing.StripeCustomer) == 0 {
+		custID, err = stripe.AddCustomer("Bob", "Rosso", "bob@rosso.com", int(accountID))
+
+		if err != nil {
+			services.Critical(errors.New(fmt.Sprintf("Error with Stripe new account. AccountId: %d - %s", accountID, err.Error())))
+			c.JSON(http.StatusBadRequest, gin.H{"error": "Unknown error. Please contact help@skyclerk.com."})
+			return
+		}
 	}
+
+	/// TODO(spicer): Delete all cards on file with stripe.
 
 	// Add card to customer.
 	_, err = stripe.AddCreditCardByToken(custID, token)
@@ -308,13 +314,17 @@ func (t *Controller) NewStripeToken(c *gin.Context) {
 		planID = os.Getenv("STRIPE_YEARLY_PLAN")
 	}
 
-	// Create a new subscription
-	subID, err := stripe.AddSubscription(custID, planID, "")
+	// Create a new subscription if need be
+	subID := billing.StripeSubscription
 
-	if err != nil {
-		services.Critical(errors.New(fmt.Sprintf("Error with Stripe new subscription. AccountId: %d - %s", accountID, err.Error())))
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Unknown error. Please contact help@skyclerk.com."})
-		return
+	if len(billing.StripeSubscription) == 0 {
+		subID, err = stripe.AddSubscription(custID, planID, "")
+
+		if err != nil {
+			services.Critical(errors.New(fmt.Sprintf("Error with Stripe new subscription. AccountId: %d - %s", accountID, err.Error())))
+			c.JSON(http.StatusBadRequest, gin.H{"error": "Unknown error. Please contact help@skyclerk.com."})
+			return
+		}
 	}
 
 	// Update billing profile.
