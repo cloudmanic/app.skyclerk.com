@@ -343,6 +343,22 @@
   revision = "6386211fdfcf24c0bfbdaceafd02849ed9a8a509"
 
 [[projects]]
+  digest = "1:7cfd4628588ad4e0f8593293f7c85f9907dea9a21d41e4bc1ca0124d17ccd661"
+  name = "github.com/stripe/stripe-go"
+  packages = [
+    ".",
+    "card",
+    "charge",
+    "customer",
+    "form",
+    "invoice",
+    "sub",
+  ]
+  pruneopts = "UT"
+  revision = "d0ba2a3cfe57c0130dd12f0d8fa653029dede77b"
+  version = "v70.15.0"
+
+[[projects]]
   digest = "1:46aea6ffe39c3d95c13640c2515236ed3c5cdffc3c78c6c0ed4edec2caf7a0dc"
   name = "github.com/tidwall/gjson"
   packages = ["."]
@@ -549,6 +565,12 @@
     "github.com/nbio/st",
     "github.com/olekukonko/tablewriter",
     "github.com/ssor/bom",
+    "github.com/stripe/stripe-go",
+    "github.com/stripe/stripe-go/card",
+    "github.com/stripe/stripe-go/charge",
+    "github.com/stripe/stripe-go/customer",
+    "github.com/stripe/stripe-go/invoice",
+    "github.com/stripe/stripe-go/sub",
     "github.com/tidwall/gjson",
     "golang.org/x/crypto/acme/autocert",
     "golang.org/x/crypto/bcrypt",

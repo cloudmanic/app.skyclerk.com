@@ -3,9 +3,6 @@
 // Author(s): Spicer Matthews (spicer@skyclerk.// COMBAK: )
 // Copyright: 2020 Cloudmanic Labs, LLC. All rights reserved.
 //
-// Notes: the reason this is in the services package is we don't
-// want to conflict with the stripe name space
-//
 
 package stripe
 
