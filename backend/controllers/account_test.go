@@ -814,7 +814,7 @@ func TestNewAccount01(t *testing.T) {
 //
 func TestUpdateAccountStripeToken01(t *testing.T) {
 	// Start the db connection.
-	db, dbName, _ := models.NewTestDB("")
+	db, dbName, _ := models.NewTestDB("testing_db")
 	defer models.TestingTearDown(db, dbName)
 
 	// Create controller
@@ -862,6 +862,7 @@ func TestUpdateAccountStripeToken01(t *testing.T) {
 	// Test results.
 	st.Expect(t, w.Code, 204)
 	st.Expect(t, a.Id, uint(5))
+	st.Expect(t, a.Subscription, "Monthly")
 	st.Expect(t, len(a.StripeCustomer) > 0, true)
 	st.Expect(t, len(a.StripeSubscription) > 0, true)
 	st.Expect(t, a.Status, "Active")
@@ -882,7 +883,7 @@ func TestUpdateAccountStripeToken01(t *testing.T) {
 //
 func TestUpdateAccountStripeToken02(t *testing.T) {
 	// Start the db connection.
-	db, dbName, _ := models.NewTestDB("testing_db")
+	db, dbName, _ := models.NewTestDB("")
 	defer models.TestingTearDown(db, dbName)
 
 	// Create controller
@@ -947,6 +948,109 @@ func TestUpdateAccountStripeToken02(t *testing.T) {
 	st.Expect(t, err, nil)
 	st.Expect(t, stripeCust.ID, a.StripeCustomer)
 	st.Expect(t, stripeCust.Email, user.Email)
+
+	// Clean up stripe side.
+	err = stripe.DeleteCustomer(a.StripeCustomer)
+	st.Expect(t, err, nil)
+}
+
+//
+// TestChangeSubscription01 test to change plans once you already have one.
+//
+func TestChangeSubscription01(t *testing.T) {
+	// Start the db connection.
+	db, dbName, _ := models.NewTestDB("testing_db")
+	defer models.TestingTearDown(db, dbName)
+
+	// Create controller
+	c := &Controller{}
+	c.SetDB(db)
+
+	// Setup test data
+	user := test.GetRandomUser(33)
+	db.Save(&user)
+
+	billing1 := test.GetRandomBilling(5, 33)
+	billing1.StripeCustomer = ""
+	db.Save(&billing1)
+	account1 := test.GetRandomAccount(33)
+	account1.OwnerId = user.Id
+	account1.BillingId = 5
+	db.Save(&account1)
+	db.Save(&models.AcctToUsers{AccountId: account1.Id, UserId: user.Id})
+
+	account2 := test.GetRandomAccount(34)
+	account2.OwnerId = user.Id
+	db.Save(&account2)
+	db.Save(&models.AcctToUsers{AccountId: account2.Id, UserId: user.Id})
+
+	// Setup request
+	req, _ := http.NewRequest("POST", "/api/v3/33/account/stripe-token", bytes.NewBuffer([]byte(`{ "token": "tok_amex", "plan": "monthly" }`)))
+
+	// Setup writer.
+	w := httptest.NewRecorder()
+	gin.SetMode("release")
+	gin.DisableConsoleColor()
+
+	r := gin.New()
+	r.Use(func(c *gin.Context) {
+		c.Set("accountId", 33)
+		c.Set("userId", int(user.Id))
+	})
+	r.POST("/api/v3/33/account/stripe-token", c.NewStripeToken)
+	r.ServeHTTP(w, req)
+
+	// Check database
+	a := models.Billing{}
+	db.New().Find(&a, 5)
+
+	// Test results.
+	st.Expect(t, w.Code, 204)
+	st.Expect(t, a.Id, uint(5))
+	st.Expect(t, a.Subscription, "Monthly")
+	st.Expect(t, len(a.StripeCustomer) > 0, true)
+	st.Expect(t, len(a.StripeSubscription) > 0, true)
+	st.Expect(t, a.Status, "Active")
+
+	// Get customer from stripe
+	stripeCust, err := stripe.GetCustomer(a.StripeCustomer)
+	st.Expect(t, err, nil)
+	st.Expect(t, stripeCust.ID, a.StripeCustomer)
+	st.Expect(t, stripeCust.Email, user.Email)
+
+	// ---------------- Now that we have a plan setup we should change the plan -------- //
+
+	// Setup request
+	req, _ = http.NewRequest("PUT", "/api/v3/33/account/subscription", bytes.NewBuffer([]byte(`{ "plan": "Yearly" }`)))
+
+	// Setup writer.
+	w = httptest.NewRecorder()
+	gin.SetMode("release")
+	gin.DisableConsoleColor()
+
+	r = gin.New()
+	r.Use(func(c *gin.Context) {
+		c.Set("accountId", 33)
+		c.Set("userId", int(user.Id))
+	})
+	r.PUT("/api/v3/33/account/subscription", c.ChangeSubscription)
+	r.ServeHTTP(w, req)
+
+	// Check database
+	b := models.Billing{}
+	db.New().Find(&b, 5)
+
+	// Test results.
+	st.Expect(t, w.Code, 204)
+	st.Expect(t, b.Id, uint(5))
+	st.Expect(t, b.Subscription, "Yearly")
+	st.Expect(t, len(b.StripeCustomer) > 0, true)
+	st.Expect(t, len(b.StripeSubscription) > 0, true)
+	st.Expect(t, b.Status, "Active")
+
+	// Get subscrition at stripe
+	sub, _ := stripe.GetSubscription(b.StripeSubscription)
+	st.Expect(t, sub.Plan.ID, os.Getenv("STRIPE_YEARLY_PLAN"))
 
 	// Clean up stripe side.
 	err = stripe.DeleteCustomer(a.StripeCustomer)

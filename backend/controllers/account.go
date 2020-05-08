@@ -335,8 +335,10 @@ func (t *Controller) NewStripeToken(c *gin.Context) {
 
 	// Get planID yearly or monthly
 	planID := os.Getenv("STRIPE_MONTHLY_PLAN")
+	billing.Subscription = "Monthly"
 	if plan == "yearly" {
 		planID = os.Getenv("STRIPE_YEARLY_PLAN")
+		billing.Subscription = "Yearly"
 	}
 
 	// Create a new subscription if need be
@@ -355,6 +357,76 @@ func (t *Controller) NewStripeToken(c *gin.Context) {
 	// Update billing profile.
 	billing.Status = "Active"
 	billing.StripeCustomer = custID
+	billing.StripeSubscription = subID
+	t.db.New().Save(&billing)
+
+	// Return happy.
+	c.JSON(http.StatusNoContent, nil)
+}
+
+//
+// ChangeSubscription will change the plan the user is on.
+//
+func (t *Controller) ChangeSubscription(c *gin.Context) {
+	// we are only allowed to update certain things.
+	body, _ := ioutil.ReadAll(c.Request.Body)
+	plan := gjson.Get(string(body), "plan").String()
+
+	// Make sure the UserId is correct.
+	userID := c.MustGet("userId").(int)
+
+	// Get account id
+	accountID := uint(c.MustGet("accountId").(int))
+
+	// Get account.
+	account, err := t.db.GetAccountById(accountID)
+
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Account not found."})
+		return
+	}
+
+	// We must be the account owner to proceed
+	if account.OwnerId != uint(userID) {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "You must be the account owner."})
+		return
+	}
+
+	// Get Billing profile by account id.
+	billing, err := t.db.GetBillingByAccountId(accountID)
+
+	if err != nil {
+		services.Critical(errors.New(fmt.Sprintf("ChangeSubscription: Billing account not found. AccountId: %d", accountID)))
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Account not found (001)."})
+		return
+	}
+
+	// Make sure we currently have a subscription
+	if (len(billing.StripeCustomer) == 0) || (len(billing.StripeSubscription) == 0) {
+		services.Critical(errors.New(fmt.Sprintf("ChangeSubscription: Billing account not found. AccountId: %d", accountID)))
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Account not found (002)."})
+		return
+	}
+
+	// Get planID yearly or monthly
+	planID := os.Getenv("STRIPE_MONTHLY_PLAN")
+	billing.Subscription = "Monthly"
+	if plan == "Yearly" {
+		planID = os.Getenv("STRIPE_YEARLY_PLAN")
+		billing.Subscription = "Yearly"
+	}
+
+	// Update subscription
+	subID, err := stripe.UpdateSubscription(billing.StripeSubscription, planID)
+
+	if err != nil {
+		services.Critical(errors.New(fmt.Sprintf("Error with Stripe update subscription. AccountId: %d - %s", accountID, err.Error())))
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Unknown error. Please contact help@skyclerk.com."})
+		return
+	}
+
+	// Update billing profile.
+	billing.Status = "Active"
 	billing.StripeSubscription = subID
 	t.db.New().Save(&billing)
 

@@ -46,6 +46,29 @@ func AddCustomer(first string, last string, email string, accountID int) (string
 }
 
 //
+// GetSubscription get the subscription by id
+//
+func GetSubscription(subID string) (*stripe.Subscription, error) {
+	// Make sure we have a STRIPE_SECRET_KEY
+	if len(os.Getenv("STRIPE_SECRET_KEY")) == 0 {
+		return nil, errors.New("No STRIPE_SECRET_KEY found in StripeAddSubscription")
+	}
+
+	// Setup Stripe Key
+	stripe.Key = os.Getenv("STRIPE_SECRET_KEY")
+
+	// Get orginal subscription
+	subscription, err := sub.Get(subID, nil)
+
+	if err != nil {
+		return nil, err
+	}
+
+	// Return subscription
+	return subscription, nil
+}
+
+//
 // AddSubscription - Add a customer subscription.
 // By setting trialFromPlan whatever trial period the plan has will be set.
 // If not the customer will be charged right away.
@@ -77,6 +100,48 @@ func AddSubscription(custId string, plan string, coupon string, trialFromPlan bo
 
 	// Create new subscription.
 	subscription, err := sub.New(subParams)
+
+	if err != nil {
+		return "", err
+	}
+
+	// Return the new subscription Id
+	return subscription.ID, nil
+}
+
+//
+// UpdateSubscription updates a customer subscription
+//
+func UpdateSubscription(subID string, plan string) (string, error) {
+	// Make sure we have a STRIPE_SECRET_KEY
+	if len(os.Getenv("STRIPE_SECRET_KEY")) == 0 {
+		return "", errors.New("No STRIPE_SECRET_KEY found in StripeAddSubscription")
+	}
+
+	// Setup Stripe Key
+	stripe.Key = os.Getenv("STRIPE_SECRET_KEY")
+
+	// Get orginal subscription
+	subscription, err := sub.Get(subID, nil)
+
+	if err != nil {
+		return "", err
+	}
+
+	// Setup the customer object
+	subParams := &stripe.SubscriptionParams{
+		CancelAtPeriodEnd: stripe.Bool(false),
+		ProrationBehavior: stripe.String(string(stripe.SubscriptionProrationBehaviorCreateProrations)),
+		Items: []*stripe.SubscriptionItemsParams{
+			{
+				ID:   stripe.String(subscription.Items.Data[0].ID),
+				Plan: stripe.String(plan),
+			},
+		},
+	}
+
+	// Update subscription.
+	subscription, err = sub.Update(subID, subParams)
 
 	if err != nil {
 		return "", err
