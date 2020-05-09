@@ -627,7 +627,7 @@ func TestReportsCurrentPnl01(t *testing.T) {
 	total := 0.00
 
 	for key := range dMap {
-		if dMap[key].Date.Format("2006") == "2019" {
+		if dMap[key].Date.Format("2006") == "2020" {
 			total = total + dMap[key].Amount
 		}
 	}
@@ -654,7 +654,7 @@ func TestReportsCurrentPnl01(t *testing.T) {
 
 	// Test results
 	st.Expect(t, err, nil)
-	st.Expect(t, results.Year, 2019)
+	st.Expect(t, results.Year, 2020)
 	st.Expect(t, helpers.Round(results.Value, 2), helpers.Round(total, 2))
 }
 

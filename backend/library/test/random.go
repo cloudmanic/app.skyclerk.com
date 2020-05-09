@@ -27,6 +27,8 @@ func GetRandomAccount(accountId int64) models.Account {
 		time.Date(2018, 8, 19, 17, 20, 01, 507451, time.UTC),
 		time.Date(2019, 1, 10, 17, 20, 01, 507451, time.UTC),
 		time.Date(2019, 10, 29, 17, 20, 01, 507451, time.UTC),
+		time.Date(2020, 2, 29, 17, 20, 01, 507451, time.UTC),
+		time.Date(2020, 11, 29, 17, 20, 01, 507451, time.UTC),
 	}
 
 	zip := []string{"13601", "97222", "12384", "97345", "97701"}

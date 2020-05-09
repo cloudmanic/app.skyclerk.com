@@ -12,6 +12,7 @@ import (
 	"errors"
 	"time"
 
+	"app.skyclerk.com/backend/library/stripe"
 	validation "github.com/go-ozzo/ozzo-validation"
 )
 
@@ -129,12 +130,12 @@ func (t *DB) ClearAccount(accountId uint) {
 //
 // DeleteAccount will delete an account
 //
-func (t *DB) DeleteAccount(accountId uint) {
+func (t *DB) DeleteAccount(accountID uint) {
 	// Get the account
 	account := Account{}
-	t.New().Find(&account, accountId)
+	t.New().Find(&account, accountID)
 
-	if account.Id != accountId {
+	if account.Id != accountID {
 		return
 	}
 
@@ -149,12 +150,15 @@ func (t *DB) DeleteAccount(accountId uint) {
 	if len(ba) <= 1 {
 		t.New().Exec("DELETE FROM billings WHERE id = ?", billing.Id)
 
-		// TODO(spicer): Remove account at Stripe.
+		// Remove account at Stripe.
+		if len(billing.StripeCustomer) > 0 {
+			stripe.DeleteCustomer(billing.StripeCustomer)
+		}
 	}
 
 	// Clear users not used else where.
 	a2u := []AcctToUsers{}
-	t.New().Where("account_id = ?", accountId).Find(&a2u)
+	t.New().Where("account_id = ?", accountID).Find(&a2u)
 
 	// Loop through users delete if needed
 	for _, row := range a2u {
@@ -168,8 +172,8 @@ func (t *DB) DeleteAccount(accountId uint) {
 	}
 
 	// Clear database tables.
-	t.New().Exec("DELETE FROM acct_to_users WHERE account_id = ?", accountId)
-	t.New().Exec("DELETE FROM accounts WHERE id = ?", accountId)
+	t.New().Exec("DELETE FROM acct_to_users WHERE account_id = ?", accountID)
+	t.New().Exec("DELETE FROM accounts WHERE id = ?", accountID)
 }
 
 /* End File */
