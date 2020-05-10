@@ -127,6 +127,21 @@ export class AccountService {
 				return a;
 			}));
 	}
+
+	//
+	// stripeToken - send token to the backend
+	//
+	stripeToken(token: string, plan: string): Observable<Boolean> {
+		let accountId = localStorage.getItem('account_id');
+
+		return this.http.post<Account>(`${environment.app_server}/api/v3/${accountId}/account/stripe-token`, { token: token, plan: plan })
+			.pipe(map(_res => {
+				// Track event.
+				this.trackService.event('account-stripe-token', { app: "web", "accountId": accountId });
+
+				return true;
+			}));
+	}
 }
 
 /* End File */

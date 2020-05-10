@@ -69,6 +69,10 @@ import { ForgotPasswordComponent } from './auth/forgot-password/forgot-password.
 import { ResetPasswordComponent } from './auth/reset-password/reset-password.component';
 import { ViewComponent as CentcomSnapClerkView } from './centcom/snapclerk/view/view.component';
 import { CoreComponent as CentcomCoreComponent } from './centcom/layout/core/core.component';
+import { WallComponent } from './paywall/wall/wall.component';
+import { PlansComponent } from './paywall/plans/plans.component';
+import { PaymentComponent } from './paywall/payment/payment.component';
+import { SuccessComponent } from './paywall/success/success.component';
 
 @NgModule({
 	declarations: [
@@ -120,7 +124,11 @@ import { CoreComponent as CentcomCoreComponent } from './centcom/layout/core/cor
 		ForgotPasswordComponent,
 		ResetPasswordComponent,
 		CentcomSnapClerkView,
-		CentcomCoreComponent
+		CentcomCoreComponent,
+		WallComponent,
+		PlansComponent,
+		PaymentComponent,
+		SuccessComponent
 	],
 	imports: [
 		FormsModule,

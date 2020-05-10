@@ -840,7 +840,7 @@ func TestUpdateAccountStripeToken01(t *testing.T) {
 	db.Save(&models.AcctToUsers{AccountId: account2.Id, UserId: user.Id})
 
 	// Setup request
-	req, _ := http.NewRequest("POST", "/api/v3/33/account/stripe-token", bytes.NewBuffer([]byte(`{ "token": "tok_amex", "plan": "monthly" }`)))
+	req, _ := http.NewRequest("POST", "/api/v3/33/account/stripe-token", bytes.NewBuffer([]byte(`{ "token": "tok_amex", "plan": "Monthly" }`)))
 
 	// Setup writer.
 	w := httptest.NewRecorder()
@@ -917,7 +917,7 @@ func TestUpdateAccountStripeToken02(t *testing.T) {
 	db.Save(&billing1)
 
 	// Setup request
-	req, _ := http.NewRequest("POST", "/api/v3/33/account/stripe-token", bytes.NewBuffer([]byte(`{ "token": "tok_amex", "plan": "monthly" }`)))
+	req, _ := http.NewRequest("POST", "/api/v3/33/account/stripe-token", bytes.NewBuffer([]byte(`{ "token": "tok_amex", "plan": "Monthly" }`)))
 
 	// Setup writer.
 	w := httptest.NewRecorder()
@@ -985,7 +985,7 @@ func TestChangeSubscription01(t *testing.T) {
 	db.Save(&models.AcctToUsers{AccountId: account2.Id, UserId: user.Id})
 
 	// Setup request
-	req, _ := http.NewRequest("POST", "/api/v3/33/account/stripe-token", bytes.NewBuffer([]byte(`{ "token": "tok_amex", "plan": "monthly" }`)))
+	req, _ := http.NewRequest("POST", "/api/v3/33/account/stripe-token", bytes.NewBuffer([]byte(`{ "token": "tok_amex", "plan": "Monthly" }`)))
 
 	// Setup writer.
 	w := httptest.NewRecorder()

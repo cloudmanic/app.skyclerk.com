@@ -5,6 +5,7 @@
 .mt-0 { margin-top: 0; }
 .mt-15 { margin-top: 15px; }
 .mt-20 { margin-top: 20px; }
+.mt-60 { margin-top: 60px; }
 .ml-5 { margin-left: 5px; }
 .ml-10 { margin-left: 10px; }
 .mr-n-20 { margin-right: -20px !important; }
@@ -45,6 +46,10 @@
 .settings .mod { display: block; margin-top: 20px; }
 .settings .mod:first-child { margin-top: unset; }
 .form-actions { padding: 0 10px 0 10px; }
+
+.field-stripe { padding-top: 5px; display: block; background: rgba(255,255,255,.4); font-size: 12px; line-height: 14px; padding: 6px 10px 4px; height: 34px; border: 1px solid #c8c6c6; border-radius: 4px; box-shadow: 0 1px 0 rgba(0,0,0,.2) inset; width: 252px; color: #4b4b4b; -webkit-box-sizing: border-box; -moz-box-sizing: border-box; -ms-box-sizing: border-box; -o-box-sizing: border-box; box-sizing: border-box; }
+.field::placeholder { color: #efefef; }
+.card-error { padding-top: 10px; padding-bottom: 10px; color: red; }
 
 /* -------------------- Centcom ---------------- */
 .centcom { width: 1200px; margin: 0 auto; display: block; margin-top: 20px; }

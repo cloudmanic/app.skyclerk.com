@@ -336,7 +336,7 @@ func (t *Controller) NewStripeToken(c *gin.Context) {
 	// Get planID yearly or monthly
 	planID := os.Getenv("STRIPE_MONTHLY_PLAN")
 	billing.Subscription = "Monthly"
-	if plan == "yearly" {
+	if plan == "Yearly" {
 		planID = os.Getenv("STRIPE_YEARLY_PLAN")
 		billing.Subscription = "Yearly"
 	}

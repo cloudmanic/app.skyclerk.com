@@ -8,6 +8,7 @@ export const environment = {
 	client_id: "XL8TeRGBdsUvvM3",
 	app_server: "http://127.0.0.1:9090",
 	mixpanel_key: "",
+	stripe_pub_key: "pk_test_AZaPyHOuCrE4AMf9ZzQts8IH00RtU5m2Cd",
 	//mixpanel_key: "5974bde1c90a5606add2695a17b2db10",
 	title_prefix: "Skyclerk | "
 };

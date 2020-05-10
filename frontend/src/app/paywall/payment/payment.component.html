@@ -1,0 +1,140 @@
+<div class="section-update-plan section-update-plan--alt">
+  <div class="section__head">
+    <!-- <a href="#" class="btn-back"><span>Back to Settings</span></a> -->
+
+  </div>
+
+  <div class="section__body mt-60">
+    <div class="card">
+      <div class="card__head" *ngIf="plan == 'Yearly'">
+        <h1>You picked the SkyClerk yearly plan.</h1>
+
+        <p>We’ll charge your card $60 now and $60 each year hereafter.<br> If you ever change your mind you can cancel any time, no questions asked.</p>
+      </div>
+
+      <div class="card__head" *ngIf="plan == 'Monthly'">
+        <h1>You picked the SkyClerk monthly plan.</h1>
+
+        <p>We’ll charge your card $6 now and $6 every month hereafter.<br> If you ever change your mind you can cancel any time, no questions asked.</p>
+      </div>
+
+      <div class="card__body">
+        <div class="form-card-alt">
+
+          <form (submit)="submitPayment()">
+            <div class="form__head">
+              <ul class="list-pay-cards">
+                <li>
+                  <img src="/images/visa.png" srcset="/images/visa.png 1x, /images/visa@2x.png 2x" alt="visa">
+                </li>
+
+                <li>
+                  <img src="/images/mastercard.png" srcset="/images/mastercard.png 1x, /images/mastercard@2x.png 2x" alt="mastercard">
+                </li>
+
+                <li>
+                  <img src="/images/american-express.png" srcset="/images/american-express.png 1x, /images/american-express@2x.png 2x" alt="american-express">
+                </li>
+
+                <li>
+                  <img src="/images/discover.png" srcset="/images/discover.png 1x, /images/discover@2x.png 2x" alt="discover">
+                </li>
+              </ul>
+            </div>
+
+
+            <div class="form__body">
+
+              <div class="form__row">
+                <div class="form__cols">
+                  <div class="form__col" style="width: 100%;">
+                    <div class="form__holder">
+                      <label class="form__label" for="card-number">Card Number</label>
+                      <div class="form__controls" id="card-number"></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+
+              <div class="form__row">
+                <div class="form__cols">
+                  <div class="form__col" style="width: 100%;">
+                    <div class="form__holder">
+                      <label class="form__label" for="card-expiry">Expiration Date</label>
+                      <div class="form__controls" id="card-expiry"></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+
+              <div class="form__row form__row--alt">
+                <div class="form__cols">
+                  <div class="form__col form__col--size4">
+                    <div class="form__holder">
+                      <label class="form__label" for="card-cvc">CVC</label>
+
+                      <div class="form__controls">
+                        <div class="form__controls" id="card-cvc"></div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="form__col form__col--size5">
+                    <div class="form__holder">
+                      <label class="form__label hidden" for="field-date-2">Zip Code</label>
+
+                      <div class="form__controls">
+                        <input type="number" class="field" name="field-card-number" id="field-card-number" placeholder="12345" />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+
+
+
+
+
+
+              <div class="form__row">
+                <!-- <div class="form__holder">
+                  <label class="form__label" for="field-code">Coupon Code</label>
+
+                  <div class="form__controls">
+                    <input type="text" class="field" name="field-code" id="field-code" placeholder="" />
+                  </div>
+                </div> -->
+              </div>
+
+              <!-- <div class="form__hint">
+                <p>Good for 50% off the first year.</p>
+
+                <p class="form__error">Not a valid card. Try again.</p>
+              </div> -->
+            </div>
+
+            <div class="form__actions">
+              <p class="form__error card-error" *ngIf="errorMsg">{{ errorMsg }}</p>
+              <button class="btn btn-darkgreen btn-xlarge">CHOOSE THIS PLAN</button>
+            </div>
+
+          </form>
+
+        </div>
+      </div>
+
+      <div class="card__foot">
+        <a href="#" routerLink="/paywall/plans">Choose another plan</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="section__foot">
+    <p>If you wish to cancel your account, click here. If you have any questions please contact us.</p>
+
+    <a href="#" class="btn btn-red btn-xlarge">CANCEL ACCOUNT</a>
+  </div>
+</div>
