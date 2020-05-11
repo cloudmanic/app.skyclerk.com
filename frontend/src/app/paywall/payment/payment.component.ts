@@ -9,6 +9,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { AccountService } from 'src/app/services/account.service';
 import { environment } from 'src/environments/environment';
 import { Subject } from 'rxjs';
+import { MeService } from 'src/app/services/me.service';
 
 declare var Stripe: any;
 
@@ -32,7 +33,7 @@ export class PaymentComponent implements OnInit {
 	//
 	// Constructor.
 	//
-	constructor(public route: ActivatedRoute, public accountService: AccountService, public router: Router) { }
+	constructor(public route: ActivatedRoute, public accountService: AccountService, public router: Router, public meService: MeService) { }
 
 	//
 	// ngOnInit
@@ -134,6 +135,31 @@ export class PaymentComponent implements OnInit {
 				}
 			}
 		);
+	}
+
+	//
+	// Sumbit the close account.
+	//
+	closeAccount() {
+		// Confirm
+		let c = confirm("Are you sure you want to delete this account? ALL DATA WILL BE LOST FOREVER.");
+
+		if (!c) {
+			return
+		}
+
+		// Clear the account.
+		this.accountService.delete().subscribe((_res) => {
+			// Tell user TODO(spicer): Make this better in terms of UI
+			alert("Your account was successfully deleted.");
+
+			// TODO(spicer): Do we delete all the accounts? For now we assume people just have one account.
+			// If they log back in they will just default to another account.
+
+			// Log user out.
+			this.meService.logout();
+			this.router.navigate(['/login']);
+		});
 	}
 }
 

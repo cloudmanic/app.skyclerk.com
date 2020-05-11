@@ -12,7 +12,9 @@ import (
 	"errors"
 	"time"
 
+	"app.skyclerk.com/backend/library/sendy"
 	"app.skyclerk.com/backend/library/stripe"
+
 	validation "github.com/go-ozzo/ozzo-validation"
 )
 
@@ -139,6 +141,10 @@ func (t *DB) DeleteAccount(accountID uint) {
 		return
 	}
 
+	// Get the owner
+	owner := User{}
+	t.New().Find(&owner, account.OwnerId)
+
 	// Get the billing profile.
 	billing := Billing{}
 	t.New().Find(&billing, account.BillingId)
@@ -175,8 +181,9 @@ func (t *DB) DeleteAccount(accountID uint) {
 	t.New().Exec("DELETE FROM acct_to_users WHERE account_id = ?", accountID)
 	t.New().Exec("DELETE FROM accounts WHERE id = ?", accountID)
 
-	// Clear at sendy TODO(spicer): Make this work.
-	// go sendy.Unsubscribe("trial", owner.Email)
+	// Clear at sendy users
+	go sendy.Unsubscribe("trial", owner.Email)
+	go sendy.Unsubscribe("expired", owner.Email)
 }
 
 /* End File */

@@ -460,6 +460,13 @@ func (t *Controller) GetBilling(c *gin.Context) {
 		return
 	}
 
+	// If we have a stripe user
+	if len(billing.StripeCustomer) == 0 {
+		// No stripe user.
+		c.JSON(200, billing)
+		return
+	}
+
 	// Get stripe customer
 	stripeCustomer, err := stripe.GetCustomer(billing.StripeCustomer)
 
