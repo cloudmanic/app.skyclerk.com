@@ -4,6 +4,7 @@
   </div>
 
   <div class="section__body">
-    <p>$6.00 on 5/25/2019</p>
+    <p *ngIf="billing.Subscription == 'Yearly'">$60.00 on {{ billing.CurrentPeriodEnd | date:'longDate' }}</p>
+    <p *ngIf="billing.Subscription == 'Monthly'">$6.00 on {{ billing.CurrentPeriodEnd | date:'longDate' }}</p>
   </div>
 </div>
