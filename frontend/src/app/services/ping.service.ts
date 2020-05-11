@@ -9,6 +9,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
 import { Router } from '@angular/router';
+import { MeService } from './me.service';
 
 @Injectable({
 	providedIn: 'root'
@@ -18,7 +19,7 @@ export class PingService {
 	//
 	// Constructor.
 	//
-	constructor(private http: HttpClient, private router: Router) { }
+	constructor(private http: HttpClient, private router: Router, private meService: MeService) { }
 
 	//
 	// Start ping to BE Server.
@@ -103,7 +104,8 @@ export class PingService {
 
 				// Logout status
 				if (data["status"] == "logout") {
-					this.router.navigate(['/logout']);
+					this.meService.logout();
+					this.router.navigate(['/login']);
 					return;
 				}
 
@@ -111,9 +113,6 @@ export class PingService {
 
 			// Error
 			(err: HttpErrorResponse) => {
-
-				console.log(err);
-
 				// We do not redirect from - /paywall
 				if (window.location.pathname == "/paywall") {
 					return;
@@ -160,15 +159,20 @@ export class PingService {
 					// A client-side or network error occurred. Handle it accordingly.
 					console.log('An error occurred:', err.error);
 				} else {
-					// Log error
-					console.log(err.error.error);
-
-					// Access token mostly not good.
-					// If the error is blank it often means the
-					// server is down.
-					if (err.error.error && (err.error.error.length > 0)) {
-						this.router.navigate(['/logout']);
+					// Logged out user.
+					if (err.status == 401) {
+						this.meService.logout();
+						this.router.navigate(['/login']);
+						return;
 					}
+
+					// // Access token mostly not good.
+					// // If the error is blank it often means the
+					// // server is down.
+					// this.router.navigate(['/logout']);
+					// if (err.error.error && (err.error.error.length > 0)) {
+					// 	this.router.navigate(['/logout']);
+					// }
 				}
 
 			}
