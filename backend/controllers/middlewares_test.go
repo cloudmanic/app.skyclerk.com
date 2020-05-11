@@ -47,7 +47,7 @@ func TestAuthMiddleware01(t *testing.T) {
 
 	r := gin.New()
 	r.Use(c.AuthMiddleware())
-	r.GET("/:account/ping", c.PingFromServer)
+	r.GET("/:account/ping", c.PingFromClient)
 	r.ServeHTTP(w, req)
 
 	// Validate results
@@ -84,7 +84,7 @@ func TestAuthMiddleware02(t *testing.T) {
 
 	r := gin.New()
 	r.Use(c.AuthMiddleware())
-	r.GET("/:account/ping", c.PingFromServer)
+	r.GET("/:account/ping", c.PingFromClient)
 	r.ServeHTTP(w, req)
 
 	// Validate results
@@ -121,7 +121,7 @@ func TestAuthMiddleware03(t *testing.T) {
 
 	r := gin.New()
 	r.Use(c.AuthMiddleware())
-	r.GET("/:account/ping", c.PingFromServer)
+	r.GET("/:account/ping", c.PingFromClient)
 	r.ServeHTTP(w, req)
 
 	// Validate results
@@ -157,7 +157,7 @@ func TestAuthMiddleware04(t *testing.T) {
 
 	r := gin.New()
 	r.Use(c.AuthMiddleware())
-	r.GET("/:account/ping", c.PingFromServer)
+	r.GET("/:account/ping", c.PingFromClient)
 	r.ServeHTTP(w, req)
 
 	// Validate results
@@ -194,7 +194,7 @@ func TestAuthNoAccountMiddleware01(t *testing.T) {
 
 	r := gin.New()
 	r.Use(c.AuthNoAccountMiddleware())
-	r.GET("/:account/ping", c.PingFromServer)
+	r.GET("/:account/ping", c.PingFromClient)
 	r.ServeHTTP(w, req)
 
 	// Validate results
@@ -231,7 +231,7 @@ func TestAuthNoAccountMiddleware02(t *testing.T) {
 
 	r := gin.New()
 	r.Use(c.AuthNoAccountMiddleware())
-	r.GET("/:account/ping", c.PingFromServer)
+	r.GET("/:account/ping", c.PingFromClient)
 	r.ServeHTTP(w, req)
 
 	// Validate results
@@ -267,7 +267,7 @@ func TestAuthNoAccountMiddleware03(t *testing.T) {
 
 	r := gin.New()
 	r.Use(c.AuthNoAccountMiddleware())
-	r.GET("/:account/ping", c.PingFromServer)
+	r.GET("/:account/ping", c.PingFromClient)
 	r.ServeHTTP(w, req)
 
 	// Validate results

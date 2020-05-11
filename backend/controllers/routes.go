@@ -25,7 +25,7 @@ func (t *Controller) DoRoutes(r *gin.Engine) {
 	apiV1.Use(t.AuthMiddleware())
 	{
 		// Ping
-		apiV1.GET("/:account/ping", t.PingFromServer)
+		apiV1.GET("/:account/ping", t.PingFromClient)
 
 		// Accounts
 		apiV1.GET("/:account/account", t.GetAccount)
