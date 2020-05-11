@@ -1,7 +1,6 @@
 <div class="section-update-plan section-update-plan--alt">
   <div class="section__head">
-    <!-- <a href="#" class="btn-back"><span>Back to Settings</span></a> -->
-
+    <a routerLink="/settings/billing" class="btn-back" *ngIf="back == 'settings'"><span>Back to Settings</span></a>
   </div>
 
   <div class="section__body mt-60">
@@ -127,7 +126,7 @@
       </div>
 
       <div class="card__foot">
-        <a href="#" routerLink="/paywall/plans">Choose another plan</a>
+        <a href="#" [routerLink]="['/paywall/plans']" [queryParams]="{'back': back}">Choose another plan</a>
       </div>
     </div>
   </div>

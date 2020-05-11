@@ -959,7 +959,7 @@ func TestUpdateAccountStripeToken02(t *testing.T) {
 //
 func TestChangeSubscription01(t *testing.T) {
 	// Start the db connection.
-	db, dbName, _ := models.NewTestDB("testing_db")
+	db, dbName, _ := models.NewTestDB("")
 	defer models.TestingTearDown(db, dbName)
 
 	// Create controller
@@ -1055,6 +1055,71 @@ func TestChangeSubscription01(t *testing.T) {
 	// Clean up stripe side.
 	err = stripe.DeleteCustomer(a.StripeCustomer)
 	st.Expect(t, err, nil)
+}
+
+//
+// TestGetBilling01 - test get billing
+//
+func TestGetBilling01(t *testing.T) {
+	// Start the db connection.
+	db, dbName, _ := models.NewTestDB("testing_db")
+	defer models.TestingTearDown(db, dbName)
+
+	// Create controller
+	c := &Controller{}
+	c.SetDB(db)
+
+	// Setup test data
+	user := test.GetRandomUser(33)
+	db.Save(&user)
+
+	billing1 := test.GetRandomBilling(5, 33)
+	billing1.StripeCustomer = "test_customer"
+	billing1.StripeSubscription = "test_subscription"
+	db.Save(&billing1)
+	account1 := test.GetRandomAccount(33)
+	account1.OwnerId = user.Id
+	account1.BillingId = 5
+	db.Save(&account1)
+	db.Save(&models.AcctToUsers{AccountId: account1.Id, UserId: user.Id})
+
+	account2 := test.GetRandomAccount(34)
+	account2.OwnerId = user.Id
+	db.Save(&account2)
+	db.Save(&models.AcctToUsers{AccountId: account2.Id, UserId: user.Id})
+
+	account3 := test.GetRandomAccount(105)
+	account3.OwnerId = user.Id
+	db.Save(&account3)
+	db.Save(&models.AcctToUsers{AccountId: account3.Id, UserId: user.Id})
+
+	// Setup request
+	req, _ := http.NewRequest("GET", "/api/v3/33/account/billing", nil)
+
+	// Setup writer.
+	w := httptest.NewRecorder()
+	gin.SetMode("release")
+	gin.DisableConsoleColor()
+
+	r := gin.New()
+	r.Use(func(c *gin.Context) {
+		c.Set("accountId", 33)
+		c.Set("userId", uint(109))
+	})
+	r.GET("/api/v3/33/account/billing", c.GetBilling)
+	r.ServeHTTP(w, req)
+
+	// Grab result and convert to strut
+	result := models.Billing{}
+	err := json.Unmarshal([]byte(w.Body.String()), &result)
+
+	// Test results
+	st.Expect(t, err, nil)
+	st.Expect(t, result.Id, uint(5))
+	st.Expect(t, result.Status, "Active")
+	st.Expect(t, result.Subscription, "Monthly")
+	st.Expect(t, result.StripeCustomer, "")
+	st.Expect(t, result.StripeSubscription, "")
 }
 
 /* End File */

@@ -13,6 +13,7 @@ import { Account } from '../models/account.model';
 import { TrackService } from './track.service';
 import { Me } from '../models/me.model';
 import { User } from '../models/user.model';
+import { Billing } from '../models/billing.model';
 
 @Injectable({
 	providedIn: 'root'
@@ -134,10 +135,34 @@ export class AccountService {
 	stripeToken(token: string, plan: string): Observable<Boolean> {
 		let accountId = localStorage.getItem('account_id');
 
-		return this.http.post<Account>(`${environment.app_server}/api/v3/${accountId}/account/stripe-token`, { token: token, plan: plan })
+		return this.http.post<Boolean>(`${environment.app_server}/api/v3/${accountId}/account/stripe-token`, { token: token, plan: plan })
 			.pipe(map(_res => {
 				// Track event.
 				this.trackService.event('account-stripe-token', { app: "web", "accountId": accountId });
+
+				return true;
+			}));
+	}
+
+	//
+	// Get billing
+	//
+	getBilling(): Observable<Billing> {
+		let accountId = localStorage.getItem('account_id');
+		let url = `${environment.app_server}/api/v3/${accountId}/account/billing`;
+		return this.http.get<Billing>(url).pipe(map(res => new Billing().deserialize(res)));
+	}
+
+	//
+	// updateSubscription - update subscription monthly / yearly
+	//
+	updateSubscription(plan: string): Observable<Boolean> {
+		let accountId = localStorage.getItem('account_id');
+
+		return this.http.put<Boolean>(`${environment.app_server}/api/v3/${accountId}/account/subscription`, { plan: plan })
+			.pipe(map(_res => {
+				// Track event.
+				this.trackService.event('account-subscription-change', { app: "web", "accountId": accountId });
 
 				return true;
 			}));

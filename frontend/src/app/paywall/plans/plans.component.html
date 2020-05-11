@@ -1,6 +1,6 @@
 <div class="section-update-plan">
   <div class="section__head">
-    <!-- <a href="#" class="btn-back"><span>Back to Settings</span></a> -->
+    <a href="#" routerLink="/settings/billing" class="btn-back" *ngIf="back == 'settings'"><span>Back to Settings</span></a>
   </div>
 
   <div class="section__body">
@@ -71,7 +71,7 @@
         <div class="plan-alt">
           <h3>MONTHLY PLAN</h3>
 
-          <a href="#" [routerLink]="['/paywall/payment']" [queryParams]="{'plan': 'Monthly' }" class="btn btn-darkgreen btn-xlarge">CHOOSE THIS PLAN</a>
+          <a href="#" [routerLink]="['/paywall/payment']" [queryParams]="{'plan': 'Monthly', 'back': back  }" class="btn btn-darkgreen btn-xlarge">CHOOSE THIS PLAN</a>
 
           <h3>$6/Month</h3>
 
@@ -83,7 +83,7 @@
         <div class="plan-alt">
           <h3>YEARLY PLAN</h3>
 
-          <a href="#" [routerLink]="['/paywall/payment']" [queryParams]="{'plan': 'Yearly' }" class="btn btn-darkgreen btn-xlarge">CHOOSE THIS PLAN</a>
+          <a href="#" [routerLink]="['/paywall/payment']" [queryParams]="{'plan': 'Yearly', 'back': back }" class="btn btn-darkgreen btn-xlarge">CHOOSE THIS PLAN</a>
 
           <h3 class="hint__holder">
             $60/Year

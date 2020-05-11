@@ -434,4 +434,32 @@ func (t *Controller) ChangeSubscription(c *gin.Context) {
 	c.JSON(http.StatusNoContent, nil)
 }
 
+//
+// GetBilling will return the billing informaton for the account.
+//
+func (t *Controller) GetBilling(c *gin.Context) {
+	// Get account id
+	accountID := uint(c.MustGet("accountId").(int))
+
+	// Get account.
+	_, err := t.db.GetAccountById(accountID)
+
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Account not found."})
+		return
+	}
+
+	// Get Billing profile by account id.
+	billing, err := t.db.GetBillingByAccountId(accountID)
+
+	if err != nil {
+		services.Critical(errors.New(fmt.Sprintf("GetBilling: Billing account not found. AccountId: %d", accountID)))
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Account not found (001)."})
+		return
+	}
+
+	// Return happy JSON
+	c.JSON(200, billing)
+}
+
 /* End File */

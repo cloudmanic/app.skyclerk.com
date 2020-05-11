@@ -5,7 +5,7 @@
   </div>
 
   <div class="section__body">
-    <p>You are on the monthly plan</p>
+    <p>You are on the {{ billing.Subscription | lowercase }} plan.</p>
   </div>
 </div>
 
@@ -15,10 +15,10 @@
   </div>
 
   <div class="section__body">
-    <p>You are on the monthly plan</p>
+    <p>Please use the toggle to switch between our yearly and monthly plans.</p>
 
-    <div class="checkbox-slider">
-      <input type="checkbox" name="" id="field-1#">
+    <div class="checkbox-slider" (click)="checkedClick()">
+      <input type="checkbox" name="checked" id="field-1#" checked="checked" [ngModel]="checked" />
 
       <div class="checkbox-option">
         <p>Monthy</p>
@@ -44,7 +44,7 @@
     </div>
 
     <div class="section__actions">
-      <a href="#" class="btn btn-yellow">CHANGE PLAN</a>
+      <a href="#" class="btn btn-yellow" (click)="changePlan()">CHANGE PLAN</a>
 
       <a class="red-txt" (click)="editModeToggle()"><strong>Cancel</strong></a>
     </div>

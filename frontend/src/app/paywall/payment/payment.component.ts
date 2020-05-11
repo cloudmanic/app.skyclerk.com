@@ -8,6 +8,7 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AccountService } from 'src/app/services/account.service';
 import { environment } from 'src/environments/environment';
+import { Subject } from 'rxjs';
 
 declare var Stripe: any;
 
@@ -17,6 +18,7 @@ declare var Stripe: any;
 })
 
 export class PaymentComponent implements OnInit {
+	back: string = "";
 	plan: string = "Monthly";
 	today: number = Date.now();
 	errorMsg: string = "";
@@ -25,6 +27,7 @@ export class PaymentComponent implements OnInit {
 	cvc: any = null;
 	expiry: any = null;
 	elements: any = null;
+	destory: Subject<boolean> = new Subject<boolean>();
 
 	//
 	// Constructor.
@@ -35,6 +38,14 @@ export class PaymentComponent implements OnInit {
 	// ngOnInit
 	//
 	ngOnInit() {
+		// Set plan on load.
+		this.back = this.route.snapshot.queryParamMap.get("back");
+
+		// When plan changes
+		this.route.queryParamMap.takeUntil(this.destory).subscribe(queryParams => {
+			this.back = queryParams.get("back");
+		});
+
 		// Set plan on load.
 		this.plan = this.route.snapshot.queryParamMap.get("plan");
 
@@ -68,6 +79,14 @@ export class PaymentComponent implements OnInit {
 			placeholder: "123"
 		});
 		this.cvc.mount('#card-cvc');
+	}
+
+	//
+	// OnDestroy
+	//
+	ngOnDestroy() {
+		this.destory.next();
+		this.destory.complete();
 	}
 
 	//

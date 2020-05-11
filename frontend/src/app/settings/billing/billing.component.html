@@ -15,7 +15,41 @@
 
               <app-settings-sub-nav current="billing"></app-settings-sub-nav>
 
-              <div class="tabs-body">
+
+              <div class="tabs-body" *ngIf="billing.Status == 'Trial'">
+                <div class="tab current" id="tab2">
+                  <section class="section-settings section-settings--plan">
+                    <div class="section__entry">
+                      <div class="section__head">
+                        <h6>Account Plan</h6>
+
+                        <a href="#" class="link-blue hidden">Edit</a>
+                      </div><!-- /.section__head -->
+
+                      <div class="section__body">
+                        <p>You have 15 days left on your free trial.</p>
+
+                        <div class="section__actions--plan">
+                          <a href="#" [routerLink]="['/paywall/plans']" [queryParams]="{'back': 'settings' }" class="btn btn-yellow">UPGRADE TO FULL ACCOUNT</a>
+
+                          <div class="hint-update">
+                            <div class="hint__holder">
+                              <img src="/images/arrow-left.png" srcset="/images/arrow-left.png 1x, /images/arrow-left@2x.png 2x" alt="arrow-left">
+
+                              <p>Enjoying SkyClerk? Upgrade now!</p>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </section>
+                </div>
+              </div>
+
+
+
+
+              <div class="tabs-body" *ngIf="billing.Status == 'Active'">
 
                 <div class="tab current" id="tab2">
                   <section class="section-settings">
