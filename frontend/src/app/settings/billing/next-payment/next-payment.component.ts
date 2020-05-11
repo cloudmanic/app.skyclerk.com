@@ -53,7 +53,6 @@ export class NextPaymentComponent {
 		// Get the billing.
 		this.accountService.getBilling().subscribe(res => {
 			this.billing = res;
-			console.log(this.billing.CurrentPeriodEnd);
 		});
 	}
 
