@@ -99,6 +99,8 @@ export class AccountPlanComponent implements OnInit {
 			() => {
 				this.editModeToggle();
 				this.refreshBilling();
+				let accountId = localStorage.getItem('account_id');
+				this.accountService.accountChange.emit(Number(accountId));
 			},
 
 			// Error

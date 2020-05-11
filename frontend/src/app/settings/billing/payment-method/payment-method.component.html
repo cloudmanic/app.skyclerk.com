@@ -24,76 +24,30 @@
   <div class="section__body">
 
     <div class="form-card">
-      <form action="#">
+      <form (submit)="updateCard()">
         <div class="form-row form--error form--size3">
           <label class="form-label">Card Number</label>
-
-          <input type="number" class="field" placeholder="5032 1256 2548 2168">
-
-          <span class="form__error red-txt"><strong>Your card is not accepted</strong></span>
+          <div class="form__controls" id="card-number"></div>
+          <span class="form__error red-txt" *ngIf="errorMsg" style="width: 700px;"><strong>{{ errorMsg }}</strong></span>
         </div>
 
         <div class="form-row">
-          <label class="form-label">Expiration Date</label>
           <div class="form-col">
-
-            <div class="select">
-              <select>
-                <option>1</option>
-                <option>2</option>
-                <option>3</option>
-                <option>4</option>
-                <option>5</option>
-                <option>6</option>
-                <option>7</option>
-                <option>8</option>
-                <option>9</option>
-                <option>10</option>
-                <option>11</option>
-                <option>12</option>
-                <option>13</option>
-                <option>14</option>
-                <option>15</option>
-                <option>16</option>
-                <option>17</option>
-                <option>18</option>
-                <option>19</option>
-                <option>20</option>
-                <option>21</option>
-                <option>22</option>
-                <option>23</option>
-                <option>24</option>
-                <option>25</option>
-                <option>26</option>
-                <option>27</option>
-                <option>28</option>
-                <option>29</option>
-                <option>30</option>
-                <option>31</option>
-              </select>
-              <span class="select-value">12</span>
-            </div>
+            <label class="form-label">Expiration Date</label>
+            <div class="form__controls" id="card-expiry" style="width: 100px;"></div>
           </div>
 
-
-          <div class="form-col">
-            <div class="select">
-              <select>
-                <option>2016</option>
-                <option>2017</option>
-                <option>2018</option>
-                <option>2019</option>
-              </select>
-              <span class="select-value">2019</span>
-            </div>
+          <div class="form-col" style="margin-left: 53px;">
+            <label class="form-label">CVC</label>
+            <div class="form__controls" id="card-cvc" style="width: 100px;"></div>
           </div>
         </div>
 
-        <div class="form-row form--size1">
+        <!-- <div class="form-row form--size1">
           <label class="form-label">Zip</label>
 
           <input type="number" class="field" placeholder="97218">
-        </div>
+        </div> -->
 
         <!-- <div class="form-row form--actions form--size4">
           <label class="form-label">Coupon Code</label>
@@ -110,7 +64,7 @@
         </div> -->
 
         <div class="form-actions">
-          <a href="#" class="btn btn-yellow">ADD CARD</a>
+          <a (click)="updateCard()" class="btn btn-yellow">ADD CARD</a>
 
           <a class="red-txt" (click)="editModeToggle()"><strong>Cancel</strong></a>
         </div>
