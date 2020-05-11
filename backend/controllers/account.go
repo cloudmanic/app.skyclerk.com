@@ -460,8 +460,125 @@ func (t *Controller) GetBilling(c *gin.Context) {
 		return
 	}
 
+	// Get stripe customer
+	stripeCustomer, err := stripe.GetCustomer(billing.StripeCustomer)
+
+	if err != nil {
+		services.Critical(fmt.Errorf("GetBillingHistory: Billing account not found. AccountId: %d", accountID))
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Account not found (002)."})
+		return
+	}
+
+	// Statement stuff.
+	billing.CurrentPeriodStart = time.Unix(stripeCustomer.Subscriptions.Data[0].CurrentPeriodStart, 0)
+	billing.CurrentPeriodEnd = time.Unix(stripeCustomer.Subscriptions.Data[0].CurrentPeriodEnd, 0)
+
+	// Do we have a credit card on file
+	if stripeCustomer.Sources.ListMeta.TotalCount > 0 {
+		billing.CardBrand = string(stripeCustomer.Sources.Data[0].Card.Brand)
+		billing.CardLast4 = stripeCustomer.Sources.Data[0].Card.Last4
+		billing.CardExpMonth = int(stripeCustomer.Sources.Data[0].Card.ExpMonth)
+		billing.CardExpYear = int(stripeCustomer.Sources.Data[0].Card.ExpYear)
+	}
+
 	// Return happy JSON
 	c.JSON(200, billing)
+}
+
+//
+// GetBillingHistory will return the billing history
+//
+func (t *Controller) GetBillingHistory(c *gin.Context) {
+	// Get account id
+	accountID := uint(c.MustGet("accountId").(int))
+
+	// Get account.
+	_, err := t.db.GetAccountById(accountID)
+
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Account not found."})
+		return
+	}
+
+	// Get Billing profile by account id.
+	billing, err := t.db.GetBillingByAccountId(accountID)
+
+	if err != nil {
+		services.Critical(fmt.Errorf("GetBillingHistory: Billing account not found. AccountId: %d", accountID))
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Account not found (001)."})
+		return
+	}
+
+	type Invoice struct {
+		Date          time.Time `json:"date"`
+		Amount        float64   `json:"amount"`
+		Transaction   string    `json:"transaction"`
+		PaymentMethod string    `json:"payment_method"`
+		InvoiceURL    string    `json:"invoice_url"`
+	}
+
+	invoices := []Invoice{}
+
+	// Add trial period
+	invoices = append(invoices, Invoice{
+		Date:          billing.CreatedAt,
+		Amount:        0,
+		Transaction:   "Trial Period " + billing.CreatedAt.Format("1/2/06") + " - " + billing.TrialExpire.Format("1/2/06"),
+		PaymentMethod: "",
+		InvoiceURL:    "",
+	})
+
+	// If we have stripe key do this.
+	if len(os.Getenv("STRIPE_SECRET_KEY")) > 0 {
+		// Get charges by customer
+		charges, err := stripe.GetChargesByCustomer(billing.StripeCustomer)
+
+		if err != nil {
+			services.Critical(fmt.Errorf("GetChargesByCustomer: Billing account not found. AccountId: %d", accountID))
+			c.JSON(http.StatusBadRequest, gin.H{"error": "Account not found (001)."})
+			return
+		}
+
+		// Loop through and add invoices
+		for _, row := range charges {
+
+			// Build invoice object
+			tmp := Invoice{
+				Date:          time.Unix(row.Created, 0),
+				Amount:        float64(row.Amount / 100),
+				Transaction:   "Charge",
+				PaymentMethod: string(row.Source.Card.Brand) + " ending " + string(row.Source.Card.Last4),
+				InvoiceURL:    "",
+			}
+
+			// is this a refund?
+			if row.Refunded {
+				tmp.Amount = float64(row.AmountRefunded/100) * -1
+				tmp.Transaction = tmp.Transaction + " Refund"
+			}
+
+			// Add invoice information
+			if row.Invoice != nil {
+				inv, err := stripe.GetInvoice(row.Invoice.ID)
+
+				if err == nil {
+					tmp.InvoiceURL = inv.InvoicePDF
+
+					// Get the date range
+					start := time.Unix(inv.Lines.Data[0].Period.Start, 0).Format("1/2/06")
+					end := time.Unix(inv.Lines.Data[0].Period.End, 0).Format("1/2/06")
+					tmp.Transaction = "Subscription " + start + " - " + end
+				}
+
+			}
+
+			invoices = append(invoices, tmp)
+		}
+
+	}
+
+	// Return happy JSON
+	c.JSON(200, invoices)
 }
 
 /* End File */

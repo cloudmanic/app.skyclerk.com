@@ -14,6 +14,7 @@ import { TrackService } from './track.service';
 import { Me } from '../models/me.model';
 import { User } from '../models/user.model';
 import { Billing } from '../models/billing.model';
+import { BillingInvoice } from '../models/billing-invoice.model';
 
 @Injectable({
 	providedIn: 'root'
@@ -151,6 +152,16 @@ export class AccountService {
 		let accountId = localStorage.getItem('account_id');
 		let url = `${environment.app_server}/api/v3/${accountId}/account/billing`;
 		return this.http.get<Billing>(url).pipe(map(res => new Billing().deserialize(res)));
+	}
+
+	//
+	// Get billing history
+	//
+	getBillingHistory(): Observable<BillingInvoice[]> {
+		let accountId = localStorage.getItem('account_id');
+		let url = `${environment.app_server}/api/v3/${accountId}/account/billing-history`;
+		return this.http.get<BillingInvoice[]>(url)
+			.pipe(map(res => res.map(res => new BillingInvoice().deserialize(res))));
 	}
 
 	//

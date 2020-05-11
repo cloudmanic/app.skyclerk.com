@@ -5,6 +5,7 @@
 
   <div class="section__body">
     <div class="table-history">
+
       <table>
         <tbody>
           <tr>
@@ -19,151 +20,18 @@
             <th>Reciept</th>
           </tr>
 
-          <tr>
-            <td>2/23/2019</td>
-
-            <td>Monthly charge</td>
-
-            <td>Visa ending 5555</td>
-
-            <td>$31.82</td>
-
-            <td><a href="#"><strong>Download</strong></a></td>
-          </tr>
-
-          <tr>
-            <td>2/23/2019</td>
-
-            <td>Monthly charge</td>
-
-            <td>Visa ending 5555</td>
-
-            <td>$31.82</td>
-
-            <td><a href="#"><strong>Download</strong></a></td>
-          </tr>
-
-          <tr>
-            <td>2/23/2019</td>
-
-            <td>Monthly charge</td>
-
-            <td>Visa ending 5555</td>
-
-            <td>$31.82</td>
-
-            <td><a href="#"><strong>Download</strong></a></td>
-          </tr>
-
-          <tr>
-            <td>2/23/2019</td>
-
-            <td class="red-txt">Charge failed</td>
-
-            <td>Visa ending 5555</td>
-
-            <td>$0.00</td>
-
-            <td><a href="#"><strong>Download</strong></a></td>
-          </tr>
-
-          <tr>
-            <td>2/23/2019</td>
-
-            <td>Monthly charge</td>
-
-            <td>Visa ending 5555</td>
-
-            <td>$31.82</td>
-
-            <td><a href="#"><strong>Download</strong></a></td>
-          </tr>
-
-          <tr>
-            <td>2/23/2019</td>
-
-            <td>Monthly charge</td>
-
-            <td>Visa ending 5555</td>
-
-            <td>$31.82</td>
-
-            <td><a href="#"><strong>Download</strong></a></td>
-          </tr>
-
-          <tr>
-            <td>2/23/2019</td>
-
-            <td>Monthly charge</td>
-
-            <td>Visa ending 5555</td>
-
-            <td>$31.82</td>
-
-            <td><a href="#"><strong>Download</strong></a></td>
-          </tr>
-
-          <tr>
-            <td>2/23/2019</td>
-
-            <td>Monthly charge</td>
-
-            <td>Visa ending 5555</td>
-
-            <td>$31.82</td>
-
-            <td><a href="#"><strong>Download</strong></a></td>
-          </tr>
-
-          <tr>
-            <td>2/23/2019</td>
-
-            <td>Monthly charge</td>
-
-            <td>Visa ending 5555</td>
-
-            <td>$31.82</td>
-
-            <td><a href="#"><strong>Download</strong></a></td>
-          </tr>
-
-          <tr>
-            <td>2/23/2019</td>
-
-            <td>Monthly charge</td>
-
-            <td>Visa ending 5555</td>
-
-            <td>$31.82</td>
-
-            <td><a href="#"><strong>Download</strong></a></td>
-          </tr>
-
-          <tr>
-            <td>2/23/2019</td>
-
-            <td>Monthly charge</td>
-
-            <td>Visa ending 5555</td>
-
-            <td>$31.82</td>
-
-            <td><a href="#"><strong>Download</strong></a></td>
-          </tr>
-
-          <tr>
-            <td>2/23/2019</td>
-
-            <td>Monthly charge</td>
-
-            <td>Visa ending 5555</td>
-
-            <td>$31.82</td>
-
-            <td><a href="#"><strong>Download</strong></a></td>
+          <tr *ngFor="let row of history;">
+            <td>{{ row.Date | date:'shortDate' }}</td>
+            <td>{{ row.Transaction }}</td>
+            <td *ngIf="row.PaymentMethod.length">{{ row.PaymentMethod }}</td>
+            <td *ngIf="! row.PaymentMethod.length">---</td>
+            <td>${{ row.Amount | number:'.2' }}</td>
+            <td *ngIf="! row.InvoiceURL.length">---</td>
+            <td *ngIf="row.InvoiceURL.length"><a href="{{ row.InvoiceURL }}" target="_blank"><strong>Download</strong></a></td>
           </tr>
         </tbody>
       </table>
+
     </div>
-  </div><!-- /.section__body -->
-</div><!-- /.section__entry -->
+  </div>
+</div>

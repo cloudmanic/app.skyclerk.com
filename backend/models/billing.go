@@ -21,6 +21,14 @@ type Billing struct {
 	StripeSubscription string    `sql:"not null" json:"-"`
 	Status             string    `sql:"not null;type:ENUM('Active', 'Disable', 'Delinquent', 'Expired', 'Trial');default:'Trial'" json:"status"`
 	TrialExpire        time.Time `sql:"not null" json:"trial_expire"`
+
+	// Not in DB added from stripe call
+	CardBrand          string    `gorm:"-" sql:"not null" json:"card_brand"`
+	CardLast4          string    `gorm:"-" sql:"not null" json:"card_last_4"`
+	CardExpMonth       int       `gorm:"-" sql:"not null" json:"card_exp_month"`
+	CardExpYear        int       `gorm:"-" sql:"not null" json:"card_exp_year"`
+	CurrentPeriodStart time.Time `gorm:"-" json:"current_period_start"`
+	CurrentPeriodEnd   time.Time `gorm:"-" json:"current_period_end"`
 }
 
 //
