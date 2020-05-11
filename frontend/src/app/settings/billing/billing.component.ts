@@ -5,6 +5,7 @@
 // Copyright: 2019 Cloudmanic Labs, LLC. All rights reserved.
 //
 
+import * as moment from 'moment';
 import { Component, OnInit } from '@angular/core';
 import { environment } from 'src/environments/environment';
 import { Title } from '@angular/platform-browser';
@@ -60,6 +61,16 @@ export class BillingComponent implements OnInit {
 		this.accountService.getBilling().subscribe(res => {
 			this.billing = res;
 		});
+	}
+
+	//
+	// Returns the number of says until expire
+	//
+	daysToExpire(): number {
+		let today = moment();
+		let expire = moment(this.billing.TrialExpire);
+		let days = expire.diff(today, 'days');
+		return days;
 	}
 }
 

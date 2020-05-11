@@ -328,8 +328,10 @@ func (t *Controller) NewStripeToken(c *gin.Context) {
 	_, err = stripe.AddCreditCardByToken(custID, token)
 
 	if err != nil {
-		services.Critical(errors.New(fmt.Sprintf("Error with Stripe new card. AccountId: %d - %s", accountID, err.Error())))
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Unknown error. Please contact help@skyclerk.com."})
+		stripe.DeleteCustomer(custID)
+		stripeErr := gjson.Get(err.Error(), "message").String()
+		services.Critical(fmt.Errorf("Error with Stripe new card. AccountId: %d - %s", accountID, err.Error()))
+		c.JSON(http.StatusBadRequest, gin.H{"error": stripeErr})
 		return
 	}
 
@@ -420,7 +422,7 @@ func (t *Controller) ChangeSubscription(c *gin.Context) {
 	subID, err := stripe.UpdateSubscription(billing.StripeSubscription, planID)
 
 	if err != nil {
-		services.Critical(errors.New(fmt.Sprintf("Error with Stripe update subscription. AccountId: %d - %s", accountID, err.Error())))
+		services.Critical(fmt.Errorf("Error with Stripe update subscription. AccountId: %d - %s", accountID, err.Error()))
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Unknown error. Please contact help@skyclerk.com."})
 		return
 	}
@@ -453,7 +455,7 @@ func (t *Controller) GetBilling(c *gin.Context) {
 	billing, err := t.db.GetBillingByAccountId(accountID)
 
 	if err != nil {
-		services.Critical(errors.New(fmt.Sprintf("GetBilling: Billing account not found. AccountId: %d", accountID)))
+		services.Critical(fmt.Errorf("GetBilling: Billing account not found. AccountId: %d", accountID))
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Account not found (001)."})
 		return
 	}

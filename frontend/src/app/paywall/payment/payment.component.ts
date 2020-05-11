@@ -127,8 +127,11 @@ export class PaymentComponent implements OnInit {
 
 			// Error
 			err => {
-				console.log(err);
-				alert("Very sorry, there was an error with your credit card. Please contact help@skyclerk.com");
+				if (err.error) {
+					this.errorMsg = err.error.error;
+				} else {
+					this.errorMsg = "Very sorry, there was an error with your credit card. Please contact help@skyclerk.com";
+				}
 			}
 		);
 	}

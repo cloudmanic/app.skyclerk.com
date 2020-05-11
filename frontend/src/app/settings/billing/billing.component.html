@@ -27,7 +27,7 @@
                       </div><!-- /.section__head -->
 
                       <div class="section__body">
-                        <p>You have 15 days left on your free trial.</p>
+                        <p>You have {{ daysToExpire() }} days left on your free trial.</p>
 
                         <div class="section__actions--plan">
                           <a href="#" [routerLink]="['/paywall/plans']" [queryParams]="{'back': 'settings' }" class="btn btn-yellow">UPGRADE TO FULL ACCOUNT</a>
