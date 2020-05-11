@@ -8,6 +8,7 @@
 import { Component } from '@angular/core';
 import { Router, NavigationEnd } from '@angular/router';
 import { Title } from '@angular/platform-browser';
+import { PingService } from './services/ping.service';
 
 declare let _paq: any;
 declare let gtag: Function;
@@ -23,7 +24,10 @@ export class AppComponent {
 	//
 	// Construct - Load services that need to run site wide
 	//
-	constructor(private router: Router, private titleService: Title) {
+	constructor(private router: Router, private titleService: Title, private pingService: PingService) {
+		// Start server ping.
+		this.pingService.startPing();
+
 		// subscribe to router events and send page views to Analytics
 		this.router.events.subscribe(event => {
 			if (event instanceof NavigationEnd) {

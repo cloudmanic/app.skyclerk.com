@@ -21,6 +21,7 @@ import { ReportService } from './services/report.service';
 import { ContactService } from './services/contact.service';
 import { ActivityService } from './services/activity.service';
 import { AccountService } from './services/account.service';
+import { PingService } from './services/ping.service';
 
 // Components
 import { AppComponent } from './app.component';
@@ -147,6 +148,7 @@ import { SuccessComponent } from './paywall/success/success.component';
 		AccountService,
 		ContactService,
 		ActivityService,
+		PingService,
 		{ provide: HTTP_INTERCEPTORS, useClass: TokenInterceptor, multi: true },
 	],
 	bootstrap: [AppComponent]
