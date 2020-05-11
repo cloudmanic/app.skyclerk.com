@@ -63,7 +63,7 @@ func IsUnSubscribed(listId string, email string) (bool, error) {
 //
 // Subscribe to a sendy newsletter list
 //
-func Subscribe(listId string, email string, first string, last string, paid string, broker string, ip string, canceled string) {
+func Subscribe(listId string, email string, first string, last string, ip string) {
 
 	listIdString := GetListId(listId)
 
@@ -79,21 +79,6 @@ func Subscribe(listId string, email string, first string, last string, paid stri
 	// Do we have an ip address
 	if len(ip) > 0 {
 		form["ipaddress"] = []string{ip}
-	}
-
-	// Do we have a broker
-	if len(broker) > 0 {
-		form["Broker"] = []string{broker}
-	}
-
-	// Are we paid
-	if len(paid) > 0 {
-		form["Paid"] = []string{paid}
-	}
-
-	// Is this a canceled user
-	if len(canceled) > 0 {
-		form["Canceled"] = []string{canceled}
 	}
 
 	// Check to see if this user is unsubscripted.

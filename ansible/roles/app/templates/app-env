@@ -30,6 +30,12 @@ OBJECT_SECRET_ACCESS_KEY={{ object_secret_key }}
 OBJECT_ENDPOINT={{ object_endpoint }}
 OBJECT_BASE_URL={{ object_base_url }}
 
+# Stripe
+STRIPE_MONTHLY_PLAN={{ stripe_monthly_plan }}
+STRIPE_YEARLY_PLAN={{ stripe_yearly_plan }}
+STRIPE_SECRET_KEY={{ stripe_secret_key }}
+# STRIPE_SIGNING_SECRET=
+
 # Email
 MAIL_DRIVER=mailgun
 MAIL_HOST=127.0.0.1

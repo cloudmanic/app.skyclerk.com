@@ -13,6 +13,7 @@ import (
 
 	"app.skyclerk.com/backend/cmd"
 	"app.skyclerk.com/backend/controllers"
+	"app.skyclerk.com/backend/cron"
 	"app.skyclerk.com/backend/library/cache"
 	"app.skyclerk.com/backend/models"
 	"app.skyclerk.com/backend/services"
@@ -51,6 +52,9 @@ func main() {
 
 	// Set the database the controller uses.
 	c.SetDB(db)
+
+	// Start the cron process
+	go cron.Start(db)
 
 	// Start webserver & controllers
 	c.StartWebServer()

@@ -1074,8 +1074,7 @@ func TestGetBilling01(t *testing.T) {
 	db.Save(&user)
 
 	billing1 := test.GetRandomBilling(5, 33)
-	billing1.StripeCustomer = "test_customer"
-	billing1.StripeSubscription = "test_subscription"
+	billing1.StripeCustomer = ""
 	db.Save(&billing1)
 	account1 := test.GetRandomAccount(33)
 	account1.OwnerId = user.Id
@@ -1088,13 +1087,8 @@ func TestGetBilling01(t *testing.T) {
 	db.Save(&account2)
 	db.Save(&models.AcctToUsers{AccountId: account2.Id, UserId: user.Id})
 
-	account3 := test.GetRandomAccount(105)
-	account3.OwnerId = user.Id
-	db.Save(&account3)
-	db.Save(&models.AcctToUsers{AccountId: account3.Id, UserId: user.Id})
-
 	// Setup request
-	req, _ := http.NewRequest("GET", "/api/v3/33/account/billing", nil)
+	req, _ := http.NewRequest("POST", "/api/v3/33/account/stripe-token", bytes.NewBuffer([]byte(`{ "token": "tok_amex", "plan": "Monthly" }`)))
 
 	// Setup writer.
 	w := httptest.NewRecorder()
@@ -1102,6 +1096,22 @@ func TestGetBilling01(t *testing.T) {
 	gin.DisableConsoleColor()
 
 	r := gin.New()
+	r.Use(func(c *gin.Context) {
+		c.Set("accountId", 33)
+		c.Set("userId", int(user.Id))
+	})
+	r.POST("/api/v3/33/account/stripe-token", c.NewStripeToken)
+	r.ServeHTTP(w, req)
+
+	// Setup request
+	req, _ = http.NewRequest("GET", "/api/v3/33/account/billing", nil)
+
+	// Setup writer.
+	w = httptest.NewRecorder()
+	gin.SetMode("release")
+	gin.DisableConsoleColor()
+
+	r = gin.New()
 	r.Use(func(c *gin.Context) {
 		c.Set("accountId", 33)
 		c.Set("userId", uint(109))
@@ -1120,6 +1130,20 @@ func TestGetBilling01(t *testing.T) {
 	st.Expect(t, result.Subscription, "Monthly")
 	st.Expect(t, result.StripeCustomer, "")
 	st.Expect(t, result.StripeSubscription, "")
+
+	// Check database
+	a := models.Billing{}
+	db.New().Find(&a, 5)
+
+	// Get customer from stripe
+	stripeCust, err := stripe.GetCustomer(a.StripeCustomer)
+	st.Expect(t, err, nil)
+	st.Expect(t, stripeCust.ID, a.StripeCustomer)
+	st.Expect(t, stripeCust.Email, user.Email)
+
+	// Clean up stripe side.
+	err = stripe.DeleteCustomer(a.StripeCustomer)
+	st.Expect(t, err, nil)
 }
 
 /* End File */

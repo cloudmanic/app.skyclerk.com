@@ -21,6 +21,11 @@ import (
 //
 func Notify(channel string, msg string) (string, error) {
 
+	// Modfy message if this is testing.
+	if os.Getenv("APP_ENV") == "local" {
+		msg = "(local dev): " + msg
+	}
+
 	if len(os.Getenv("SLACK_HOOK")) > 0 {
 
 		var jsonStr = []byte(`{"channel": "` + channel + `", "text": "` + msg + `"}`)
