@@ -464,8 +464,8 @@ func (t *Controller) GetBilling(c *gin.Context) {
 	stripeCustomer, err := stripe.GetCustomer(billing.StripeCustomer)
 
 	if err != nil {
-		services.Critical(fmt.Errorf("GetBillingHistory: Billing account not found. AccountId: %d", accountID))
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Account not found (002)."})
+		// No stripe user.
+		c.JSON(200, billing)
 		return
 	}
 

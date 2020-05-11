@@ -11,6 +11,7 @@ import (
 	"time"
 
 	"app.skyclerk.com/backend/library/sendy"
+	"app.skyclerk.com/backend/library/slack"
 	"app.skyclerk.com/backend/models"
 	"app.skyclerk.com/backend/services"
 )
@@ -77,9 +78,12 @@ func ExpireTrails(db models.Datastore) {
 		row.Status = "Expired"
 		db.New().Save(&row)
 		services.InfoMsg("Free trial has just expired : " + owner.Email)
-		//go slack.Notify("#events", "Skyclerk User Free Trial Expired : "+owner.Email)
-		go sendy.Subscribe("expired", owner.Email, owner.FirstName, owner.LastName, "")
-		go sendy.Unsubscribe("trial", owner.Email)
+
+		if len(owner.Email) > 0 {
+			go slack.Notify("#events", "Skyclerk User Free Trial Expired : "+owner.Email)
+			go sendy.Subscribe("expired", owner.Email, owner.FirstName, owner.LastName, "")
+			go sendy.Unsubscribe("trial", owner.Email)
+		}
 	}
 
 	services.InfoMsg("All expire trails set to expired.")

@@ -174,6 +174,9 @@ func (t *DB) DeleteAccount(accountID uint) {
 	// Clear database tables.
 	t.New().Exec("DELETE FROM acct_to_users WHERE account_id = ?", accountID)
 	t.New().Exec("DELETE FROM accounts WHERE id = ?", accountID)
+
+	// Clear at sendy TODO(spicer): Make this work.
+	// go sendy.Unsubscribe("trial", owner.Email)
 }
 
 /* End File */
