@@ -759,6 +759,10 @@ func TestCreateLedger01(t *testing.T) {
 	c := &Controller{}
 	c.SetDB(db)
 
+	// Setup test data
+	user := test.GetRandomUser(109)
+	db.Save(&user)
+
 	// Post data
 	post := test.GetRandomLedger(33)
 
@@ -776,7 +780,7 @@ func TestCreateLedger01(t *testing.T) {
 	r := gin.New()
 	r.Use(func(c *gin.Context) {
 		c.Set("accountId", 33)
-		c.Set("userId", 109)
+		c.Set("userId", 1)
 	})
 	r.POST("/api/v3/33/ledger", c.CreateLedger)
 	r.ServeHTTP(w, req)
@@ -838,7 +842,7 @@ func TestCreateLedger01(t *testing.T) {
 
 	st.Expect(t, a.Id, uint(1))
 	st.Expect(t, a.AccountId, uint(33))
-	st.Expect(t, a.UserId, uint(109))
+	st.Expect(t, a.UserId, uint(1))
 	st.Expect(t, a.LedgerId, uint(1))
 	st.Expect(t, a.Action, actionType)
 	st.Expect(t, a.SubAction, "create")

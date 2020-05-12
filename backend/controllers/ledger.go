@@ -9,6 +9,7 @@
 package controllers
 
 import (
+	"fmt"
 	"net/http"
 	"strconv"
 	"strings"
@@ -18,6 +19,7 @@ import (
 	"app.skyclerk.com/backend/library/helpers"
 	"app.skyclerk.com/backend/library/request"
 	"app.skyclerk.com/backend/library/response"
+	"app.skyclerk.com/backend/library/slack"
 	"app.skyclerk.com/backend/models"
 	"app.skyclerk.com/backend/services"
 )
@@ -126,6 +128,14 @@ func (t *Controller) CreateLedger(c *gin.Context) {
 	// Add in auto fields
 	o.AddedById = uint(c.MustGet("userId").(int))
 
+	// Get the user attached to this account.
+	user, err := t.db.GetUserById(uint(o.AddedById))
+
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Account user not found."})
+		return
+	}
+
 	// Create ledger
 	t.db.LedgerCreate(&o)
 
@@ -161,6 +171,12 @@ func (t *Controller) CreateLedger(c *gin.Context) {
 		Amount:    o.Amount,
 		LedgerId:  o.Id,
 	})
+
+	// Send Slack hook TODO(spicer): Add more information like email.
+	slack.Notify("#events", fmt.Sprintf("New Ledger submission. Account: %d, Email: %s", o.AccountId, user.Email))
+
+	// Some logging
+	services.InfoMsg(fmt.Sprintf("New Ledger submission. Account: %d, Email: %s", o.AccountId, user.Email))
 
 	// Return happy.
 	response.RespondCreated(c, j, nil)
