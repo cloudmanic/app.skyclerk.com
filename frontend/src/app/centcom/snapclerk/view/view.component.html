@@ -1,71 +1,101 @@
-<div class="snapclerk-view">
-
-  <div class="body">
-    <div class="no-results" *ngIf="! haveReceipts">
-      <h1>We have no receipts that need to be reviewed.</h1>
-    </div>
-
-    <div class="img-cont" *ngIf="haveReceipts">
-      <img [src]="snapclerk.File.Url" />
-
-      <div class="mt-5">
-        Id: {{ snapclerk.Id }}
-      </div>
-    </div>
-
-    <div class="fields-cont" *ngIf="haveReceipts">
-      <form (submit)="save()">
-
-        <div class="form-group">
-          <label>Account</label>
-          <select name="account" [(ngModel)]="account" (change)="onAccountChange()">
-            <option [ngValue]="row" *ngFor="let row of user.Accounts">{{ row.Name }}</option>
-          </select>
-        </div>
-
-        <div class="form-group autocomplete">
-          <label>Contact</label>
-          <input type="text" name="contactInput" [(ngModel)]="contactInput" (keyup)="onContactChange()" autocomplete="disabled" />
-          <ul *ngIf="contactsResults.length > 0">
-            <li *ngFor="let row of contactsResults"><a (click)="onContactSelect(row)">{{ displayContact(row) }}</a></li>
-          </ul>
-        </div>
-
-        <div class="form-group">
-          <label>Date</label>
-          <input type="date" name="CreatedAt" [ngModel]="snapclerk.CreatedAt | date:'yyyy-MM-dd'" (ngModelChange)="snapclerk.CreatedAt = $event" />
-        </div>
-
-        <div class="form-group autocomplete">
-          <label>Category</label>
-          <input type="text" name="categoriesInput" [(ngModel)]="categoriesInput" (keyup)="onCategoryChange()" autocomplete="disabled" />
-          <ul *ngIf="categoriesResults.length > 0">
-            <li *ngFor="let row of categoriesResults"><a (click)="onCategorySelect(row)">{{ row.Name }}</a></li>
-          </ul>
-        </div>
-
-        <div class="form-group">
-          <label>Amount</label>
-          <input type="number" name="Amount" [(ngModel)]="snapclerk.Amount" autocomplete="disabled" />
-        </div>
-
-        <div class="form-group">
-          <label>Note</label>
-          <textarea name="Note" rows="8" cols="80" [(ngModel)]="snapclerk.Note" autocomplete="disabled"></textarea>
-        </div>
-
-        <div class="form-group button-row">
-          <a (click)="reject()" class="red">Reject</a>
-          <button>Save</button>
-        </div>
-
-        <div class="count-cont" *ngIf="remaining > 0">
-          {{ remaining }} Remaining
-        </div>
-
-      </form>
-
-    </div>
+<header>
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <h1 class="text-3xl font-bold leading-tight text-gray-900">
+      Snap!Clerk
+    </h1>
   </div>
+</header>
+<main>
+  <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
 
-</div>
+    <div class="px-4 py-8 sm:px-0">
+
+
+
+      <div class="flex flex-col">
+        <div class="-my-2 py-2 overflow-x-auto sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8">
+          <div class="align-middle inline-block min-w-full rounded-lg border-b border-gray-200">
+
+
+            <div class="snapclerk-view">
+
+              <div class="body">
+                <div class="no-results" *ngIf="! haveReceipts">
+                  <h1>We have no receipts that need to be reviewed.</h1>
+                </div>
+
+                <div class="img-cont" *ngIf="haveReceipts">
+                  <img [src]="snapclerk.File.Url" />
+
+                  <div class="mt-5">
+                    Id: {{ snapclerk.Id }}
+                  </div>
+                </div>
+
+                <div class="fields-cont" *ngIf="haveReceipts">
+                  <form (submit)="save()">
+
+                    <div class="form-group">
+                      <label>Account</label>
+                      <select name="account" [(ngModel)]="account" (change)="onAccountChange()">
+                        <option [ngValue]="row" *ngFor="let row of user.Accounts">{{ row.Name }}</option>
+                      </select>
+                    </div>
+
+                    <div class="form-group autocomplete">
+                      <label>Contact</label>
+                      <input type="text" name="contactInput" [(ngModel)]="contactInput" (keyup)="onContactChange()" autocomplete="disabled" />
+                      <ul *ngIf="contactsResults.length > 0">
+                        <li *ngFor="let row of contactsResults"><a (click)="onContactSelect(row)">{{ displayContact(row) }}</a></li>
+                      </ul>
+                    </div>
+
+                    <div class="form-group">
+                      <label>Date</label>
+                      <input type="date" name="CreatedAt" [ngModel]="snapclerk.CreatedAt | date:'yyyy-MM-dd'" (ngModelChange)="snapclerk.CreatedAt = $event" />
+                    </div>
+
+                    <div class="form-group autocomplete">
+                      <label>Category</label>
+                      <input type="text" name="categoriesInput" [(ngModel)]="categoriesInput" (keyup)="onCategoryChange()" autocomplete="disabled" />
+                      <ul *ngIf="categoriesResults.length > 0">
+                        <li *ngFor="let row of categoriesResults"><a (click)="onCategorySelect(row)">{{ row.Name }}</a></li>
+                      </ul>
+                    </div>
+
+                    <div class="form-group">
+                      <label>Amount</label>
+                      <input type="number" name="Amount" [(ngModel)]="snapclerk.Amount" autocomplete="disabled" />
+                    </div>
+
+                    <div class="form-group">
+                      <label>Note</label>
+                      <textarea name="Note" rows="8" cols="80" [(ngModel)]="snapclerk.Note" autocomplete="disabled"></textarea>
+                    </div>
+
+                    <div class="form-group button-row">
+                      <a (click)="reject()" class="red">Reject</a>
+                      <button>Save</button>
+                    </div>
+
+                    <div class="count-cont" *ngIf="remaining > 0">
+                      {{ remaining }} Remaining
+                    </div>
+
+                  </form>
+
+                </div>
+              </div>
+
+            </div>
+
+
+          </div>
+        </div>
+      </div>
+
+
+    </div>
+
+  </div>
+</main>

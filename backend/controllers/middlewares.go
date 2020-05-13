@@ -36,7 +36,7 @@ func (t *Controller) AuthMiddleware() gin.HandlerFunc {
 		}
 
 		// Get the account
-		accountId, err := strconv.ParseInt(c.Param("account"), 10, 32)
+		accountID, err := strconv.ParseInt(c.Param("account"), 10, 32)
 
 		if err != nil {
 			c.JSON(http.StatusUnauthorized, gin.H{"errors": gin.H{"system": "Account Not Found - Unable to Authenticate (#005)"}})
@@ -47,7 +47,7 @@ func (t *Controller) AuthMiddleware() gin.HandlerFunc {
 		// Make sure this user has this account
 		found := false
 		for _, row := range user.Accounts {
-			if row.Id == uint(accountId) {
+			if row.Id == uint(accountID) {
 				found = true
 				break
 			}
@@ -60,7 +60,15 @@ func (t *Controller) AuthMiddleware() gin.HandlerFunc {
 		}
 
 		// Set Account
-		c.Set("accountId", int(accountId))
+		c.Set("accountId", int(accountID))
+
+		// Set last activity with account.
+		go func() {
+			account := models.Account{}
+			t.db.New().Find(&account, accountID)
+			account.LastActivity = time.Now()
+			t.db.New().Save(&account)
+		}()
 
 		// On to next request in the Middleware chain.
 		c.Next()

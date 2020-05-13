@@ -25,6 +25,7 @@
               "src/register"
             ],
             "styles": [
+              "src/tailwind.build.css",
               "src/styles.css",
               "src/fonts.css",
               "src/app.css",

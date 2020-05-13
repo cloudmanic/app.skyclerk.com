@@ -15,6 +15,7 @@
 .float-right { float: right; }
 .clearfix::after { content: ""; clear: both; display: table; }
 .display-inline { display: inline-block; }
+.table { display: block; }
 
 /* Category pop out */
 .manage-catagories .form-head { border-bottom: unset; border-top: unset; padding-bottom: 8px; }
@@ -68,7 +69,7 @@
 .centcom .fields-cont .form-group textarea { padding: 10px; border: 2px #efefef solid; }
 
 .centcom .snapclerk-view .body { display: flex; justify-content: space-between; }
-.centcom .snapclerk-view .body .img-cont { width: 800px; }
+.centcom .snapclerk-view .body .img-cont { width: 600px; }
 .centcom .snapclerk-view .body .fields-cont { width: 400px; padding: 0px 20px; }
 .centcom .snapclerk-view .body .img-cont img { width: 100%; }
 .centcom .snapclerk-view .body .button-row { display: flex; flex-direction: row; justify-content: space-between; }

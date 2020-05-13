@@ -29,7 +29,7 @@ h1,h2,h3,h4,h5,h6 { font-weight:normal; }
 .notext { font-size: 0; line-height: 0; text-indent: -4000px; }
 .left, .alignleft { float:left; }
 .right, .alignright { float:right;}
-.hidden { display: none; }
+.hide { display: none; }
 
 .tr { text-align:right; }
 .tl { text-align:left; }

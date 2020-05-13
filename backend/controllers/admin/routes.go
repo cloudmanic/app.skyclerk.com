@@ -24,6 +24,9 @@ func (t *Controller) DoRoutes(r *gin.Engine) {
 		// Ping
 		adminAPI.GET("/ping", t.PingFromServer)
 
+		// Accounts
+		adminAPI.GET("/accounts", t.GetAccounts)
+
 		// Contacts
 		adminAPI.GET("/contacts", t.GetContacts)
 
