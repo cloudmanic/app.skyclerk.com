@@ -12,11 +12,11 @@ import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
 @Component({
-	selector: 'app-users',
-	templateUrl: './users.component.html'
+	selector: 'app-centcom-accounts',
+	templateUrl: './accounts.component.html'
 })
 
-export class UsersComponent implements OnInit {
+export class AccountsComponent implements OnInit {
 	accounts: Account[] = [];
 
 	//

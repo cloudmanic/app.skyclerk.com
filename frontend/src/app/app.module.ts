@@ -74,7 +74,7 @@ import { WallComponent } from './paywall/wall/wall.component';
 import { PlansComponent } from './paywall/plans/plans.component';
 import { PaymentComponent } from './paywall/payment/payment.component';
 import { SuccessComponent } from './paywall/success/success.component';
-import { UsersComponent } from './centcom/users/users.component';
+import { AccountsComponent } from './centcom/accounts/accounts.component';
 
 @NgModule({
 	declarations: [
@@ -131,7 +131,7 @@ import { UsersComponent } from './centcom/users/users.component';
 		PlansComponent,
 		PaymentComponent,
 		SuccessComponent,
-		UsersComponent
+		AccountsComponent
 	],
 	imports: [
 		FormsModule,

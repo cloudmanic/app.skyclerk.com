@@ -8,6 +8,8 @@ TRIAL_DAY_COUNT=15
 FONT_PATH=/fonts
 
 SITE_URL={{ site_url }}
+CENTCOM_URL={{ centcom_url }}
+
 SITE_DOMAIN={{ site_domain }}
 REGISTER_URL={{ register_url }}
 ENCRYPTION_KEY={{ encryption_key }}

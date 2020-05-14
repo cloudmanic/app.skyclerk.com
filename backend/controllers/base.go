@@ -121,7 +121,10 @@ func (t *Controller) StartWebServer() {
 		ExposeHeaders:    []string{"Content-Length", "X-Last-Page", "X-Offset", "X-Limit", "X-No-Limit-Count"},
 		AllowCredentials: true,
 		AllowOriginFunc: func(origin string) bool {
-			if (origin == os.Getenv("SITE_URL")) || strings.Contains(origin, "localhost") || strings.Contains(origin, os.Getenv("LOCAL_IP")) {
+			if (origin == os.Getenv("SITE_URL")) ||
+				(origin == os.Getenv("CENTCOM_URL")) ||
+				strings.Contains(origin, "localhost") ||
+				strings.Contains(origin, os.Getenv("LOCAL_IP")) {
 				return true
 			}
 			services.LogInfo("Failed CORS request - origin: " + origin)
@@ -162,10 +165,10 @@ func (t *Controller) StartWebServer() {
 			Prompt:     autocert.AcceptTOS,
 			Cache:      autocert.DirCache("/letsencrypt/"),
 			Email:      "help@skyclerk.com",
-			HostPolicy: autocert.HostWhitelist(os.Getenv("SITE_DOMAIN")),
+			HostPolicy: autocert.HostWhitelist(os.Getenv("SITE_DOMAIN"), os.Getenv("CENTCOM_URL")),
 		}
 
-		log.Printf("Starting secure server at " + os.Getenv("SITE_URL"))
+		log.Printf("Starting secure server on " + os.Getenv("SITE_URL") + ", " + os.Getenv("CENTCOM_URL"))
 
 		log.Fatal(autotls.RunWithManager(router, m))
 	}

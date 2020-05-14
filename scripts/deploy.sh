@@ -10,17 +10,21 @@
 cd ../backend
 
 # Build backend
-echo "Building app.skyclerk.com"
+echo "########## Building app.skyclerk.com ##########"
 env GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -o builds/app.skyclerk.com
 upx builds/app.skyclerk.com
 cd ../scripts
 
 # Build frontend
 cd ../frontend
-
-echo "Building Frontend"
+echo "########## Building Frontend "##########"
 ng build --prod
+cd ../scripts
 
+# Build centcom
+cd ../centcom
+echo "########## Building Centcom "##########"
+ng build --prod
 cd ../scripts
 
 # Deploy to backend with Ansible

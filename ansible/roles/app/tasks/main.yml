@@ -43,3 +43,13 @@
   file: path={{ site_dir }}/fonts owner={{ site_user }} group={{ site_user }} recurse=yes
   become: yes
   become_user: root
+
+# Install centcom.skyclerk.com frontend code.
+- name: Copying centcom.skyclerk.com frontend code to server(s)
+  synchronize: src=../centcom/dist/centcom-skyclerk-com/ dest={{ site_dir }}/centcom/
+
+# Change owner of /centcom
+- name: Change owner of {{ site_dir }}/centcom
+  file: path={{ site_dir }}/centcom owner={{ site_user }} group={{ site_user }} recurse=yes
+  become: yes
+  become_user: root
