@@ -8,6 +8,7 @@
 import { Component } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
 	selector: 'app-core',
@@ -15,12 +16,20 @@ import { environment } from 'src/environments/environment';
 })
 
 export class CoreComponent {
+	tab: string = "";
+	pageHeading: string = "";
 	profileShow: boolean = false;
 
 	//
 	// Constructor
 	//
-	constructor(public http: HttpClient) {
+	constructor(public http: HttpClient, public route: ActivatedRoute, public router: Router) {
+		// Figure out which tab this is.
+		this.router.events.subscribe((val) => {
+			this.tab = this.route.snapshot.firstChild.data.tab;
+			this.pageHeading = this.route.snapshot.firstChild.data.pageHeading;
+		});
+
 		// Make sure I am allowed to be here.
 		this.ping();
 	}

@@ -19,7 +19,8 @@ import { Ledger } from 'src/app/models/ledger.model';
 
 @Component({
 	selector: 'app-view',
-	templateUrl: './view.component.html'
+	templateUrl: './view.component.html',
+	styleUrls: ['./view.component.css']
 })
 
 export class ViewComponent {

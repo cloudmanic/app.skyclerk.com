@@ -1,0 +1,31 @@
+<table>
+  <thead>
+    <tr>
+      <th class="px-4 py-3 border-b border-gray-200 bg-gray-50 text-left text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider font-black">Id</th>
+      <th class="px-4 py-3 border-b border-gray-200 bg-gray-50 text-left text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider font-black">Created</th>
+      <th class="px-4 py-3 border-b border-gray-200 bg-gray-50 text-left text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider font-black">Activity</th>
+      <th class="px-4 py-3 border-b border-gray-200 bg-gray-50 text-left text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider font-black">Account</th>
+      <th class="px-4 py-3 border-b border-gray-200 bg-gray-50 text-left text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider font-black">Name</th>
+      <th class="px-4 py-3 border-b border-gray-200 bg-gray-50 text-left text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider font-black">Email</th>
+      <th class="px-4 py-3 border-b border-gray-200 bg-gray-50 text-left text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider font-black">Status</th>
+      <th class="px-4 py-3 border-b border-gray-200 bg-gray-50 text-left text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider font-black">Ledger</th>
+      <th class="px-4 py-3 border-b border-gray-200 bg-gray-50"></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let row of accounts; let even = even;" [ngClass]="{'bg-white': even, 'bg-gray-50': !even}">
+      <td class="px-4 py-4 whitespace-no-wrap text-sm leading-5 text-gray-500">{{ row.AccountId }}</td>
+      <td class="px-4 py-4 whitespace-no-wrap text-sm leading-5 text-gray-500">{{ row.CreatedAt | date:'shortDate' }}</td>
+      <td class="px-4 py-4 whitespace-no-wrap text-sm leading-5 text-gray-500">{{ row.LastActivity | date:'shortDate' }}</td>
+      <td class="px-4 py-4 whitespace-no-wrap text-sm leading-5 text-gray-500">{{ row.Name }}</td>
+      <td class="px-4 py-4 whitespace-no-wrap text-sm leading-5 text-gray-500">{{ row.FirstName }} {{ row.LastName }}</td>
+      <td class="px-4 py-4 whitespace-no-wrap text-sm leading-5 text-gray-500">{{ row.Email }}</td>
+      <td class="px-4 py-4 whitespace-no-wrap text-sm leading-5 text-gray-500">{{ row.Status }}</td>
+      <td class="px-4 py-4 whitespace-no-wrap text-sm leading-5 text-gray-500">{{ row.LedgerCount }}</td>
+
+      <td class="px-4 py-4 whitespace-no-wrap text-right text-sm leading-5 font-medium">
+        <a href="#" class="text-indigo-600 hover:text-indigo-900">View</a>
+      </td>
+    </tr>
+  </tbody>
+</table>

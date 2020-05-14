@@ -19,7 +19,12 @@
     "@angular/platform-browser": "~8.1.0",
     "@angular/platform-browser-dynamic": "~8.1.0",
     "@angular/router": "~8.1.0",
+    "@tailwindcss/ui": "^0.3.0",
+    "@types/moment-timezone": "^0.5.12",
+    "moment": "^2.24.0",
+    "moment-timezone": "^0.5.26",
     "rxjs": "~6.4.0",
+    "tailwindcss": "^1.4.6",
     "tslib": "^1.9.0",
     "zone.js": "~0.9.1"
   },

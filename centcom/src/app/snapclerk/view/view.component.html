@@ -1,0 +1,71 @@
+<div class="snapclerk-view p-6 bg-gray-50">
+
+  <div class="body">
+    <div class="no-results" *ngIf="! haveReceipts">
+      <h1>We have no receipts that need to be reviewed.</h1>
+    </div>
+
+    <div class="img-cont" *ngIf="haveReceipts">
+      <img [src]="snapclerk.File.Url" />
+
+      <div class="mt-5">
+        Id: {{ snapclerk.Id }}
+      </div>
+    </div>
+
+    <div class="fields-cont" *ngIf="haveReceipts">
+      <form (submit)="save()">
+
+        <div class="form-group">
+          <label>Account</label>
+          <select name="account" [(ngModel)]="account" (change)="onAccountChange()" class="form-input block w-full sm:text-sm sm:leading-5">
+            <option [ngValue]="row" *ngFor="let row of user.Accounts">{{ row.Name }}</option>
+          </select>
+        </div>
+
+        <div class="form-group autocomplete">
+          <label>Contact</label>
+          <input type="text" name="contactInput" [(ngModel)]="contactInput" (keyup)="onContactChange()" autocomplete="disabled" class="form-input block w-full sm:text-sm sm:leading-5" />
+          <ul *ngIf="contactsResults.length > 0">
+            <li *ngFor="let row of contactsResults"><a (click)="onContactSelect(row)">{{ displayContact(row) }}</a></li>
+          </ul>
+        </div>
+
+        <div class="form-group">
+          <label>Date</label>
+          <input type="date" name="CreatedAt" [ngModel]="snapclerk.CreatedAt | date:'yyyy-MM-dd'" (ngModelChange)="snapclerk.CreatedAt = $event" class="form-input block w-full sm:text-sm sm:leading-5" />
+        </div>
+
+        <div class="form-group autocomplete">
+          <label>Category</label>
+          <input type="text" name="categoriesInput" [(ngModel)]="categoriesInput" (keyup)="onCategoryChange()" autocomplete="disabled" class="form-input block w-full sm:text-sm sm:leading-5" />
+          <ul *ngIf="categoriesResults.length > 0">
+            <li *ngFor="let row of categoriesResults"><a (click)="onCategorySelect(row)">{{ row.Name }}</a></li>
+          </ul>
+        </div>
+
+        <div class="form-group">
+          <label>Amount</label>
+          <input type="number" name="Amount" [(ngModel)]="snapclerk.Amount" autocomplete="disabled" class="form-input block w-full sm:text-sm sm:leading-5" />
+        </div>
+
+        <div class="form-group">
+          <label>Note</label>
+          <textarea name="Note" rows="8" cols="80" [(ngModel)]="snapclerk.Note" autocomplete="disabled" class="form-input block w-full sm:text-sm sm:leading-5"></textarea>
+        </div>
+
+        <div class="form-group button-row">
+          <a (click)="reject()" class="red">Reject</a>
+          <button class="w-full justify-center border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-500 focus:outline-none focus:border-indigo-700 focus:shadow-outline-indigo active:bg-indigo-700 transition duration-150 ease-in-out">Save</button>
+        </div>
+
+        <div class="count-cont" *ngIf="remaining > 0">
+          {{ remaining }} Remaining
+        </div>
+
+      </form>
+
+    </div>
+  </div>
+
+</div>

@@ -31,9 +31,6 @@ import { ReportsComponent } from './dashboard/reports/reports.component';
 import { AddComponent as SettingsUsersAdd } from './settings/users/add/add.component';
 import { ForgotPasswordComponent } from './auth/forgot-password/forgot-password.component';
 import { ResetPasswordComponent } from './auth/reset-password/reset-password.component';
-import { ViewComponent as CentcomSnapClerkView } from './centcom/snapclerk/view/view.component';
-import { CoreComponent as CentcomCoreComponent } from './centcom/layout/core/core.component';
-import { AccountsComponent as CentcomAccountsComponent } from './centcom/accounts/accounts.component';
 import { WallComponent } from './paywall/wall/wall.component';
 import { PlansComponent } from './paywall/plans/plans.component';
 import { PaymentComponent } from './paywall/payment/payment.component';
@@ -77,21 +74,6 @@ const routes: Routes = [
 			{ path: 'plans', component: PlansComponent },
 			{ path: 'payment', component: PaymentComponent },
 			{ path: 'success', component: SuccessComponent },
-		]
-	},
-
-
-	// Centcom
-	{
-		path: 'centcom', component: CentcomCoreComponent, children: [
-			// users
-			{ path: 'accounts', component: CentcomAccountsComponent, canActivate: [SessionGuard] },
-
-			// snapclerk
-			{ path: 'snapclerk', component: CentcomSnapClerkView, canActivate: [SessionGuard] },
-
-			// redirect
-			{ path: '**', redirectTo: 'accounts' }
 		]
 	},
 

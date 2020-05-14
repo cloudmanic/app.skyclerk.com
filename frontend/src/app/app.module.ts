@@ -68,13 +68,10 @@ import { LabelsComponent } from './settings/categories-labels/labels/labels.comp
 import { AddComponent as SettingsUsersAdd } from './settings/users/add/add.component';
 import { ForgotPasswordComponent } from './auth/forgot-password/forgot-password.component';
 import { ResetPasswordComponent } from './auth/reset-password/reset-password.component';
-import { ViewComponent as CentcomSnapClerkView } from './centcom/snapclerk/view/view.component';
-import { CoreComponent as CentcomCoreComponent } from './centcom/layout/core/core.component';
 import { WallComponent } from './paywall/wall/wall.component';
 import { PlansComponent } from './paywall/plans/plans.component';
 import { PaymentComponent } from './paywall/payment/payment.component';
 import { SuccessComponent } from './paywall/success/success.component';
-import { AccountsComponent } from './centcom/accounts/accounts.component';
 
 @NgModule({
 	declarations: [
@@ -125,13 +122,10 @@ import { AccountsComponent } from './centcom/accounts/accounts.component';
 		SettingsUsersAdd,
 		ForgotPasswordComponent,
 		ResetPasswordComponent,
-		CentcomSnapClerkView,
-		CentcomCoreComponent,
 		WallComponent,
 		PlansComponent,
 		PaymentComponent,
-		SuccessComponent,
-		AccountsComponent
+		SuccessComponent
 	],
 	imports: [
 		FormsModule,

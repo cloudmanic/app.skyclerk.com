@@ -51,36 +51,3 @@
 .field-stripe { padding-top: 5px; display: block; background: rgba(255,255,255,.4); font-size: 12px; line-height: 14px; padding: 6px 10px 4px; height: 34px; border: 1px solid #c8c6c6; border-radius: 4px; box-shadow: 0 1px 0 rgba(0,0,0,.2) inset; width: 252px; color: #4b4b4b; -webkit-box-sizing: border-box; -moz-box-sizing: border-box; -ms-box-sizing: border-box; -o-box-sizing: border-box; box-sizing: border-box; }
 .field::placeholder { color: #efefef; }
 .card-error { padding-top: 10px; padding-bottom: 10px; color: red; }
-
-/* -------------------- Centcom ---------------- */
-.centcom { width: 1200px; margin: 0 auto; display: block; margin-top: 20px; }
-.centcom h1 { font-size: 40px }
-.centcom .header-wrap { display: flex; flex-direction: row; justify-content: space-between; }
-.centcom .header-wrap ul { list-style: none; display: flex; flex-direction: row; justify-content: flex-start; margin: auto 0; }
-.centcom .header-wrap ul li { display: block; margin-right: 20px; }
-
-.centcom .centcom-table { padding: 20px 40px; border: #efefef solid 1px; }
-.centcom .centcom-table tr { text-align: left; }
-
-.centcom .fields-cont .form-group { display: flex; flex-direction: column; margin-bottom: 15px; }
-.centcom .fields-cont .form-group label { font-size: 16px; font-weight: bold; margin-bottom: 3px; }
-.centcom .fields-cont .form-group select { height: 35px; }
-.centcom .fields-cont .form-group input { height: 35px; padding-left: 10px; }
-.centcom .fields-cont .form-group textarea { padding: 10px; border: 2px #efefef solid; }
-
-.centcom .snapclerk-view .body { display: flex; justify-content: space-between; }
-.centcom .snapclerk-view .body .img-cont { width: 600px; }
-.centcom .snapclerk-view .body .fields-cont { width: 400px; padding: 0px 20px; }
-.centcom .snapclerk-view .body .img-cont img { width: 100%; }
-.centcom .snapclerk-view .body .button-row { display: flex; flex-direction: row; justify-content: space-between; }
-.centcom .snapclerk-view .body .button-row button { width: 100px; height: 30px; }
-.centcom .snapclerk-view .body .button-row a { font-size: 15px; }
-.centcom .snapclerk-view .body .button-row a.red { color: red; }
-.centcom .snapclerk-view .no-results { padding: 20px 40px; background-color: white; margin-top: 20px; border: 2px #efefef solid; border-radius: 25px; }
-
-.centcom .autocomplete { position: relative; }
-.centcom .autocomplete ul { padding: 10px 0; border: 1px solid #efefef; background-color: white; left: 0; z-index: 10000; position: absolute; top: 62px; right: 0; }
-.centcom .autocomplete ul li { list-style: none; padding: 5px 10px; }
-.centcom .autocomplete ul li:hover { background-color: #2e6ea5; }
-.centcom .autocomplete ul li a { font-size: 16px; color: black; text-decoration: none; }
-.centcom .autocomplete ul li:hover a { color: white; }
