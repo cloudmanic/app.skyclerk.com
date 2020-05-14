@@ -16,7 +16,7 @@ const routes: Routes = [
 
 	// Centcom
 	{
-		path: 'centcom', component: CoreComponent, data: { tab: 'ff' }, children: [
+		path: '', component: CoreComponent, data: { tab: 'ff' }, children: [
 
 			// users
 			{ path: 'accounts', component: AccountsComponent, data: { tab: 'accounts', pageHeading: 'Acccounts' }, canActivate: [SessionGuard] },
@@ -28,7 +28,7 @@ const routes: Routes = [
 	},
 
 	// Otherwise redirect to home
-	{ path: '**', redirectTo: 'centcom/accounts' }
+	{ path: '**', redirectTo: 'accounts' }
 
 ];
 
