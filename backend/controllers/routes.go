@@ -116,6 +116,8 @@ func (t *Controller) DoRoutes(r *gin.Engine) {
 
 	r.Use(static.Serve("/", static.LocalFile("/frontend", true)))
 	r.Use(static.Serve("/centcom", static.LocalFile("/centcom", true)))
+	r.Use(static.Serve("/centcom/accounts", static.LocalFile("/centcom", true)))
+	r.Use(static.Serve("/centcom/snapclerk", static.LocalFile("/centcom", true)))
 	r.NoRoute(func(c *gin.Context) { c.File("/frontend/index.html") })
 }
 
