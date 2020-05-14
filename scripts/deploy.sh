@@ -17,14 +17,14 @@ cd ../scripts
 
 # Build frontend
 cd ../frontend
-echo "########## Building Frontend "##########"
+echo "########## Building Frontend ##########"
 ng build --prod
 cd ../scripts
 
 # Build centcom
 cd ../centcom
-echo "########## Building Centcom "##########"
-ng build --prod
+echo "########## Building Centcom ##########"
+ng build --prod --base-href="/centcom-new/"
 cd ../scripts
 
 # Deploy to backend with Ansible

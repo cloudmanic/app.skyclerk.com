@@ -23,6 +23,7 @@ services:
       - ./app:/go/bin:ro
       - ./cache:/cache:rw
       - ./fonts:/fonts:ro
+      - ./centcom:/centcom:ro
       - ./frontend:/frontend:ro
       - ./letsencrypt:/letsencrypt:rw
 
