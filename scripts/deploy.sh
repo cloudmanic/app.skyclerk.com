@@ -24,7 +24,7 @@ cd ../scripts
 # Build centcom
 cd ../centcom
 echo "########## Building Centcom ##########"
-ng build --prod --base-href="/centcom-new/"
+ng build --prod --base-href="/centcom/"
 cd ../scripts
 
 # Deploy to backend with Ansible

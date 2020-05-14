@@ -115,7 +115,7 @@ func (t *Controller) DoRoutes(r *gin.Engine) {
 	// -------- Static Files ------------ //
 
 	r.Use(static.Serve("/", static.LocalFile("/frontend", true)))
-	r.Use(static.Serve("/centcom-new", static.LocalFile("/centcom", true)))
+	r.Use(static.Serve("/centcom", static.LocalFile("/centcom", true)))
 	r.NoRoute(func(c *gin.Context) { c.File("/frontend/index.html") })
 }
 
