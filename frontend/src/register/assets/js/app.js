@@ -75,7 +75,9 @@ var app = new Vue({
           // Mix panel track
           mixpanel.people.set({ "$first_name": vm.first, "$last_name": vm.last, "$email": vm.email });
       		mixpanel.identify(response.data.user_id);
-          mixpanel.track('register', { app: "web", "accountId": response.data.account_id });
+          setTimeout(function() {
+            mixpanel.track('register', { app: "web", "accountId": response.data.account_id });
+          }, 1000);
 
           // Log events.
 					_paq.push(['trackGoal', 2]);
