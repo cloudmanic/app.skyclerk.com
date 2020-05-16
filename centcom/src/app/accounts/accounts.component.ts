@@ -17,6 +17,7 @@ import { map } from 'rxjs/operators';
 })
 
 export class AccountsComponent implements OnInit {
+	sort: string = "LastActivity";
 	accounts: Account[] = [];
 
 	//
@@ -46,6 +47,13 @@ export class AccountsComponent implements OnInit {
 	requestAccounts(): Observable<Account[]> {
 		return this.http.get<Account[]>(environment.app_server + '/api/admin/accounts')
 			.pipe(map(res => res.map(res => new Account().deserialize(res))));
+	}
+
+	//
+	// Call this when a column is clicked.
+	//
+	sortCol(col: string) {
+		this.sort = col;
 	}
 }
 

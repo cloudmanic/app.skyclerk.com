@@ -862,6 +862,7 @@ func TestUpdateAccountStripeToken01(t *testing.T) {
 	// Test results.
 	st.Expect(t, w.Code, 204)
 	st.Expect(t, a.Id, uint(5))
+	st.Expect(t, a.PaymentProcessor, "Stripe")
 	st.Expect(t, a.Subscription, "Monthly")
 	st.Expect(t, len(a.StripeCustomer) > 0, true)
 	st.Expect(t, len(a.StripeSubscription) > 0, true)
@@ -939,6 +940,7 @@ func TestUpdateAccountStripeToken02(t *testing.T) {
 	// Test results.
 	st.Expect(t, w.Code, 204)
 	st.Expect(t, a.Id, uint(5))
+	st.Expect(t, a.PaymentProcessor, "Stripe")
 	st.Expect(t, len(a.StripeCustomer) > 0, true)
 	st.Expect(t, len(a.StripeSubscription) > 0, true)
 	st.Expect(t, a.Status, "Active")
@@ -1007,6 +1009,7 @@ func TestChangeSubscription01(t *testing.T) {
 	// Test results.
 	st.Expect(t, w.Code, 204)
 	st.Expect(t, a.Id, uint(5))
+	st.Expect(t, a.PaymentProcessor, "Stripe")
 	st.Expect(t, a.Subscription, "Monthly")
 	st.Expect(t, len(a.StripeCustomer) > 0, true)
 	st.Expect(t, len(a.StripeSubscription) > 0, true)
@@ -1043,6 +1046,7 @@ func TestChangeSubscription01(t *testing.T) {
 	// Test results.
 	st.Expect(t, w.Code, 204)
 	st.Expect(t, b.Id, uint(5))
+	st.Expect(t, a.PaymentProcessor, "Stripe")
 	st.Expect(t, b.Subscription, "Yearly")
 	st.Expect(t, len(b.StripeCustomer) > 0, true)
 	st.Expect(t, len(b.StripeSubscription) > 0, true)
@@ -1126,6 +1130,7 @@ func TestGetBilling01(t *testing.T) {
 	// Test results
 	st.Expect(t, err, nil)
 	st.Expect(t, result.Id, uint(5))
+	st.Expect(t, result.PaymentProcessor, "Stripe")
 	st.Expect(t, result.Status, "Active")
 	st.Expect(t, result.Subscription, "Monthly")
 	st.Expect(t, result.StripeCustomer, "")
@@ -1144,6 +1149,66 @@ func TestGetBilling01(t *testing.T) {
 	// Clean up stripe side.
 	err = stripe.DeleteCustomer(a.StripeCustomer)
 	st.Expect(t, err, nil)
+}
+
+//
+// TestUpdateAccountAppleInApp01 will set an account paid or not paid via Apple In-App
+//
+func TestUpdateAccountAppleInApp01(t *testing.T) {
+	// Start the db connection.
+	db, dbName, _ := models.NewTestDB("")
+	defer models.TestingTearDown(db, dbName)
+
+	// Create controller
+	c := &Controller{}
+	c.SetDB(db)
+
+	// Setup test data
+	user := test.GetRandomUser(33)
+	db.Save(&user)
+
+	billing1 := test.GetRandomBilling(5, 33)
+	billing1.StripeCustomer = ""
+	db.Save(&billing1)
+	account1 := test.GetRandomAccount(33)
+	account1.OwnerId = user.Id
+	account1.BillingId = 5
+	db.Save(&account1)
+	db.Save(&models.AcctToUsers{AccountId: account1.Id, UserId: user.Id})
+
+	account2 := test.GetRandomAccount(34)
+	account2.OwnerId = user.Id
+	db.Save(&account2)
+	db.Save(&models.AcctToUsers{AccountId: account2.Id, UserId: user.Id})
+
+	// Setup request
+	req, _ := http.NewRequest("POST", "/api/v3/33/account/apple-in-app", bytes.NewBuffer([]byte(`{ "plan": "Monthly", "active": "yes" }`)))
+
+	// Setup writer.
+	w := httptest.NewRecorder()
+	gin.SetMode("release")
+	gin.DisableConsoleColor()
+
+	r := gin.New()
+	r.Use(func(c *gin.Context) {
+		c.Set("accountId", 33)
+		c.Set("userId", int(user.Id))
+	})
+	r.POST("/api/v3/33/account/apple-in-app", c.UpdateAccountAppleInApp)
+	r.ServeHTTP(w, req)
+
+	// Check database
+	a := models.Billing{}
+	db.New().Find(&a, 5)
+
+	// Test results.
+	st.Expect(t, w.Code, 204)
+	st.Expect(t, a.Id, uint(5))
+	st.Expect(t, a.PaymentProcessor, "Apple In-App")
+	st.Expect(t, a.Subscription, "Monthly")
+	st.Expect(t, len(a.StripeCustomer) == 0, true)
+	st.Expect(t, len(a.StripeSubscription) == 0, true)
+	st.Expect(t, a.Status, "Active")
 }
 
 /* End File */

@@ -16,6 +16,7 @@ import (
 	"time"
 
 	"app.skyclerk.com/backend/library/response"
+	"app.skyclerk.com/backend/library/slack"
 	"app.skyclerk.com/backend/library/stripe"
 	"app.skyclerk.com/backend/models"
 	"app.skyclerk.com/backend/services"
@@ -358,6 +359,7 @@ func (t *Controller) NewStripeToken(c *gin.Context) {
 
 	// Update billing profile.
 	billing.Status = "Active"
+	billing.PaymentProcessor = "Stripe"
 	billing.StripeCustomer = custID
 	billing.StripeSubscription = subID
 	t.db.New().Save(&billing)
@@ -586,6 +588,79 @@ func (t *Controller) GetBillingHistory(c *gin.Context) {
 
 	// Return happy JSON
 	c.JSON(200, invoices)
+}
+
+//
+// UpdateAccountAppleInApp set a subscription to Apple In App
+//
+func (t *Controller) UpdateAccountAppleInApp(c *gin.Context) {
+	// we are only allowed to update certain things.
+	body, _ := ioutil.ReadAll(c.Request.Body)
+	plan := gjson.Get(string(body), "plan").String()
+	active := gjson.Get(string(body), "active").String()
+
+	// Make sure the UserId is correct.
+	userID := c.MustGet("userId").(int)
+
+	// Get account id
+	accountID := uint(c.MustGet("accountId").(int))
+
+	// Get account.
+	account, err := t.db.GetAccountById(accountID)
+
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Account not found."})
+		return
+	}
+
+	// We must be the account owner to proceed
+	if account.OwnerId != uint(userID) {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "You must be the account owner."})
+		return
+	}
+
+	// Get the user attached to this account.
+	user, err := t.db.GetUserById(uint(userID))
+
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Account not user."})
+		return
+	}
+
+	// Get Billing profile by account id.
+	billing, err := t.db.GetBillingByAccountId(accountID)
+
+	if err != nil {
+		services.Critical(fmt.Errorf("UpdateAccountAppleInApp: Billing account not found. AccountId: %d", accountID))
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Account not found (001)."})
+		return
+	}
+
+	// Set plan. Really does not mean much with apple. Just record what they are doing on their end.
+	if plan == "Yearly" {
+		billing.Subscription = "Yearly"
+	} else {
+		billing.Subscription = "Monthly"
+	}
+
+	// Update billing profile.
+	if active == "yes" {
+		billing.Status = "Active"
+		billing.PaymentProcessor = "Apple In-App"
+	} else {
+		billing.Status = "Trial"
+		billing.PaymentProcessor = "None"
+	}
+	t.db.New().Save(&billing)
+
+	// Send Slack hook TODO(spicer): Add more information like email.
+	go slack.Notify("#events", fmt.Sprintf("Apple In-App Upgrade. Account: %d, Email: %s", accountID, user.Email))
+
+	// Some logging
+	services.InfoMsg(fmt.Sprintf("Apple In-App Upgrade. Account: %d, Email: %s", accountID, user.Email))
+
+	// Return happy.
+	c.JSON(http.StatusNoContent, nil)
 }
 
 /* End File */

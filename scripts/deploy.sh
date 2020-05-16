@@ -24,6 +24,10 @@ cd ../scripts
 # Build centcom
 cd ../centcom
 echo "########## Building Centcom ##########"
+cd src
+export NODE_ENV=production
+npx tailwindcss build tailwind.css -o styles.css
+cd ..
 ng build --prod --base-href="/centcom/"
 cd ../scripts
 

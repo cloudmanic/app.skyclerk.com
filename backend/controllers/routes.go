@@ -37,6 +37,7 @@ func (t *Controller) DoRoutes(r *gin.Engine) {
 		apiV1.POST("/:account/account/stripe-token", t.NewStripeToken)
 		apiV1.GET("/:account/account/billing", t.GetBilling)
 		apiV1.GET("/:account/account/billing-history", t.GetBillingHistory)
+		apiV1.POST("/:account/account/apple-in-app", t.UpdateAccountAppleInApp)
 
 		// Me
 		apiV1.PUT("/:account/me", t.UpdateMe)
@@ -111,6 +112,9 @@ func (t *Controller) DoRoutes(r *gin.Engine) {
 	r.POST("/register", t.DoRegister)
 	r.POST("/reset-password", t.DoResetPassword)
 	r.POST("/forgot-password", t.DoForgotPassword)
+
+	// Webhooks
+	r.POST("/webhooks/fovea", t.DoFoveaWebhook)
 
 	// -------- Static Files ------------ //
 

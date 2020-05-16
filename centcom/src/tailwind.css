@@ -3,3 +3,20 @@
 @tailwind components;
 
 @tailwind utilities;
+
+/* Buttons */
+.btn { @apply font-bold py-2 px-4 rounded; }
+.btn-blue { @apply bg-indigo-500 text-white; }
+.btn-blue:hover { @apply bg-indigo-700; }
+
+/* Table */
+table { @apply min-w-full }
+table tr td { @apply px-2 py-4 whitespace-no-wrap text-sm leading-5 text-gray-500 }
+table tr th { @apply cursor-pointer px-2 py-3 border-b border-gray-200 bg-gray-50 text-left text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider font-black }
+table tr.sortable th { @apply cursor-pointer }
+table tr.sortable th:hover { @apply border-indigo-500 }
+
+/* Nav */
+nav .left-nav a { @apply ml-8 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium leading-5 text-gray-500 transition duration-150 ease-in-out }
+nav .left-nav a:hover { @apply text-gray-700 border-gray-300 }
+nav .left-nav a:focus { @apply border-indigo-500 }

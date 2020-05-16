@@ -12,6 +12,7 @@ export class Billing implements Serializable {
 	Id: number = 0;
 	Subscription: string = "";
 	Status: string = "en-US";
+	PaymentProcessor: string = "";
 	TrialExpire: Date = new Date();
 	CardBrand: string = "";
 	CardLast4: string = "";
@@ -27,6 +28,7 @@ export class Billing implements Serializable {
 	deserialize(json: Object): this {
 		this.Id = json["id"];
 		this.Subscription = json["subscription"];
+		this.PaymentProcessor = json["payment_processor"];
 		this.Status = json["status"];
 		this.TrialExpire = moment(json["trial_expire"]).toDate();
 		this.CardBrand = json["card_brand"];
@@ -52,8 +54,8 @@ export class Billing implements Serializable {
 			card_exp_year: obj.CardExpYear,
 			card_last_4: obj.CardLast4,
 			current_period_start: obj.CurrentPeriodStart,
-			current_period_end: obj.CurrentPeriodEnd
-
+			current_period_end: obj.CurrentPeriodEnd,
+			payment_processor: obj.PaymentProcessor
 		}
 		return rt;
 	}
