@@ -143,13 +143,13 @@ func (t *Controller) ClearAccount(c *gin.Context) {
 //
 func (t *Controller) DeleteAccount(c *gin.Context) {
 	// Make sure the UserId is correct.
-	userId := c.MustGet("userId").(int)
+	userID := c.MustGet("userId").(int)
 
 	// Get account id
-	accountId := uint(c.MustGet("accountId").(int))
+	accountID := uint(c.MustGet("accountId").(int))
 
 	// Get account.
-	account, err := t.db.GetAccountById(accountId)
+	account, err := t.db.GetAccountById(accountID)
 
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Account not found."})
@@ -157,8 +157,16 @@ func (t *Controller) DeleteAccount(c *gin.Context) {
 	}
 
 	// We must be the account owner to proceed
-	if account.OwnerId != uint(userId) {
+	if account.OwnerId != uint(userID) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "You must be the account owner."})
+		return
+	}
+
+	// Get the user attached to this account.
+	user, err := t.db.GetUserById(uint(userID))
+
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Account not user."})
 		return
 	}
 
@@ -169,12 +177,18 @@ func (t *Controller) DeleteAccount(c *gin.Context) {
 	t.db.DeleteAccount(account.Id)
 
 	// Get the accounts left for this user.
-	u, _ := t.db.GetUserById(uint(userId))
+	u, _ := t.db.GetUserById(uint(userID))
 
 	// Hack for empty accounts.
 	if u.Accounts == nil {
 		u.Accounts = []models.Account{}
 	}
+
+	// Send Slack hook.
+	go slack.Notify("#events", fmt.Sprintf("Skyclerk Account Deleted. Account: %d, Email: %s", accountID, user.Email))
+
+	// Some logging
+	services.InfoMsg(fmt.Sprintf("Skyclerk Account Deleted. Account: %d, Email: %s", accountID, user.Email))
 
 	// Return happy JSON
 	c.JSON(200, u.Accounts)
