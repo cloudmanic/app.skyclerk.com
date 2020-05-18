@@ -13,7 +13,8 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/tidwall/gjson"
-	"optionsnews.com/services"
+
+	"app.skyclerk.com/backend/services"
 )
 
 const foveaSecret = "01e29cbc-f132-442e-a4f1-bcf4f95ce49f"
