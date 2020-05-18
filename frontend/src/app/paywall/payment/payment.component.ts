@@ -20,6 +20,7 @@ declare var Stripe: any;
 
 export class PaymentComponent implements OnInit {
 	back: string = "";
+	saving: boolean = false;
 	plan: string = "Monthly";
 	today: number = Date.now();
 	errorMsg: string = "";
@@ -97,11 +98,18 @@ export class PaymentComponent implements OnInit {
 		// Clear error
 		this.errorMsg = "";
 
+		// Disable the button.
+		this.saving = true;
+
 		// Get stripe token from stripe
 		this.stripe.createToken(this.cardNumber).then((result: any) => {
 			// Is this an error?
 			if (result.error) {
-				this.errorMsg = result.error.message;
+				// Bring button back.
+				setTimeout(() => {
+					this.saving = false;
+					this.errorMsg = result.error.message;
+				}, 1000);
 				return;
 			}
 
@@ -128,6 +136,11 @@ export class PaymentComponent implements OnInit {
 
 			// Error
 			err => {
+				// Bring button back.
+				setTimeout(() => {
+					this.saving = false;
+				}, 1000);
+
 				if (err.error) {
 					this.errorMsg = err.error.error;
 				} else {

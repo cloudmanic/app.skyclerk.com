@@ -117,7 +117,8 @@
 
             <div class="form__actions">
               <p class="form__error card-error" *ngIf="errorMsg">{{ errorMsg }}</p>
-              <button class="btn btn-darkgreen btn-xlarge">CHOOSE THIS PLAN</button>
+              <button class="btn btn-darkgreen btn-xlarge" *ngIf="!saving">CHOOSE THIS PLAN</button>
+              <button class="btn btn-darkgreen btn-xlarge" disabled *ngIf="saving">Saving...</button>
             </div>
 
           </form>
