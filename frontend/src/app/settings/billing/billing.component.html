@@ -47,9 +47,25 @@
               </div>
 
 
+              <div class="tabs-body" *ngIf="(billing.Status == 'Active') && (billing.PaymentProcessor == 'Apple In-App')">
+                <div class="tab current" id="tab2">
+                  <section class="section-settings section-settings--plan">
+                    <div class="section__entry">
+                      <div class="section__head">
+                        <h6>Account Plan</h6>
+                      </div>
+
+                      <div class="section__body">
+                        <p>Your subscription is managed by Apple. Please check the settings section of your mobile app.</p>
+                      </div>
+                    </div>
+                  </section>
+                </div>
+              </div>
 
 
-              <div class="tabs-body" *ngIf="billing.Status == 'Active'">
+
+              <div class="tabs-body" *ngIf="(billing.Status == 'Active') && (billing.PaymentProcessor == 'Stripe')">
 
                 <div class="tab current" id="tab2">
                   <section class="section-settings">

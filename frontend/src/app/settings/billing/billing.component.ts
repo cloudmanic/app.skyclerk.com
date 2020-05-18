@@ -60,6 +60,8 @@ export class BillingComponent implements OnInit {
 		// Get the billing.
 		this.accountService.getBilling().subscribe(res => {
 			this.billing = res;
+
+			console.log(this.billing);
 		});
 	}
 
