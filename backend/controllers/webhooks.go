@@ -14,6 +14,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/tidwall/gjson"
 
+	"app.skyclerk.com/backend/library/slack"
 	"app.skyclerk.com/backend/services"
 )
 
@@ -45,9 +46,35 @@ func (t *Controller) DoFoveaWebhook(c *gin.Context) {
 	// Parse application string to figure out which appplication we are dealing with.
 	fmt.Println(accountString)
 
+	// Send Slack hook.
+	go slack.Notify("#events", fmt.Sprintf("Skyclerk DoFoveaWebhook Webhook: Email: %s", accountString))
+
 	// Return happy.
 	c.JSON(http.StatusNoContent, nil)
 }
+
+/*
+{
+  "type": "purchases.updated",
+  "applicationUsername": "ios@skyclerk.com",
+  "purchases": {
+    "apple:monthly_6": {
+      "productId": "apple:monthly_6",
+      "platform": "apple",
+      "sandbox": false,
+      "purchaseId": "apple:70000786633723",
+      "purchaseDate": "2020-05-19T21:05:40.000Z",
+      "lastRenewalDate": "2020-05-19T21:05:37.000Z",
+      "expirationDate": "2020-06-19T21:05:37.000Z",
+      "isTrialPeriod": false,
+      "isIntroPeriod": false,
+      "renewalIntent": "Renew",
+      "isExpired": false
+    }
+  },
+  "password": "01e29cbc-f132-442e-a4f1-bcf4f95ce49f"
+}
+*/
 
 // TODO(spicer): unit tests for DoFoveaWebhook
 // {"type":"purchases.updated","applicationUsername":"5127 - spicer@cloudmanic.com","purchases":{"apple:monthly_6":{"productId":"apple:monthly_6","platform":"apple","sandbox":true,"purchaseId":"apple:1000000665621214","purchaseDate":"2020-05-15T20:39:10.000Z","lastRenewalDate":"2020-05-16T02:30:56.000Z","expirationDate":"2020-05-16T02:35:56.000Z","isTrialPeriod":false,"isIntroPeriod":false,"isBillingRetryPeriod":false,"renewalIntent":"Renew","lastNotification":"DID_CHANGE_RENEWAL_PREF","isExpired":true},"apple:yearly_60":{"productId":"apple:yearly_60","platform":"apple","sandbox":true,"purchaseId":"apple:1000000665621214","purchaseDate":"2020-05-15T20:39:10.000Z","lastRenewalDate":"2020-05-16T02:39:08.000Z","expirationDate":"2020-05-16T03:39:08.000Z","isTrialPeriod":false,"isIntroPeriod":false,"renewalIntent":"Renew","lastNotification":"DID_CHANGE_RENEWAL_STATUS","renewalIntentChangeDate":"2020-05-16T02:39:08.000Z","isExpired":false}},"password":"01e29cbc-f132-442e-a4f1-bcf4f95ce49f"}
