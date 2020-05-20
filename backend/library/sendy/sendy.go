@@ -74,6 +74,7 @@ func Subscribe(listId string, email string, first string, last string, ip string
 		"name":      {first + " " + last},
 		"FirstName": {first},
 		"LastName":  {last},
+		"api_key":   {os.Getenv("SENDY_API_KEY")},
 	}
 
 	// Do we have an ip address
@@ -120,8 +121,9 @@ func Unsubscribe(listId string, email string) {
 
 	// Build form request
 	form := url.Values{
-		"list":  {listIdString},
-		"email": {email},
+		"list":    {listIdString},
+		"email":   {email},
+		"api_key": {os.Getenv("SENDY_API_KEY")},
 	}
 
 	// Log
