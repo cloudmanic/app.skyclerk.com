@@ -24,10 +24,16 @@ const foveaSecret = "01e29cbc-f132-442e-a4f1-bcf4f95ce49f"
 // DoPostmarkWebhook will process a webhook from postmarkapp.com
 //
 func (t *Controller) DoPostmarkWebhook(c *gin.Context) {
-
 	// we are only allowed to update certain things.
 	body, _ := ioutil.ReadAll(c.Request.Body)
-	to := gjson.Get(string(body), "To").String()
+	to := " "
+
+	// Get to addresses
+	result := gjson.Get(string(body), "ToFull.#.Email")
+	for _, row := range result.Array() {
+		println(row.String())
+		to = to + row.String()
+	}
 
 	// TODO(spicer): Use the postmark API to verify this is a real email posted from them. From message ID
 
