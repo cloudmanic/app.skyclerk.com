@@ -8,14 +8,21 @@
 package email
 
 import (
+	"bufio"
+	"encoding/base64"
 	"errors"
+	"io/ioutil"
 	"os"
+	"path"
 	"strconv"
 
-	"app.skyclerk.com/backend/library/html2text"
-	"app.skyclerk.com/backend/services"
+	"github.com/keighl/postmark"
 	"gopkg.in/gomail.v2"
 	"gopkg.in/mailgun/mailgun-go.v1"
+
+	"app.skyclerk.com/backend/library/files"
+	"app.skyclerk.com/backend/library/html2text"
+	"app.skyclerk.com/backend/services"
 )
 
 var (
@@ -48,11 +55,77 @@ func Send(to string, subject string, html string, attachments []string) error {
 		return MailgunSend(to, subject, html, text, attachments)
 	}
 
+	// Send via postmark
+	if os.Getenv("MAIL_DRIVER") == "postmark" {
+		return PostmarkSend(to, subject, html, text, attachments)
+	}
+
 	// We should never get here if we are configured correctly.
 	err = errors.New("No mail driver found.")
 	services.Info(errors.New(err.Error() + "library/email/Send/Send() - No mail driver found."))
 	return err
 
+}
+
+//
+// PostmarkSend will send via postmark.
+//
+func PostmarkSend(to string, subject string, html string, text string, attachments []string) error {
+	// Setup postmark
+	client := postmark.NewClient(os.Getenv("POSTMARK_SERVER_KEY"), os.Getenv("POSTMARK_ACCOUNT_KEY"))
+
+	email := postmark.Email{
+		From:       fromEmail,
+		To:         to,
+		Bcc:        bccEmail,
+		Subject:    subject,
+		HtmlBody:   html,
+		TextBody:   text,
+		TrackOpens: true,
+	}
+
+	// Include any attachements.
+	for _, row := range attachments {
+		// Open file on disk.
+		f, _ := os.Open(row)
+
+		// Read entire JPG into byte slice.
+		reader := bufio.NewReader(f)
+		content, _ := ioutil.ReadAll(reader)
+
+		// Encode as base64.
+		encoded := base64.StdEncoding.EncodeToString(content)
+
+		// Get the file type
+		contentType, _, err := files.FileContentTypeWithError(row)
+
+		if err != nil {
+			services.Info(errors.New(err.Error() + "library/email/Send/PostmarkSend() - Unable to get contentType."))
+			return err
+		}
+
+		// Build atachement object.
+		a := postmark.Attachment{
+			Name:        path.Base(row),
+			Content:     encoded,
+			ContentType: contentType,
+		}
+
+		email.Attachments = append(email.Attachments, a)
+
+		f.Close()
+	}
+
+	// Send the email.
+	_, err := client.SendEmail(email)
+
+	if err != nil {
+		services.Info(errors.New(err.Error() + "library/email/Send/PostmarkSend() - Unable to send email."))
+		return err
+	}
+
+	// Everything went well!
+	return nil
 }
 
 //

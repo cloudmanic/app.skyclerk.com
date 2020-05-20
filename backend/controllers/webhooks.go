@@ -21,6 +21,27 @@ import (
 const foveaSecret = "01e29cbc-f132-442e-a4f1-bcf4f95ce49f"
 
 //
+// DoPostmarkWebhook will process a webhook from postmarkapp.com
+//
+func (t *Controller) DoPostmarkWebhook(c *gin.Context) {
+
+	// we are only allowed to update certain things.
+	body, _ := ioutil.ReadAll(c.Request.Body)
+	to := gjson.Get(string(body), "To").String()
+
+	// TODO(spicer): Use the postmark API to verify this is a real email posted from them. From message ID
+
+	// Webhook received from fovea
+	services.InfoMsg(string(body))
+
+	// Send Slack hook.
+	go slack.Notify("#events", fmt.Sprintf("Skyclerk DoPostmarkWebhook Webhook: To Email: %s", to))
+
+	// Return happy.
+	c.JSON(http.StatusNoContent, nil)
+}
+
+//
 // DoFoveaWebhook  will process webhooks from fovea.cc
 //
 func (t *Controller) DoFoveaWebhook(c *gin.Context) {
@@ -42,9 +63,6 @@ func (t *Controller) DoFoveaWebhook(c *gin.Context) {
 
 	// Webhook received from fovea
 	services.InfoMsg(string(body))
-
-	// Parse application string to figure out which appplication we are dealing with.
-	fmt.Println(accountString)
 
 	// Send Slack hook.
 	go slack.Notify("#events", fmt.Sprintf("Skyclerk DoFoveaWebhook Webhook: Email: %s", accountString))
@@ -80,5 +98,71 @@ func (t *Controller) DoFoveaWebhook(c *gin.Context) {
 // {"type":"purchases.updated","applicationUsername":"5127 - spicer@cloudmanic.com","purchases":{"apple:monthly_6":{"productId":"apple:monthly_6","platform":"apple","sandbox":true,"purchaseId":"apple:1000000665621214","purchaseDate":"2020-05-15T20:39:10.000Z","lastRenewalDate":"2020-05-16T02:30:56.000Z","expirationDate":"2020-05-16T02:35:56.000Z","isTrialPeriod":false,"isIntroPeriod":false,"isBillingRetryPeriod":false,"renewalIntent":"Renew","lastNotification":"DID_CHANGE_RENEWAL_PREF","isExpired":true},"apple:yearly_60":{"productId":"apple:yearly_60","platform":"apple","sandbox":true,"purchaseId":"apple:1000000665621214","purchaseDate":"2020-05-15T20:39:10.000Z","lastRenewalDate":"2020-05-16T02:39:08.000Z","expirationDate":"2020-05-16T03:39:08.000Z","isTrialPeriod":false,"isIntroPeriod":false,"renewalIntent":"Renew","lastNotification":"DID_CHANGE_RENEWAL_STATUS","renewalIntentChangeDate":"2020-05-16T02:39:08.000Z","isExpired":false}},"password":"01e29cbc-f132-442e-a4f1-bcf4f95ce49f"}
 
 // {"type":"purchases.updated","applicationUsername":"5127:::spicer@cloudmanic.com","purchases":{"apple:monthly_6":{"productId":"apple:monthly_6","platform":"apple","sandbox":true,"purchaseId":"apple:1000000665704156","purchaseDate":"2020-05-16T03:24:13.000Z","lastRenewalDate":"2020-05-16T03:52:15.000Z","expirationDate":"2020-05-16T03:57:15.000Z","cancelationReason":"System.Replaced","isTrialPeriod":false,"isIntroPeriod":false,"renewalIntent":"Renew","lastNotification":"DID_RECOVER","isExpired":false},"apple:yearly_60":{"productId":"apple:yearly_60","platform":"apple","sandbox":true,"purchaseId":"apple:1000000665704156","purchaseDate":"2020-05-16T03:24:13.000Z","lastRenewalDate":"2020-05-16T03:56:37.000Z","expirationDate":"2020-05-16T04:56:37.000Z","isTrialPeriod":false,"isIntroPeriod":false,"renewalIntent":"Renew","isExpired":false}},"password":"01e29cbc-f132-442e-a4f1-bcf4f95ce49f"}
+
+/*
+{
+    "FromName": "Postmarkapp Support",
+    "MessageStream": "inbound",
+    "From": "support@postmarkapp.com",
+    "FromFull": {
+        "Email": "support@postmarkapp.com",
+        "Name": "Postmarkapp Support",
+        "MailboxHash": ""
+    },
+    "To": "\"Firstname Lastname\" <mailbox+SampleHash@inbound.postmarkapp.com>",
+    "ToFull": [
+        {
+            "Email": "mailbox+SampleHash@inbound.postmarkapp.com",
+            "Name": "Firstname Lastname",
+            "MailboxHash": "SampleHash"
+        }
+    ],
+    "Cc": "\"First Cc\" <firstcc@postmarkapp.com>, secondCc@postmarkapp.com",
+    "CcFull": [
+        {
+            "Email": "firstcc@postmarkapp.com",
+            "Name": "First Cc",
+            "MailboxHash": ""
+        },
+        {
+            "Email": "secondCc@postmarkapp.com",
+            "Name": "",
+            "MailboxHash": ""
+        }
+    ],
+    "Bcc": "\"First Bcc\" <firstbcc@postmarkapp.com>",
+    "BccFull": [
+        {
+            "Email": "firstbcc@postmarkapp.com",
+            "Name": "First Bcc",
+            "MailboxHash": ""
+        }
+    ],
+    "OriginalRecipient": "mailbox+SampleHash@inbound.postmarkapp.com",
+    "Subject": "Test subject",
+    "MessageID": "00000000-0000-0000-0000-000000000000",
+    "ReplyTo": "replyto@example.com",
+    "MailboxHash": "SampleHash",
+    "Date": "Wed, 20 May 2020 18:33:57 -0400",
+    "TextBody": "This is a test text body.",
+    "HtmlBody": "<html><body><p>This is a test html body.</p></body></html>",
+    "StrippedTextReply": "This is the reply text",
+    "Tag": "TestTag",
+    "Headers": [
+        {
+            "Name": "X-Header-Test",
+            "Value": ""
+        }
+    ],
+    "Attachments": [
+        {
+            "Name": "test.txt",
+            "Content": "VGhpcyBpcyBhdHRhY2htZW50IGNvbnRlbnRzLCBiYXNlLTY0IGVuY29kZWQu",
+            "ContentType": "text/plain",
+            "ContentLength": 45
+        }
+    ]
+}
+*/
 
 /* End File */

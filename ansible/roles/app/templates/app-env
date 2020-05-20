@@ -38,7 +38,7 @@ STRIPE_SECRET_KEY={{ stripe_secret_key }}
 # STRIPE_SIGNING_SECRET=
 
 # Email
-MAIL_DRIVER=mailgun
+MAIL_DRIVER=postmark
 MAIL_HOST=127.0.0.1
 MAIL_PORT=1025
 MAIL_USERNAME=
@@ -47,6 +47,10 @@ MAIL_PASSWORD=
 # Mailgun
 MAILGUN_DOMAIN={{ mailgun_domain }}
 MAILGUN_API_KEY={{ mailgun_api_key }}
+
+# Postmark
+POSTMARK_SERVER_KEY={{ postmark_server_key }}
+POSTMARK_ACCOUNT_KEY={{ postmark_account_key }}
 
 AWS_CLOUDFRONT_KEY_ID={{ aws_cloudfront_key_id }}
 AWS_CLOUDFRONT_PRIVATE_SIGN_KEY={{ aws_cloudfront_private_sign_key }}

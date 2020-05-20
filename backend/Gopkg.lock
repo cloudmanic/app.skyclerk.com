@@ -224,6 +224,14 @@
   version = "v1.1.7"
 
 [[projects]]
+  digest = "1:4e347016772cb73d57172787bad9212c835373168ec678162285042ec67245a4"
+  name = "github.com/keighl/postmark"
+  packages = ["."]
+  pruneopts = "UT"
+  revision = "e30e577cc7fb936f44aaed4f9bb6b6ddf2190118"
+  version = "1.2.0"
+
+[[projects]]
   digest = "1:31e761d97c76151dde79e9d28964a812c46efc5baee4085b86f68f0c654450de"
   name = "github.com/konsorten/go-windows-terminal-sequences"
   packages = ["."]
@@ -568,6 +576,7 @@
     "github.com/jinzhu/gorm",
     "github.com/jpfuentes2/go-env",
     "github.com/jpfuentes2/go-env/autoload",
+    "github.com/keighl/postmark",
     "github.com/mgutz/ansi",
     "github.com/minio/minio-go",
     "github.com/nbio/st",
