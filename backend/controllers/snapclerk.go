@@ -245,9 +245,9 @@ func sendSnapClerkReceipt(user models.User, filePath string) {
 
 	// Send welcome email to user already in the system.
 	if flag.Lookup("test.v") != nil {
-		email.Send(user.Email, subject, emails.GetSnapClerkReceiptHTML(user), attachments)
+		email.Send(user.Email, "", subject, emails.GetSnapClerkReceiptHTML(user), attachments)
 	} else {
-		go email.Send(user.Email, subject, emails.GetSnapClerkReceiptHTML(user), attachments)
+		go email.Send(user.Email, "", subject, emails.GetSnapClerkReceiptHTML(user), attachments)
 	}
 }
 

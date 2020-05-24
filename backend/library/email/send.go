@@ -36,7 +36,7 @@ var (
 // If we have a SMTP in our configs we use that if not we use
 // Mailgun's library for sending mail. Attachments are an array of local file paths.
 //
-func Send(to string, subject string, html string, attachments []string) error {
+func Send(to string, replyTo string, subject string, html string, attachments []string) error {
 	// Setup text email
 	text, err := html2text.FromString(html, html2text.Options{})
 
@@ -44,10 +44,15 @@ func Send(to string, subject string, html string, attachments []string) error {
 		return err
 	}
 
+	// Override reply to if empty
+	if replyTo == "" {
+		replyTo = fromEmail
+	}
+
 	// Are we sending as SMTP or via Mailgun? Typically we
 	// send as SMTP for local development so we can use Mailhog
 	if os.Getenv("MAIL_DRIVER") == "smtp" {
-		return SmtpSend(to, subject, html, text, attachments)
+		return SMTPSend(to, replyTo, subject, html, text, attachments)
 	}
 
 	// Send via mailgun
@@ -158,13 +163,14 @@ func MailgunSend(to string, subject string, html string, text string, attachment
 }
 
 //
-// SmtpSend - Send as SMTP.
+// SMTPSend - Send as SMTP.
 //
-func SmtpSend(to string, subject string, html string, text string, attachments []string) error {
+func SMTPSend(to string, replyTo string, subject string, html string, text string, attachments []string) error {
 	// Setup the email to send.
 	m := gomail.NewMessage()
 	m.SetHeader("From", fromEmail)
 	m.SetHeader("To", to)
+	m.SetHeader("ReplyTo", replyTo)
 	m.SetHeader("Bcc", bccEmail)
 	m.SetHeader("Subject", subject)
 	m.SetBody("text/html", html)

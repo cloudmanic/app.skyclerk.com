@@ -51,7 +51,6 @@ func (t *Controller) DoPostmarkWebhook(c *gin.Context) {
 // DoFoveaWebhook  will process webhooks from fovea.cc
 //
 func (t *Controller) DoFoveaWebhook(c *gin.Context) {
-
 	// we are only allowed to update certain things.
 	body, _ := ioutil.ReadAll(c.Request.Body)
 	password := gjson.Get(string(body), "password").String()

@@ -117,6 +117,9 @@ func (t *Controller) DoRoutes(r *gin.Engine) {
 	r.POST("/webhooks/fovea", t.DoFoveaWebhook)
 	r.POST("/webhooks/postmark", t.DoPostmarkWebhook)
 
+	// Support
+	r.POST("/support/contact-us", t.ContactUs)
+
 	// -------- Static Files ------------ //
 
 	r.Use(static.Serve("/", static.LocalFile("/frontend", true)))

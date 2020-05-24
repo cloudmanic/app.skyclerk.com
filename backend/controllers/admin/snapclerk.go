@@ -212,9 +212,9 @@ func sendSnapClerkProcessedEmail(user models.User, ledger models.Ledger) {
 
 	// Send email that we Processed the receipt.
 	if flag.Lookup("test.v") != nil {
-		email.Send(user.Email, subject, emails.GetSnapClerkProcessedHTML(user, ledger), attachments)
+		email.Send(user.Email, "", subject, emails.GetSnapClerkProcessedHTML(user, ledger), attachments)
 	} else {
-		go email.Send(user.Email, subject, emails.GetSnapClerkProcessedHTML(user, ledger), attachments)
+		go email.Send(user.Email, "", subject, emails.GetSnapClerkProcessedHTML(user, ledger), attachments)
 	}
 }
 
@@ -262,9 +262,9 @@ func sendSnapClerkRejectedEmail(user models.User, filePath string) {
 
 	// Send email that we Processed the receipt.
 	if flag.Lookup("test.v") != nil {
-		email.Send(user.Email, subject, emails.GetSnapClerkRejectedHTML(user), attachments)
+		email.Send(user.Email, "", subject, emails.GetSnapClerkRejectedHTML(user), attachments)
 	} else {
-		go email.Send(user.Email, subject, emails.GetSnapClerkRejectedHTML(user), attachments)
+		go email.Send(user.Email, "", subject, emails.GetSnapClerkRejectedHTML(user), attachments)
 	}
 }
 
