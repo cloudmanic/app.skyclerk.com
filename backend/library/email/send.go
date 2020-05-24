@@ -57,12 +57,12 @@ func Send(to string, replyTo string, subject string, html string, attachments []
 
 	// Send via mailgun
 	if os.Getenv("MAIL_DRIVER") == "mailgun" {
-		return MailgunSend(to, subject, html, text, attachments)
+		return MailgunSend(to, replyTo, subject, html, text, attachments)
 	}
 
 	// Send via postmark
 	if os.Getenv("MAIL_DRIVER") == "postmark" {
-		return PostmarkSend(to, subject, html, text, attachments)
+		return PostmarkSend(to, replyTo, subject, html, text, attachments)
 	}
 
 	// We should never get here if we are configured correctly.
@@ -75,13 +75,14 @@ func Send(to string, replyTo string, subject string, html string, attachments []
 //
 // PostmarkSend will send via postmark.
 //
-func PostmarkSend(to string, subject string, html string, text string, attachments []string) error {
+func PostmarkSend(to string, replyTo string, subject string, html string, text string, attachments []string) error {
 	// Setup postmark
 	client := postmark.NewClient(os.Getenv("POSTMARK_SERVER_KEY"), os.Getenv("POSTMARK_ACCOUNT_KEY"))
 
 	email := postmark.Email{
 		From:       fromEmail,
 		To:         to,
+		ReplyTo:    replyTo,
 		Bcc:        bccEmail,
 		Subject:    subject,
 		HtmlBody:   html,
@@ -136,7 +137,7 @@ func PostmarkSend(to string, subject string, html string, text string, attachmen
 //
 // MailgunSend - Send via Mailgun.
 //
-func MailgunSend(to string, subject string, html string, text string, attachments []string) error {
+func MailgunSend(to string, replyTo string, subject string, html string, text string, attachments []string) error {
 	// Setup mailgun
 	mg := mailgun.NewMailgun(os.Getenv("MAILGUN_DOMAIN"), os.Getenv("MAILGUN_API_KEY"), "")
 
@@ -144,6 +145,7 @@ func MailgunSend(to string, subject string, html string, text string, attachment
 	message := mailgun.NewMessage(fromName+"<"+fromEmail+">", subject, text, to)
 	message.AddBCC(bccEmail)
 	message.SetHtml(html)
+	message.SetReplyTo(replyTo)
 
 	// Include any attachements.
 	for _, row := range attachments {
