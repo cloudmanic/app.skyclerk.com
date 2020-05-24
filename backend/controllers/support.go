@@ -40,7 +40,9 @@ func (t *Controller) ContactUs(c *gin.Context) {
 	html := fmt.Sprintf("<p><b>Name: </b>%s</p> <p><b>Email: </b>%s</p> <p><b>Phone: </b>%s</p> <p><b>Message: </b>%s</p>", fullName, emailAddress, phone, message)
 
 	// Send the email to Support.
+	email.SetNoBccEmail()
 	email.Send(supportEmail, emailAddress, subject, html, []string{})
+	email.SetBccEmail()
 
 	// Send Slack hook.
 	go slack.Notify("#events", fmt.Sprintf("Skyclerk Website Support Request: Email: %s", emailAddress))

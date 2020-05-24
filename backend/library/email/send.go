@@ -29,7 +29,26 @@ var (
 	fromName  = "Skyclerk"
 	fromEmail = "help@skyclerk.com"
 	bccEmail  = "bcc@skyclerk.com"
+	holdEmail = ""
 )
+
+//
+// SetNoBccEmail - Don't send with a BCC email.
+// This is a little hacky. But there are only a few
+// times when we want to do this. Mainly when emailing support.
+//
+func SetNoBccEmail() {
+	holdEmail = bccEmail
+	bccEmail = ""
+}
+
+//
+// SetBccEmail - Send with a BCC email.
+//
+func SetBccEmail() {
+	bccEmail = holdEmail
+	holdEmail = ""
+}
 
 //
 // Send - Pass in everything we need to send an email and we send it.
@@ -83,11 +102,15 @@ func PostmarkSend(to string, replyTo string, subject string, html string, text s
 		From:       fromEmail,
 		To:         to,
 		ReplyTo:    replyTo,
-		Bcc:        bccEmail,
 		Subject:    subject,
 		HtmlBody:   html,
 		TextBody:   text,
 		TrackOpens: true,
+	}
+
+	// Add in BCC email
+	if len(bccEmail) > 0 {
+		email.Bcc = bccEmail
 	}
 
 	// Include any attachements.
@@ -143,9 +166,13 @@ func MailgunSend(to string, replyTo string, subject string, html string, text st
 
 	// Create message
 	message := mailgun.NewMessage(fromName+"<"+fromEmail+">", subject, text, to)
-	message.AddBCC(bccEmail)
 	message.SetHtml(html)
 	message.SetReplyTo(replyTo)
+
+	// Add in BCC email
+	if len(bccEmail) > 0 {
+		message.AddBCC(bccEmail)
+	}
 
 	// Include any attachements.
 	for _, row := range attachments {
@@ -173,10 +200,14 @@ func SMTPSend(to string, replyTo string, subject string, html string, text strin
 	m.SetHeader("From", fromEmail)
 	m.SetHeader("To", to)
 	m.SetHeader("ReplyTo", replyTo)
-	m.SetHeader("Bcc", bccEmail)
 	m.SetHeader("Subject", subject)
 	m.SetBody("text/html", html)
 	m.AddAlternative("text/plain", text)
+
+	// Add in BCC email
+	if len(bccEmail) > 0 {
+		m.SetHeader("Bcc", bccEmail)
+	}
 
 	// Include any attachements.
 	for _, row := range attachments {
