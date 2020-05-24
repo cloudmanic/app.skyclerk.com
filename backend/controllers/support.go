@@ -15,6 +15,7 @@ import (
 	"github.com/tidwall/gjson"
 
 	"app.skyclerk.com/backend/library/email"
+	"app.skyclerk.com/backend/library/slack"
 	"app.skyclerk.com/backend/services"
 )
 
@@ -42,7 +43,7 @@ func (t *Controller) ContactUs(c *gin.Context) {
 	email.Send(supportEmail, emailAddress, subject, html, []string{})
 
 	// Send Slack hook.
-	//go slack.Notify("#events", fmt.Sprintf("Skyclerk DoFoveaWebhook Webhook: Email: %s", accountString))
+	go slack.Notify("#events", fmt.Sprintf("Skyclerk Website Support Request: Email: %s", emailAddress))
 
 	// Return happy.
 	c.JSON(http.StatusNoContent, nil)
