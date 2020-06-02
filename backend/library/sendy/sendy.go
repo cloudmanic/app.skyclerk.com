@@ -154,11 +154,6 @@ func GetListId(listId string) string {
 	// Get the proper list id from our configs
 	switch listId {
 
-	case "trial":
-		if len(os.Getenv("SENDY_TRIAL_LIST")) > 0 {
-			listIdString = os.Getenv("SENDY_TRIAL_LIST")
-		}
-
 	case "expired":
 		if len(os.Getenv("SENDY_EXPIRED_LIST")) > 0 {
 			listIdString = os.Getenv("SENDY_EXPIRED_LIST")

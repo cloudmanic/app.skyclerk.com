@@ -62,7 +62,6 @@ SLACK_HOOK={{ slack_hook }}
 
 # Sendy
 SENDY_API_KEY={{ sendy_api_key }}
-SENDY_TRIAL_LIST={{ sendy_trial_list }}
 SENDY_EXPIRED_LIST={{ sendy_expired_list }}
 SENDY_SUBSCRIBE_LIST={{ sendy_subscribe_list }}
 
