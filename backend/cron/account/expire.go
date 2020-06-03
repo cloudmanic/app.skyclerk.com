@@ -81,7 +81,7 @@ func ExpireTrails(db models.Datastore) {
 
 		if len(owner.Email) > 0 {
 			go slack.Notify("#events", "Skyclerk User Free Trial Expired : "+owner.Email)
-			go sendy.Subscribe("expired", owner.Email, owner.FirstName, owner.LastName, "")
+			go sendy.Subscribe("expired", owner.Email, owner.FirstName, owner.LastName, "", "No")
 		}
 	}
 

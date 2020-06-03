@@ -310,7 +310,7 @@ func (t *DB) ResetUserPassword(id uint, password string) error {
 //
 func (t *DB) doPostUserRegisterStuff(user User, ipAddress string) {
 	// Subscribe new user to mailing lists.
-	go sendy.Subscribe("subscribers", user.Email, user.FirstName, user.LastName, ipAddress)
+	go sendy.Subscribe("subscribers", user.Email, user.FirstName, user.LastName, ipAddress, "No")
 
 	// Tell slack about this.
 	go slack.Notify("#events", "New Skyclerk User Account : "+user.Email)

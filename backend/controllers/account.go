@@ -15,11 +15,14 @@ import (
 	"strings"
 	"time"
 
+	"app.skyclerk.com/backend/library/realip"
 	"app.skyclerk.com/backend/library/response"
+	"app.skyclerk.com/backend/library/sendy"
 	"app.skyclerk.com/backend/library/slack"
 	"app.skyclerk.com/backend/library/stripe"
 	"app.skyclerk.com/backend/models"
 	"app.skyclerk.com/backend/services"
+
 	"github.com/gin-gonic/gin"
 	"github.com/tidwall/gjson"
 )
@@ -29,10 +32,10 @@ import (
 //
 func (t *Controller) GetAccount(c *gin.Context) {
 	// Get account id
-	accountId := uint(c.MustGet("accountId").(int))
+	accountID := uint(c.MustGet("accountId").(int))
 
 	// Get account.
-	account, err := t.db.GetAccountById(accountId)
+	account, err := t.db.GetAccountById(accountID)
 
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Account not found."})
@@ -378,6 +381,12 @@ func (t *Controller) NewStripeToken(c *gin.Context) {
 	billing.StripeSubscription = subID
 	t.db.New().Save(&billing)
 
+	// Send Slack hook
+	go slack.Notify("#events", fmt.Sprintf("Skyclerk Upgraded: Account: %d, Email: %s", accountID, user.Email))
+
+	// Mark this user as paid in sendy.
+	go sendy.Subscribe("subscribers", user.Email, user.FirstName, user.LastName, realip.RealIP(c.Request), "Yes")
+
 	// Return happy.
 	c.JSON(http.StatusNoContent, nil)
 }
@@ -392,6 +401,14 @@ func (t *Controller) ChangeSubscription(c *gin.Context) {
 
 	// Make sure the UserId is correct.
 	userID := c.MustGet("userId").(int)
+
+	// Get the user attached to this account.
+	user, err := t.db.GetUserById(uint(userID))
+
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Account not user."})
+		return
+	}
 
 	// Get account id
 	accountID := uint(c.MustGet("accountId").(int))
@@ -447,6 +464,9 @@ func (t *Controller) ChangeSubscription(c *gin.Context) {
 	billing.Status = "Active"
 	billing.StripeSubscription = subID
 	t.db.New().Save(&billing)
+
+	// Send Slack hook
+	go slack.Notify("#events", fmt.Sprintf("Skyclerk Plan Change: Account: %d, Email: %s, Plan: %s", accountID, user.Email, billing.Subscription))
 
 	// Return happy.
 	c.JSON(http.StatusNoContent, nil)
@@ -667,8 +687,11 @@ func (t *Controller) UpdateAccountAppleInApp(c *gin.Context) {
 	}
 	t.db.New().Save(&billing)
 
-	// Send Slack hook TODO(spicer): Add more information like email.
+	// Send Slack hook
 	go slack.Notify("#events", fmt.Sprintf("Apple In-App Upgrade. Account: %d, Email: %s", accountID, user.Email))
+
+	// Mark this user as paid in sendy.
+	go sendy.Subscribe("subscribers", user.Email, user.FirstName, user.LastName, realip.RealIP(c.Request), "Yes")
 
 	// Some logging
 	services.InfoMsg(fmt.Sprintf("Apple In-App Upgrade. Account: %d, Email: %s", accountID, user.Email))

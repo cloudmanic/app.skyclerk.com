@@ -63,7 +63,7 @@ func IsUnSubscribed(listId string, email string) (bool, error) {
 //
 // Subscribe to a sendy newsletter list
 //
-func Subscribe(listId string, email string, first string, last string, ip string) {
+func Subscribe(listId string, email string, first string, last string, ip string, paid string) {
 
 	listIdString := GetListId(listId)
 
@@ -75,6 +75,7 @@ func Subscribe(listId string, email string, first string, last string, ip string
 		"FirstName": {first},
 		"LastName":  {last},
 		"api_key":   {os.Getenv("SENDY_API_KEY")},
+		"Paid":      {paid},
 	}
 
 	// Do we have an ip address
