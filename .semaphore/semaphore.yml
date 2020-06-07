@@ -8,8 +8,8 @@ agent:
 blocks:
   - name: Build app
     task:
-    secrets:
-        - name: Github Access Token    
+      secrets:
+        - name: Github Access Token
       env_vars:
         - name: APP_ENV
           value: local
