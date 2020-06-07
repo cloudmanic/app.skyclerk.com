@@ -8,8 +8,8 @@ agent:
 blocks:
   - name: Build app
     task:
-      secrets:
-        - name: Github Access Token
+      # secrets:
+      #   - name: Github Access Token
       env_vars:
         - name: APP_ENV
           value: local
@@ -55,14 +55,13 @@ blocks:
       jobs:
       - name: Get app code, get packages, test and build
         commands:
-          - env
           - export "GOPATH=$(go env GOPATH)"
           - export "GOBIN=$(go env GOPATH)/bin"
           - export "SEMAPHORE_GIT_DIR=$(go env GOPATH)/src/${SEMAPHORE_PROJECT_NAME}"
           - export "PATH=$GOBIN:${PATH}"
           - mkdir -vp "${SEMAPHORE_GIT_DIR}" "$(go env GOPATH)/bin"
           - checkout
-          - sem-version go 1.11
+          - sem-version go 1.14
           - curl https://raw.githubusercontent.com/golang/dep/master/install.sh | sh
           - cd $SEMAPHORE_GIT_DIR/backend
           - cd docker
@@ -71,3 +70,8 @@ blocks:
           - dep ensure
           - go test ./...
           - go build -ldflags="-s -w" -o builds/skyclerk
+          # - cd ../frontend
+          # - sem-version node 14.4
+          # - npm install -g @angular/cli
+          # - npm install
+          # - echo $GITHUB_ACCESS_TOKEN | docker login docker.pkg.github.com -u cloudmanic --password-stdin
