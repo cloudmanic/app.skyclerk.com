@@ -141,8 +141,6 @@ func (t *Controller) StripeAuthCallback(c *gin.Context) {
 	ca.AccountID = account.Id
 	ca.Connection = "Stripe"
 	ca.StripeUserID = token.StripeUserID
-	ca.StripeAccessToken = token.AccessToken
-	ca.StripeRefreshToken = token.RefreshToken
 	ca.StripePublishableKey = token.StripePublishableKey
 	ca.StripeScope = fmt.Sprintf("%s", token.Scope)
 

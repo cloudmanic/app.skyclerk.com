@@ -55,6 +55,7 @@ type Contact struct {
 	CardType      string    `gorm:"column:ContactsCardType" sql:"not null" json:"_"`
 	CardExpire    string    `gorm:"column:ContactsCardExpire" sql:"not null" json:"_"`
 	Country       string    `gorm:"column:ContactsCountry" sql:"not null" json:"country"`
+	StripeCustID  string    `sql:"not null" json:"-"`
 }
 
 // generateAvatarsWorkerJob struct

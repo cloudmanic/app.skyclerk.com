@@ -10,6 +10,7 @@ package stripe
 import (
 	"testing"
 
+	"app.skyclerk.com/backend/library/test"
 	"app.skyclerk.com/backend/models"
 )
 
@@ -17,20 +18,32 @@ import (
 // TestSync01 will sync stripe
 //
 func TestSync01(t *testing.T) {
+	// Start the db connection.
+	db, dbName, _ := models.NewTestDB("testing_db")
+	defer models.TestingTearDown(db, dbName)
+
+	// Setup test data
+	user := test.GetRandomUser(33)
+	db.Save(&user)
+
+	account := test.GetRandomAccount(33)
+	account.OwnerId = user.Id
+	db.Save(&account)
+	db.Save(&models.AcctToUsers{AccountId: account.Id, UserId: user.Id})
+
 	// Connected account model.
 	ac := models.ConnectedAccounts{
 		AccountID:            33,
 		Connection:           "Stripe",
-		StripeUserID:         "Ris6D3eYxtXbIkRz5K7aJBLiGkTOvuuD",
-		StripeAccessToken:    "sk_test_1Ris6D3eYxtXbIkRz5K7aJBLiGkTOvuuDDw9UFikFsw47q8zNruW0fCDpZfuqwdriHNnKiJFFKEM6yNEDeqKzKNgK007Gn0O8HV",
-		StripeRefreshToken:   "rt_HQUXQqXe9KvzfV60vfFnNqVnGNSwBMtpXGUr4N0YrCc2Feqq",
-		StripeScope:          "",
-		StripeLastItem:       1487731749,
+		StripeUserID:         "Ris6D3eYxtXbIkRz5K7aJBLiGkTOvuuD", // Cloudmanic Labs stripe test
+		StripeScope:          "read_only",
+		StripeLastItem:       1487731749, // Sample last item.
 		StripePublishableKey: "pk_test_1Ris6D3eYxtXbIkRz5K7aJBLiGkTOvuuDzkgPVNu7mF1aON92g9n6xREVSPcF134HGoKuuh9sCwgt8Ai1D6ApFaR100JiHDosXn",
 	}
+	db.New().Save(&ac)
 
-	Sync(ac)
-
+	// Do sync
+	Sync(db, account, ac)
 }
 
 /* End File */

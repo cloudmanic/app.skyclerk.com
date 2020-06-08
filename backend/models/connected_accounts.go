@@ -20,8 +20,6 @@ type ConnectedAccounts struct {
 	AccountID            uint      `sql:"not null" json:"account_id"`
 	Connection           string    `sql:"not null;type:ENUM('Stripe', 'Harvest');default:'Stripe'" json:"connection"`
 	StripeUserID         string    `sql:"not null" json:"-"`
-	StripeAccessToken    string    `sql:"not null" json:"-"`
-	StripeRefreshToken   string    `sql:"not null" json:"-"` // the access token never expires, so we don't really need this.
 	StripePublishableKey string    `sql:"not null" json:"stripe_publishable_key"`
 	StripeScope          string    `sql:"not null" json:"stripe_scope"`
 	StripeLastItem       int64     `sql:"not null" json:"stripe_last_item"`
