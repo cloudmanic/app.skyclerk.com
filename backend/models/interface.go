@@ -100,6 +100,9 @@ type Datastore interface {
 
 	// Billing
 	GetBillingByAccountId(id uint) (Billing, error)
+
+	// ConnectedAccounts
+	GetConnectedAccountsByAccountIDAndConnection(accountID uint, connection string) (ConnectedAccounts, error)
 }
 
 /* End File */

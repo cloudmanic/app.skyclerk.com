@@ -79,6 +79,7 @@ func doMigrations(db *gorm.DB) {
 	db.AutoMigrate(&Invite{})
 	db.AutoMigrate(&Billing{})
 	db.AutoMigrate(&ForgotPassword{})
+	db.AutoMigrate(&ConnectedAccounts{})
 }
 
 /* End File */

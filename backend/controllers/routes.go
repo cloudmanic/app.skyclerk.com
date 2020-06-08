@@ -99,6 +99,9 @@ func (t *Controller) DoRoutes(r *gin.Engine) {
 		apiV1.GET("/:account/reports/income-by-contact", t.ReportsIncomeByContact)
 		apiV1.GET("/:account/reports/expenses-by-contact", t.ReportsExpensesByContact)
 		apiV1.GET("/:account/reports/pnl-current-year", t.ReportsCurrentPnl)
+
+		// Stripe
+		apiV1.GET("/:account/stripe/authorize", t.StripeAuthorizeURL)
 	}
 
 	// ------------ Non-API Routes ------ //
@@ -119,6 +122,9 @@ func (t *Controller) DoRoutes(r *gin.Engine) {
 
 	// Support
 	r.POST("/support/contact-us", t.ContactUs)
+
+	// Stripe Auth Callback
+	r.GET("/stripe/auth/callback", t.StripeAuthCallback)
 
 	// -------- Static Files ------------ //
 

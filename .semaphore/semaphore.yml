@@ -62,12 +62,12 @@ blocks:
           - mkdir -vp "${SEMAPHORE_GIT_DIR}" "$(go env GOPATH)/bin"
           - checkout
           - sem-version go 1.14
-          - curl https://raw.githubusercontent.com/golang/dep/master/install.sh | sh
+          #- curl https://raw.githubusercontent.com/golang/dep/master/install.sh | sh
           - cd $SEMAPHORE_GIT_DIR/backend
           - cd docker
           - docker-compose up -d
           - cd ..
-          - dep ensure
+          #- dep ensure
           - go test ./...
           - go build -ldflags="-s -w" -o builds/skyclerk
           # - cd ../frontend
