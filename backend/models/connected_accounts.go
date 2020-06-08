@@ -24,6 +24,8 @@ type ConnectedAccounts struct {
 	StripeRefreshToken   string    `sql:"not null" json:"-"` // the access token never expires, so we don't really need this.
 	StripePublishableKey string    `sql:"not null" json:"stripe_publishable_key"`
 	StripeScope          string    `sql:"not null" json:"stripe_scope"`
+	StripeLastItem       int64     `sql:"not null" json:"stripe_last_item"`
+	StripeLastSync       time.Time `sql:"not null" json:"stripe_last_sync"`
 }
 
 //
