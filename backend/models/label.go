@@ -116,6 +116,21 @@ func (db *DB) GetLabelByAccountAndId(accountId uint, labelId uint) (Label, error
 }
 
 //
+// GetLabelByAccountAndName - Return a label by account and name.
+//
+func (db *DB) GetLabelByAccountAndName(accountId uint, name string) (Label, error) {
+	l := Label{}
+
+	// Make query
+	if db.New().Where("LabelsAccountId = ? AND LabelsName = ?", accountId, name).First(&l).RecordNotFound() {
+		return Label{}, errors.New("Label not found.")
+	}
+
+	// Return result
+	return l, nil
+}
+
+//
 // DeleteLabelByAccountAndId - Delete a label by account and id.
 //
 func (db *DB) DeleteLabelByAccountAndId(accountId uint, labelId uint) error {

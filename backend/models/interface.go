@@ -45,6 +45,7 @@ type Datastore interface {
 	// Category
 	LoadDefaultCategories(accountId uint)
 	DeleteCategoryByAccountAndId(accountId uint, categoryId uint) error
+	GetCategoryByNameAndTypeAndAccountID(accountID uint, name string, catType string) (Category, error)
 	ValidateDuplicateCategoryName(cat Category, accountId uint, objId uint, action string) error
 	GetCategoryByAccountAndId(accountId uint, categoryId uint) (Category, error)
 	GetCategoryUsageByAccount(accountId uint) []CategoryUsage
@@ -63,6 +64,7 @@ type Datastore interface {
 	DeleteLabelByAccountAndId(accountId uint, labelId uint) error
 	ValidateDuplicateLabelName(obj Label, accountId uint, objId uint, action string) error
 	GetLabelUsageByAccount(accountId uint) []LabelUsage
+	GetLabelByAccountAndName(accountId uint, name string) (Label, error)
 
 	// User
 	GetUserById(id uint) (User, error)

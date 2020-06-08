@@ -123,6 +123,22 @@ func (db *DB) GetCategoryByAccountAndId(accountId uint, categoryId uint) (Catego
 }
 
 //
+// GetCategoryByNameAndTypeAndAccountID returns a category by name and account id.
+//
+func (db *DB) GetCategoryByNameAndTypeAndAccountID(accountID uint, name string, catType string) (Category, error) {
+
+	c := Category{}
+
+	// Make query
+	if db.New().Where("CategoriesAccountId = ? AND CategoriesName = ? AND CategoriesType = ?", accountID, name, catType).First(&c).RecordNotFound() {
+		return Category{}, errors.New("Category not found.")
+	}
+
+	// Return result
+	return c, nil
+}
+
+//
 // DeleteCategoryByAccountAndId - Delete a category by account and id.
 //
 func (db *DB) DeleteCategoryByAccountAndId(accountId uint, categoryId uint) error {

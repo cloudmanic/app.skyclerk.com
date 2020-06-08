@@ -90,6 +90,15 @@ func processTransaction(
 	custEmail string,
 	custName string,
 	custDesc string) {
+	// Do a quick check to make sure we do not already have this ledger entry.
+	lg := models.Ledger{}
+	db.New().Where("LedgerAccountId = ? AND LedgerStripeId = ?", account.Id, tranID).First(&lg)
+
+	if lg.Id > 0 {
+		services.LogInfo("Stripe entry already in ledger: " + tranID)
+		return
+	}
+
 	// Figure out the customer name
 	name := ""
 
@@ -105,6 +114,35 @@ func processTransaction(
 	// See if we have this record.
 	db.New().Where("ContactsAccountId = ? AND stripe_cust_id = ?", account.Id, custID).First(&contact)
 
+	// Get income category TODO(spicer): Let the user select this category
+	incomeCat, err := db.GetCategoryByNameAndTypeAndAccountID(account.Id, "Stripe Charges", "2")
+
+	if err != nil {
+		incomeCat.Type = "2"
+		incomeCat.Name = "Stripe Charges"
+		incomeCat.AccountId = account.Id
+		db.New().Save(&incomeCat)
+	}
+
+	// Get fee category
+	feeCat, err := db.GetCategoryByNameAndTypeAndAccountID(account.Id, "Payment Processing Fee", "1")
+
+	if err != nil {
+		feeCat.Type = "1"
+		feeCat.Name = "Payment Processing Fee"
+		feeCat.AccountId = account.Id
+		db.New().Save(&feeCat)
+	}
+
+	// Create label
+	label, err := db.GetLabelByAccountAndName(account.Id, "stripe")
+
+	if err != nil {
+		label.Name = "stripe"
+		label.AccountId = account.Id
+		db.New().Save(&label)
+	}
+
 	// Update record and save.
 	contact.AccountId = account.Id
 	contact.Name = name
@@ -118,9 +156,10 @@ func processTransaction(
 		ContactId:  contact.Id,
 		Date:       time.Unix(createdAt, 0),
 		Amount:     float64(float64(amount) / float64(100)),
-		CategoryId: 0,
+		CategoryId: incomeCat.Id,
 		StripeId:   tranID,
 		Note:       "Stripe Import of charge - " + tranID,
+		Labels:     []models.Label{label},
 	}
 	db.New().Save(&ledger)
 
@@ -130,7 +169,7 @@ func processTransaction(
 		ContactId:  contact.Id, // Make this the stripe contact.
 		Date:       time.Unix(createdAt, 0),
 		Amount:     float64(float64(fee)/float64(100)) * -1,
-		CategoryId: 0,
+		CategoryId: feeCat.Id,
 		StripeId:   tranID,
 		Note:       "Stripe Fee of charge - " + tranID,
 	}
