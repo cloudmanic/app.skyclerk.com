@@ -55,13 +55,15 @@ func TestSync01(t *testing.T) {
 	st.Expect(t, l[0].Amount, 9012.00)
 	st.Expect(t, l[0].CategoryId, uint(1))
 	st.Expect(t, l[0].Contact.Name, "Blah Matthews")
+	st.Expect(t, l[0].Labels[0].Name, "stripe")
 	st.Expect(t, l[1].Id, uint(2))
 	st.Expect(t, l[1].StripeId, "ch_FRYSWXArFoJY05")
 	st.Expect(t, l[1].Note, "Stripe Fee of charge - ch_FRYSWXArFoJY05")
 	st.Expect(t, l[1].Amount, -261.65)
 	st.Expect(t, l[1].CategoryId, uint(2))
-	st.Expect(t, l[1].Contact.Name, "Stripe")
+	st.Expect(t, l[1].Contact.Name, "stripe")
 	st.Expect(t, l[1].Contact.Website, "https://stripe.com")
+	st.Expect(t, l[1].Labels[0].Name, "stripe")
 
 }
 

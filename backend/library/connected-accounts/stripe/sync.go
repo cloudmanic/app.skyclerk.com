@@ -188,6 +188,7 @@ func processTransaction(
 		CategoryId: feeCat.Id,
 		StripeId:   tranID,
 		Note:       "Stripe Fee of charge - " + tranID,
+		Labels:     []models.Label{label},
 	}
 	db.New().Save(&feeObj)
 
