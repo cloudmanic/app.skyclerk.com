@@ -100,7 +100,7 @@ func TestSync02(t *testing.T) {
 	// Verify the import
 	l := []models.Ledger{}
 	db.New().Preload("Contact").Preload("Category").Preload("Labels").Where("LedgerAccountId = ?", 33).Order("LedgerDate ASC").Find(&l)
-	st.Expect(t, l[0].Id, uint(81))
+	st.Expect(t, l[0].Id, uint(len(l)-1))
 	st.Expect(t, l[0].Date.Format("2006-01-02"), "2020-06-08")
 	st.Expect(t, l[0].StripeId, "ch_1Gro6XKicNxxeq0znFuSNHmO")
 	st.Expect(t, l[0].Note, "Stripe Import of charge - ch_1Gro6XKicNxxeq0znFuSNHmO")
@@ -108,7 +108,7 @@ func TestSync02(t *testing.T) {
 	st.Expect(t, l[0].CategoryId, uint(1))
 	st.Expect(t, l[0].Contact.Name, "Stripe Customer - cus_HQfRLXUsmvqoKY")
 	st.Expect(t, l[0].Labels[0].Name, "stripe")
-	st.Expect(t, l[1].Id, uint(82))
+	st.Expect(t, l[1].Id, uint(len(l)))
 	st.Expect(t, l[1].StripeId, "ch_1Gro6XKicNxxeq0znFuSNHmO")
 	st.Expect(t, l[1].Note, "Stripe Fee of charge - ch_1Gro6XKicNxxeq0znFuSNHmO")
 	st.Expect(t, l[1].Amount, -0.47)
@@ -162,7 +162,7 @@ func TestSync03(t *testing.T) {
 	// Verify the import
 	l := []models.Ledger{}
 	db.New().Preload("Contact").Preload("Category").Preload("Labels").Where("LedgerAccountId = ?", 33).Order("LedgerDate ASC").Find(&l)
-	st.Expect(t, l[0].Id, uint(81))
+	st.Expect(t, l[0].Id, uint(len(l)-1))
 	st.Expect(t, l[0].Date.Format("2006-01-02"), "2020-06-08")
 	st.Expect(t, l[0].StripeId, "ch_1Gro6XKicNxxeq0znFuSNHmO")
 	st.Expect(t, l[0].Note, "Stripe Import of charge - ch_1Gro6XKicNxxeq0znFuSNHmO")
@@ -171,7 +171,7 @@ func TestSync03(t *testing.T) {
 	st.Expect(t, l[0].Contact.Name, "Stripe Customer - cus_HQfRLXUsmvqoKY")
 	st.Expect(t, l[0].Category.Name, "Category #2")
 	st.Expect(t, l[0].Labels[0].Name, "stripe")
-	st.Expect(t, l[1].Id, uint(82))
+	st.Expect(t, l[1].Id, uint(len(l)))
 	st.Expect(t, l[1].StripeId, "ch_1Gro6XKicNxxeq0znFuSNHmO")
 	st.Expect(t, l[1].Note, "Stripe Fee of charge - ch_1Gro6XKicNxxeq0znFuSNHmO")
 	st.Expect(t, l[1].Amount, -0.47)
