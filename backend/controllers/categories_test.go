@@ -33,7 +33,7 @@ func TestGetCategories01(t *testing.T) {
 	c := &Controller{}
 	c.SetDB(db)
 
-	// Test labels. -- First 2 are to make sure we don't get them as they are not our account.
+	// Test categories. -- First 2 are to make sure we don't get them as they are not our account.
 	db.Save(&models.Category{AccountId: 34, Type: "1", Name: "No #1"})
 	db.Save(&models.Category{AccountId: 34, Type: "1", Name: "No #2"})
 	db.Save(&models.Category{AccountId: 33, Type: "1", Name: "Category #1"})

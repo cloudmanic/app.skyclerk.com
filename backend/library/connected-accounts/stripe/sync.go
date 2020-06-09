@@ -175,11 +175,40 @@ func processTransaction(
 		db.New().Save(&feeContact)
 	}
 
-	// Get income category TODO(spicer): Let the user select this category
-	incomeCat := db.GetOrCreateCategory(connectedAccount.AccountID, "Stripe Charges", "2")
+	// Get income category
+	incomeCat := models.Category{}
 
-	// Get fee category
-	feeCat := db.GetOrCreateCategory(connectedAccount.AccountID, "Payment Processing Fee", "1")
+	// Get the category by or create a new one.
+	if connectedAccount.StripeIncomeCategoryID > 0 {
+		ic, err := db.GetCategoryByAccountAndId(connectedAccount.AccountID, connectedAccount.StripeIncomeCategoryID)
+
+		if err != nil {
+			services.Critical(err)
+			return
+		}
+
+		incomeCat = ic
+	} else {
+		ic := db.GetOrCreateCategory(connectedAccount.AccountID, "Stripe Charges", "2")
+		incomeCat = ic
+	}
+
+	// Get the fee category by or create a new one.
+	feeCat := models.Category{}
+
+	if connectedAccount.StripeExpenseCategoryID > 0 {
+		ec, err := db.GetCategoryByAccountAndId(connectedAccount.AccountID, connectedAccount.StripeExpenseCategoryID)
+
+		if err != nil {
+			services.Critical(err)
+			return
+		}
+
+		feeCat = ec
+	} else {
+		ec := db.GetOrCreateCategory(connectedAccount.AccountID, "Payment Processing Fee", "1")
+		feeCat = ec
+	}
 
 	// Create or get label
 	label := db.GetOrCreateLabel(connectedAccount.AccountID, "stripe")
@@ -201,7 +230,7 @@ func processTransaction(
 	feeObj := models.Ledger{
 		AccountId:  connectedAccount.AccountID,
 		ContactId:  feeContact.Id,
-		Date:       time.Unix(createdAt, 0),
+		Date:       time.Unix(createdAt+1, 0), // Just so it is created after the entry in our DB.
 		Amount:     float64(float64(fee)/float64(100)) * -1,
 		CategoryId: feeCat.Id,
 		StripeId:   tranID,

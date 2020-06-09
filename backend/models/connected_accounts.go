@@ -14,16 +14,18 @@ import (
 
 // ConnectedAccounts struct
 type ConnectedAccounts struct {
-	ID                   uint      `gorm:"primary_key" json:"id"`
-	CreatedAt            time.Time `sql:"not null" json:"-"`
-	UpdatedAt            time.Time `sql:"not null" json:"-"`
-	AccountID            uint      `sql:"not null" json:"account_id"`
-	Connection           string    `sql:"not null;type:ENUM('Stripe', 'Harvest');default:'Stripe'" json:"connection"`
-	StripeUserID         string    `sql:"not null" json:"-"`
-	StripePublishableKey string    `sql:"not null" json:"stripe_publishable_key"`
-	StripeScope          string    `sql:"not null" json:"stripe_scope"`
-	StripeLastItem       int64     `sql:"not null" json:"stripe_last_item"`
-	StripeLastSync       time.Time `sql:"not null" json:"stripe_last_sync"`
+	ID                      uint      `gorm:"primary_key" json:"id"`
+	CreatedAt               time.Time `sql:"not null" json:"-"`
+	UpdatedAt               time.Time `sql:"not null" json:"-"`
+	AccountID               uint      `sql:"not null" json:"account_id"`
+	Connection              string    `sql:"not null;type:ENUM('Stripe', 'Harvest');default:'Stripe'" json:"connection"`
+	StripeUserID            string    `sql:"not null" json:"-"`
+	StripeIncomeCategoryID  uint      `sql:"not null" json:"stripe_income_category_id"`
+	StripeExpenseCategoryID uint      `sql:"not null" json:"stripe_expense_category_id"`
+	StripePublishableKey    string    `sql:"not null" json:"stripe_publishable_key"`
+	StripeScope             string    `sql:"not null" json:"stripe_scope"`
+	StripeLastItem          int64     `sql:"not null" json:"stripe_last_item"`
+	StripeLastSync          time.Time `sql:"not null" json:"stripe_last_sync"`
 }
 
 //
