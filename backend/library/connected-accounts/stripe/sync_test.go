@@ -34,6 +34,7 @@ func TestSync01(t *testing.T) {
 
 	// Connected account model.
 	ac := models.ConnectedAccounts{
+		Name:                 "Unit Test - TestSync01",
 		AccountID:            33,
 		Connection:           "Stripe",
 		StripeUserID:         "Ris6D3eYxtXbIkRz5K7aJBLiGkTOvuuD", // Cloudmanic Labs stripe test
@@ -85,6 +86,7 @@ func TestSync02(t *testing.T) {
 
 	// Connected account model.
 	ac := models.ConnectedAccounts{
+		Name:                 "Unit Test - TestSync02",
 		AccountID:            33,
 		Connection:           "Stripe",
 		StripeUserID:         "XXXX", // Use to mark this as our api key
@@ -145,6 +147,7 @@ func TestSync03(t *testing.T) {
 
 	// Connected account model.
 	ac := models.ConnectedAccounts{
+		Name:                    "Unit Test - TestSync03",
 		AccountID:               33,
 		StripeIncomeCategoryID:  4,
 		StripeExpenseCategoryID: 5,

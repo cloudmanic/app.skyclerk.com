@@ -30,6 +30,9 @@ func Sync(db models.Datastore, connectedAccount models.ConnectedAccounts) {
 		return
 	}
 
+	// Logging
+	services.InfoMsg(fmt.Sprintf("Starting syncing Stripe items - Name: %s, Account: %d", connectedAccount.Name, connectedAccount.AccountID))
+
 	// Track last item
 	lastItem := int64(0)
 	processCount := 0
@@ -111,7 +114,7 @@ func Sync(db models.Datastore, connectedAccount models.ConnectedAccounts) {
 	db.New().Save(&connectedAccount)
 
 	// Logging
-	services.InfoMsg(fmt.Sprintf("Processed %d Stripe items for Account: %d, Last Item: %d", processCount, connectedAccount.AccountID, lastItem))
+	services.InfoMsg(fmt.Sprintf("Processed %d Stripe items - Name: %s, Account: %d, Last Item: %d", processCount, connectedAccount.Name, connectedAccount.AccountID, lastItem))
 }
 
 //
