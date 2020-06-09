@@ -99,21 +99,21 @@ func TestSync02(t *testing.T) {
 
 	// Verify the import
 	l := []models.Ledger{}
-	db.New().Preload("Contact").Preload("Category").Preload("Labels").Where("LedgerAccountId = ?", 33).Find(&l)
-	st.Expect(t, l[51].Id, uint(52))
-	st.Expect(t, l[51].StripeId, "ch_1Gro6XKicNxxeq0znFuSNHmO")
-	st.Expect(t, l[51].Note, "Stripe Fee of charge - ch_1Gro6XKicNxxeq0znFuSNHmO")
-	st.Expect(t, l[51].Amount, -0.47)
-	st.Expect(t, l[51].CategoryId, uint(2))
-	st.Expect(t, l[51].Contact.Name, "Stripe")
-	st.Expect(t, l[51].Labels[0].Name, "stripe")
-	st.Expect(t, l[50].Id, uint(51))
-	st.Expect(t, l[50].StripeId, "ch_1Gro6XKicNxxeq0znFuSNHmO")
-	st.Expect(t, l[50].Note, "Stripe Import of charge - ch_1Gro6XKicNxxeq0znFuSNHmO")
-	st.Expect(t, l[50].Amount, 6.00)
-	st.Expect(t, l[50].CategoryId, uint(1))
-	st.Expect(t, l[50].Contact.Name, "Stripe Customer - cus_HQfRLXUsmvqoKY")
-	st.Expect(t, l[50].Labels[0].Name, "stripe")
+	db.New().Preload("Contact").Preload("Category").Preload("Labels").Where("LedgerAccountId = ?", 33).Order("LedgerId ASC").Find(&l)
+	st.Expect(t, l[61].Id, uint(62))
+	st.Expect(t, l[61].StripeId, "ch_1Gro6XKicNxxeq0znFuSNHmO")
+	st.Expect(t, l[61].Note, "Stripe Fee of charge - ch_1Gro6XKicNxxeq0znFuSNHmO")
+	st.Expect(t, l[61].Amount, -0.47)
+	st.Expect(t, l[61].CategoryId, uint(2))
+	st.Expect(t, l[61].Contact.Name, "Stripe")
+	st.Expect(t, l[61].Labels[0].Name, "stripe")
+	st.Expect(t, l[60].Id, uint(61))
+	st.Expect(t, l[60].StripeId, "ch_1Gro6XKicNxxeq0znFuSNHmO")
+	st.Expect(t, l[60].Note, "Stripe Import of charge - ch_1Gro6XKicNxxeq0znFuSNHmO")
+	st.Expect(t, l[60].Amount, 6.00)
+	st.Expect(t, l[60].CategoryId, uint(1))
+	st.Expect(t, l[60].Contact.Name, "Stripe Customer - cus_HQfRLXUsmvqoKY")
+	st.Expect(t, l[60].Labels[0].Name, "stripe")
 }
 
 /* End File */
