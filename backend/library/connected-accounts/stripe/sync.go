@@ -23,7 +23,7 @@ import (
 //
 // Sync will bring in all transactions for a stripe account.
 //
-func Sync(db models.Datastore, account models.Account, connectedAccount models.ConnectedAccounts) {
+func Sync(db models.Datastore, connectedAccount models.ConnectedAccounts) {
 	// Make sure we have a STRIPE_SECRET_KEY
 	if len(os.Getenv("STRIPE_SECRET_KEY")) == 0 {
 		services.LogInfo("No STRIPE_SECRET_KEY found in stripe.sync.")
@@ -88,7 +88,7 @@ func Sync(db models.Datastore, account models.Account, connectedAccount models.C
 		cust, _ := customer.Get(c.Customer.ID, y)
 
 		// Process this transaction
-		processTransaction(db, account, c.ID, c.Amount, bt.Fee, c.Created, c.Customer.ID, cust.Email, cust.Name, cust.Description)
+		processTransaction(db, connectedAccount, c.ID, c.Amount, bt.Fee, c.Created, c.Customer.ID, cust.Email, cust.Name, cust.Description)
 
 		// Flag the last item.
 		if lastItem < c.Created {
@@ -101,11 +101,17 @@ func Sync(db models.Datastore, account models.Account, connectedAccount models.C
 
 	// Update sync info.
 	connectedAccount.StripeLastSync = time.Now()
-	connectedAccount.StripeLastItem = lastItem
+
+	// Only set this when we have new items
+	if lastItem > 0 {
+		connectedAccount.StripeLastItem = lastItem
+	}
+
+	// Update connected app database entry.
 	db.New().Save(&connectedAccount)
 
 	// Logging
-	services.LogInfo(fmt.Sprintf("Processed %d Stripe items for Account: %d", processCount, account.Id))
+	services.InfoMsg(fmt.Sprintf("Processed %d Stripe items for Account: %d, Last Item: %d", processCount, connectedAccount.AccountID, lastItem))
 }
 
 //
@@ -113,7 +119,7 @@ func Sync(db models.Datastore, account models.Account, connectedAccount models.C
 //
 func processTransaction(
 	db models.Datastore,
-	account models.Account,
+	connectedAccount models.ConnectedAccounts,
 	tranID string,
 	amount int64,
 	fee int64,
@@ -124,7 +130,7 @@ func processTransaction(
 	custDesc string) {
 	// Do a quick check to make sure we do not already have this ledger entry.
 	lg := models.Ledger{}
-	db.New().Where("LedgerAccountId = ? AND LedgerStripeId = ?", account.Id, tranID).First(&lg)
+	db.New().Where("LedgerAccountId = ? AND LedgerStripeId = ?", connectedAccount.AccountID, tranID).First(&lg)
 
 	if lg.Id > 0 {
 		services.LogInfo("Stripe entry already in ledger: " + tranID)
@@ -144,11 +150,11 @@ func processTransaction(
 	contact := models.Contact{}
 
 	// See if we have this record.
-	db.New().Where("ContactsAccountId = ? AND stripe_cust_id = ?", account.Id, custID).First(&contact)
+	db.New().Where("ContactsAccountId = ? AND stripe_cust_id = ?", connectedAccount.AccountID, custID).First(&contact)
 
 	// Update record and save.
 	if contact.Id == 0 {
-		contact.AccountId = account.Id
+		contact.AccountId = connectedAccount.AccountID
 		contact.Name = name
 		contact.Email = custEmail
 		contact.StripeCustID = custID
@@ -159,28 +165,28 @@ func processTransaction(
 	feeContact := models.Contact{}
 
 	// See if we have this record.
-	db.New().Where("ContactsAccountId = ? AND ContactsName = ?", account.Id, "Stripe").First(&feeContact)
+	db.New().Where("ContactsAccountId = ? AND ContactsName = ?", connectedAccount.AccountID, "Stripe").First(&feeContact)
 
 	// Update record and save.
 	if feeContact.Id == 0 {
-		feeContact.AccountId = account.Id
+		feeContact.AccountId = connectedAccount.AccountID
 		feeContact.Name = "Stripe"
 		feeContact.Website = "https://stripe.com"
 		db.New().Save(&feeContact)
 	}
 
 	// Get income category TODO(spicer): Let the user select this category
-	incomeCat := db.GetOrCreateCategory(account.Id, "Stripe Charges", "2")
+	incomeCat := db.GetOrCreateCategory(connectedAccount.AccountID, "Stripe Charges", "2")
 
 	// Get fee category
-	feeCat := db.GetOrCreateCategory(account.Id, "Payment Processing Fee", "1")
+	feeCat := db.GetOrCreateCategory(connectedAccount.AccountID, "Payment Processing Fee", "1")
 
 	// Create or get label
-	label := db.GetOrCreateLabel(account.Id, "stripe")
+	label := db.GetOrCreateLabel(connectedAccount.AccountID, "stripe")
 
 	// Add the ledger entry to the database
 	ledger := models.Ledger{
-		AccountId:  account.Id,
+		AccountId:  connectedAccount.AccountID,
 		ContactId:  contact.Id,
 		Date:       time.Unix(createdAt, 0),
 		Amount:     float64(float64(amount) / float64(100)),
@@ -193,7 +199,7 @@ func processTransaction(
 
 	// Insert the stripe fee.
 	feeObj := models.Ledger{
-		AccountId:  account.Id,
+		AccountId:  connectedAccount.AccountID,
 		ContactId:  feeContact.Id,
 		Date:       time.Unix(createdAt, 0),
 		Amount:     float64(float64(fee)/float64(100)) * -1,

@@ -125,6 +125,7 @@ func (t *DB) ClearAccount(accountId uint) {
 	t.New().Exec("DELETE FROM Contacts WHERE ContactsAccountId = ?", accountId)
 	t.New().Exec("DELETE FROM Categories WHERE CategoriesAccountId = ?", accountId)
 	t.New().Exec("DELETE FROM SnapClerk WHERE SnapClerkAccountId = ?", accountId)
+	t.New().Exec("DELETE FROM connected_accounts WHERE account_id = ?", accountId)
 
 	// TODO(spicer): delete files at AWS too.
 }

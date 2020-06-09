@@ -44,7 +44,7 @@ func TestSync01(t *testing.T) {
 	db.New().Save(&ac)
 
 	// Do sync
-	Sync(db, account, ac)
+	Sync(db, ac)
 
 	// Verify the import
 	l := []models.Ledger{}
@@ -95,25 +95,25 @@ func TestSync02(t *testing.T) {
 	db.New().Save(&ac)
 
 	// Do sync
-	Sync(db, account, ac)
+	Sync(db, ac)
 
 	// Verify the import
 	l := []models.Ledger{}
 	db.New().Preload("Contact").Preload("Category").Preload("Labels").Where("LedgerAccountId = ?", 33).Find(&l)
-	st.Expect(t, l[41].Id, uint(42))
-	st.Expect(t, l[41].StripeId, "ch_1Gro6XKicNxxeq0znFuSNHmO")
-	st.Expect(t, l[41].Note, "Stripe Fee of charge - ch_1Gro6XKicNxxeq0znFuSNHmO")
-	st.Expect(t, l[41].Amount, -0.47)
-	st.Expect(t, l[41].CategoryId, uint(2))
-	st.Expect(t, l[41].Contact.Name, "Stripe")
-	st.Expect(t, l[41].Labels[0].Name, "stripe")
-	st.Expect(t, l[40].Id, uint(41))
-	st.Expect(t, l[40].StripeId, "ch_1Gro6XKicNxxeq0znFuSNHmO")
-	st.Expect(t, l[40].Note, "Stripe Import of charge - ch_1Gro6XKicNxxeq0znFuSNHmO")
-	st.Expect(t, l[40].Amount, 6.00)
-	st.Expect(t, l[40].CategoryId, uint(1))
-	st.Expect(t, l[40].Contact.Name, "Stripe Customer - cus_HQfRLXUsmvqoKY")
-	st.Expect(t, l[40].Labels[0].Name, "stripe")
+	st.Expect(t, l[51].Id, uint(52))
+	st.Expect(t, l[51].StripeId, "ch_1Gro6XKicNxxeq0znFuSNHmO")
+	st.Expect(t, l[51].Note, "Stripe Fee of charge - ch_1Gro6XKicNxxeq0znFuSNHmO")
+	st.Expect(t, l[51].Amount, -0.47)
+	st.Expect(t, l[51].CategoryId, uint(2))
+	st.Expect(t, l[51].Contact.Name, "Stripe")
+	st.Expect(t, l[51].Labels[0].Name, "stripe")
+	st.Expect(t, l[50].Id, uint(51))
+	st.Expect(t, l[50].StripeId, "ch_1Gro6XKicNxxeq0znFuSNHmO")
+	st.Expect(t, l[50].Note, "Stripe Import of charge - ch_1Gro6XKicNxxeq0znFuSNHmO")
+	st.Expect(t, l[50].Amount, 6.00)
+	st.Expect(t, l[50].CategoryId, uint(1))
+	st.Expect(t, l[50].Contact.Name, "Stripe Customer - cus_HQfRLXUsmvqoKY")
+	st.Expect(t, l[50].Labels[0].Name, "stripe")
 }
 
 /* End File */
