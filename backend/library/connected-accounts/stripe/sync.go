@@ -49,8 +49,10 @@ func Sync(db models.Datastore, account models.Account, connectedAccount models.C
 		},
 	}
 
-	// Account we are trying to access.
-	params.SetStripeAccount(connectedAccount.StripeUserID)
+	// Account we are trying to access. (XXX is Cloudmanic account)
+	if connectedAccount.StripeUserID != "XXXX" {
+		params.SetStripeAccount(connectedAccount.StripeUserID)
+	}
 
 	// Filter
 	params.Filters.AddFilter("limit", "", "100")
@@ -67,12 +69,22 @@ func Sync(db models.Datastore, account models.Account, connectedAccount models.C
 
 		// Get the balance transaction
 		p := &stripe.BalanceTransactionParams{}
-		p.SetStripeAccount(connectedAccount.StripeUserID)
+
+		// XXX is Cloudmanic account
+		if connectedAccount.StripeUserID != "XXXX" {
+			p.SetStripeAccount(connectedAccount.StripeUserID)
+		}
+
 		bt, _ := balancetransaction.Get(c.BalanceTransaction.ID, p)
 
 		// Get the customer
 		y := &stripe.CustomerParams{}
-		y.SetStripeAccount(connectedAccount.StripeUserID)
+
+		// XXX is Cloudmanic account
+		if connectedAccount.StripeUserID != "XXXX" {
+			y.SetStripeAccount(connectedAccount.StripeUserID)
+		}
+
 		cust, _ := customer.Get(c.Customer.ID, y)
 
 		// Process this transaction

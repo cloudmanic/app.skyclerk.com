@@ -49,22 +49,71 @@ func TestSync01(t *testing.T) {
 	// Verify the import
 	l := []models.Ledger{}
 	db.New().Preload("Contact").Preload("Category").Preload("Labels").Where("LedgerAccountId = ?", 33).Find(&l)
-	st.Expect(t, l[0].Id, uint(1))
-	st.Expect(t, l[0].StripeId, "ch_FRYSWXArFoJY05")
-	st.Expect(t, l[0].Note, "Stripe Import of charge - ch_FRYSWXArFoJY05")
-	st.Expect(t, l[0].Amount, 9012.00)
-	st.Expect(t, l[0].CategoryId, uint(1))
-	st.Expect(t, l[0].Contact.Name, "Blah Matthews")
-	st.Expect(t, l[0].Labels[0].Name, "stripe")
-	st.Expect(t, l[1].Id, uint(2))
-	st.Expect(t, l[1].StripeId, "ch_FRYSWXArFoJY05")
-	st.Expect(t, l[1].Note, "Stripe Fee of charge - ch_FRYSWXArFoJY05")
-	st.Expect(t, l[1].Amount, -261.65)
-	st.Expect(t, l[1].CategoryId, uint(2))
-	st.Expect(t, l[1].Contact.Name, "stripe")
-	st.Expect(t, l[1].Contact.Website, "https://stripe.com")
-	st.Expect(t, l[1].Labels[0].Name, "stripe")
+	st.Expect(t, l[36].Id, uint(37))
+	st.Expect(t, l[36].StripeId, "ch_AJuAINDXfQOdVA")
+	st.Expect(t, l[36].Note, "Stripe Import of charge - ch_AJuAINDXfQOdVA")
+	st.Expect(t, l[36].Amount, 15.00)
+	st.Expect(t, l[36].CategoryId, uint(1))
+	st.Expect(t, l[36].Contact.Name, "Stripe Customer - cus_4zqHAQ3D03mPSf")
+	st.Expect(t, l[36].Labels[0].Name, "stripe")
+	st.Expect(t, l[37].Id, uint(38))
+	st.Expect(t, l[37].StripeId, "ch_AJuAINDXfQOdVA")
+	st.Expect(t, l[37].Note, "Stripe Fee of charge - ch_AJuAINDXfQOdVA")
+	st.Expect(t, l[37].Amount, -0.74)
+	st.Expect(t, l[37].CategoryId, uint(2))
+	st.Expect(t, l[37].Contact.Name, "Stripe")
+	st.Expect(t, l[37].Contact.Website, "https://stripe.com")
+	st.Expect(t, l[37].Labels[0].Name, "stripe")
+}
 
+//
+// TestSync02 will sync stripe - but our compay
+//
+func TestSync02(t *testing.T) {
+	// Start the db connection.
+	db, dbName, _ := models.NewTestDB("testing_db")
+	defer models.TestingTearDown(db, dbName)
+
+	// Setup test data
+	user := test.GetRandomUser(33)
+	db.Save(&user)
+
+	account := test.GetRandomAccount(33)
+	account.OwnerId = user.Id
+	db.Save(&account)
+	db.Save(&models.AcctToUsers{AccountId: account.Id, UserId: user.Id})
+
+	// Connected account model.
+	ac := models.ConnectedAccounts{
+		AccountID:            33,
+		Connection:           "Stripe",
+		StripeUserID:         "XXXX", // Use to mark this as our api key
+		StripeScope:          "read_only",
+		StripeLastItem:       1591634741, // Sample last item.
+		StripePublishableKey: "",
+	}
+	db.New().Save(&ac)
+
+	// Do sync
+	Sync(db, account, ac)
+
+	// Verify the import
+	l := []models.Ledger{}
+	db.New().Preload("Contact").Preload("Category").Preload("Labels").Where("LedgerAccountId = ?", 33).Find(&l)
+	st.Expect(t, l[41].Id, uint(42))
+	st.Expect(t, l[41].StripeId, "ch_1Gro6XKicNxxeq0znFuSNHmO")
+	st.Expect(t, l[41].Note, "Stripe Fee of charge - ch_1Gro6XKicNxxeq0znFuSNHmO")
+	st.Expect(t, l[41].Amount, -0.47)
+	st.Expect(t, l[41].CategoryId, uint(2))
+	st.Expect(t, l[41].Contact.Name, "Stripe")
+	st.Expect(t, l[41].Labels[0].Name, "stripe")
+	st.Expect(t, l[40].Id, uint(41))
+	st.Expect(t, l[40].StripeId, "ch_1Gro6XKicNxxeq0znFuSNHmO")
+	st.Expect(t, l[40].Note, "Stripe Import of charge - ch_1Gro6XKicNxxeq0znFuSNHmO")
+	st.Expect(t, l[40].Amount, 6.00)
+	st.Expect(t, l[40].CategoryId, uint(1))
+	st.Expect(t, l[40].Contact.Name, "Stripe Customer - cus_HQfRLXUsmvqoKY")
+	st.Expect(t, l[40].Labels[0].Name, "stripe")
 }
 
 /* End File */
