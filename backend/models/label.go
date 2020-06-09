@@ -101,6 +101,23 @@ func (db *DB) ValidateDuplicateLabelName(obj Label, accountId uint, objId uint, 
 }
 
 //
+// GetOrCreateLabel get or create a label
+//
+func (db *DB) GetOrCreateLabel(accountID uint, name string) Label {
+	// Get label
+	label, err := db.GetLabelByAccountAndName(accountID, name)
+
+	// No Label found let's create.
+	if err != nil {
+		label.Name = name
+		label.AccountId = accountID
+		db.New().Save(&label)
+	}
+
+	return label
+}
+
+//
 // GetLabelByAccountAndId - Return a label by account and id.
 //
 func (db *DB) GetLabelByAccountAndId(accountId uint, labelId uint) (Label, error) {

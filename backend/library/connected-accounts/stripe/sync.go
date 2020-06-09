@@ -8,6 +8,7 @@
 package stripe
 
 import (
+	"fmt"
 	"os"
 	"time"
 
@@ -28,6 +29,10 @@ func Sync(db models.Datastore, account models.Account, connectedAccount models.C
 		services.LogInfo("No STRIPE_SECRET_KEY found in stripe.sync.")
 		return
 	}
+
+	// Track last item
+	lastItem := int64(0)
+	processCount := 0
 
 	// Set stripe key
 	stripe.Key = os.Getenv("STRIPE_SECRET_KEY")
@@ -72,8 +77,23 @@ func Sync(db models.Datastore, account models.Account, connectedAccount models.C
 
 		// Process this transaction
 		processTransaction(db, account, c.ID, c.Amount, bt.Fee, c.Created, c.Customer.ID, cust.Email, cust.Name, cust.Description)
+
+		// Flag the last item.
+		if lastItem < c.Created {
+			lastItem = c.Created
+		}
+
+		// Counter
+		processCount++
 	}
 
+	// Update sync info.
+	connectedAccount.StripeLastSync = time.Now()
+	connectedAccount.StripeLastItem = lastItem
+	db.New().Save(&connectedAccount)
+
+	// Logging
+	services.LogInfo(fmt.Sprintf("Processed %d Stripe items for Account: %d", processCount, account.Id))
 }
 
 //
@@ -114,41 +134,37 @@ func processTransaction(
 	// See if we have this record.
 	db.New().Where("ContactsAccountId = ? AND stripe_cust_id = ?", account.Id, custID).First(&contact)
 
-	// Get income category TODO(spicer): Let the user select this category
-	incomeCat, err := db.GetCategoryByNameAndTypeAndAccountID(account.Id, "Stripe Charges", "2")
-
-	if err != nil {
-		incomeCat.Type = "2"
-		incomeCat.Name = "Stripe Charges"
-		incomeCat.AccountId = account.Id
-		db.New().Save(&incomeCat)
+	// Update record and save.
+	if contact.Id == 0 {
+		contact.AccountId = account.Id
+		contact.Name = name
+		contact.Email = custEmail
+		contact.StripeCustID = custID
+		db.New().Save(&contact)
 	}
 
-	// Get fee category
-	feeCat, err := db.GetCategoryByNameAndTypeAndAccountID(account.Id, "Payment Processing Fee", "1")
+	// Setup the new contact for Stripe
+	feeContact := models.Contact{}
 
-	if err != nil {
-		feeCat.Type = "1"
-		feeCat.Name = "Payment Processing Fee"
-		feeCat.AccountId = account.Id
-		db.New().Save(&feeCat)
-	}
-
-	// Create label
-	label, err := db.GetLabelByAccountAndName(account.Id, "stripe")
-
-	if err != nil {
-		label.Name = "stripe"
-		label.AccountId = account.Id
-		db.New().Save(&label)
-	}
+	// See if we have this record.
+	db.New().Where("ContactsAccountId = ? AND ContactsName = ?", account.Id, "Stripe").First(&feeContact)
 
 	// Update record and save.
-	contact.AccountId = account.Id
-	contact.Name = name
-	contact.Email = custEmail
-	contact.StripeCustID = custID
-	db.New().Save(&contact)
+	if feeContact.Id == 0 {
+		feeContact.AccountId = account.Id
+		feeContact.Name = "Stripe"
+		feeContact.Website = "https://stripe.com"
+		db.New().Save(&feeContact)
+	}
+
+	// Get income category TODO(spicer): Let the user select this category
+	incomeCat := db.GetOrCreateCategory(account.Id, "Stripe Charges", "2")
+
+	// Get fee category
+	feeCat := db.GetOrCreateCategory(account.Id, "Payment Processing Fee", "1")
+
+	// Create or get label
+	label := db.GetOrCreateLabel(account.Id, "stripe")
 
 	// Add the ledger entry to the database
 	ledger := models.Ledger{
@@ -166,7 +182,7 @@ func processTransaction(
 	// Insert the stripe fee.
 	feeObj := models.Ledger{
 		AccountId:  account.Id,
-		ContactId:  contact.Id, // Make this the stripe contact.
+		ContactId:  feeContact.Id,
 		Date:       time.Unix(createdAt, 0),
 		Amount:     float64(float64(fee)/float64(100)) * -1,
 		CategoryId: feeCat.Id,

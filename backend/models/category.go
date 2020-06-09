@@ -126,7 +126,6 @@ func (db *DB) GetCategoryByAccountAndId(accountId uint, categoryId uint) (Catego
 // GetCategoryByNameAndTypeAndAccountID returns a category by name and account id.
 //
 func (db *DB) GetCategoryByNameAndTypeAndAccountID(accountID uint, name string, catType string) (Category, error) {
-
 	c := Category{}
 
 	// Make query
@@ -136,6 +135,23 @@ func (db *DB) GetCategoryByNameAndTypeAndAccountID(accountID uint, name string, 
 
 	// Return result
 	return c, nil
+}
+
+//
+// GetOrCreateCategory will get or create category if we do not already have.
+//
+func (db *DB) GetOrCreateCategory(accountID uint, name string, catType string) Category {
+	// See if we already have the category.
+	cat, err := db.GetCategoryByNameAndTypeAndAccountID(accountID, name, catType)
+
+	if err != nil {
+		cat.Type = catType
+		cat.Name = name
+		cat.AccountId = accountID
+		db.New().Save(&cat)
+	}
+
+	return cat
 }
 
 //

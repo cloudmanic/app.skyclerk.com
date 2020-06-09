@@ -49,6 +49,7 @@ type Datastore interface {
 	ValidateDuplicateCategoryName(cat Category, accountId uint, objId uint, action string) error
 	GetCategoryByAccountAndId(accountId uint, categoryId uint) (Category, error)
 	GetCategoryUsageByAccount(accountId uint) []CategoryUsage
+	GetOrCreateCategory(accountID uint, name string, catType string) Category
 
 	// Contact
 	GenerateAvatarsForAllMissing() error
@@ -65,6 +66,7 @@ type Datastore interface {
 	ValidateDuplicateLabelName(obj Label, accountId uint, objId uint, action string) error
 	GetLabelUsageByAccount(accountId uint) []LabelUsage
 	GetLabelByAccountAndName(accountId uint, name string) (Label, error)
+	GetOrCreateLabel(accountID uint, name string) Label
 
 	// User
 	GetUserById(id uint) (User, error)
