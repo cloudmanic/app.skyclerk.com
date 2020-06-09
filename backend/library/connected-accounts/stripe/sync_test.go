@@ -20,7 +20,7 @@ import (
 //
 func TestSync01(t *testing.T) {
 	// Start the db connection.
-	db, dbName, _ := models.NewTestDB("testing_db")
+	db, dbName, _ := models.NewTestDB("")
 	defer models.TestingTearDown(db, dbName)
 
 	// Setup test data
@@ -71,7 +71,7 @@ func TestSync01(t *testing.T) {
 //
 func TestSync02(t *testing.T) {
 	// Start the db connection.
-	db, dbName, _ := models.NewTestDB("testing_db")
+	db, dbName, _ := models.NewTestDB("")
 	defer models.TestingTearDown(db, dbName)
 
 	// Setup test data
