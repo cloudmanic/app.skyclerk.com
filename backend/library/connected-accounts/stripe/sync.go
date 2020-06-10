@@ -91,7 +91,7 @@ func Sync(db models.Datastore, connectedAccount models.ConnectedAccounts) {
 		cust, _ := customer.Get(c.Customer.ID, y)
 
 		// Process this transaction
-		processTransaction(db, connectedAccount, c.ID, c.Amount, bt.Fee, c.Created, c.Customer.ID, cust.Email, cust.Name, cust.Description)
+		processTransaction(db, connectedAccount, c.ID, (c.Amount - c.AmountRefunded), bt.Fee, c.Created, c.Customer.ID, cust.Email, cust.Name, cust.Description)
 
 		// Flag the last item.
 		if lastItem < c.Created {

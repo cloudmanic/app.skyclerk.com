@@ -72,7 +72,7 @@ func TestSync01(t *testing.T) {
 //
 func TestSync02(t *testing.T) {
 	// Start the db connection.
-	db, dbName, _ := models.NewTestDB("")
+	db, dbName, _ := models.NewTestDB("testing_db")
 	defer models.TestingTearDown(db, dbName)
 
 	// Setup test data
