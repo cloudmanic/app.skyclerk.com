@@ -60,8 +60,24 @@
 # Allow sudo'ing without password
 - name: Allow sudo'ing without password
   lineinfile:
-    dest: "//etc/sudoers"
+    dest: "/etc/sudoers"
     regexp: "^%sudo"
     line: "%sudo ALL=(ALL:ALL) NOPASSWD:ALL"
   tags:
     - sudo
+
+# Install docker network.
+- name: Start docker shared network.
+  command: docker network create shared
+  ignore_errors: yes
+
+# Install group docker        
+- name: Install group docker
+  group: name=docker  state=present 
+
+# Adding existing user ubuntu to group docker
+- name: adding existing user ubuntu to group docker
+  user:
+    name: 'ubuntu'
+    groups: docker
+    append: yes

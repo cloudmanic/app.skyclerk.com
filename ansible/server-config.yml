@@ -10,10 +10,7 @@
 
   roles:
     - bootstrap
-    - users
-    - docker-sites
     - docker-mysql
-    - docker-nginx-proxy
     - imaginary
 
   vars_files:

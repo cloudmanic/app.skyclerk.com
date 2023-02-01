@@ -2,15 +2,15 @@
 
 # Setup base directory
 - name: Setup {{ imaginary_site_dir }} as base directory
-  file: path={{ imaginary_site_dir }} owner={{ site_user }} group={{ site_user }} mode=0755 state=directory
+  file: path={{ imaginary_site_dir }} owner={{ login_user }} group={{ login_user }} mode=0755 state=directory
 
 # Install docker-compose
 - name: Install docker-compose
-  template: src=docker-compose.yml dest={{ imaginary_site_dir }}/docker-compose.yml owner={{ site_user }} group={{ site_user }} mode=0644
+  template: src=docker-compose.yml dest={{ imaginary_site_dir }}/docker-compose.yml owner={{ login_user }} group={{ login_user }} mode=0644
 
 # Install ENV File
 - name: Install Docker ENV File
-  template: src=docker-env dest={{ imaginary_site_dir }}/.env owner={{ site_user }} group={{ site_user }} mode=0644
+  template: src=docker-env dest={{ imaginary_site_dir }}/.env owner={{ login_user }} group={{ login_user }} mode=0644
 
 # Pull docker
 - name: Building image for {{ imaginary_site_dir }}

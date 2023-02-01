@@ -8,8 +8,9 @@ app_env: production
 site_domain: app.skyclerk.com
 site_url: https://app.skyclerk.com
 register_url: https://app.skyclerk.com/register/index.html
+login_user: ubuntu
 
-site_dir: /sites/skyclerk/app.skyclerk.com
+site_dir: /home/ubuntu/app.skyclerk.com
 
 site_user: skyclerk
 site_uid: 1004
@@ -24,16 +25,6 @@ app_db_database: app_skyclerk_com
 
 s3_bucket: skyclerk
 
-#
-# Server Config Stuff
-#
-
-spicer_uid: 1000
-spicer_gid: 1000
-
-deploy_uid: 1001
-deploy_gid: 1001
-
 syslog_port: 49242
 syslog_address: logs6.papertrailapp.com
 
@@ -42,16 +33,7 @@ docker_mysql: yes
 docker_mysql_servers:
   - { "name": "mariadb102", "image": "mariadb:10.2", "container_name": "mariadb-10.2", "port_mapping": "127.0.0.1:3306", "password": "{{ mysql_root_password }}" }
 
-docker_nginx_proxy: no
-
-docker_site_dir: /sites
-
-docker_nginx_proxy_dir: /sites/nginx-proxy
-
-docker_mysql_dir: /sites/mysql
-
-docker_sites:
-  - { site_slug: "skyclerk", uid: "1004", gid: "1004" }
+docker_mysql_dir: /home/ubuntu/mysql
 
 core_packages:
   - git-core
@@ -65,7 +47,7 @@ core_packages:
 
 # imaginary stuff (https://github.com/h2non/imaginary)
 imaginary_virtual_hosts: imaginary.skyclerk.com
-imaginary_site_dir: /sites/skyclerk/imaginary.skyclerk.com
+imaginary_site_dir: /home/ubuntu/imaginary.skyclerk.com
 imaginary_host: http://imaginary.skyclerk.com:9000
 
 # S3 Storage Stuff
@@ -94,4 +76,4 @@ backup_object_bucket: db-backups
 backup_object_region: us-east-1
 backup_object_endpoint: s3.wasabisys.com
 backup_success_ping_url: https://hc-ping.com/1077e3d1-2a89-4826-b86d-831eeb2c84d1
-backup_site_dir: /sites/skyclerk/backup.app.skyclerk.com
+backup_site_dir: /home/ubuntu/backup.app.skyclerk.com

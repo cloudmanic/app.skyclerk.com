@@ -3,9 +3,9 @@
 - name: Deploys the app.skyclerk.com to production
   hosts: web-servers
 
-  become: yes
+  # become: yes
 
-  become_user: skyclerk
+  # become_user: ubuntu
 
   roles:
     - app

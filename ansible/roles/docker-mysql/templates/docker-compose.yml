@@ -14,7 +14,7 @@ services:
       - {{ row.port_mapping }}:3306   
     
     volumes:
-      - /sites/mysql/{{ row.name }}_data:/var/lib/mysql
+      - {{ docker_mysql_dir }}/{{ row.name }}_data:/var/lib/mysql
     
     restart: always
     
