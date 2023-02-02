@@ -57,10 +57,10 @@ object_endpoint: s3.amazonaws.com
 object_base_url: https://cdn.skyclerk.com
 
 # Backup configs
-backup_uid: 1004
-backup_gid: 1004
-backup_user: skyclerk
-backup_group: skyclerk
+backup_uid: 1000
+backup_gid: 1000
+backup_user: ubuntu
+backup_group: ubuntu
 backup_db_port: 3306
 backup_db_host: mariadb-10.2
 backup_db_name: app_skyclerk_com

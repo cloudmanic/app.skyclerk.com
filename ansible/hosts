@@ -1,3 +1,2 @@
 [web-servers]
-#app.skyclerk.com ansible_user=spicer
-159.65.244.113 ansible_user=ubuntu
+app.skyclerk.com ansible_user=ubuntu
