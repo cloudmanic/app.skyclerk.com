@@ -20,31 +20,6 @@
 	<link rel="shortcut icon" type="image/x-icon" href="assets/images/favicon.ico">
 	<link rel="stylesheet" type="text/css" href="assets/css/bundle.css">
 
-	<!-- Matomo -->
-	<script type="text/javascript">
-		var _paq = window._paq || [];
-		/* tracker methods like "setCustomDimension" should be called before "trackPageView" */
-		_paq.push(["setDocumentTitle", document.domain + "/" + document.title]);
-		_paq.push(["setCookieDomain", "*.skyclerk.com"]);
-		_paq.push(["setDomains", ["*.skyclerk.com", "*.app.skyclerk.com"]]);
-		_paq.push(['trackPageView']);
-		_paq.push(['enableLinkTracking']);
-		(function() {
-			var u = "//piwik.cloudmanic.com/";
-			_paq.push(['setTrackerUrl', u + 'matomo.php']);
-			_paq.push(['setSiteId', '9']);
-			var d = document,
-				g = d.createElement('script'),
-				s = d.getElementsByTagName('script')[0];
-			g.type = 'text/javascript';
-			g.async = true;
-			g.defer = true;
-			g.src = u + 'matomo.js';
-			s.parentNode.insertBefore(g, s);
-		})();
-
-	</script>
-	<!-- End Matomo Code -->
 
 	<!-- start Mixpanel -->
 	<script type="text/javascript">
@@ -115,6 +90,8 @@
 
 	</script>
 	<!-- end Mixpanel -->
+
+	<script defer data-domain="skyclerk.com" src="https://plausible.io/js/script.js"></script>
 </head>
 
 <body>
