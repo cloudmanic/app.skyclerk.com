@@ -10,12 +10,10 @@ package models
 
 import (
 	"flag"
-	"fmt"
 	"os"
 	"path/filepath"
 	"runtime"
 
-	_ "github.com/go-sql-driver/mysql"
 	_ "github.com/mattn/go-sqlite3"
 	"github.com/jinzhu/gorm"
 	env "github.com/jpfuentes2/go-env"
@@ -30,6 +28,33 @@ func init() {
 	basepath := filepath.Dir(b)
 	envPath := filepath.Join(basepath, "..", ".env")
 	env.ReadEnv(envPath)
+	
+	// Set defaults for testing when environment variables are not set
+	setDefaultIfEmpty("APP_ENV", "test")
+	setDefaultIfEmpty("STRIPE_CLIENT_ID", "ca_test_default")
+	setDefaultIfEmpty("STRIPE_SECRET_KEY", "sk_test_default")
+	setDefaultIfEmpty("APP_URL", "http://localhost:8080")
+	setDefaultIfEmpty("SITE_URL", "http://localhost:4200")
+	setDefaultIfEmpty("ENCRYPTION_KEY", "test-encryption-key-32-characters")
+	setDefaultIfEmpty("POSTMARK_SERVER_KEY", "test-postmark-server-key")
+	setDefaultIfEmpty("POSTMARK_ACCOUNT_KEY", "test-postmark-account-key")
+	setDefaultIfEmpty("MAILGUN_DOMAIN", "test.example.com")
+	setDefaultIfEmpty("MAILGUN_API_KEY", "test-mailgun-key")
+	setDefaultIfEmpty("SENDY_API_KEY", "test-sendy-key")
+	setDefaultIfEmpty("SLACK_URL", "")
+	setDefaultIfEmpty("OBJECT_BASE_URL", "http://127.0.0.1:9000")
+	setDefaultIfEmpty("OBJECT_ACCESS_KEY_ID", "test_access_key")
+	setDefaultIfEmpty("OBJECT_SECRET_ACCESS_KEY", "test_secret_key")
+	setDefaultIfEmpty("OBJECT_ENDPOINT", "127.0.0.1:9000")
+	setDefaultIfEmpty("OBJECT_BUCKET", "test-bucket")
+	setDefaultIfEmpty("CACHE_DIR", "/tmp/skyclerk-cache")
+}
+
+// setDefaultIfEmpty sets an environment variable to a default value if it's not already set
+func setDefaultIfEmpty(key, defaultValue string) {
+	if os.Getenv(key) == "" {
+		os.Setenv(key, defaultValue)
+	}
 }
 
 //
@@ -39,48 +64,27 @@ func NewDB() (*DB, error) {
 	var db *gorm.DB
 	var err error
 
-	// Check which database driver to use
-	driver := os.Getenv("DB_DRIVER")
-	if driver == "" {
-		driver = "sqlite3" // Default to SQLite
-	}
-
-	switch driver {
-	case "sqlite3":
-		dbPath := os.Getenv("DB_PATH")
-		if dbPath == "" {
-			// Create default path in cache/sqlite directory
-			_, b, _, _ := runtime.Caller(0)
-			basepath := filepath.Dir(b)
-			cacheDir := filepath.Join(basepath, "..", "cache", "sqlite")
-			
-			// Create directory if it doesn't exist
-			os.MkdirAll(cacheDir, 0755)
-			
-			dbPath = filepath.Join(cacheDir, "skyclerk.db")
-			
-			// Is this a testing run?
-			if flag.Lookup("test.v") != nil {
-				dbPath = filepath.Join(cacheDir, "skyclerk_testing.db")
-			}
-		}
+	// Set up SQLite database path
+	dbPath := os.Getenv("DB_PATH")
+	if dbPath == "" {
+		// Create default path in cache/sqlite directory
+		_, b, _, _ := runtime.Caller(0)
+		basepath := filepath.Dir(b)
+		cacheDir := filepath.Join(basepath, "..", "cache", "sqlite")
 		
-		db, err = gorm.Open("sqlite3", dbPath)
+		// Create directory if it doesn't exist
+		os.MkdirAll(cacheDir, 0755)
 		
-	case "mysql":
-		dbName := os.Getenv("DB_DATABASE")
-
+		dbPath = filepath.Join(cacheDir, "skyclerk.db")
+		
 		// Is this a testing run?
 		if flag.Lookup("test.v") != nil {
-			dbName = os.Getenv("DB_DATABASE") + "_testing"
+			dbPath = filepath.Join(cacheDir, "skyclerk_testing.db")
 		}
-
-		// Connect to Mysql
-		db, err = gorm.Open("mysql", os.Getenv("DB_USERNAME")+":"+os.Getenv("DB_PASSWORD")+"@"+os.Getenv("DB_HOST")+"/"+dbName+"?charset=utf8&parseTime=true&loc=UTC")
-		
-	default:
-		return nil, fmt.Errorf("unsupported database driver: %s", driver)
 	}
+	
+	// Connect to SQLite
+	db, err = gorm.Open("sqlite3", dbPath)
 
 	if err != nil {
 		return nil, err
@@ -106,6 +110,9 @@ func NewDB() (*DB, error) {
 // doMigrations - Run our migrations
 //
 func doMigrations(db *gorm.DB) {
+	// Disable logging temporarily to avoid index warnings
+	db.LogMode(false)
+	
 	db.AutoMigrate(&LabelsToLedger{}) // Must be first.
 	db.AutoMigrate(&FilesToLedger{})  // Must be first.
 	db.AutoMigrate(&Activity{})
@@ -123,6 +130,9 @@ func doMigrations(db *gorm.DB) {
 	db.AutoMigrate(&Billing{})
 	db.AutoMigrate(&ForgotPassword{})
 	db.AutoMigrate(&ConnectedAccounts{})
+	
+	// Re-enable logging
+	db.LogMode(true)
 }
 
 /* End File */

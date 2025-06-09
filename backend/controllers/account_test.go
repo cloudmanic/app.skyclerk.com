@@ -814,7 +814,8 @@ func TestNewAccount01(t *testing.T) {
 //
 func TestUpdateAccountStripeToken01(t *testing.T) {
 	// Skip if no Stripe key configured
-	if os.Getenv("STRIPE_SECRET_KEY") == "" || os.Getenv("STRIPE_SECRET_KEY") == "sk_test_1234567890" {
+	stripeKey := os.Getenv("STRIPE_SECRET_KEY")
+	if stripeKey == "" || stripeKey == "sk_test_1234567890" || stripeKey == "sk_test_default" {
 		t.Skip("Skipping test - no valid STRIPE_SECRET_KEY configured")
 	}
 	
@@ -889,7 +890,8 @@ func TestUpdateAccountStripeToken01(t *testing.T) {
 //
 func TestUpdateAccountStripeToken02(t *testing.T) {
 	// Skip if no Stripe key configured
-	if os.Getenv("STRIPE_SECRET_KEY") == "" || os.Getenv("STRIPE_SECRET_KEY") == "sk_test_1234567890" {
+	stripeKey := os.Getenv("STRIPE_SECRET_KEY")
+	if stripeKey == "" || stripeKey == "sk_test_1234567890" || stripeKey == "sk_test_default" {
 		t.Skip("Skipping test - no valid STRIPE_SECRET_KEY configured")
 	}
 	
@@ -971,7 +973,8 @@ func TestUpdateAccountStripeToken02(t *testing.T) {
 //
 func TestChangeSubscription01(t *testing.T) {
 	// Skip if no Stripe key configured
-	if os.Getenv("STRIPE_SECRET_KEY") == "" || os.Getenv("STRIPE_SECRET_KEY") == "sk_test_1234567890" {
+	stripeKey := os.Getenv("STRIPE_SECRET_KEY")
+	if stripeKey == "" || stripeKey == "sk_test_1234567890" || stripeKey == "sk_test_default" {
 		t.Skip("Skipping test - no valid STRIPE_SECRET_KEY configured")
 	}
 	
@@ -1081,7 +1084,8 @@ func TestChangeSubscription01(t *testing.T) {
 //
 func TestGetBilling01(t *testing.T) {
 	// Skip if no Stripe key configured
-	if os.Getenv("STRIPE_SECRET_KEY") == "" || os.Getenv("STRIPE_SECRET_KEY") == "sk_test_1234567890" {
+	stripeKey := os.Getenv("STRIPE_SECRET_KEY")
+	if stripeKey == "" || stripeKey == "sk_test_1234567890" || stripeKey == "sk_test_default" {
 		t.Skip("Skipping test - no valid STRIPE_SECRET_KEY configured")
 	}
 	

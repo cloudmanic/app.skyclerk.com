@@ -16,7 +16,6 @@ require (
 	github.com/gin-gonic/gin v1.4.0
 	github.com/go-ozzo/ozzo-validation v3.6.0+incompatible
 	github.com/go-redis/redis v6.15.6+incompatible
-	github.com/go-sql-driver/mysql v1.4.1
 	github.com/golang/freetype v0.0.0-20170609003504-e2365dfdc4a0
 	github.com/h2non/filetype v1.0.10
 	github.com/jinzhu/gorm v1.9.7
@@ -64,7 +63,6 @@ require (
 	goji.io v2.0.2+incompatible // indirect
 	golang.org/x/sys v0.6.0 // indirect
 	golang.org/x/text v0.8.0 // indirect
-	google.golang.org/appengine v1.4.0 // indirect
 	gopkg.in/alexcesaro/quotedprintable.v3 v3.0.0-20150716171945-2caba252f4dc // indirect
 	gopkg.in/go-playground/validator.v8 v8.18.2 // indirect
 	gopkg.in/ini.v1 v1.67.0 // indirect

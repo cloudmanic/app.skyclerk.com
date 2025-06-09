@@ -295,7 +295,7 @@ func (t *DB) ResetUserPassword(id uint, password string) error {
 
 	// Update the database with the new password
 	if err := t.Model(&user).Update("password", hash).Update("md5_password", "").Update("md5_salt", "").Error; err != nil {
-		services.InfoMsg(err.Error() + "ResetUserPassword - Unable update the password (mysql query)")
+		services.InfoMsg(err.Error() + "ResetUserPassword - Unable to update the password (database query)")
 		return err
 	}
 

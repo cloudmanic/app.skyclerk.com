@@ -8,6 +8,7 @@
 package stripe
 
 import (
+	"os"
 	"testing"
 
 	"app.skyclerk.com/backend/library/test"
@@ -52,8 +53,9 @@ func TestSync01(t *testing.T) {
 	db.New().Preload("Contact").Preload("Category").Preload("Labels").Where("LedgerAccountId = ?", 33).Order("LedgerDate ASC").Find(&l)
 	
 	// Skip test if no stripe key is configured
-	if len(l) == 0 {
-		t.Skip("Skipping test - no STRIPE_SECRET_KEY configured")
+	stripeKey := os.Getenv("STRIPE_SECRET_KEY")
+	if len(l) == 0 || stripeKey == "sk_test_default" {
+		t.Skip("Skipping test - no valid STRIPE_SECRET_KEY configured")
 		return
 	}
 	
@@ -111,8 +113,9 @@ func TestSync02(t *testing.T) {
 	db.New().Preload("Contact").Preload("Category").Preload("Labels").Where("LedgerAccountId = ?", 33).Order("LedgerDate ASC").Find(&l)
 	
 	// Skip test if no stripe key is configured
-	if len(l) == 0 {
-		t.Skip("Skipping test - no STRIPE_SECRET_KEY configured")
+	stripeKey := os.Getenv("STRIPE_SECRET_KEY")
+	if len(l) == 0 || stripeKey == "sk_test_default" {
+		t.Skip("Skipping test - no valid STRIPE_SECRET_KEY configured")
 		return
 	}
 	
@@ -181,8 +184,9 @@ func TestSync03(t *testing.T) {
 	db.New().Preload("Contact").Preload("Category").Preload("Labels").Where("LedgerAccountId = ?", 33).Order("LedgerDate ASC").Find(&l)
 	
 	// Skip test if no stripe key is configured
-	if len(l) == 0 {
-		t.Skip("Skipping test - no STRIPE_SECRET_KEY configured")
+	stripeKey := os.Getenv("STRIPE_SECRET_KEY")
+	if len(l) == 0 || stripeKey == "sk_test_default" {
+		t.Skip("Skipping test - no valid STRIPE_SECRET_KEY configured")
 		return
 	}
 	
