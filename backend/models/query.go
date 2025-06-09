@@ -11,6 +11,7 @@ package models
 import (
 	"errors"
 	"math"
+	"os"
 	"strings"
 
 	"github.com/jinzhu/gorm"
@@ -187,9 +188,31 @@ func (t *DB) buildGenericQuery(params QueryParam) (*gorm.DB, error) {
 
 	// Set order and get query object
 	if (len(params.Order) > 0) && (len(params.Sort) > 0) {
-		query = t.Order(params.Order + " " + params.Sort)
+		// Check database driver for case-insensitive sorting
+		driver := os.Getenv("DB_DRIVER")
+		if driver == "" {
+			driver = "sqlite3"
+		}
+		
+		// For SQLite, add COLLATE NOCASE for text columns to ensure case-insensitive sorting
+		if driver == "sqlite3" && strings.Contains(params.Order, "Name") {
+			query = t.Order(params.Order + " COLLATE NOCASE " + params.Sort)
+		} else {
+			query = t.Order(params.Order + " " + params.Sort)
+		}
 	} else if len(params.Order) > 0 {
-		query = t.Order(params.Order + " ASC")
+		// Check database driver for case-insensitive sorting
+		driver := os.Getenv("DB_DRIVER")
+		if driver == "" {
+			driver = "sqlite3"
+		}
+		
+		// For SQLite, add COLLATE NOCASE for text columns to ensure case-insensitive sorting
+		if driver == "sqlite3" && strings.Contains(params.Order, "Name") {
+			query = t.Order(params.Order + " COLLATE NOCASE ASC")
+		} else {
+			query = t.Order(params.Order + " ASC")
+		}
 	}
 
 	// Are we debugging this?

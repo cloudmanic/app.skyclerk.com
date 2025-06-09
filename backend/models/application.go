@@ -18,7 +18,7 @@ type Application struct {
 	Name      string    `sql:"not null" json:"name"`
 	ClientId  string    `sql:"not null" json:"client_id"`
 	Secret    string    `sql:"not null" json:"secret"`
-	GrantType string    `sql:"not null;type:ENUM('password', 'authorization_code');default:'password'" json:"grant_type"`
+	GrantType string    `sql:"not null;default:'password'" json:"grant_type"`
 }
 
 //

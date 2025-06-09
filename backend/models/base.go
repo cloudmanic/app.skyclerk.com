@@ -10,11 +10,13 @@ package models
 
 import (
 	"flag"
+	"fmt"
 	"os"
 	"path/filepath"
 	"runtime"
 
 	_ "github.com/go-sql-driver/mysql"
+	_ "github.com/mattn/go-sqlite3"
 	"github.com/jinzhu/gorm"
 	env "github.com/jpfuentes2/go-env"
 )
@@ -34,15 +36,51 @@ func init() {
 // NewDB Setup the db connection.
 //
 func NewDB() (*DB, error) {
-	dbName := os.Getenv("DB_DATABASE")
+	var db *gorm.DB
+	var err error
 
-	// Is this a testing run?
-	if flag.Lookup("test.v") != nil {
-		dbName = os.Getenv("DB_DATABASE") + "_testing"
+	// Check which database driver to use
+	driver := os.Getenv("DB_DRIVER")
+	if driver == "" {
+		driver = "sqlite3" // Default to SQLite
 	}
 
-	// Connect to Mysql
-	db, err := gorm.Open("mysql", os.Getenv("DB_USERNAME")+":"+os.Getenv("DB_PASSWORD")+"@"+os.Getenv("DB_HOST")+"/"+dbName+"?charset=utf8&parseTime=true&loc=UTC")
+	switch driver {
+	case "sqlite3":
+		dbPath := os.Getenv("DB_PATH")
+		if dbPath == "" {
+			// Create default path in cache/sqlite directory
+			_, b, _, _ := runtime.Caller(0)
+			basepath := filepath.Dir(b)
+			cacheDir := filepath.Join(basepath, "..", "cache", "sqlite")
+			
+			// Create directory if it doesn't exist
+			os.MkdirAll(cacheDir, 0755)
+			
+			dbPath = filepath.Join(cacheDir, "skyclerk.db")
+			
+			// Is this a testing run?
+			if flag.Lookup("test.v") != nil {
+				dbPath = filepath.Join(cacheDir, "skyclerk_testing.db")
+			}
+		}
+		
+		db, err = gorm.Open("sqlite3", dbPath)
+		
+	case "mysql":
+		dbName := os.Getenv("DB_DATABASE")
+
+		// Is this a testing run?
+		if flag.Lookup("test.v") != nil {
+			dbName = os.Getenv("DB_DATABASE") + "_testing"
+		}
+
+		// Connect to Mysql
+		db, err = gorm.Open("mysql", os.Getenv("DB_USERNAME")+":"+os.Getenv("DB_PASSWORD")+"@"+os.Getenv("DB_HOST")+"/"+dbName+"?charset=utf8&parseTime=true&loc=UTC")
+		
+	default:
+		return nil, fmt.Errorf("unsupported database driver: %s", driver)
+	}
 
 	if err != nil {
 		return nil, err

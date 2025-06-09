@@ -75,3 +75,8 @@ npm run e2e        # E2E tests
 - Main app routes: `/ledger`, `/settings`, `/contacts`, `/snapclerk`
 - Auth required except for `/login`, `/register`, `/forgot-password`
 - Angular services in `frontend/src/app/services/`
+
+## Commit Message Guidelines
+- Create commit messages that are detailed and explain the purpose of the change
+- Follow a clear and consistent structure that provides context
+- Include references to related issues or tickets when applicable

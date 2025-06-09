@@ -22,6 +22,7 @@ require (
 	github.com/jinzhu/gorm v1.9.7
 	github.com/jpfuentes2/go-env v0.0.0-20150316001728-8e0a68de05f2
 	github.com/keighl/postmark v0.0.0-20180713155648-e30e577cc7fb
+	github.com/mattn/go-sqlite3 v1.14.16
 	github.com/mgutz/ansi v0.0.0-20170206155736-9520e82c474b
 	github.com/minio/minio-go v6.0.14+incompatible
 	github.com/nbio/st v0.0.0-20140626010706-e9e8d9816f32

@@ -21,8 +21,8 @@ type Activity struct {
 	AccountId   uint      `sql:"not null;index:account_id" json:"account_id"`
 	UserId      uint      `sql:"not null;index:user_id" json:"user_id"`
 	User        User      `json:"user"`
-	Action      string    `sql:"not null;type:ENUM('income', 'expense', 'contact', 'category', 'label', 'snapclerk', 'other');default:'other'" json:"action"`
-	SubAction   string    `sql:"not null;type:ENUM('create', 'update', 'delete', 'other');default:'other'" json:"sub_action"`
+	Action      string    `sql:"not null;default:'other'" json:"action"`
+	SubAction   string    `sql:"not null;default:'other'" json:"sub_action"`
 	Name        string    `sql:"not null" json:"name"`
 	Amount      float64   `sql:"not null;type:DECIMAL(12,2)" json:"amount"`
 	LedgerId    uint      `sql:"not null;index:ledger_id" json:"ledger_id"`

@@ -42,7 +42,7 @@ type Contact struct {
 	Website       string    `gorm:"column:ContactsWebsite" sql:"not null" json:"website"`
 	AccountNumber string    `gorm:"column:ContactsAccountNumber" sql:"not null" json:"account_number"`
 	Avatar        string    `gorm:"column:ContactsAvatar" sql:"not null" json:"_"`
-	AvatarChecked string    `gorm:"column:ContactsAvatarChecked" sql:"not null;type:ENUM('Yes', 'No');default:'No'" json:"_"` // This means someone has not uploaded an image we have just generated on. So we can update it if we want.
+	AvatarChecked string    `gorm:"column:ContactsAvatarChecked" sql:"not null;default:'No'" json:"_"` // This means someone has not uploaded an image we have just generated on. So we can update it if we want.
 	AvatarUrl     string    `gorm:"-" json:"avatar_url"`                                                                      // Not stored in DB.
 	Email         string    `gorm:"column:ContactsEmail" sql:"not null" json:"email"`
 	Twitter       string    `gorm:"column:ContactsTwitter" sql:"not null" json:"twitter"`
