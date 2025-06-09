@@ -118,10 +118,12 @@ func GetRandomLedger(accountId int64) models.Ledger {
 	rand.Seed(time.Now().UnixNano())
 
 	dates := []time.Time{
-		time.Date(2017, 10, 29, 17, 20, 01, 507451, time.UTC),
-		time.Date(2018, 8, 19, 17, 20, 01, 507451, time.UTC),
-		time.Date(2019, 1, 10, 17, 20, 01, 507451, time.UTC),
-		time.Date(2019, 10, 29, 17, 20, 01, 507451, time.UTC),
+		time.Date(2020, 10, 29, 17, 20, 01, 507451, time.UTC),
+		time.Date(2021, 8, 19, 17, 20, 01, 507451, time.UTC),
+		time.Date(2022, 1, 10, 17, 20, 01, 507451, time.UTC),
+		time.Date(2023, 10, 29, 17, 20, 01, 507451, time.UTC),
+		time.Date(2024, 3, 15, 17, 20, 01, 507451, time.UTC),
+		time.Date(2025, 1, 5, 17, 20, 01, 507451, time.UTC),
 	}
 	amounts := []float64{1234.56, 33.44, 99.00, 555.32, 4583.01, 3.01, 0.20, 3429.34, 823.19, -44.34, -1234.53, -10.66, -3453.12, -192.33}
 

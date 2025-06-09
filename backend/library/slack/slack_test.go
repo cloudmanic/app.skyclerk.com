@@ -7,8 +7,9 @@
 package slack
 
 import (
-	"go/build"
 	"os"
+	"path/filepath"
+	"runtime"
 	"testing"
 
 	env "github.com/jpfuentes2/go-env"
@@ -20,8 +21,13 @@ import (
 // Test - Notify
 //
 func TestNotify(t *testing.T) {
+	// Get the path to the .env file relative to this test file
+	_, b, _, _ := runtime.Caller(0)
+	basepath := filepath.Dir(b)
+	envPath := filepath.Join(basepath, "..", "..", ".env")
+	
 	// Load .env file
-	env.ReadEnv(build.Default.GOPATH + "/src/app.skyclerk.com/backend/.env")
+	env.ReadEnv(envPath)
 
 	if len(os.Getenv("SLACK_HOOK")) > 0 {
 

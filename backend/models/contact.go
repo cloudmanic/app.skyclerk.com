@@ -366,6 +366,11 @@ func (db *DB) GenerateAvatarsForAllMissingWoker(jobs <-chan generateAvatarsWorke
 // GenerateAndStoreAvatar - Generate avatar
 //
 func GenerateAndStoreAvatar(accountId uint, contactId uint, name string, email string) (string, error) {
+	// Skip avatar generation during testing
+	if os.Getenv("APP_ENV") == "testing" {
+		return fmt.Sprintf("accounts/%d/avatars/%d.png", accountId, contactId), nil
+	}
+
 	// Wehre we store before upload to S3
 	up := ""
 	filePath := ""

@@ -9,10 +9,10 @@ package admin
 import (
 	"bytes"
 	"encoding/json"
-	"go/build"
 	"io/ioutil"
 	"net/http"
 	"net/http/httptest"
+	"os"
 	"strings"
 	"testing"
 
@@ -26,9 +26,14 @@ import (
 // TestConvertSnapClerk01 - test converting a snapclerk to a ledger entry.
 //
 func TestConvertSnapClerk01(t *testing.T) {
+	// Skip if no object storage configured
+	if os.Getenv("OBJECT_ENDPOINT") == "" || os.Getenv("OBJECT_ENDPOINT") == "127.0.0.1:9000" {
+		t.Skip("Skipping test - no valid OBJECT_ENDPOINT configured")
+	}
+	
 	// test file.
 	destinationFile := "/tmp/money-2724241_1920.jpg"
-	sourceFile := build.Default.GOPATH + "/src/app.skyclerk.com/backend/library/test/files/money-2724241_1920.jpg"
+	sourceFile := test.GetTestFilePath("money-2724241_1920.jpg")
 
 	// Make a copy of test file
 	input, err := ioutil.ReadFile(sourceFile)

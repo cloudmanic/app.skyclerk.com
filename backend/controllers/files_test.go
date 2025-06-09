@@ -12,7 +12,6 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
-	"go/build"
 	"io"
 	"mime/multipart"
 	"net/http"
@@ -34,8 +33,14 @@ import (
 // Test create File 01
 //
 func TestCreateFiles01(t *testing.T) {
+	// Skip if no object storage configured for testing
+	if len(os.Getenv("OBJECT_ACCESS_KEY_ID")) == 0 || os.Getenv("OBJECT_ACCESS_KEY_ID") == "test_access_key" {
+		t.Skip("Skipping test - no object storage configured")
+		return
+	}
+
 	// test file.
-	testFile := build.Default.GOPATH + "/src/app.skyclerk.com/backend/library/test/files/Boston City Flow.jpg"
+	testFile := test.GetTestFilePath("Boston City Flow.jpg")
 
 	// Start the db connection.
 	db, dbName, _ := models.NewTestDB("")
@@ -145,8 +150,14 @@ func TestCreateFiles01(t *testing.T) {
 // Test create File 02 - File too big.
 //
 func TestCreateFiles02(t *testing.T) {
+	// Skip if no object storage configured for testing
+	if len(os.Getenv("OBJECT_ACCESS_KEY_ID")) == 0 || os.Getenv("OBJECT_ACCESS_KEY_ID") == "test_access_key" {
+		t.Skip("Skipping test - no object storage configured")
+		return
+	}
+
 	// test file.
-	testFile := build.Default.GOPATH + "/src/app.skyclerk.com/backend/library/test/files/mr_93_e.pdf"
+	testFile := test.GetTestFilePath("mr_93_e.pdf")
 
 	// Start the db connection.
 	db, dbName, _ := models.NewTestDB("")
@@ -187,8 +198,14 @@ func TestCreateFiles02(t *testing.T) {
 // Test create File 03 - Mime not supported.
 //
 func TestCreateFiles03(t *testing.T) {
+	// Skip if no object storage configured for testing
+	if len(os.Getenv("OBJECT_ACCESS_KEY_ID")) == 0 || os.Getenv("OBJECT_ACCESS_KEY_ID") == "test_access_key" {
+		t.Skip("Skipping test - no object storage configured")
+		return
+	}
+
 	// test file.
-	testFile := build.Default.GOPATH + "/src/app.skyclerk.com/backend/library/test/files/test01.txt"
+	testFile := test.GetTestFilePath("test01.txt")
 
 	// Start the db connection.
 	db, dbName, _ := models.NewTestDB("")
@@ -229,8 +246,14 @@ func TestCreateFiles03(t *testing.T) {
 // Test create File 04 - Small PDF file with cases and spaces
 //
 func TestCreateFiles04(t *testing.T) {
+	// Skip if no object storage configured for testing
+	if len(os.Getenv("OBJECT_ACCESS_KEY_ID")) == 0 || os.Getenv("OBJECT_ACCESS_KEY_ID") == "test_access_key" {
+		t.Skip("Skipping test - no object storage configured")
+		return
+	}
+
 	// test file.
-	testFile := build.Default.GOPATH + "/src/app.skyclerk.com/backend/library/test/files/Income Statement copy.pdf"
+	testFile := test.GetTestFilePath("Income Statement copy.pdf")
 
 	// Start the db connection.
 	db, dbName, _ := models.NewTestDB("")
@@ -324,8 +347,14 @@ func TestCreateFiles04(t *testing.T) {
 // Test create File 05 - Small PDF file
 //
 func TestCreateFiles05(t *testing.T) {
+	// Skip if no object storage configured for testing
+	if len(os.Getenv("OBJECT_ACCESS_KEY_ID")) == 0 || os.Getenv("OBJECT_ACCESS_KEY_ID") == "test_access_key" {
+		t.Skip("Skipping test - no object storage configured")
+		return
+	}
+
 	// test file.
-	testFile := build.Default.GOPATH + "/src/app.skyclerk.com/backend/library/test/files/apple.pdf"
+	testFile := test.GetTestFilePath("apple.pdf")
 
 	// Start the db connection.
 	db, dbName, _ := models.NewTestDB("")
@@ -377,7 +406,7 @@ func TestCreateFiles05(t *testing.T) {
 // //
 // func TestCreateFiles06(t *testing.T) {
 // 	// test file.
-// 	testFile := build.Default.GOPATH + "/src/app.skyclerk.com/backend/library/test/files/Smiling-cowboy-standing-and-holding-lasso-519719714_7360x4912.jpeg"
+// 	testFile := test.GetTestFilePath("Smiling-cowboy-standing-and-holding-lasso-519719714_7360x4912.jpeg")
 //
 // 	// Start the db connection.
 // 	db, dbName, _ := models.NewTestDB("")

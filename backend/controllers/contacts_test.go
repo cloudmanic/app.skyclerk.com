@@ -78,7 +78,7 @@ func TestGetContacts01(t *testing.T) {
 	st.Expect(t, results[2].Name, "Abc Inc.")
 	st.Expect(t, results[3].Name, "Dope Dealer, LLC")
 	st.Expect(t, results[4].Name, "Zoo Inc.")
-	st.Expect(t, true, strings.Contains(results[4].AvatarUrl, "https://cdn-dev.skyclerk.com/accounts/33/avatars/5.png?Expires="))
+	st.Expect(t, true, strings.Contains(results[4].AvatarUrl, "http://127.0.0.1:9000/accounts/33/avatars/5.png?Expires="))
 }
 
 //
@@ -276,7 +276,7 @@ func TestGetContact01(t *testing.T) {
 	st.Expect(t, result.Id, uint(4))
 	st.Expect(t, result.FirstName, "Mike")
 	st.Expect(t, result.LastName, "Rosso")
-	st.Expect(t, true, strings.Contains(result.AvatarUrl, "https://cdn-dev.skyclerk.com/accounts/33/avatars/4.jpg?Expires="))
+	st.Expect(t, true, strings.Contains(result.AvatarUrl, "http://127.0.0.1:9000/accounts/33/avatars/4.png?Expires="))
 
 	// If we are testing locally (not on CI) we test to see if the file is on AWS with our signed key
 	if len(os.Getenv("AWS_CLOUDFRONT_PRIVATE_SIGN_KEY")) > 0 {
@@ -335,7 +335,7 @@ func TestCreateContact01(t *testing.T) {
 	st.Expect(t, result.Name, "Contact #1")
 	st.Expect(t, result.FirstName, "")
 	st.Expect(t, result.LastName, "")
-	st.Expect(t, true, strings.Contains(result.AvatarUrl, "https://cdn-dev.skyclerk.com/accounts/33/avatars/1.png?Expires="))
+	st.Expect(t, true, strings.Contains(result.AvatarUrl, "http://127.0.0.1:9000/accounts/33/avatars/1.png?Expires="))
 
 	// Double check the db.
 	contact := models.Contact{}

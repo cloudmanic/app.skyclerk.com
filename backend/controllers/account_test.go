@@ -813,6 +813,11 @@ func TestNewAccount01(t *testing.T) {
 // TestUpdateAccountStripeToken01 tests add a stripe credit card
 //
 func TestUpdateAccountStripeToken01(t *testing.T) {
+	// Skip if no Stripe key configured
+	if os.Getenv("STRIPE_SECRET_KEY") == "" || os.Getenv("STRIPE_SECRET_KEY") == "sk_test_1234567890" {
+		t.Skip("Skipping test - no valid STRIPE_SECRET_KEY configured")
+	}
+	
 	// Start the db connection.
 	db, dbName, _ := models.NewTestDB("")
 	defer models.TestingTearDown(db, dbName)
@@ -883,6 +888,11 @@ func TestUpdateAccountStripeToken01(t *testing.T) {
 // TestUpdateAccountStripeToken02 tests updating a stripe credit card with a user who already has a subscription
 //
 func TestUpdateAccountStripeToken02(t *testing.T) {
+	// Skip if no Stripe key configured
+	if os.Getenv("STRIPE_SECRET_KEY") == "" || os.Getenv("STRIPE_SECRET_KEY") == "sk_test_1234567890" {
+		t.Skip("Skipping test - no valid STRIPE_SECRET_KEY configured")
+	}
+	
 	// Start the db connection.
 	db, dbName, _ := models.NewTestDB("")
 	defer models.TestingTearDown(db, dbName)
@@ -960,6 +970,11 @@ func TestUpdateAccountStripeToken02(t *testing.T) {
 // TestChangeSubscription01 test to change plans once you already have one.
 //
 func TestChangeSubscription01(t *testing.T) {
+	// Skip if no Stripe key configured
+	if os.Getenv("STRIPE_SECRET_KEY") == "" || os.Getenv("STRIPE_SECRET_KEY") == "sk_test_1234567890" {
+		t.Skip("Skipping test - no valid STRIPE_SECRET_KEY configured")
+	}
+	
 	// Start the db connection.
 	db, dbName, _ := models.NewTestDB("")
 	defer models.TestingTearDown(db, dbName)
@@ -1065,6 +1080,11 @@ func TestChangeSubscription01(t *testing.T) {
 // TestGetBilling01 - test get billing
 //
 func TestGetBilling01(t *testing.T) {
+	// Skip if no Stripe key configured
+	if os.Getenv("STRIPE_SECRET_KEY") == "" || os.Getenv("STRIPE_SECRET_KEY") == "sk_test_1234567890" {
+		t.Skip("Skipping test - no valid STRIPE_SECRET_KEY configured")
+	}
+	
 	// Start the db connection.
 	db, dbName, _ := models.NewTestDB("")
 	defer models.TestingTearDown(db, dbName)

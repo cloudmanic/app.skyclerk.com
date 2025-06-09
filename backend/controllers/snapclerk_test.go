@@ -11,7 +11,6 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
-	"go/build"
 	"io"
 	"mime/multipart"
 	"net/http"
@@ -85,8 +84,14 @@ func TestGetSnapClerkUsage01(t *testing.T) {
 // TestCreateSnapClerk01 - Test create snapclerk 01
 //
 func TestCreateSnapClerk01(t *testing.T) {
+	// Skip if no object storage configured for testing
+	if len(os.Getenv("OBJECT_ACCESS_KEY_ID")) == 0 || os.Getenv("OBJECT_ACCESS_KEY_ID") == "test_access_key" {
+		t.Skip("Skipping test - no object storage configured")
+		return
+	}
+
 	// test file.
-	testFile := build.Default.GOPATH + "/src/app.skyclerk.com/backend/library/test/files/Image 2019-04-19 at 10.10.22 AM.png"
+	testFile := test.GetTestFilePath("Image 2019-04-19 at 10.10.22 AM.png")
 
 	// Start the db connection.
 	db, dbName, _ := models.NewTestDB("testing_db")
@@ -262,8 +267,8 @@ func TestGetSnapClerk01(t *testing.T) {
 		st.Expect(t, row.File.Type, dMap[row.Id].File.Type)
 		st.Expect(t, true, strings.Contains(row.File.Url, "?Expires="))
 		st.Expect(t, true, strings.Contains(row.File.Thumb600By600Url, "?Expires="))
-		st.Expect(t, true, strings.Contains(row.File.Url, "https://cdn-dev.skyclerk.com/accounts/33"))
-		st.Expect(t, true, strings.Contains(row.File.Thumb600By600Url, "https://cdn-dev.skyclerk.com/accounts/33"))
+		st.Expect(t, true, strings.Contains(row.File.Url, "http://127.0.0.1:9000/accounts/33"))
+		st.Expect(t, true, strings.Contains(row.File.Thumb600By600Url, "http://127.0.0.1:9000/accounts/33"))
 
 		// Verfiy default Order
 		if key > 0 {

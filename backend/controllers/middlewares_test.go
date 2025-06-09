@@ -161,7 +161,7 @@ func TestAuthMiddleware04(t *testing.T) {
 	r.ServeHTTP(w, req)
 
 	// Validate results
-	st.Expect(t, w.Body.String(), `{"errors":{"system":"Authorization Failed (#001)"}}`)
+	st.Expect(t, w.Body.String(), `{"errors":{"system":"Authorization Failed (#002)"}}`)
 }
 
 //

@@ -10,8 +10,9 @@ package models
 
 import (
 	"flag"
-	"go/build"
 	"os"
+	"path/filepath"
+	"runtime"
 
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/jinzhu/gorm"
@@ -22,7 +23,11 @@ import (
 // Start up the model.
 //
 func init() {
-	env.ReadEnv(build.Default.GOPATH + "/src/app.skyclerk.com/backend/.env")
+	// Get the path to the .env file relative to this source file
+	_, b, _, _ := runtime.Caller(0)
+	basepath := filepath.Dir(b)
+	envPath := filepath.Join(basepath, "..", ".env")
+	env.ReadEnv(envPath)
 }
 
 //
