@@ -32,7 +32,7 @@ func main() {
 	defer db.Close()
 
 	// Start cache
-	cache.StartCache()
+	cache.StartCache(db)
 
 	// See if this a command. If so run the command and do not start the app.
 	status := cmd.Run(db)

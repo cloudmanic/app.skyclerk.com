@@ -21,14 +21,8 @@ var (
 //
 // StartCache - startup SQLite Cache
 //
-func StartCache() {
-	// Setup database connection
-	var err error
-	db, err = models.NewDB()
-
-	if err != nil {
-		services.Fatal(err)
-	}
+func StartCache(database *models.DB) {
+	db = database
 }
 
 //

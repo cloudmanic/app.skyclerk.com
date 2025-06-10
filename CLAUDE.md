@@ -84,3 +84,6 @@ npm run e2e        # E2E tests
 
 ## Development Best Practices
 - After any major work always run all tests and make sure there are no issues
+
+## Testing Memories
+- When you test builds, make sure you clean up the build after
