@@ -45,14 +45,21 @@ COPY backend/ ./
 # Build the application
 RUN CGO_ENABLED=1 go build -o skyclerk .
 
-# Stage 3: Runtime Image
+# Stage 3: Extract imaginary binary from Docker image
+FROM --platform=linux/amd64 h2non/imaginary:1.1.0 AS imaginary-extractor
+
+# Stage 4: Runtime Image with Imaginary
 FROM debian:bullseye-slim
 
-# Install runtime dependencies
+# Install runtime dependencies including supervisor for multi-process management
 RUN apt-get update && apt-get install -y \
     ca-certificates \
     sqlite3 \
+    supervisor \
     && rm -rf /var/lib/apt/lists/*
+
+# Copy imaginary binary from the official Docker image (it's at /bin/imaginary in the image)
+COPY --from=imaginary-extractor /bin/imaginary /usr/local/bin/imaginary
 
 # Create app directory
 WORKDIR /app
@@ -67,8 +74,32 @@ COPY --from=frontend-builder /app/centcom/dist ./centcom
 # Create directory for SQLite database
 RUN mkdir -p /app/data
 
-# Expose port
-EXPOSE 8080
+# Create supervisor configuration
+RUN echo '[supervisord]' > /etc/supervisor/conf.d/skyclerk.conf && \
+    echo 'nodaemon=true' >> /etc/supervisor/conf.d/skyclerk.conf && \
+    echo 'user=root' >> /etc/supervisor/conf.d/skyclerk.conf && \
+    echo '' >> /etc/supervisor/conf.d/skyclerk.conf && \
+    echo '[program:skyclerk]' >> /etc/supervisor/conf.d/skyclerk.conf && \
+    echo 'command=/app/skyclerk' >> /etc/supervisor/conf.d/skyclerk.conf && \
+    echo 'directory=/app' >> /etc/supervisor/conf.d/skyclerk.conf && \
+    echo 'autostart=true' >> /etc/supervisor/conf.d/skyclerk.conf && \
+    echo 'autorestart=true' >> /etc/supervisor/conf.d/skyclerk.conf && \
+    echo 'stdout_logfile=/dev/stdout' >> /etc/supervisor/conf.d/skyclerk.conf && \
+    echo 'stdout_logfile_maxbytes=0' >> /etc/supervisor/conf.d/skyclerk.conf && \
+    echo 'stderr_logfile=/dev/stderr' >> /etc/supervisor/conf.d/skyclerk.conf && \
+    echo 'stderr_logfile_maxbytes=0' >> /etc/supervisor/conf.d/skyclerk.conf && \
+    echo '' >> /etc/supervisor/conf.d/skyclerk.conf && \
+    echo '[program:imaginary]' >> /etc/supervisor/conf.d/skyclerk.conf && \
+    echo 'command=/usr/local/bin/imaginary -concurrency 50 -enable-url-source -port 9000' >> /etc/supervisor/conf.d/skyclerk.conf && \
+    echo 'autostart=true' >> /etc/supervisor/conf.d/skyclerk.conf && \
+    echo 'autorestart=true' >> /etc/supervisor/conf.d/skyclerk.conf && \
+    echo 'stdout_logfile=/dev/stdout' >> /etc/supervisor/conf.d/skyclerk.conf && \
+    echo 'stdout_logfile_maxbytes=0' >> /etc/supervisor/conf.d/skyclerk.conf && \
+    echo 'stderr_logfile=/dev/stderr' >> /etc/supervisor/conf.d/skyclerk.conf && \
+    echo 'stderr_logfile_maxbytes=0' >> /etc/supervisor/conf.d/skyclerk.conf
+
+# Expose ports for both services
+EXPOSE 8080 9000
 
 # Set environment variables
 ENV GIN_MODE=release
@@ -76,9 +107,10 @@ ENV DB_PATH=/app/data/skyclerk.db
 ENV HTTP_PORT=8080
 ENV SITE_URL=http://localhost:8080
 ENV HTTP_LOG_REQUESTS=true
+ENV IMAGINARY_HOST=http://127.0.0.1:9000
 
 # We set to local because we are not doing https with this app.
 ENV APP_ENV=local
 
-# Run the application
-CMD ["./skyclerk"]
+# Run both services via supervisor
+CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/conf.d/skyclerk.conf"]
