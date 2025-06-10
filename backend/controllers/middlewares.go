@@ -9,6 +9,7 @@
 package controllers
 
 import (
+	"flag"
 	"fmt"
 	"net/http"
 	"os"
@@ -100,8 +101,8 @@ func (t *Controller) AuthUser(c *gin.Context) models.User {
 
 	if len(auth) != 2 || auth[0] != "Bearer" {
 
-		// We allow access token from the command line
-		if os.Getenv("APP_ENV") == "local" {
+		// We allow access token from the command line (but not during tests)
+		if os.Getenv("APP_ENV") == "local" && flag.Lookup("test.v") == nil {
 
 			access_token = c.Query("access_token")
 

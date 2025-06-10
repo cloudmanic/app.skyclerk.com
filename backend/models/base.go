@@ -14,23 +14,29 @@ import (
 	"path/filepath"
 	"runtime"
 
-	_ "github.com/mattn/go-sqlite3"
 	"github.com/jinzhu/gorm"
 	env "github.com/jpfuentes2/go-env"
+	_ "github.com/mattn/go-sqlite3"
 )
 
-//
 // Start up the model.
-//
 func init() {
-	// Get the path to the .env file relative to this source file
-	_, b, _, _ := runtime.Caller(0)
-	basepath := filepath.Dir(b)
-	envPath := filepath.Join(basepath, "..", ".env")
-	env.ReadEnv(envPath)
-	
+	// Only load .env file if we're not in a test environment
+	if flag.Lookup("test.v") == nil {
+		// Get the path to the .env file relative to this source file
+		_, b, _, _ := runtime.Caller(0)
+		basepath := filepath.Dir(b)
+		envPath := filepath.Join(basepath, "..", ".env")
+		env.ReadEnv(envPath)
+	}
+
 	// Set defaults for testing when environment variables are not set
-	setDefaultIfEmpty("APP_ENV", "test")
+	// Force APP_ENV to test during tests to ensure consistent behavior
+	if flag.Lookup("test.v") != nil {
+		os.Setenv("APP_ENV", "test")
+	} else {
+		setDefaultIfEmpty("APP_ENV", "test")
+	}
 	setDefaultIfEmpty("STRIPE_CLIENT_ID", "ca_test_default")
 	setDefaultIfEmpty("STRIPE_SECRET_KEY", "sk_test_default")
 	setDefaultIfEmpty("APP_URL", "http://localhost:8080")
@@ -48,6 +54,11 @@ func init() {
 	setDefaultIfEmpty("OBJECT_ENDPOINT", "127.0.0.1:9000")
 	setDefaultIfEmpty("OBJECT_BUCKET", "test-bucket")
 	setDefaultIfEmpty("CACHE_DIR", "/tmp/skyclerk-cache")
+	// Set font path relative to this source file
+	_, b, _, _ := runtime.Caller(0)
+	basepath := filepath.Dir(b)
+	fontPath := filepath.Join(basepath, "..", "..", "fonts")
+	setDefaultIfEmpty("FONT_PATH", fontPath)
 }
 
 // setDefaultIfEmpty sets an environment variable to a default value if it's not already set
@@ -57,9 +68,7 @@ func setDefaultIfEmpty(key, defaultValue string) {
 	}
 }
 
-//
 // NewDB Setup the db connection.
-//
 func NewDB() (*DB, error) {
 	var db *gorm.DB
 	var err error
@@ -71,24 +80,27 @@ func NewDB() (*DB, error) {
 		_, b, _, _ := runtime.Caller(0)
 		basepath := filepath.Dir(b)
 		cacheDir := filepath.Join(basepath, "..", "cache", "sqlite")
-		
+
 		// Create directory if it doesn't exist
 		os.MkdirAll(cacheDir, 0755)
-		
+
 		dbPath = filepath.Join(cacheDir, "skyclerk.db")
-		
+
 		// Is this a testing run?
 		if flag.Lookup("test.v") != nil {
 			dbPath = filepath.Join(cacheDir, "skyclerk_testing.db")
 		}
 	}
-	
+
 	// Connect to SQLite
 	db, err = gorm.Open("sqlite3", dbPath)
 
 	if err != nil {
 		return nil, err
 	}
+
+	// Set GORM log mode to silent to suppress AutoMigrate warnings
+	db.LogMode(false)
 
 	// Ping make sure the server is up.
 	if err = db.DB().Ping(); err != nil {
@@ -106,13 +118,8 @@ func NewDB() (*DB, error) {
 	return &DB{db}, nil
 }
 
-//
 // doMigrations - Run our migrations
-//
 func doMigrations(db *gorm.DB) {
-	// Disable logging temporarily to avoid index warnings
-	db.LogMode(false)
-	
 	db.AutoMigrate(&LabelsToLedger{}) // Must be first.
 	db.AutoMigrate(&FilesToLedger{})  // Must be first.
 	db.AutoMigrate(&Activity{})
@@ -130,9 +137,7 @@ func doMigrations(db *gorm.DB) {
 	db.AutoMigrate(&Billing{})
 	db.AutoMigrate(&ForgotPassword{})
 	db.AutoMigrate(&ConnectedAccounts{})
-	
-	// Re-enable logging
-	db.LogMode(true)
+	db.AutoMigrate(&Cache{})
 }
 
 /* End File */

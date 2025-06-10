@@ -2,39 +2,6 @@ version: '2.1'
 
 services:
 
-  # mariadb 10.2
-  mariadb102:
-    image: mariadb:10.2
-
-    container_name: mariadb-10.2.app.skyclerk.com
-
-    ports:
-      - 127.0.0.1:9306:3306
-
-    volumes:
-      - ./mariadb102_data:/var/lib/mysql
-
-    environment:
-      MYSQL_DATABASE: app_skyclerk_com
-      MYSQL_ROOT_PASSWORD: foobar
-
-  # mariadb 10.2 Unit Testing DB
-  mariadb102Testing:
-    image: mariadb:10.2
-
-    container_name: mariadb-10.20-testing.app.skyclerk.com
-
-    ports:
-      - 127.0.0.1:9907:3306
-
-    # Memory file system, vs storing to the file system. Maybe don't need just delete container when done.
-    tmpfs:
-      - /var/lib/mysql
-
-    environment:
-      MYSQL_DATABASE: testing_db
-      MYSQL_ROOT_PASSWORD: foobar
-
   # Mailhog
   mailhog:
 
@@ -45,15 +12,3 @@ services:
     ports:
       - 127.0.0.1:9025:8025
       - 127.0.0.1:9125:1025
-
-
-  # Redis 4.0
-  redis:
-    image: redis:5.0.4
-
-    hostname: redis.skyclerk.com
-
-    container_name: redis.skyclerk.com
-
-    ports:
-      - "127.0.0.1:9379:6379"

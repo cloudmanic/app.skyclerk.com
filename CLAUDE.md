@@ -8,8 +8,8 @@ Skyclerk is a SaaS bookkeeping application with:
 - **Backend**: Go (Gin framework) serving RESTful API at `/api/v3`
 - **Frontend**: Angular 7.2 app in `frontend/` 
 - **Admin**: Angular 8.1 app in `centcom/`
-- **Database**: MySQL/MariaDB with GORM ORM
-- **Cache**: Redis
+- **Database**: SQLite with GORM ORM
+- **Cache**: SQLite-based key-value cache
 - **File Storage**: AWS S3/CloudFront
 - **Payments**: Stripe integration
 
@@ -17,7 +17,7 @@ Skyclerk is a SaaS bookkeeping application with:
 
 ### Backend
 ```bash
-# Start local services (MySQL, Redis, Mailhog)
+# Start local services (Mailhog)
 cd backend/docker
 docker-compose up -d
 
@@ -70,6 +70,7 @@ npm run e2e        # E2E tests
 - Backend: Standard Go testing with `nbio/st` for assertions
 - Test database created/destroyed per test run
 - Mock external services with `gock`
+- Tests should never rely on a .env file Nor should it read a .env file
 
 ### Frontend Routing
 - Main app routes: `/ledger`, `/settings`, `/contacts`, `/snapclerk`
@@ -80,3 +81,6 @@ npm run e2e        # E2E tests
 - Create commit messages that are detailed and explain the purpose of the change
 - Follow a clear and consistent structure that provides context
 - Include references to related issues or tickets when applicable
+
+## Development Best Practices
+- After any major work always run all tests and make sure there are no issues

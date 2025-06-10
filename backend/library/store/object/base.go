@@ -8,6 +8,7 @@
 package object
 
 import (
+	"flag"
 	"io"
 	"os"
 	"path/filepath"
@@ -22,11 +23,14 @@ import (
 // Start up the config.
 //
 func init() {
-	// Get the path to the .env file relative to this source file
-	_, b, _, _ := runtime.Caller(0)
-	basepath := filepath.Dir(b)
-	envPath := filepath.Join(basepath, "..", "..", "..", ".env")
-	env.ReadEnv(envPath)
+	// Only load .env file if we're not in a test environment
+	if flag.Lookup("test.v") == nil {
+		// Get the path to the .env file relative to this source file
+		_, b, _, _ := runtime.Caller(0)
+		basepath := filepath.Dir(b)
+		envPath := filepath.Join(basepath, "..", "..", "..", ".env")
+		env.ReadEnv(envPath)
+	}
 }
 
 //

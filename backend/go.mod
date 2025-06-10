@@ -15,7 +15,6 @@ require (
 	github.com/gin-gonic/autotls v0.0.0-20190119125636-0b5f4fc15768
 	github.com/gin-gonic/gin v1.4.0
 	github.com/go-ozzo/ozzo-validation v3.6.0+incompatible
-	github.com/go-redis/redis v6.15.6+incompatible
 	github.com/golang/freetype v0.0.0-20170609003504-e2365dfdc4a0
 	github.com/h2non/filetype v1.0.10
 	github.com/jinzhu/gorm v1.9.7

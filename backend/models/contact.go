@@ -10,6 +10,7 @@ package models
 
 import (
 	"errors"
+	"flag"
 	"fmt"
 	"os"
 	"strings"
@@ -367,7 +368,7 @@ func (db *DB) GenerateAvatarsForAllMissingWoker(jobs <-chan generateAvatarsWorke
 //
 func GenerateAndStoreAvatar(accountId uint, contactId uint, name string, email string) (string, error) {
 	// Skip avatar generation during testing
-	if os.Getenv("APP_ENV") == "test" {
+	if flag.Lookup("test.v") != nil {
 		return fmt.Sprintf("accounts/%d/avatars/%d.png", accountId, contactId), nil
 	}
 

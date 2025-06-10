@@ -1,6 +1,9 @@
 .env
+.env.production
 .DS_Store
 vendor/
+mysql_data_imported.sql
+app_skyclerk_com
 
 # Ansible stuff
 .vault_pass

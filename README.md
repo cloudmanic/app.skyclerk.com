@@ -1,5 +1,12 @@
 # Skyclerk.com
 
+## Development Requirements
+
+### Frontend
+- Node.js version 12.22.2 (required for Angular 7.2 compatibility)
+  - Use `nvm use 12.22.2` if you have nvm installed
+  - Or download directly from [nodejs.org](https://nodejs.org/)
+
 # Deploying Servers
 
 * When deploying a server with Digital Ocean copy the following into the `User-Data` filed. It will run Cloud Init when the VPS boots up.

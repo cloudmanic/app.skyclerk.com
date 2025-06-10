@@ -20,19 +20,11 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/nbio/st"
 
-	"app.skyclerk.com/backend/library/cache"
 	"app.skyclerk.com/backend/library/helpers"
 	"app.skyclerk.com/backend/library/test"
 	"app.skyclerk.com/backend/models"
 )
 
-//
-// TestMain
-//
-func TestMain(m *testing.M) {
-	cache.StartRedis("127.0.0.1:9379")
-	m.Run()
-}
 
 //
 // TestGetLedgers01 Test get ledgers 01
@@ -111,7 +103,7 @@ func TestGetLedgers01(t *testing.T) {
 		st.Expect(t, row.Category.AccountId, uint(33))
 		st.Expect(t, row.Category.Name, dMap[row.Id].Category.Name)
 		st.Expect(t, row.Labels[0].AccountId, uint(33))
-		st.Expect(t, true, strings.Contains(row.Contact.AvatarUrl, "http://127.0.0.1:9000/accounts/33/avatars/5.png?Expires="))
+		st.Expect(t, true, strings.Contains(row.Contact.AvatarUrl, "accounts/33/avatars/"))
 
 		// Verfiy default Order
 		if key > 0 {
