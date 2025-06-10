@@ -1,0 +1,52 @@
+# Git
+.git
+.gitignore
+
+# Documentation
+README.md
+MIGRATION.md
+MIGRATION_QUICK_REFERENCE.md
+CLAUDE.md
+
+# Node modules and build artifacts
+frontend/node_modules
+frontend/dist
+centcom/node_modules  
+centcom/dist
+
+# Go build artifacts
+backend/builds
+backend/cache
+backend/*.exe
+backend/skyclerk
+backend/app.skyclerk.com
+
+# Development files
+.env
+.env.sample
+.vscode
+.idea
+
+# Logs
+*.log
+npm-debug.log*
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Ansible deployment files
+ansible/
+
+# Scripts
+scripts/
+migrate_db.sh
+
+# Other development artifacts
+*.tmp
+*.temp
