@@ -24,7 +24,7 @@ var app = new Vue({
         return "http://localhost:9090";
       }
 
-      return "https://app-skyclerk-com.fly.dev";
+      return "https://app.skyclerk.com";
     },
 
     // Return the client_id
