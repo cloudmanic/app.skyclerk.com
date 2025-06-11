@@ -356,7 +356,8 @@ func (t *Controller) GetLedgerSummary(c *gin.Context) {
 	lbsSql := "SELECT LabelsToLedgerLabelId AS id, LabelsName AS name, COUNT(LabelsToLedgerLabelId) AS count FROM `LabelsToLedger` INNER JOIN `Ledger` ON `LabelsToLedger`.`LabelsToLedgerLedgerId` = `Ledger`.`LedgerId` INNER JOIN `Labels` ON `LabelsToLedger`.`LabelsToLedgerLabelId` = `Labels`.`LabelsId` WHERE (LedgerAccountId = ?)"
 
 	// Build SQL for years (Notice: lower case column names)
-	yrsSql := "SELECT YEAR(LedgerDate) as year, COUNT(LedgerId) as count FROM Ledger WHERE (LedgerAccountId = ?)"
+	// SQLite uses strftime for date functions
+	yrsSql := "SELECT strftime('%Y', LedgerDate) as year, COUNT(LedgerId) as count FROM Ledger WHERE (LedgerAccountId = ?)"
 
 	// Add type filter - income
 	if c.DefaultQuery("type", "") == "income" {
@@ -375,7 +376,9 @@ func (t *Controller) GetLedgerSummary(c *gin.Context) {
 	// Add Group
 	catSql = catSql + " GROUP BY CategoriesName ORDER BY CategoriesName ASC"
 	lbsSql = lbsSql + " GROUP BY LabelsToLedgerLabelId ORDER BY LabelsName ASC"
-	yrsSql = yrsSql + " GROUP BY YEAR(LedgerDate) ORDER BY LedgerDate DESC"
+	
+	// SQLite uses strftime for date functions
+	yrsSql = yrsSql + " GROUP BY strftime('%Y', LedgerDate) ORDER BY LedgerDate DESC"
 
 	// Run query.
 	t.db.New().Raw(yrsSql, accountId).Scan(&ls.Years)

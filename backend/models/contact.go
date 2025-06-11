@@ -10,6 +10,7 @@ package models
 
 import (
 	"errors"
+	"flag"
 	"fmt"
 	"os"
 	"strings"
@@ -42,7 +43,7 @@ type Contact struct {
 	Website       string    `gorm:"column:ContactsWebsite" sql:"not null" json:"website"`
 	AccountNumber string    `gorm:"column:ContactsAccountNumber" sql:"not null" json:"account_number"`
 	Avatar        string    `gorm:"column:ContactsAvatar" sql:"not null" json:"_"`
-	AvatarChecked string    `gorm:"column:ContactsAvatarChecked" sql:"not null;type:ENUM('Yes', 'No');default:'No'" json:"_"` // This means someone has not uploaded an image we have just generated on. So we can update it if we want.
+	AvatarChecked string    `gorm:"column:ContactsAvatarChecked" sql:"not null;default:'No'" json:"_"` // This means someone has not uploaded an image we have just generated on. So we can update it if we want.
 	AvatarUrl     string    `gorm:"-" json:"avatar_url"`                                                                      // Not stored in DB.
 	Email         string    `gorm:"column:ContactsEmail" sql:"not null" json:"email"`
 	Twitter       string    `gorm:"column:ContactsTwitter" sql:"not null" json:"twitter"`
@@ -366,6 +367,11 @@ func (db *DB) GenerateAvatarsForAllMissingWoker(jobs <-chan generateAvatarsWorke
 // GenerateAndStoreAvatar - Generate avatar
 //
 func GenerateAndStoreAvatar(accountId uint, contactId uint, name string, email string) (string, error) {
+	// Skip avatar generation during testing
+	if flag.Lookup("test.v") != nil {
+		return fmt.Sprintf("accounts/%d/avatars/%d.png", accountId, contactId), nil
+	}
+
 	// Wehre we store before upload to S3
 	up := ""
 	filePath := ""

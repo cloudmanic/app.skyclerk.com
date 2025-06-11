@@ -12,6 +12,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/http/httptest"
+	"os"
 	"testing"
 
 	"app.skyclerk.com/backend/library/test"
@@ -25,6 +26,12 @@ import (
 // TestDoForgotPassword01 - test sending in an email and sending a forgot password link.
 //
 func TestDoForgotPassword01(t *testing.T) {
+	// Skip if no mail driver configured for testing
+	if len(os.Getenv("MAIL_DRIVER")) == 0 {
+		t.Skip("Skipping test - no mail driver configured")
+		return
+	}
+
 	// Start the db connection.
 	db, dbName, _ := models.NewTestDB("")
 	defer models.TestingTearDown(db, dbName)

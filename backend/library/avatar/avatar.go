@@ -12,18 +12,40 @@ package avatar
 
 import (
 	"bufio"
+	"flag"
 	"image"
 	"image/draw"
 	"image/png"
 	"io/ioutil"
 	"os"
+	"path/filepath"
 	"regexp"
+	"runtime"
 	"strings"
 
 	"github.com/golang/freetype"
 	"github.com/golang/freetype/truetype"
 	"golang.org/x/image/font"
 )
+
+// init sets default environment variables for avatar functionality during tests
+func init() {
+	// Only set defaults during tests
+	if flag.Lookup("test.v") != nil {
+		// Set font path relative to this source file
+		_, b, _, _ := runtime.Caller(0)
+		basepath := filepath.Dir(b)
+		fontPath := filepath.Join(basepath, "..", "..", "fonts")
+		setDefaultIfEmpty("FONT_PATH", fontPath)
+	}
+}
+
+// setDefaultIfEmpty sets an environment variable to a default value if it's not already set
+func setDefaultIfEmpty(key, defaultValue string) {
+	if os.Getenv(key) == "" {
+		os.Setenv(key, defaultValue)
+	}
+}
 
 const (
 	defaultfontFace = "Roboto-Bold.ttf" //SourceSansVariable-Roman.ttf"

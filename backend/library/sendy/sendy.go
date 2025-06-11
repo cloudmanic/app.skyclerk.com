@@ -8,6 +8,7 @@ package sendy
 
 import (
 	"errors"
+	"flag"
 	"io/ioutil"
 	"net/http"
 	"net/url"
@@ -15,6 +16,23 @@ import (
 
 	"app.skyclerk.com/backend/services"
 )
+
+// init sets default environment variables for sendy functionality during tests
+func init() {
+	// Only set defaults during tests
+	if flag.Lookup("test.v") != nil {
+		setDefaultIfEmpty("SENDY_API_KEY", "test-sendy-key")
+		setDefaultIfEmpty("SENDY_EXPIRED_LIST", "")
+		setDefaultIfEmpty("SENDY_SUBSCRIBE_LIST", "")
+	}
+}
+
+// setDefaultIfEmpty sets an environment variable to a default value if it's not already set
+func setDefaultIfEmpty(key, defaultValue string) {
+	if os.Getenv(key) == "" {
+		os.Setenv(key, defaultValue)
+	}
+}
 
 //
 // IsUnSubscribed Get a subscriber's status

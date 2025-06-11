@@ -63,37 +63,30 @@ func (db *DB) ValidateDuplicateLabelName(obj Label, accountId uint, objId uint, 
 	// trim any white space
 	lbName := strings.Trim(obj.Name, " ")
 
-	// Make sure this category is not already in use.
+	// Make sure this label is not already in use.
 	if action == "create" {
-
-		c := Label{}
-
-		if !db.New().Where("LabelsAccountId = ? AND LabelsName = ?", accountId, lbName).First(&c).RecordNotFound() {
-			return errors.New(errMsg)
-		}
-
-		// Double check casing
-		if strings.ToLower(lbName) == strings.ToLower(c.Name) {
-			return errors.New(errMsg)
-		}
-
-	} else if action == "update" {
-
-		c := Label{}
-
-		if !db.New().Where("LabelsAccountId = ? AND LabelsName = ?", accountId, lbName).First(&c).RecordNotFound() {
-
-			// Make sure it is not the same id as the one we are updating
-			if c.Id != objId {
+		var labels []Label
+		
+		// Find labels with similar names (case-insensitive check)
+		db.New().Where("LabelsAccountId = ?", accountId).Find(&labels)
+		
+		for _, c := range labels {
+			if strings.ToLower(strings.Trim(c.Name, " ")) == strings.ToLower(lbName) {
 				return errors.New(errMsg)
 			}
 		}
 
-		// Double check casing
-		if (c.Id != objId) && (strings.ToLower(lbName) == strings.ToLower(c.Name)) {
-			return errors.New(errMsg)
+	} else if action == "update" {
+		var labels []Label
+		
+		// Find labels with similar names (case-insensitive check)
+		db.New().Where("LabelsAccountId = ? AND LabelsId != ?", accountId, objId).Find(&labels)
+		
+		for _, c := range labels {
+			if strings.ToLower(strings.Trim(c.Name, " ")) == strings.ToLower(lbName) {
+				return errors.New(errMsg)
+			}
 		}
-
 	}
 
 	// All good in the hood

@@ -11,6 +11,7 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"testing"
+	"time"
 
 	"app.skyclerk.com/backend/library/helpers"
 	"app.skyclerk.com/backend/library/reports"
@@ -625,9 +626,10 @@ func TestReportsCurrentPnl01(t *testing.T) {
 
 	// Figure out our own P&L
 	total := 0.00
+	currentYear := time.Now().Format("2006")
 
 	for key := range dMap {
-		if dMap[key].Date.Format("2006") == "2020" {
+		if dMap[key].Date.Format("2006") == currentYear {
 			total = total + dMap[key].Amount
 		}
 	}
@@ -654,7 +656,7 @@ func TestReportsCurrentPnl01(t *testing.T) {
 
 	// Test results
 	st.Expect(t, err, nil)
-	st.Expect(t, results.Year, 2020)
+	st.Expect(t, results.Year, time.Now().Year())
 	st.Expect(t, helpers.Round(results.Value, 2), helpers.Round(total, 2))
 }
 

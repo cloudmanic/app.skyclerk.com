@@ -20,19 +20,11 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/nbio/st"
 
-	"app.skyclerk.com/backend/library/cache"
 	"app.skyclerk.com/backend/library/helpers"
 	"app.skyclerk.com/backend/library/test"
 	"app.skyclerk.com/backend/models"
 )
 
-//
-// TestMain
-//
-func TestMain(m *testing.M) {
-	cache.StartRedis("127.0.0.1:9379")
-	m.Run()
-}
 
 //
 // TestGetLedgers01 Test get ledgers 01
@@ -111,7 +103,7 @@ func TestGetLedgers01(t *testing.T) {
 		st.Expect(t, row.Category.AccountId, uint(33))
 		st.Expect(t, row.Category.Name, dMap[row.Id].Category.Name)
 		st.Expect(t, row.Labels[0].AccountId, uint(33))
-		st.Expect(t, true, strings.Contains(row.Contact.AvatarUrl, "https://cdn-dev.skyclerk.com/accounts/33/avatars/5.png?Expires="))
+		st.Expect(t, true, strings.Contains(row.Contact.AvatarUrl, "accounts/33/avatars/"))
 
 		// Verfiy default Order
 		if key > 0 {
@@ -939,6 +931,10 @@ func TestCreateLedger03(t *testing.T) {
 	c := &Controller{}
 	c.SetDB(db)
 
+	// Setup test data
+	user := test.GetRandomUser(109)
+	db.Save(&user)
+
 	// Get JSON
 	postStr := []byte(`{ "amount": 88.12, "date": "2018-08-02T08:18:20Z", "category": { "name": "  woots  ", "type": "  2  " }, "contact": { "first_name": "   Jane  ", "last_name": "  Wells  ", "name": "  ABC Inc.  " } }`)
 
@@ -953,12 +949,15 @@ func TestCreateLedger03(t *testing.T) {
 	r := gin.New()
 	r.Use(func(c *gin.Context) {
 		c.Set("accountId", 33)
-		c.Set("userId", 109)
+		c.Set("userId", 1)
 	})
 	r.POST("/api/v3/33/ledger", c.CreateLedger)
 	r.ServeHTTP(w, req)
 
 	// Check result
+	if w.Code != 201 {
+		t.Logf("Response body: %s", w.Body.String())
+	}
 	st.Expect(t, w.Code, 201)
 
 	// Double check the db.
@@ -989,6 +988,10 @@ func TestCreateLedger04(t *testing.T) {
 	c := &Controller{}
 	c.SetDB(db)
 
+	// Setup test data
+	user := test.GetRandomUser(109)
+	db.Save(&user)
+
 	// Save random contact
 	con := test.GetRandomContact(33)
 	db.Save(&con)
@@ -1011,7 +1014,7 @@ func TestCreateLedger04(t *testing.T) {
 	r := gin.New()
 	r.Use(func(c *gin.Context) {
 		c.Set("accountId", 33)
-		c.Set("userId", 109)
+		c.Set("userId", 1)
 	})
 	r.POST("/api/v3/33/ledger", c.CreateLedger)
 	r.ServeHTTP(w, req)

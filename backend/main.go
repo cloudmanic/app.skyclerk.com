@@ -9,16 +9,12 @@
 package main
 
 import (
-	"os"
-
 	"app.skyclerk.com/backend/cmd"
 	"app.skyclerk.com/backend/controllers"
 	"app.skyclerk.com/backend/cron"
 	"app.skyclerk.com/backend/library/cache"
 	"app.skyclerk.com/backend/models"
 	"app.skyclerk.com/backend/services"
-
-	_ "github.com/jpfuentes2/go-env/autoload"
 )
 
 //
@@ -35,8 +31,8 @@ func main() {
 	// Close db when this app dies. (This might be useless)
 	defer db.Close()
 
-	// Start redis
-	cache.StartRedis(os.Getenv("REDIS_HOST"))
+	// Start cache
+	cache.StartCache(db)
 
 	// See if this a command. If so run the command and do not start the app.
 	status := cmd.Run(db)

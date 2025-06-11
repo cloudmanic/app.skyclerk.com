@@ -9,12 +9,29 @@ package slack
 import (
 	"bytes"
 	"errors"
+	"flag"
 	"io/ioutil"
 	"net/http"
 	"os"
 
 	"app.skyclerk.com/backend/services"
 )
+
+// init sets default environment variables for slack functionality during tests
+func init() {
+	// Only set defaults during tests
+	if flag.Lookup("test.v") != nil {
+		setDefaultIfEmpty("APP_ENV", "test")
+		setDefaultIfEmpty("SLACK_URL", "")
+	}
+}
+
+// setDefaultIfEmpty sets an environment variable to a default value if it's not already set
+func setDefaultIfEmpty(key, defaultValue string) {
+	if os.Getenv(key) == "" {
+		os.Setenv(key, defaultValue)
+	}
+}
 
 //
 // Notify to slack

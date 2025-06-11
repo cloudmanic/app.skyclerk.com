@@ -13,9 +13,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-//
 // DoRoutes - Do Routes
-//
 func (t *Controller) DoRoutes(r *gin.Engine) {
 
 	// --------- API V1 sub-routes ----------- //
@@ -128,11 +126,11 @@ func (t *Controller) DoRoutes(r *gin.Engine) {
 
 	// -------- Static Files ------------ //
 
-	r.Use(static.Serve("/", static.LocalFile("/frontend", true)))
-	r.Use(static.Serve("/centcom", static.LocalFile("/centcom", true)))
-	r.Use(static.Serve("/centcom/accounts", static.LocalFile("/centcom", true)))
-	r.Use(static.Serve("/centcom/snapclerk", static.LocalFile("/centcom", true)))
-	r.NoRoute(func(c *gin.Context) { c.File("/frontend/index.html") })
+	r.Use(static.Serve("/", static.LocalFile("/app/frontend", true)))
+	r.Use(static.Serve("/centcom", static.LocalFile("/app/centcom", true)))
+	r.Use(static.Serve("/centcom/accounts", static.LocalFile("/app/centcom", true)))
+	r.Use(static.Serve("/centcom/snapclerk", static.LocalFile("/app/centcom", true)))
+	r.NoRoute(func(c *gin.Context) { c.File("/app/frontend/index.html") })
 }
 
 /* End File */

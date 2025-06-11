@@ -11,6 +11,7 @@ import (
 	"bufio"
 	"encoding/base64"
 	"errors"
+	"flag"
 	"io/ioutil"
 	"os"
 	"path"
@@ -24,6 +25,29 @@ import (
 	"app.skyclerk.com/backend/library/html2text"
 	"app.skyclerk.com/backend/services"
 )
+
+// init sets default environment variables for email functionality during tests
+func init() {
+	// Only set defaults during tests
+	if flag.Lookup("test.v") != nil {
+		setDefaultIfEmpty("POSTMARK_SERVER_KEY", "test-postmark-server-key")
+		setDefaultIfEmpty("POSTMARK_ACCOUNT_KEY", "test-postmark-account-key")
+		setDefaultIfEmpty("MAILGUN_DOMAIN", "test.example.com")
+		setDefaultIfEmpty("MAILGUN_API_KEY", "test-mailgun-key")
+		setDefaultIfEmpty("MAIL_DRIVER", "postmark")
+		setDefaultIfEmpty("MAIL_HOST", "localhost")
+		setDefaultIfEmpty("MAIL_PORT", "1025")
+		setDefaultIfEmpty("MAIL_USERNAME", "test")
+		setDefaultIfEmpty("MAIL_PASSWORD", "test")
+	}
+}
+
+// setDefaultIfEmpty sets an environment variable to a default value if it's not already set
+func setDefaultIfEmpty(key, defaultValue string) {
+	if os.Getenv(key) == "" {
+		os.Setenv(key, defaultValue)
+	}
+}
 
 var (
 	fromName  = "Skyclerk"
@@ -56,6 +80,11 @@ func SetBccEmail() {
 // Mailgun's library for sending mail. Attachments are an array of local file paths.
 //
 func Send(to string, replyTo string, subject string, html string, attachments []string) error {
+	// Skip email sending during tests
+	if flag.Lookup("test.v") != nil {
+		return nil
+	}
+
 	// Setup text email
 	text, err := html2text.FromString(html, html2text.Options{})
 

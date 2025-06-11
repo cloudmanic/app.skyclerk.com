@@ -10,42 +10,36 @@ import (
 	"encoding/json"
 	"time"
 
-	"github.com/go-redis/redis"
-
+	"app.skyclerk.com/backend/models"
 	"app.skyclerk.com/backend/services"
 )
 
 var (
-	redisConnection *redis.Client
+	db *models.DB
 )
 
 //
-// StartRedis - startup Redis
+// StartCache - startup SQLite Cache
 //
-func StartRedis(host string) {
-	// Setup Redis connection
-	redisConnection = redis.NewClient(&redis.Options{
-		Addr:     host,
-		Password: "", // no password set
-		DB:       0,  // use default DB
-	})
+func StartCache(database *models.DB) {
+	db = database
+}
 
-	// Make sure we can ping the host.
-	_, err := redisConnection.Ping().Result()
-
-	if err != nil {
-		services.Fatal(err)
-	}
+//
+// SetDB - Set the database for cache (used in testing)
+//
+func SetDB(database *models.DB) {
+	db = database
 }
 
 //
 // Delete a stored key. We do not
-// return error as if Redis is not up we should
+// return error as if the database is not up we should
 // have a massive fail.
 //
 func Delete(key string) {
-	// Delete in redis
-	err := redisConnection.Del(key).Err()
+	// Delete from cache
+	err := db.CacheDelete(key)
 
 	if err != nil {
 		services.Fatal(err)
@@ -53,8 +47,8 @@ func Delete(key string) {
 }
 
 //
-// Set Store a key value into memory. We do not
-// return error as if Redis is not up we should
+// Set Store a key value into cache. We do not
+// return error as if the database is not up we should
 // have a massive fail.
 //
 func Set(key string, value interface{}) {
@@ -65,8 +59,8 @@ func Set(key string, value interface{}) {
 		services.Fatal(err)
 	}
 
-	// Store in redis
-	err = redisConnection.Set(key, b, 0).Err()
+	// Store in cache
+	err = db.CacheSet(key, string(b))
 
 	if err != nil {
 		services.Fatal(err)
@@ -74,8 +68,8 @@ func Set(key string, value interface{}) {
 }
 
 //
-// Store a key value into memory that expires. We do not
-// return error as if Redis is not up we should
+// Store a key value into cache that expires. We do not
+// return error as if the database is not up we should
 // have a massive fail.
 //
 func SetExpire(key string, expire time.Duration, value interface{}) {
@@ -86,8 +80,11 @@ func SetExpire(key string, expire time.Duration, value interface{}) {
 		services.Fatal(err)
 	}
 
-	// Store in redis
-	err = redisConnection.Set(key, b, expire).Err()
+	// Calculate expiration time
+	expiresAt := time.Now().Add(expire)
+
+	// Store in cache
+	err = db.CacheSetWithExpiration(key, string(b), expiresAt)
 
 	if err != nil {
 		services.Fatal(err)
@@ -95,16 +92,13 @@ func SetExpire(key string, expire time.Duration, value interface{}) {
 }
 
 //
-// Get key from Redis cache
+// Get key from cache
 //
 func Get(key string, result interface{}) (bool, error) {
-	value, err := redisConnection.Get(key).Result()
+	value, err := db.CacheGet(key)
 
 	// Does not exist
-	if err == redis.Nil {
-		return false, err
-	} else if err != nil { // Error in connection
-		services.Fatal(err)
+	if err != nil {
 		return false, err
 	}
 

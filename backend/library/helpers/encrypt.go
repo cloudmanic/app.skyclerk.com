@@ -16,10 +16,26 @@ import (
 	"encoding/base64"
 	"encoding/hex"
 	"errors"
+	"flag"
 	"io"
 	"os"
 	"strings"
 )
+
+// init sets default environment variables for encryption functionality during tests
+func init() {
+	// Only set defaults during tests
+	if flag.Lookup("test.v") != nil {
+		setDefaultIfEmpty("ENCRYPTION_KEY", "test-encryption-key-32-characters")
+	}
+}
+
+// setDefaultIfEmpty sets an environment variable to a default value if it's not already set
+func setDefaultIfEmpty(key, defaultValue string) {
+	if os.Getenv(key) == "" {
+		os.Setenv(key, defaultValue)
+	}
+}
 
 //
 // Return an MD5 string

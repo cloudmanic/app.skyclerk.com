@@ -1,2 +1,0 @@
-[web-servers]
-app.skyclerk.com ansible_user=ubuntu

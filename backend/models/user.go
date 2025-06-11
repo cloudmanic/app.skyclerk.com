@@ -33,10 +33,10 @@ type User struct {
 	Password     string    `sql:"not null" json:"-"`
 	Md5Password  string    `sql:"not null" json:"-"`
 	Md5Salt      string    `sql:"not null" json:"-"`
-	Status       string    `sql:"not null;type:ENUM('Active', 'Disable');default:'Active'" json:"-"`
+	Status       string    `sql:"not null;default:'Active'" json:"-"`
 	LastActivity time.Time `sql:"not null" json:"last_activity"`
 	SignupIp     string    `sql:"not null" json:"-"`
-	Admin        string    `sql:"not null;type:ENUM('Yes', 'No');default:'No'" json:"-"`
+	Admin        string    `sql:"not null;default:'No'" json:"-"`
 	Accounts     []Account `gorm:"many2many:acct_to_users;" json:"accounts"`
 	Session      Session   `json:"-"`
 }
@@ -295,7 +295,7 @@ func (t *DB) ResetUserPassword(id uint, password string) error {
 
 	// Update the database with the new password
 	if err := t.Model(&user).Update("password", hash).Update("md5_password", "").Update("md5_salt", "").Error; err != nil {
-		services.InfoMsg(err.Error() + "ResetUserPassword - Unable update the password (mysql query)")
+		services.InfoMsg(err.Error() + "ResetUserPassword - Unable to update the password (database query)")
 		return err
 	}
 

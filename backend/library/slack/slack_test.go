@@ -7,11 +7,9 @@
 package slack
 
 import (
-	"go/build"
 	"os"
 	"testing"
 
-	env "github.com/jpfuentes2/go-env"
 	"github.com/nbio/st"
 	"gopkg.in/h2non/gock.v1"
 )
@@ -20,8 +18,7 @@ import (
 // Test - Notify
 //
 func TestNotify(t *testing.T) {
-	// Load .env file
-	env.ReadEnv(build.Default.GOPATH + "/src/app.skyclerk.com/backend/.env")
+	// Tests should not load .env file - use environment variables or defaults
 
 	if len(os.Getenv("SLACK_HOOK")) > 0 {
 

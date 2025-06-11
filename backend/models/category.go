@@ -72,34 +72,28 @@ func (db *DB) ValidateDuplicateCategoryName(cat Category, accountId uint, objId 
 
 	// Make sure this category is not already in use.
 	if action == "create" {
-
-		c := Category{}
-
-		if !db.New().Where("CategoriesAccountId = ? AND CategoriesName = ? AND CategoriesType = ?", accountId, catName, cat.Type).First(&c).RecordNotFound() {
-			return errors.New(errMsg)
-		}
-
-		// Double check casing
-		if strings.ToLower(catName) == strings.ToLower(c.Name) {
-			return errors.New(errMsg)
-		}
-
-	} else if action == "update" {
-
-		c := Category{}
-
-		if !db.New().Where("CategoriesAccountId = ? AND CategoriesName = ? AND CategoriesType = ?", accountId, catName, cat.Type).First(&c).RecordNotFound() {
-			// Make sure it is not the same id as the one we are updating
-			if c.Id != objId {
+		var categories []Category
+		
+		// Find categories with similar names (case-insensitive check)
+		db.New().Where("CategoriesAccountId = ? AND CategoriesType = ?", accountId, cat.Type).Find(&categories)
+		
+		for _, c := range categories {
+			if strings.ToLower(strings.Trim(c.Name, " ")) == strings.ToLower(catName) {
 				return errors.New(errMsg)
 			}
 		}
 
-		// Double check casing
-		if (c.Id != objId) && (strings.ToLower(catName) == strings.ToLower(c.Name)) {
-			return errors.New(errMsg)
+	} else if action == "update" {
+		var categories []Category
+		
+		// Find categories with similar names (case-insensitive check)
+		db.New().Where("CategoriesAccountId = ? AND CategoriesType = ? AND CategoriesId != ?", accountId, cat.Type, objId).Find(&categories)
+		
+		for _, c := range categories {
+			if strings.ToLower(strings.Trim(c.Name, " ")) == strings.ToLower(catName) {
+				return errors.New(errMsg)
+			}
 		}
-
 	}
 
 	// All good in the hood

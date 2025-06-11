@@ -94,8 +94,9 @@ func GetCategoriesPnL(db models.Datastore, accountId uint, start time.Time, end 
 // GetIncomeByContact - Get income by contact
 //
 func GetIncomeByContact(db models.Datastore, accountId uint, start time.Time, end time.Time, sort string) []NameValue {
-	// SQL String
-	sql := "SELECT IF(LENGTH(ContactsName)>0,ContactsName, CONCAT(ContactsFirstName, \" \", ContactsLastName)) AS name, "
+	// SQLite version - use CASE instead of IF, || instead of CONCAT
+	sql := "SELECT CASE WHEN LENGTH(ContactsName)>0 THEN ContactsName ELSE ContactsFirstName || ' ' || ContactsLastName END AS name, "
+	
 	sql = sql + "sum(LedgerAmount) AS amount "
 	sql = sql + "FROM Ledger "
 	sql = sql + "JOIN Contacts ON Contacts.ContactsId = Ledger.LedgerContactId "
@@ -124,8 +125,9 @@ func GetIncomeByContact(db models.Datastore, accountId uint, start time.Time, en
 // GetExpenseByContact - Get expense by contact
 //
 func GetExpenseByContact(db models.Datastore, accountId uint, start time.Time, end time.Time, sort string) []NameValue {
-	// SQL String
-	sql := "SELECT IF(LENGTH(ContactsName)>0,ContactsName, CONCAT(ContactsFirstName, \" \", ContactsLastName)) AS name, "
+	// SQLite version - use CASE instead of IF, || instead of CONCAT
+	sql := "SELECT CASE WHEN LENGTH(ContactsName)>0 THEN ContactsName ELSE ContactsFirstName || ' ' || ContactsLastName END AS name, "
+	
 	sql = sql + "sum(LedgerAmount) AS amount "
 	sql = sql + "FROM Ledger "
 	sql = sql + "JOIN Contacts ON Contacts.ContactsId = Ledger.LedgerContactId "
@@ -165,26 +167,22 @@ func GetPnL(db models.Datastore, accountId uint, start time.Time, end time.Time,
 		sort = "ASC"
 	}
 
-	// Build sql
+	// Build sql based on group type (SQLite syntax)
 	switch group {
 	case "month":
-		sql = "SELECT date_format(LedgerDate, '%Y-%m') AS date, SUM(LedgerAmount) AS profit, SUM(CASE WHEN LedgerAmount>0 THEN LedgerAmount ELSE 0 END) AS income, SUM(CASE WHEN LedgerAmount<0 THEN LedgerAmount ELSE 0 END) AS expense FROM Ledger WHERE LedgerAccountId = ? AND LedgerDate >= ? AND LedgerDate <= ? GROUP BY date_format(LedgerDate, '%Y-%m') ORDER BY date " + sort
+		sql = "SELECT strftime('%Y-%m', LedgerDate) AS date, SUM(LedgerAmount) AS profit, SUM(CASE WHEN LedgerAmount>0 THEN LedgerAmount ELSE 0 END) AS income, SUM(CASE WHEN LedgerAmount<0 THEN LedgerAmount ELSE 0 END) AS expense FROM Ledger WHERE LedgerAccountId = ? AND LedgerDate >= ? AND LedgerDate <= ? GROUP BY strftime('%Y-%m', LedgerDate) ORDER BY date " + sort
 
 	case "quarter":
-		sql = `SELECT CONCAT(YEAR(LedgerDate), '-Q',quarter(LedgerDate)) AS date,
+		sql = `SELECT strftime('%Y', LedgerDate) || '-Q' || CAST((CAST(strftime('%m', LedgerDate) AS INTEGER) + 2) / 3 AS TEXT) AS date,
 		SUM(LedgerAmount) AS profit,
 		SUM(CASE WHEN LedgerAmount>0 THEN LedgerAmount ELSE 0 END) AS income,
 		SUM(CASE WHEN LedgerAmount<0 THEN LedgerAmount ELSE 0 END) AS expense
-
 		FROM Ledger
-
 		WHERE LedgerAccountId = ? AND LedgerDate >= ? AND LedgerDate <= ?
-
 		GROUP BY date ORDER BY date ` + sort
 
 	case "year":
-		sql = `SELECT
-		date_format(LedgerDate, '%Y') AS date,
+		sql = `SELECT strftime('%Y', LedgerDate) AS date,
 		SUM(LedgerAmount) AS profit,
 		SUM(CASE WHEN LedgerAmount>0 THEN LedgerAmount ELSE 0 END) AS income,
 		SUM(CASE WHEN LedgerAmount<0 THEN LedgerAmount ELSE 0 END) AS expense
@@ -210,8 +208,8 @@ func GetCurrentYearPnL(db models.Datastore, accountId uint, year int) YearPnL {
 	// Struct we return
 	rt := YearPnL{}
 
-	// Build sql
-	sql := "SELECT SUM(LedgerAmount) AS value, Year(LedgerDate) AS year FROM Ledger WHERE LedgerAccountId = ? AND Year(LedgerDate) = ?"
+	// SQLite SQL
+	sql := "SELECT SUM(LedgerAmount) AS value, CAST(strftime('%Y', LedgerDate) AS INTEGER) AS year FROM Ledger WHERE LedgerAccountId = ? AND strftime('%Y', LedgerDate) = CAST(? AS TEXT)"
 
 	// Run query
 	db.New().Raw(sql, accountId, year).Scan(&rt)

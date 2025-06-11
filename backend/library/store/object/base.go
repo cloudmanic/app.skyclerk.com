@@ -8,10 +8,11 @@
 package object
 
 import (
-	"go/build"
+	"flag"
 	"io"
 	"os"
 	"path/filepath"
+	"runtime"
 
 	"app.skyclerk.com/backend/library/files"
 	env "github.com/jpfuentes2/go-env"
@@ -22,7 +23,14 @@ import (
 // Start up the config.
 //
 func init() {
-	env.ReadEnv(build.Default.GOPATH + "/src/app.skyclerk.com/backend/.env")
+	// Only load .env file if we're not in a test environment
+	if flag.Lookup("test.v") == nil {
+		// Get the path to the .env file relative to this source file
+		_, b, _, _ := runtime.Caller(0)
+		basepath := filepath.Dir(b)
+		envPath := filepath.Join(basepath, "..", "..", "..", ".env")
+		env.ReadEnv(envPath)
+	}
 }
 
 //

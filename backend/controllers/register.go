@@ -20,11 +20,9 @@ import (
 	"app.skyclerk.com/backend/services"
 )
 
-const registerStandardErrorMsg = "Something went wrong while logging into your account. Please try again or contact help@options.cafe. Sorry for the trouble."
+const registerStandardErrorMsg = "Something went wrong while logging into your account. Please try again or contact help@skyclerk.com. Sorry for the trouble."
 
-//
 // DoRegister a new account.
-//
 func (t *Controller) DoRegister(c *gin.Context) {
 	// Set response
 	if os.Getenv("APP_ENV") == "local" {

@@ -14,7 +14,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-const defaultMysqlLimit = 100
+const defaultQueryLimit = 100
 
 //
 // Get / Set standard query parms
@@ -25,13 +25,13 @@ func GetSetPagingParms(c *gin.Context) (int, int, int) {
 	limit, _ := strconv.Atoi(c.Query("limit"))
 	offset, _ := strconv.Atoi(c.Query("offset"))
 
-	// We do not allow limits over defaultMysqlLimit
-	if limit > defaultMysqlLimit {
-		limit = defaultMysqlLimit
+	// We do not allow limits over defaultQueryLimit
+	if limit > defaultQueryLimit {
+		limit = defaultQueryLimit
 	}
 
 	if limit == 0 {
-		limit = defaultMysqlLimit
+		limit = defaultQueryLimit
 	}
 
 	// Offset can't be less than 0

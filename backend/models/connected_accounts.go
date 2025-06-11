@@ -19,7 +19,7 @@ type ConnectedAccounts struct {
 	UpdatedAt               time.Time `sql:"not null" json:"-"`
 	AccountID               uint      `sql:"not null" json:"account_id"`
 	Name                    string    `sql:"not null" json:"name"`
-	Connection              string    `sql:"not null;type:ENUM('Stripe', 'Harvest');default:'Stripe'" json:"connection"`
+	Connection              string    `sql:"not null;default:'Stripe'" json:"connection"`
 	StripeUserID            string    `sql:"not null" json:"-"`
 	StripeIncomeCategoryID  uint      `sql:"not null" json:"stripe_income_category_id"`
 	StripeExpenseCategoryID uint      `sql:"not null" json:"stripe_expense_category_id"`

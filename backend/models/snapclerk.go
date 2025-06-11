@@ -29,7 +29,7 @@ type SnapClerk struct {
 	CreatedAt    time.Time `gorm:"column:SnapClerkCreatedAt" sql:"not null" json:"created_at"`
 	AddedById    uint      `gorm:"column:SnapClerkAddedById" sql:"not null" json:"added_by_id"`
 	ReviewedById uint      `gorm:"column:SnapClerkReviewedById" sql:"not null" json:"-"`
-	Status       string    `gorm:"column:SnapClerkStatus" sql:"not null;type:ENUM('Pending','Processed','Rejected');default:'Pending'" json:"status"`
+	Status       string    `gorm:"column:SnapClerkStatus" sql:"not null;default:'Pending'" json:"status"`
 	FileId       uint      `gorm:"column:SnapClerkFileId" sql:"not null" json:"file_id"`
 	File         File      `gorm:"foreignkey:SnapClerkFileId" json:"file"`
 	LedgerId     uint      `gorm:"column:SnapClerkLedgerId;index:SnapClerkLedgerId" sql:"not null" json:"ledger_id"`

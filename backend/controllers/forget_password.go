@@ -16,9 +16,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-//
 // Post back to setup a forgot password request. - Step #1 (send email request to reset)
-//
 func (t *Controller) DoForgotPassword(c *gin.Context) {
 	// Set response
 	if os.Getenv("APP_ENV") == "local" {
@@ -38,7 +36,7 @@ func (t *Controller) DoForgotPassword(c *gin.Context) {
 
 	if err != nil {
 		services.Info(err)
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Something went wrong while logging into your account. Please try again or contact help@options.cafe. Sorry for the trouble."})
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Something went wrong while logging into your account. Please try again or contact help@skyclerk.com. Sorry for the trouble."})
 		return
 	}
 
@@ -57,9 +55,7 @@ func (t *Controller) DoForgotPassword(c *gin.Context) {
 	c.JSON(http.StatusNoContent, nil)
 }
 
-//
 // Rest the password after they clicked on the email - Step #2
-//
 func (t *Controller) DoResetPassword(c *gin.Context) {
 
 	// Set response
@@ -81,7 +77,7 @@ func (t *Controller) DoResetPassword(c *gin.Context) {
 
 	if err != nil {
 		services.Info(err)
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Something went wrong while logging into your account. Please try again or contact help@options.cafe. Sorry for the trouble."})
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Something went wrong while logging into your account. Please try again or contact help@skyclerk.com. Sorry for the trouble."})
 		return
 	}
 
@@ -110,7 +106,7 @@ func (t *Controller) DoResetPassword(c *gin.Context) {
 
 	if err != nil {
 		services.Info(err)
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Something went wrong while logging into your account. Please try again or contact help@options.cafe. Sorry for the trouble."})
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Something went wrong while logging into your account. Please try again or contact help@skyclerk.com. Sorry for the trouble."})
 		return
 	}
 

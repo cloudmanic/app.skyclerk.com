@@ -16,11 +16,11 @@ type Billing struct {
 	Id                 uint      `gorm:"primary_key" json:"id"`
 	CreatedAt          time.Time `sql:"not null" json:"created_at"`
 	UpdatedAt          time.Time `sql:"not null" json:"updated_at"`
-	PaymentProcessor   string    `sql:"not null;type:ENUM('None', 'Stripe', 'Apple In-App');default:'None'" json:"payment_processor"`
-	Subscription       string    `sql:"not null;type:ENUM('Monthly', 'Yearly');default:'Monthly'" json:"subscription"`
+	PaymentProcessor   string    `sql:"not null;default:'None'" json:"payment_processor"`
+	Subscription       string    `sql:"not null;default:'Monthly'" json:"subscription"`
 	StripeCustomer     string    `sql:"not null" json:"-"`
 	StripeSubscription string    `sql:"not null" json:"-"`
-	Status             string    `sql:"not null;type:ENUM('Active', 'Disable', 'Delinquent', 'Expired', 'Trial');default:'Trial'" json:"status"`
+	Status             string    `sql:"not null;default:'Trial'" json:"status"`
 	TrialExpire        time.Time `sql:"not null" json:"trial_expire"`
 
 	// Not in DB added from stripe call

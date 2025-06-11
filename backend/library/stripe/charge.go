@@ -8,11 +8,27 @@ package stripe
 
 import (
 	"errors"
+	"flag"
 	"os"
 
 	stripe "github.com/stripe/stripe-go"
 	"github.com/stripe/stripe-go/charge"
 )
+
+// init sets default environment variables for stripe functionality during tests
+func init() {
+	// Only set defaults during tests
+	if flag.Lookup("test.v") != nil {
+		setDefaultIfEmpty("STRIPE_SECRET_KEY", "sk_test_default")
+	}
+}
+
+// setDefaultIfEmpty sets an environment variable to a default value if it's not already set
+func setDefaultIfEmpty(key, defaultValue string) {
+	if os.Getenv(key) == "" {
+		os.Setenv(key, defaultValue)
+	}
+}
 
 //
 // GetChargesByCustomer will get charges by customer.

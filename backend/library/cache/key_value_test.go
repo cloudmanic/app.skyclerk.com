@@ -13,18 +13,18 @@ import (
 	"github.com/nbio/st"
 )
 
-//
-// TestMain
-//
-func TestMain(m *testing.M) {
-	StartRedis("127.0.0.1:9379")
-	m.Run()
-}
 
 //
 // Test - Set 01
 //
 func TestSet01(t *testing.T) {
+	// Start the db connection.
+	testDB, dbName, _ := models.NewTestDB("")
+	defer models.TestingTearDown(testDB, dbName)
+
+	// Set the cache database
+	db = testDB
+	
 	// Store something in cache
 	Set("sc-testing-1", "Skyclerk is DaBomb.com")
 
@@ -42,6 +42,13 @@ func TestSet01(t *testing.T) {
 // Test - Set 02
 //
 func TestSet02(t *testing.T) {
+	// Start the db connection.
+	testDB, dbName, _ := models.NewTestDB("")
+	defer models.TestingTearDown(testDB, dbName)
+
+	// Set the cache database
+	db = testDB
+	
 	// Get a value we know we do not have
 	result := ""
 	found, _ := Get("sc-testing-not-found", &result)
@@ -55,6 +62,12 @@ func TestSet02(t *testing.T) {
 // Test - Set 03
 //
 func TestSet03(t *testing.T) {
+	// Start the db connection.
+	testDB, dbName, _ := models.NewTestDB("")
+	defer models.TestingTearDown(testDB, dbName)
+
+	// Set the cache database
+	db = testDB
 
 	// Create an Billing model.
 	b := models.Billing{
