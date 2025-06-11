@@ -57,7 +57,14 @@ RUN apt-get update && apt-get install -y \
     sqlite3 \
     supervisor \
     libvips42 \
+    wget \
     && rm -rf /var/lib/apt/lists/*
+
+# Install Litestream
+ARG LITESTREAM_VERSION=0.3.13
+RUN wget -q https://github.com/benbjohnson/litestream/releases/download/v${LITESTREAM_VERSION}/litestream-v${LITESTREAM_VERSION}-linux-amd64.deb \
+    && dpkg -i litestream-v${LITESTREAM_VERSION}-linux-amd64.deb \
+    && rm litestream-v${LITESTREAM_VERSION}-linux-amd64.deb
 
 # Copy imaginary binary from the official Docker image (it's at /bin/imaginary in the image)
 COPY --from=imaginary-extractor /bin/imaginary /usr/local/bin/imaginary
@@ -75,19 +82,47 @@ COPY --from=frontend-builder /app/centcom/dist ./centcom
 # Copy fonts directory
 COPY fonts/ ./fonts/
 
+# Copy Litestream configuration and scripts
+COPY litestream.yml /app/litestream.yml
+COPY scripts/litestream-init.sh /app/scripts/litestream-init.sh
+RUN chmod +x /app/scripts/litestream-init.sh
+
 # Create directory for SQLite database
 RUN mkdir -p /app/data
+
+# Create startup script
+RUN echo '#!/bin/bash' > /app/start.sh && \
+    echo 'set -e' >> /app/start.sh && \
+    echo '' >> /app/start.sh && \
+    echo '# Run litestream init' >> /app/start.sh && \
+    echo '/app/scripts/litestream-init.sh' >> /app/start.sh && \
+    echo '' >> /app/start.sh && \
+    echo '# Start supervisor to manage all services' >> /app/start.sh && \
+    echo 'exec /usr/bin/supervisord -c /etc/supervisor/conf.d/skyclerk.conf' >> /app/start.sh && \
+    chmod +x /app/start.sh
 
 # Create supervisor configuration
 RUN echo '[supervisord]' > /etc/supervisor/conf.d/skyclerk.conf && \
     echo 'nodaemon=true' >> /etc/supervisor/conf.d/skyclerk.conf && \
     echo 'user=root' >> /etc/supervisor/conf.d/skyclerk.conf && \
     echo '' >> /etc/supervisor/conf.d/skyclerk.conf && \
+    echo '[program:litestream]' >> /etc/supervisor/conf.d/skyclerk.conf && \
+    echo 'command=litestream replicate -config /app/litestream.yml' >> /etc/supervisor/conf.d/skyclerk.conf && \
+    echo 'directory=/app' >> /etc/supervisor/conf.d/skyclerk.conf && \
+    echo 'autostart=true' >> /etc/supervisor/conf.d/skyclerk.conf && \
+    echo 'autorestart=true' >> /etc/supervisor/conf.d/skyclerk.conf && \
+    echo 'priority=10' >> /etc/supervisor/conf.d/skyclerk.conf && \
+    echo 'stdout_logfile=/dev/stdout' >> /etc/supervisor/conf.d/skyclerk.conf && \
+    echo 'stdout_logfile_maxbytes=0' >> /etc/supervisor/conf.d/skyclerk.conf && \
+    echo 'stderr_logfile=/dev/stderr' >> /etc/supervisor/conf.d/skyclerk.conf && \
+    echo 'stderr_logfile_maxbytes=0' >> /etc/supervisor/conf.d/skyclerk.conf && \
+    echo '' >> /etc/supervisor/conf.d/skyclerk.conf && \
     echo '[program:skyclerk]' >> /etc/supervisor/conf.d/skyclerk.conf && \
     echo 'command=/app/skyclerk' >> /etc/supervisor/conf.d/skyclerk.conf && \
     echo 'directory=/app' >> /etc/supervisor/conf.d/skyclerk.conf && \
     echo 'autostart=true' >> /etc/supervisor/conf.d/skyclerk.conf && \
     echo 'autorestart=true' >> /etc/supervisor/conf.d/skyclerk.conf && \
+    echo 'priority=20' >> /etc/supervisor/conf.d/skyclerk.conf && \
     echo 'stdout_logfile=/dev/stdout' >> /etc/supervisor/conf.d/skyclerk.conf && \
     echo 'stdout_logfile_maxbytes=0' >> /etc/supervisor/conf.d/skyclerk.conf && \
     echo 'stderr_logfile=/dev/stderr' >> /etc/supervisor/conf.d/skyclerk.conf && \
@@ -97,6 +132,7 @@ RUN echo '[supervisord]' > /etc/supervisor/conf.d/skyclerk.conf && \
     echo 'command=/usr/local/bin/imaginary -concurrency 50 -enable-url-source -p 9000' >> /etc/supervisor/conf.d/skyclerk.conf && \
     echo 'autostart=true' >> /etc/supervisor/conf.d/skyclerk.conf && \
     echo 'autorestart=true' >> /etc/supervisor/conf.d/skyclerk.conf && \
+    echo 'priority=20' >> /etc/supervisor/conf.d/skyclerk.conf && \
     echo 'stdout_logfile=/dev/stdout' >> /etc/supervisor/conf.d/skyclerk.conf && \
     echo 'stdout_logfile_maxbytes=0' >> /etc/supervisor/conf.d/skyclerk.conf && \
     echo 'stderr_logfile=/dev/stderr' >> /etc/supervisor/conf.d/skyclerk.conf && \
@@ -112,5 +148,5 @@ ENV IMAGINARY_HOST=http://127.0.0.1:9000
 # We set to local because we are not doing https with this app.
 ENV APP_ENV=local
 
-# Run both services via supervisor
-CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/conf.d/skyclerk.conf"]
+# Run startup script
+CMD ["/app/start.sh"]

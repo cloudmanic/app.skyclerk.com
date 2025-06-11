@@ -44,7 +44,7 @@ Thumbs.db
 ansible/
 
 # Scripts
-scripts/
+# scripts/  # Commented out - needed for Litestream scripts in Docker build
 migrate_db.sh
 
 # Other development artifacts
