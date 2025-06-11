@@ -22,9 +22,7 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
-//
 // TestDoRegister01 Test registring a new user.
-//
 func TestDoRegister01(t *testing.T) {
 	// Start the db connection.
 	db, dbName, _ := models.NewTestDB("")
@@ -107,9 +105,7 @@ func TestDoRegister01(t *testing.T) {
 	st.Expect(t, err, nil)
 }
 
-//
 // TestDoRegister02 - Error 01 (bad email)
-//
 func TestDoRegister02(t *testing.T) {
 	// Start the db connection.
 	db, dbName, _ := models.NewTestDB("")
@@ -144,9 +140,7 @@ func TestDoRegister02(t *testing.T) {
 	st.Expect(t, w.Body.String(), `{"error":"Email address is not a valid format."}`)
 }
 
-//
 // TestDoRegister03 - Error 02 (no first)
-//
 func TestDoRegister03(t *testing.T) {
 	// Start the db connection.
 	db, dbName, _ := models.NewTestDB("")
@@ -181,9 +175,7 @@ func TestDoRegister03(t *testing.T) {
 	st.Expect(t, w.Body.String(), `{"error":"First name field is required."}`)
 }
 
-//
 // TestDoRegister04 - Error 03 (bad password)
-//
 func TestDoRegister04(t *testing.T) {
 	// Start the db connection.
 	db, dbName, _ := models.NewTestDB("")
@@ -218,9 +210,7 @@ func TestDoRegister04(t *testing.T) {
 	st.Expect(t, w.Body.String(), `{"error":"The password filed must be at least 6 characters long."}`)
 }
 
-//
 // TestDoRegister05 - Error 03 (no last)
-//
 func TestDoRegister05(t *testing.T) {
 	// Start the db connection.
 	db, dbName, _ := models.NewTestDB("")
@@ -255,9 +245,7 @@ func TestDoRegister05(t *testing.T) {
 	st.Expect(t, w.Body.String(), `{"error":"Last name field is required."}`)
 }
 
-//
 // TestDoRegister06 - Error 04 (bad client id)
-//
 func TestDoRegister06(t *testing.T) {
 	// Start the db connection.
 	db, dbName, _ := models.NewTestDB("")
@@ -289,12 +277,10 @@ func TestDoRegister06(t *testing.T) {
 
 	// Test results
 	st.Expect(t, w.Code, 400)
-	st.Expect(t, w.Body.String(), `{"error":"Something went wrong while logging into your account. Please try again or contact help@options.cafe. Sorry for the trouble."}`)
+	st.Expect(t, w.Body.String(), `{"error":"Something went wrong while logging into your account. Please try again or contact help@skyclerk.com. Sorry for the trouble."}`)
 }
 
-//
 // TestDoRegister07 - Error 05 (missing client id)
-//
 func TestDoRegister07(t *testing.T) {
 	// Start the db connection.
 	db, dbName, _ := models.NewTestDB("")
@@ -326,12 +312,10 @@ func TestDoRegister07(t *testing.T) {
 
 	// Test results
 	st.Expect(t, w.Code, 400)
-	st.Expect(t, w.Body.String(), `{"error":"Something went wrong while logging into your account. Please try again or contact help@options.cafe. Sorry for the trouble."}`)
+	st.Expect(t, w.Body.String(), `{"error":"Something went wrong while logging into your account. Please try again or contact help@skyclerk.com. Sorry for the trouble."}`)
 }
 
-//
 // TestDoRegister08 - Error user already in the system.
-//
 func TestDoRegister08(t *testing.T) {
 	// Start the db connection.
 	db, dbName, _ := models.NewTestDB("")
@@ -380,9 +364,7 @@ func TestDoRegister08(t *testing.T) {
 	st.Expect(t, w1.Body.String(), `{"error":"Looks like you already have an account."}`)
 }
 
-//
 // TestDoRegister09 Test registring a new user. With company name.
-//
 func TestDoRegister09(t *testing.T) {
 	// Start the db connection.
 	db, dbName, _ := models.NewTestDB("")
@@ -454,9 +436,7 @@ func TestDoRegister09(t *testing.T) {
 	st.Expect(t, err, nil)
 }
 
-//
 // TestDoRegister10 Test registring a new user. With token.
-//
 func TestDoRegister10(t *testing.T) {
 	// Start the db connection.
 	db, dbName, _ := models.NewTestDB("")
@@ -555,9 +535,7 @@ func TestDoRegister10(t *testing.T) {
 	st.Expect(t, err, nil)
 }
 
-//
 // TestDoRegister11 Test registring a new user. With bad token.
-//
 func TestDoRegister11(t *testing.T) {
 	// Start the db connection.
 	db, dbName, _ := models.NewTestDB("")
@@ -614,9 +592,7 @@ func TestDoRegister11(t *testing.T) {
 	st.Expect(t, w.Body.String(), `{"error":"Your invite token is not found."}`)
 }
 
-//
 // TestDoRegister12 Test registring a new user. With expired token.
-//
 func TestDoRegister12(t *testing.T) {
 	// Start the db connection.
 	db, dbName, _ := models.NewTestDB("")
