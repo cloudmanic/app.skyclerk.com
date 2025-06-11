@@ -1,0 +1,38 @@
+# fly.toml app configuration file generated for app-skyclerk-com on 2025-06-10T19:58:45-07:00
+#
+# See https://fly.io/docs/reference/configuration/ for information about how to use this file.
+#
+
+app = 'app-skyclerk-com'
+primary_region = 'den'
+
+[build]
+
+[mounts]
+  source = "app_skyclerk_com"
+  destination = "/data"
+
+[env]
+  GIN_MODE = 'release'
+  TRIAL_DAY_COUNT = '15'
+  FONT_PATH = '/fonts'
+  SITE_URL = 'https://app-skyclerk-com.fly.dev'
+  SITE_DOMAIN = 'app-skyclerk-com.fly.dev'
+  REGISTER_URL = 'https://app-skyclerk-com.fly.dev/register/index.html'
+  CACHE_DIR = '/cache'
+  MAIL_DRIVER = 'postmark'
+  HTTP_LOG_REQUESTS = 'true'
+  DB_PATH = '/data/skyclerk.db'
+
+[http_service]
+  internal_port = 8080
+  force_https = true
+  auto_stop_machines = 'stop'
+  auto_start_machines = true
+  min_machines_running = 0
+  processes = ['app']
+
+[[vm]]
+  memory = '512mb'
+  cpu_kind = 'shared'
+  cpus = 1

@@ -51,11 +51,12 @@ FROM --platform=linux/amd64 h2non/imaginary:1.1.0 AS imaginary-extractor
 # Stage 4: Runtime Image with Imaginary
 FROM debian:bullseye-slim
 
-# Install runtime dependencies including supervisor for multi-process management
+# Install runtime dependencies including supervisor for multi-process management and libvips
 RUN apt-get update && apt-get install -y \
     ca-certificates \
     sqlite3 \
     supervisor \
+    libvips42 \
     && rm -rf /var/lib/apt/lists/*
 
 # Copy imaginary binary from the official Docker image (it's at /bin/imaginary in the image)
@@ -90,7 +91,7 @@ RUN echo '[supervisord]' > /etc/supervisor/conf.d/skyclerk.conf && \
     echo 'stderr_logfile_maxbytes=0' >> /etc/supervisor/conf.d/skyclerk.conf && \
     echo '' >> /etc/supervisor/conf.d/skyclerk.conf && \
     echo '[program:imaginary]' >> /etc/supervisor/conf.d/skyclerk.conf && \
-    echo 'command=/usr/local/bin/imaginary -concurrency 50 -enable-url-source -port 9000' >> /etc/supervisor/conf.d/skyclerk.conf && \
+    echo 'command=/usr/local/bin/imaginary -concurrency 50 -enable-url-source -p 9000' >> /etc/supervisor/conf.d/skyclerk.conf && \
     echo 'autostart=true' >> /etc/supervisor/conf.d/skyclerk.conf && \
     echo 'autorestart=true' >> /etc/supervisor/conf.d/skyclerk.conf && \
     echo 'stdout_logfile=/dev/stdout' >> /etc/supervisor/conf.d/skyclerk.conf && \
@@ -99,14 +100,10 @@ RUN echo '[supervisord]' > /etc/supervisor/conf.d/skyclerk.conf && \
     echo 'stderr_logfile_maxbytes=0' >> /etc/supervisor/conf.d/skyclerk.conf
 
 # Expose ports for both services
-EXPOSE 8080 9000
+EXPOSE 8080
 
 # Set environment variables
-ENV GIN_MODE=release
-ENV DB_PATH=/app/data/skyclerk.db
 ENV HTTP_PORT=8080
-ENV SITE_URL=http://localhost:8080
-ENV HTTP_LOG_REQUESTS=true
 ENV IMAGINARY_HOST=http://127.0.0.1:9000
 
 # We set to local because we are not doing https with this app.
