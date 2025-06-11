@@ -54,6 +54,24 @@ func NewTestDB(dbName string) (*DB, string, error) {
 		log.Fatal(err)
 	}
 
+	// Enable WAL mode for better performance and concurrency
+	if err := db.Exec("PRAGMA journal_mode=WAL").Error; err != nil {
+		services.Error(err)
+		log.Fatal(err)
+	}
+
+	// Set synchronous to NORMAL for better performance while maintaining durability
+	if err := db.Exec("PRAGMA synchronous=NORMAL").Error; err != nil {
+		services.Error(err)
+		log.Fatal(err)
+	}
+
+	// Set busy timeout to 5 seconds to handle concurrent access better
+	if err := db.Exec("PRAGMA busy_timeout=5000").Error; err != nil {
+		services.Error(err)
+		log.Fatal(err)
+	}
+
 	// Run doMigrations
 	doMigrations(db)
 

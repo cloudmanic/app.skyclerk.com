@@ -111,6 +111,21 @@ func NewDB() (*DB, error) {
 	db.DB().SetMaxIdleConns(10)
 	db.DB().SetMaxOpenConns(100)
 
+	// Enable WAL mode for better performance and concurrency
+	if err := db.Exec("PRAGMA journal_mode=WAL").Error; err != nil {
+		return nil, err
+	}
+
+	// Set synchronous to NORMAL for better performance while maintaining durability
+	if err := db.Exec("PRAGMA synchronous=NORMAL").Error; err != nil {
+		return nil, err
+	}
+
+	// Set busy timeout to 5 seconds to handle concurrent access better
+	if err := db.Exec("PRAGMA busy_timeout=5000").Error; err != nil {
+		return nil, err
+	}
+
 	// Run migrations
 	doMigrations(db)
 
