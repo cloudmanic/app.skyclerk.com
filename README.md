@@ -7,6 +7,47 @@
   - Use `nvm use 12.22.2` if you have nvm installed
   - Or download directly from [nodejs.org](https://nodejs.org/)
 
+## Backend Commands
+
+### Purge Old Accounts
+
+The `purge-old-accounts` command removes inactive accounts to keep the database clean. This is useful for cleaning up free trial accounts that were never used.
+
+```bash
+go run main.go --purge-old-accounts
+```
+
+#### Deletion Criteria
+
+The command will delete accounts that meet ANY of these criteria:
+- Accounts with zero ledger entries that were created over 6 months ago
+- Accounts that haven't had any ledger activity in over one year
+
+#### Protection Rules
+
+Accounts are protected from deletion if:
+- Any user associated with the account has the email address `spicer@cloudmanic.com`
+
+#### What Gets Deleted
+
+When an account is deleted, the following data is removed:
+- All ledger entries and associated file/label relationships
+- All activities, invites, labels, files, contacts, categories
+- SnapClerk entries and connected accounts
+- The account record itself
+- Associated billing records (if not shared with other accounts)
+- User records (if not associated with other accounts)
+- Stripe customer data (if applicable)
+
+#### Output
+
+The command provides a detailed summary showing:
+- Total accounts checked
+- Accounts with zero ledgers
+- Accounts with old ledgers
+- Total accounts deleted
+- Accounts skipped due to email protection rule
+
 # Deploying Servers
 
 * When deploying a server with Digital Ocean copy the following into the `User-Data` filed. It will run Cloud Init when the VPS boots up.

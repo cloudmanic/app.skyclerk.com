@@ -153,13 +153,14 @@ func Unsubscribe(listId string, email string) {
 
 	if err != nil {
 		services.Info(errors.New("SendySubscribe - Unable to unsubscribe " + email + " to Sendy Subscriber list. (" + err.Error() + ")"))
-	}
-
-	if resp.StatusCode != http.StatusOK {
-		services.Info(errors.New("SendySubscribe (no 200) - Unable to unsubscribe " + email + " to Sendy Subscriber list. (" + err.Error() + ")"))
+		return
 	}
 
 	defer resp.Body.Close()
+
+	if resp.StatusCode != http.StatusOK {
+		services.Info(errors.New("SendySubscribe (no 200) - Unable to unsubscribe " + email + " to Sendy Subscriber list."))
+	}
 
 }
 

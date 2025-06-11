@@ -182,9 +182,11 @@ func (t *DB) DeleteAccount(accountID uint) {
 	t.New().Exec("DELETE FROM acct_to_users WHERE account_id = ?", accountID)
 	t.New().Exec("DELETE FROM accounts WHERE id = ?", accountID)
 
-	// Clear at sendy users
-	go sendy.Unsubscribe("trial", owner.Email)
-	go sendy.Unsubscribe("expired", owner.Email)
+	// Clear at sendy users (only if we have a valid owner email)
+	if owner.Id > 0 && len(owner.Email) > 0 {
+		go sendy.Unsubscribe("trial", owner.Email)
+		go sendy.Unsubscribe("expired", owner.Email)
+	}
 }
 
 /* End File */

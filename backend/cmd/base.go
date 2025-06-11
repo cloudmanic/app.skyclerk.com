@@ -27,7 +27,14 @@ func Run(db models.Datastore) bool {
 	file := flag.String("file", "", "")
 	accountId := flag.Int("account_id", 0, "An account id.")
 	name := flag.String("name", "", "")
+	purgeOldAccounts := flag.Bool("purge-old-accounts", false, "Purge old accounts with no activity")
 	flag.Parse()
+
+	// Check if purge-old-accounts flag is set
+	if *purgeOldAccounts {
+		actions.PurgeOldAccounts(db)
+		return true
+	}
 
 	switch *action {
 
@@ -57,6 +64,11 @@ func Run(db models.Datastore) bool {
 	// Just a test
 	case "test":
 		fmt.Println("CMD Works....")
+		return true
+
+	// Purge old accounts
+	case "purge-old-accounts":
+		actions.PurgeOldAccounts(db)
 		return true
 
 	}

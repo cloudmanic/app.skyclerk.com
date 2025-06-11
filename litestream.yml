@@ -2,4 +2,4 @@ dbs:
   - path: /data/skyclerk.db
     replicas:
       - url: s3://app.skyclerk.com-db
-        sync-interval: 1s
+        sync-interval: 60s
