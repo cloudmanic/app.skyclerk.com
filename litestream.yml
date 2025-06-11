@@ -3,3 +3,7 @@ dbs:
     replicas:
       - url: s3://app.skyclerk.com-db
         sync-interval: 60s
+        retention: 8760h # 1 year = 8760 hours
+        snapshot-interval: 24h # How often full snapshots are taken
+        snapshot-retention: 8760h # How long to keep snapshots
+        wal-retention: 8760h # How long to keep WAL segments
