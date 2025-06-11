@@ -15,7 +15,7 @@ primary_region = 'den'
 [env]
   GIN_MODE = 'release'
   TRIAL_DAY_COUNT = '15'
-  FONT_PATH = '/fonts'
+  FONT_PATH = '/app/fonts'
   SITE_URL = 'https://app-skyclerk-com.fly.dev'
   SITE_DOMAIN = 'app-skyclerk-com.fly.dev'
   REGISTER_URL = 'https://app-skyclerk-com.fly.dev/register/index.html'

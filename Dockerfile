@@ -72,6 +72,9 @@ COPY --from=backend-builder /app/skyclerk .
 COPY --from=frontend-builder /app/frontend/dist/frontend ./frontend
 COPY --from=frontend-builder /app/centcom/dist ./centcom
 
+# Copy fonts directory
+COPY fonts/ ./fonts/
+
 # Create directory for SQLite database
 RUN mkdir -p /app/data
 

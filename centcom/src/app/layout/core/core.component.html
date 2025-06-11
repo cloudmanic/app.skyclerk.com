@@ -4,49 +4,89 @@
       <div class="flex justify-between h-16">
         <div class="flex">
           <div class="flex-shrink-0 flex items-center">
-            <img class="block lg:hidden h-8 w-auto rounded" src="https://app.skyclerk.com/centcom/assets/images/icon.png" alt="Skyclerk logo" />
-            <img class="hidden lg:block h-8 w-auto rounded" src="https://app.skyclerk.com/centcom/assets/images/icon.png" alt="Skyclerk logo" />
+            <img
+              class="block lg:hidden h-8 w-auto rounded"
+              src="https://app.skyclerk.com/centcom/assets/images/icon.png"
+              alt="Skyclerk logo"
+            />
+            <img
+              class="hidden lg:block h-8 w-auto rounded"
+              src="https://app.skyclerk.com/centcom/assets/images/icon.png"
+              alt="Skyclerk logo"
+            />
           </div>
           <div class="hidden sm:-my-px sm:ml-6 sm:flex left-nav">
-            <a routerLink="/accounts" [ngClass]="{'border-indigo-500': (tab == 'accounts'), 'border-transparent': (tab != 'accounts')}">
+            <a
+              routerLink="/accounts"
+              [ngClass]="{
+                'border-indigo-500': tab == 'accounts',
+                'border-transparent': tab != 'accounts'
+              }"
+            >
               Accounts
             </a>
-            <a routerLink="/snapclerk" [ngClass]="{'border-indigo-500': (tab == 'snapclerk'), 'border-transparent': (tab != 'snapclerk')}">
+            <a
+              routerLink="/snapclerk"
+              [ngClass]="{
+                'border-indigo-500': tab == 'snapclerk',
+                'border-transparent': tab != 'snapclerk'
+              }"
+            >
               Snap!Clerk
             </a>
           </div>
         </div>
 
-
         <div class="hidden sm:ml-6 sm:flex sm:items-center">
-          <a href="https://app.skyclerk.com" class="p-1 border-2 border-transparent text-gray-400 rounded-full hover:text-gray-500 focus:outline-none focus:text-gray-500 focus:bg-gray-100 transition duration-150 ease-in-out" aria-label="Notifications">
+          <a
+            href="https://app.skyclerk.com"
+            class="p-1 border-2 border-transparent text-gray-400 rounded-full hover:text-gray-500 focus:outline-none focus:text-gray-500 focus:bg-gray-100 transition duration-150 ease-in-out"
+            aria-label="Notifications"
+          >
             Back To App
           </a>
         </div>
 
         <div class="-mr-2 flex items-center sm:hidden">
           <!-- Mobile menu button -->
-          <button class="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 focus:text-gray-500 transition duration-150 ease-in-out">
+          <button
+            class="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 focus:text-gray-500 transition duration-150 ease-in-out"
+          >
             <!-- Menu open: "hidden", Menu closed: "block" -->
-            <svg class="block h-6 w-6" stroke="currentColor" fill="none" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+            <svg
+              class="block h-6 w-6"
+              stroke="currentColor"
+              fill="none"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M4 6h16M4 12h16M4 18h16"
+              />
             </svg>
             <!-- Menu open: "block", Menu closed: "hidden" -->
-            <svg class="hidden h-6 w-6" stroke="currentColor" fill="none" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+            <svg
+              class="hidden h-6 w-6"
+              stroke="currentColor"
+              fill="none"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M6 18L18 6M6 6l12 12"
+              />
             </svg>
           </button>
         </div>
-
-
-
-
       </div>
     </div>
   </nav>
 
   <div class="py-10">
-
     <header>
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <h1 class="text-3xl font-bold leading-tight text-gray-900">
@@ -56,27 +96,20 @@
     </header>
     <main>
       <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-
         <div class="px-4 py-8 sm:px-0">
-
-
-
           <div class="flex flex-col">
-            <div class="-my-2 py-2 overflow-x-auto sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8">
-              <div class="align-middle inline-block min-w-full shadow overflow-hidden sm:rounded-lg border-b border-gray-200">
-
-
+            <div
+              class="-my-2 py-2 overflow-x-auto sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8"
+            >
+              <div
+                class="align-middle inline-block min-w-full shadow overflow-hidden sm:rounded-lg border-b border-gray-200"
+              >
                 <router-outlet></router-outlet>
-
               </div>
             </div>
           </div>
-
-
         </div>
-
       </div>
     </main>
-
   </div>
 </div>
