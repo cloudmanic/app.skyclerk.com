@@ -215,8 +215,14 @@
 													policies.</p>
 											</div>
 
+											<div class="form__row">
+												<div id="register-turnstile"></div>
+												<p v-if="securityError" class="form__error__text" role="alert" v-text="securityError"></p>
+												<noscript>Please enable JavaScript to complete the security check and register.</noscript>
+											</div>
+
 											<div class="form__actions">
-												<button type="submit" class="form__btn">Sign me up!</button>
+												<button type="submit" class="form__btn" :disabled="isLoading || !turnstileToken">Sign me up!</button>
 
 												<div class="form__loader">
 													<figure class="form__loader__icon">

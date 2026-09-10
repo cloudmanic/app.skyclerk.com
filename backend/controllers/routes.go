@@ -111,6 +111,8 @@ func (t *Controller) DoRoutes(r *gin.Engine) {
 
 	// Other Auth Routes
 	r.POST("/register", t.DoRegister)
+	// Serve the public Turnstile configuration for the standalone registration page.
+	r.GET("/registration-config", t.RegisterConfig)
 	r.POST("/reset-password", t.DoResetPassword)
 	r.POST("/forgot-password", t.DoForgotPassword)
 
