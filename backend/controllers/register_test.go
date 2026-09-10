@@ -9,9 +9,7 @@ package controllers
 import (
 	"bytes"
 	"encoding/json"
-	"errors"
 	"fmt"
-	"io"
 	"net/http"
 	"net/http/httptest"
 	"strings"
@@ -684,44 +682,6 @@ func mockRegisterTurnstile(t *testing.T) {
 	t.Setenv("SITE_DOMAIN", "app.skyclerk.com")
 	mockTurnstileResponse(t, 200, `{"success":true,"action":"register","hostname":"app.skyclerk.com"}`)
 
-}
-
-// turnstileTestTransport adapts a function into an isolated HTTP transport.
-type turnstileTestTransport func(*http.Request) (*http.Response, error)
-
-// RoundTrip invokes the fake verifier without changing the global HTTP transport.
-func (transport turnstileTestTransport) RoundTrip(request *http.Request) (*http.Response, error) {
-	return transport(request)
-}
-
-// mockTurnstileResponse validates outgoing form fields and supplies a deterministic
-// response or network error. The previous client is restored after each test.
-func mockTurnstileResponse(t *testing.T, status int, body string) *int {
-	previous := registerTurnstileClient
-	calls := 0
-	// Restore the production client even when an assertion fails.
-	t.Cleanup(func() { registerTurnstileClient = previous })
-	// Keep all verification traffic in-process and assert the endpoint and payload.
-	registerTurnstileClient = &http.Client{Transport: turnstileTestTransport(func(request *http.Request) (*http.Response, error) {
-		calls++
-		st.Expect(t, request.URL.String(), "https://challenges.cloudflare.com/turnstile/v0/siteverify")
-		st.Expect(t, request.Method, http.MethodPost)
-		st.Expect(t, request.Header.Get("Content-Type"), "application/x-www-form-urlencoded")
-		// Decode the POST fields to ensure neither secret nor token is omitted.
-		if err := request.ParseForm(); err != nil {
-			t.Fatal(err)
-		}
-		st.Expect(t, request.PostForm.Get("secret"), "test-secret")
-		st.Expect(t, request.PostForm.Get("response"), "test-token")
-		if status == -1 {
-			return nil, errors.New("verification unavailable")
-		}
-		if status == 0 {
-			t.Fatal("unexpected verification request")
-		}
-		return &http.Response{StatusCode: status, Header: make(http.Header), Body: io.NopCloser(strings.NewReader(body))}, nil
-	})}
-	return &calls
 }
 
 // TestDoRegisterTurnstile checks that unverified signups cannot create database

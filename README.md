@@ -72,6 +72,21 @@ can test the widget UI, but their fixed `test` action does not pass this backend
 strict `register` action check. There is no `APP_ENV` bypass. Automated tests mock
 verification and never use real Turnstile keys.
 
+The public website's support form uses the same widget and runtime secret.
+`POST /support/contact-us` requires `turnstile_token`, verifies action
+`support_contact`, and only accepts hostnames `skyclerk.com` and
+`www.skyclerk.com`. The widget must allow the marketing domain in addition to
+`app.skyclerk.com`. Requests with missing, rejected, or expired challenges cannot
+send email or Slack notifications. Verification failures return HTTP 400 with
+`code: "turnstile_failed"`; email delivery failures return HTTP 503 so the form
+can preserve the message and request a fresh challenge for retry.
+
+Deploy the companion marketing-site changes from `../skyclerk.com` before this
+backend update so the public form sends tokens when verification becomes mandatory.
+No additional secrets are needed beyond the existing Turnstile configuration.
+Support tests live in `support_test.go`, with shared HTTP mocks in
+`turnstile_test.go`; the existing registration tests also exercise the shared verifier.
+
 # Deploying Servers
 
 * When deploying a server with Digital Ocean copy the following into the `User-Data` filed. It will run Cloud Init when the VPS boots up.
@@ -90,4 +105,3 @@ packages:
 ```
 
 * Once a fresh server is up and running configure it with `ansible-playbook server-config.yml`
-
