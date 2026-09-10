@@ -6,6 +6,9 @@ var app = new Vue({
   // Data useed in this component
   data: {
     isLoading: false,
+    turnstileToken: "",
+    turnstileWidget: null,
+    securityError: "",
     first: "",
     last: "",
     email: "",
@@ -18,6 +21,58 @@ var app = new Vue({
 
   // Method used in this component
   methods: {
+    // Load the public runtime key, then load Cloudflare only after Vue has mounted.
+    loadTurnstile: function () {
+      const vm = this;
+      // Fetch the site key from the same backend that verifies registration requests.
+      axios.get(this.getBaseUrl() + "/registration-config").then(function (response) {
+        // Install the callback before loading the asynchronous Turnstile script.
+        window.skyclerkTurnstileReady = function () {
+          // Render explicitly so Vue never replaces an implicitly rendered widget.
+          vm.turnstileWidget = window.turnstile.render("#register-turnstile", {
+            sitekey: response.data.site_key,
+            action: "register",
+            size: "flexible",
+            // Retain a successful token only until expiry or a submission attempt.
+            callback: function (token) {
+              vm.turnstileToken = token;
+              vm.securityError = "";
+            },
+            // Expired challenges must be solved again before another submission.
+            "expired-callback": function () {
+              vm.resetTurnstile();
+            },
+            // Keep submission blocked while Cloudflare retries a failed challenge.
+            "error-callback": function () {
+              vm.turnstileToken = "";
+              vm.securityError = "The security check could not load. Please retry or refresh the page.";
+            }
+          });
+        };
+        // Load the official script directly; it must not be bundled or proxied.
+        const script = document.createElement("script");
+        script.src = "https://challenges.cloudflare.com/turnstile/v0/api.js?onload=skyclerkTurnstileReady&render=explicit";
+        script.async = true;
+        // Explain script blocking or network failures without permitting signup.
+        script.onerror = function () {
+          vm.securityError = "The security check could not load. Please refresh the page to try again.";
+        };
+        // Begin downloading only after the callback and widget container exist.
+        document.head.appendChild(script);
+      }).catch(function () {
+        vm.securityError = "Registration is temporarily unavailable. Please refresh the page to try again.";
+      });
+    },
+
+    // Discard consumed or expired tokens and request a fresh challenge for retries.
+    resetTurnstile: function () {
+      this.turnstileToken = "";
+      if (window.turnstile && this.turnstileWidget !== null) {
+        // Reset this specific widget after every unsuccessful registration attempt.
+        window.turnstile.reset(this.turnstileWidget);
+      }
+    },
+
     // Return the base URL
     getBaseUrl: function () {
       if (location.origin.indexOf("localhost") >= 0) {
@@ -40,6 +95,13 @@ var app = new Vue({
     submit: function () {
       const vm = this;
 
+      // Prevent duplicate requests and direct form submission without a challenge.
+      if (vm.isLoading) return;
+      if (!vm.turnstileToken) {
+        vm.securityError = "Please complete the security check before signing up.";
+        return;
+      }
+
       // Verify passwords match
       if (this.password != this.passwordConfirmed) {
         vm.errorMsg = "Your passwords did not match each other.";
@@ -55,6 +117,7 @@ var app = new Vue({
         last: this.last,
         company: this.company,
         token: this.token,
+        turnstile_token: this.turnstileToken,
       };
 
       // Clear error
@@ -91,8 +154,11 @@ var app = new Vue({
           }, 1000);
 
           // Log events.
-          _paq.push(["trackGoal", 2]);
-          _paq.push(["trackEvent", "Auth", "Register"]);
+          if (window._paq) {
+            // Track registration only when the optional analytics client is loaded.
+            window._paq.push(["trackGoal", 2]);
+            window._paq.push(["trackEvent", "Auth", "Register"]);
+          }
 
           if ("ga" in window) {
             tracker = ga.getAll()[0];
@@ -107,13 +173,15 @@ var app = new Vue({
           }, 2000);
         })
         .catch(function (error) {
+          // Tokens are single-use even when later registration validation fails.
+          vm.resetTurnstile();
           setTimeout(function () {
             // End loader.
             vm.isLoading = false;
 
             window.scrollTo(0, 0);
 
-            if (error.response.status >= 500 || error.response.status < 400) {
+            if (!error.response || error.response.status >= 500 || error.response.status < 400) {
               alert(
                 "An issue with our server happened. Please try again. If you have further issues please contact help@skyclerk.com."
               );
@@ -125,6 +193,12 @@ var app = new Vue({
           }, 2000);
         });
     },
+  },
+
+  // Start the security check after the widget container exists in the DOM.
+  mounted: function () {
+    // Load the runtime key and challenge script for ordinary and invited signups.
+    this.loadTurnstile();
   },
 
   // Called on start up

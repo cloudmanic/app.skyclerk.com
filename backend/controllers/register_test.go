@@ -9,9 +9,12 @@ package controllers
 import (
 	"bytes"
 	"encoding/json"
+	"errors"
 	"fmt"
+	"io"
 	"net/http"
 	"net/http/httptest"
+	"strings"
 	"testing"
 	"time"
 
@@ -24,6 +27,8 @@ import (
 
 // TestDoRegister01 Test registring a new user.
 func TestDoRegister01(t *testing.T) {
+	// Supply an isolated successful challenge for existing registration scenarios.
+	mockRegisterTurnstile(t)
 	// Start the db connection.
 	db, dbName, _ := models.NewTestDB("")
 	defer models.TestingTearDown(db, dbName)
@@ -38,7 +43,7 @@ func TestDoRegister01(t *testing.T) {
 	c.SetDB(db)
 
 	// Get JSON
-	postStr := fmt.Sprintf(`{ "first": "%s", "last": "%s", "email": "%s", "password": "%s", "client_id": "%s" }`, "Jane", "Wells", "jane@wells.com", "foobar123", app.ClientId)
+	postStr := fmt.Sprintf(`{ "turnstile_token": "test-token", "first": "%s", "last": "%s", "email": "%s", "password": "%s", "client_id": "%s" }`, "Jane", "Wells", "jane@wells.com", "foobar123", app.ClientId)
 
 	// Setup request
 	req, _ := http.NewRequest("POST", "/register", bytes.NewBuffer([]byte(postStr)))
@@ -107,6 +112,8 @@ func TestDoRegister01(t *testing.T) {
 
 // TestDoRegister02 - Error 01 (bad email)
 func TestDoRegister02(t *testing.T) {
+	// Supply an isolated successful challenge for existing registration scenarios.
+	mockRegisterTurnstile(t)
 	// Start the db connection.
 	db, dbName, _ := models.NewTestDB("")
 	defer models.TestingTearDown(db, dbName)
@@ -121,7 +128,7 @@ func TestDoRegister02(t *testing.T) {
 	c.SetDB(db)
 
 	// Get JSON
-	postStr := fmt.Sprintf(`{ "first": "%s", "last": "%s", "email": "%s", "password": "%s", "client_id": "%s" }`, "Jane", "Wells", "jane", "foobar123", app.ClientId)
+	postStr := fmt.Sprintf(`{ "turnstile_token": "test-token", "first": "%s", "last": "%s", "email": "%s", "password": "%s", "client_id": "%s" }`, "Jane", "Wells", "jane", "foobar123", app.ClientId)
 
 	// Setup request
 	req, _ := http.NewRequest("POST", "/register", bytes.NewBuffer([]byte(postStr)))
@@ -142,6 +149,8 @@ func TestDoRegister02(t *testing.T) {
 
 // TestDoRegister03 - Error 02 (no first)
 func TestDoRegister03(t *testing.T) {
+	// Supply an isolated successful challenge for existing registration scenarios.
+	mockRegisterTurnstile(t)
 	// Start the db connection.
 	db, dbName, _ := models.NewTestDB("")
 	defer models.TestingTearDown(db, dbName)
@@ -156,7 +165,7 @@ func TestDoRegister03(t *testing.T) {
 	c.SetDB(db)
 
 	// Get JSON
-	postStr := fmt.Sprintf(`{ "first": "%s", "last": "%s", "email": "%s", "password": "%s", "client_id": "%s" }`, "", "Wells", "jane@wells.com", "foobar123", app.ClientId)
+	postStr := fmt.Sprintf(`{ "turnstile_token": "test-token", "first": "%s", "last": "%s", "email": "%s", "password": "%s", "client_id": "%s" }`, "", "Wells", "jane@wells.com", "foobar123", app.ClientId)
 
 	// Setup request
 	req, _ := http.NewRequest("POST", "/register", bytes.NewBuffer([]byte(postStr)))
@@ -177,6 +186,8 @@ func TestDoRegister03(t *testing.T) {
 
 // TestDoRegister04 - Error 03 (bad password)
 func TestDoRegister04(t *testing.T) {
+	// Supply an isolated successful challenge for existing registration scenarios.
+	mockRegisterTurnstile(t)
 	// Start the db connection.
 	db, dbName, _ := models.NewTestDB("")
 	defer models.TestingTearDown(db, dbName)
@@ -191,7 +202,7 @@ func TestDoRegister04(t *testing.T) {
 	c.SetDB(db)
 
 	// Get JSON
-	postStr := fmt.Sprintf(`{ "first": "%s", "last": "%s", "email": "%s", "password": "%s", "client_id": "%s" }`, "Jane", "Wells", "jane@wells.com", "ff", app.ClientId)
+	postStr := fmt.Sprintf(`{ "turnstile_token": "test-token", "first": "%s", "last": "%s", "email": "%s", "password": "%s", "client_id": "%s" }`, "Jane", "Wells", "jane@wells.com", "ff", app.ClientId)
 
 	// Setup request
 	req, _ := http.NewRequest("POST", "/register", bytes.NewBuffer([]byte(postStr)))
@@ -212,6 +223,8 @@ func TestDoRegister04(t *testing.T) {
 
 // TestDoRegister05 - Error 03 (no last)
 func TestDoRegister05(t *testing.T) {
+	// Supply an isolated successful challenge for existing registration scenarios.
+	mockRegisterTurnstile(t)
 	// Start the db connection.
 	db, dbName, _ := models.NewTestDB("")
 	defer models.TestingTearDown(db, dbName)
@@ -226,7 +239,7 @@ func TestDoRegister05(t *testing.T) {
 	c.SetDB(db)
 
 	// Get JSON
-	postStr := fmt.Sprintf(`{ "first": "%s", "last": "%s", "email": "%s", "password": "%s", "client_id": "%s"  }`, "Jane", "", "jane@wells.com", "foobar123", app.ClientId)
+	postStr := fmt.Sprintf(`{ "turnstile_token": "test-token", "first": "%s", "last": "%s", "email": "%s", "password": "%s", "client_id": "%s"  }`, "Jane", "", "jane@wells.com", "foobar123", app.ClientId)
 
 	// Setup request
 	req, _ := http.NewRequest("POST", "/register", bytes.NewBuffer([]byte(postStr)))
@@ -247,6 +260,8 @@ func TestDoRegister05(t *testing.T) {
 
 // TestDoRegister06 - Error 04 (bad client id)
 func TestDoRegister06(t *testing.T) {
+	// Supply an isolated successful challenge for existing registration scenarios.
+	mockRegisterTurnstile(t)
 	// Start the db connection.
 	db, dbName, _ := models.NewTestDB("")
 	defer models.TestingTearDown(db, dbName)
@@ -261,7 +276,7 @@ func TestDoRegister06(t *testing.T) {
 	c.SetDB(db)
 
 	// Get JSON
-	postStr := fmt.Sprintf(`{ "first": "%s", "last": "%s", "email": "%s", "password": "%s", "client_id": "%s"  }`, "Jane", "", "jane@wells.com", "foobar123", "bad")
+	postStr := fmt.Sprintf(`{ "turnstile_token": "test-token", "first": "%s", "last": "%s", "email": "%s", "password": "%s", "client_id": "%s"  }`, "Jane", "", "jane@wells.com", "foobar123", "bad")
 
 	// Setup request
 	req, _ := http.NewRequest("POST", "/register", bytes.NewBuffer([]byte(postStr)))
@@ -282,6 +297,8 @@ func TestDoRegister06(t *testing.T) {
 
 // TestDoRegister07 - Error 05 (missing client id)
 func TestDoRegister07(t *testing.T) {
+	// Supply an isolated successful challenge for existing registration scenarios.
+	mockRegisterTurnstile(t)
 	// Start the db connection.
 	db, dbName, _ := models.NewTestDB("")
 	defer models.TestingTearDown(db, dbName)
@@ -296,7 +313,7 @@ func TestDoRegister07(t *testing.T) {
 	c.SetDB(db)
 
 	// Get JSON
-	postStr := fmt.Sprintf(`{ "first": "%s", "last": "%s", "email": "%s", "password": "%s" }`, "Jane", "", "jane@wells.com", "foobar123")
+	postStr := fmt.Sprintf(`{ "turnstile_token": "test-token", "first": "%s", "last": "%s", "email": "%s", "password": "%s" }`, "Jane", "", "jane@wells.com", "foobar123")
 
 	// Setup request
 	req, _ := http.NewRequest("POST", "/register", bytes.NewBuffer([]byte(postStr)))
@@ -317,6 +334,8 @@ func TestDoRegister07(t *testing.T) {
 
 // TestDoRegister08 - Error user already in the system.
 func TestDoRegister08(t *testing.T) {
+	// Supply an isolated successful challenge for existing registration scenarios.
+	mockRegisterTurnstile(t)
 	// Start the db connection.
 	db, dbName, _ := models.NewTestDB("")
 	defer models.TestingTearDown(db, dbName)
@@ -331,7 +350,7 @@ func TestDoRegister08(t *testing.T) {
 	c.SetDB(db)
 
 	// Get JSON
-	postStr := fmt.Sprintf(`{ "first": "%s", "last": "%s", "email": "%s", "password": "%s", "client_id": "%s" }`, "Jane", "Wells", "jane@wells.com", "foobar123", app.ClientId)
+	postStr := fmt.Sprintf(`{ "turnstile_token": "test-token", "first": "%s", "last": "%s", "email": "%s", "password": "%s", "client_id": "%s" }`, "Jane", "Wells", "jane@wells.com", "foobar123", app.ClientId)
 
 	// Setup request
 	req, _ := http.NewRequest("POST", "/register", bytes.NewBuffer([]byte(postStr)))
@@ -366,6 +385,8 @@ func TestDoRegister08(t *testing.T) {
 
 // TestDoRegister09 Test registring a new user. With company name.
 func TestDoRegister09(t *testing.T) {
+	// Supply an isolated successful challenge for existing registration scenarios.
+	mockRegisterTurnstile(t)
 	// Start the db connection.
 	db, dbName, _ := models.NewTestDB("")
 	defer models.TestingTearDown(db, dbName)
@@ -380,7 +401,7 @@ func TestDoRegister09(t *testing.T) {
 	c.SetDB(db)
 
 	// Get JSON
-	postStr := fmt.Sprintf(`{ "first": "%s", "last": "%s", "email": "%s", "password": "%s", "client_id": "%s", "company": "%s" }`, "Jane", "Wells", "jane@wells.com", "foobar123", app.ClientId, "ABC Inc.")
+	postStr := fmt.Sprintf(`{ "turnstile_token": "test-token", "first": "%s", "last": "%s", "email": "%s", "password": "%s", "client_id": "%s", "company": "%s" }`, "Jane", "Wells", "jane@wells.com", "foobar123", app.ClientId, "ABC Inc.")
 
 	// Setup request
 	req, _ := http.NewRequest("POST", "/register", bytes.NewBuffer([]byte(postStr)))
@@ -438,6 +459,8 @@ func TestDoRegister09(t *testing.T) {
 
 // TestDoRegister10 Test registring a new user. With token.
 func TestDoRegister10(t *testing.T) {
+	// Supply an isolated successful challenge for existing registration scenarios.
+	mockRegisterTurnstile(t)
 	// Start the db connection.
 	db, dbName, _ := models.NewTestDB("")
 	defer models.TestingTearDown(db, dbName)
@@ -474,7 +497,7 @@ func TestDoRegister10(t *testing.T) {
 	c.SetDB(db)
 
 	// Get JSON
-	postStr := fmt.Sprintf(`{ "first": "%s", "last": "%s", "email": "%s", "password": "%s", "client_id": "%s", "company": "%s", "token": "%s" }`, "Jane", "Wells", "jane@wells.com", "foobar123", app.ClientId, "ABC Inc.", invite.Token)
+	postStr := fmt.Sprintf(`{ "turnstile_token": "test-token", "first": "%s", "last": "%s", "email": "%s", "password": "%s", "client_id": "%s", "company": "%s", "token": "%s" }`, "Jane", "Wells", "jane@wells.com", "foobar123", app.ClientId, "ABC Inc.", invite.Token)
 
 	// Setup request
 	req, _ := http.NewRequest("POST", "/register", bytes.NewBuffer([]byte(postStr)))
@@ -537,6 +560,8 @@ func TestDoRegister10(t *testing.T) {
 
 // TestDoRegister11 Test registring a new user. With bad token.
 func TestDoRegister11(t *testing.T) {
+	// Supply an isolated successful challenge for existing registration scenarios.
+	mockRegisterTurnstile(t)
 	// Start the db connection.
 	db, dbName, _ := models.NewTestDB("")
 	defer models.TestingTearDown(db, dbName)
@@ -573,7 +598,7 @@ func TestDoRegister11(t *testing.T) {
 	c.SetDB(db)
 
 	// Get JSON
-	postStr := fmt.Sprintf(`{ "first": "%s", "last": "%s", "email": "%s", "password": "%s", "client_id": "%s", "company": "%s", "token": "%s" }`, "Jane", "Wells", "jane@wells.com", "foobar123", app.ClientId, "ABC Inc.", "lllllBAD")
+	postStr := fmt.Sprintf(`{ "turnstile_token": "test-token", "first": "%s", "last": "%s", "email": "%s", "password": "%s", "client_id": "%s", "company": "%s", "token": "%s" }`, "Jane", "Wells", "jane@wells.com", "foobar123", app.ClientId, "ABC Inc.", "lllllBAD")
 
 	// Setup request
 	req, _ := http.NewRequest("POST", "/register", bytes.NewBuffer([]byte(postStr)))
@@ -594,6 +619,8 @@ func TestDoRegister11(t *testing.T) {
 
 // TestDoRegister12 Test registring a new user. With expired token.
 func TestDoRegister12(t *testing.T) {
+	// Supply an isolated successful challenge for existing registration scenarios.
+	mockRegisterTurnstile(t)
 	// Start the db connection.
 	db, dbName, _ := models.NewTestDB("")
 	defer models.TestingTearDown(db, dbName)
@@ -630,7 +657,7 @@ func TestDoRegister12(t *testing.T) {
 	c.SetDB(db)
 
 	// Get JSON
-	postStr := fmt.Sprintf(`{ "first": "%s", "last": "%s", "email": "%s", "password": "%s", "client_id": "%s", "company": "%s", "token": "%s" }`, "Jane", "Wells", "jane@wells.com", "foobar123", app.ClientId, "ABC Inc.", invite.Token)
+	postStr := fmt.Sprintf(`{ "turnstile_token": "test-token", "first": "%s", "last": "%s", "email": "%s", "password": "%s", "client_id": "%s", "company": "%s", "token": "%s" }`, "Jane", "Wells", "jane@wells.com", "foobar123", app.ClientId, "ABC Inc.", invite.Token)
 
 	// Setup request
 	req, _ := http.NewRequest("POST", "/register", bytes.NewBuffer([]byte(postStr)))
@@ -647,6 +674,157 @@ func TestDoRegister12(t *testing.T) {
 	// Test results
 	st.Expect(t, w.Code, 400)
 	st.Expect(t, w.Body.String(), `{"error":"Your invite token is not found."}`)
+}
+
+// mockRegisterTurnstile supplies fake credentials and a successful Cloudflare
+// response so registration tests exercise verification without external services.
+func mockRegisterTurnstile(t *testing.T) {
+	// Isolate configuration and mock only Cloudflare's client, leaving other HTTP clients alone.
+	t.Setenv("TURNSTILE_SECRET_KEY", "test-secret")
+	t.Setenv("SITE_DOMAIN", "app.skyclerk.com")
+	mockTurnstileResponse(t, 200, `{"success":true,"action":"register","hostname":"app.skyclerk.com"}`)
+
+}
+
+// turnstileTestTransport adapts a function into an isolated HTTP transport.
+type turnstileTestTransport func(*http.Request) (*http.Response, error)
+
+// RoundTrip invokes the fake verifier without changing the global HTTP transport.
+func (transport turnstileTestTransport) RoundTrip(request *http.Request) (*http.Response, error) {
+	return transport(request)
+}
+
+// mockTurnstileResponse validates outgoing form fields and supplies a deterministic
+// response or network error. The previous client is restored after each test.
+func mockTurnstileResponse(t *testing.T, status int, body string) *int {
+	previous := registerTurnstileClient
+	calls := 0
+	// Restore the production client even when an assertion fails.
+	t.Cleanup(func() { registerTurnstileClient = previous })
+	// Keep all verification traffic in-process and assert the endpoint and payload.
+	registerTurnstileClient = &http.Client{Transport: turnstileTestTransport(func(request *http.Request) (*http.Response, error) {
+		calls++
+		st.Expect(t, request.URL.String(), "https://challenges.cloudflare.com/turnstile/v0/siteverify")
+		st.Expect(t, request.Method, http.MethodPost)
+		st.Expect(t, request.Header.Get("Content-Type"), "application/x-www-form-urlencoded")
+		// Decode the POST fields to ensure neither secret nor token is omitted.
+		if err := request.ParseForm(); err != nil {
+			t.Fatal(err)
+		}
+		st.Expect(t, request.PostForm.Get("secret"), "test-secret")
+		st.Expect(t, request.PostForm.Get("response"), "test-token")
+		if status == -1 {
+			return nil, errors.New("verification unavailable")
+		}
+		if status == 0 {
+			t.Fatal("unexpected verification request")
+		}
+		return &http.Response{StatusCode: status, Header: make(http.Header), Body: io.NopCloser(strings.NewReader(body))}, nil
+	})}
+	return &calls
+}
+
+// TestDoRegisterTurnstile checks that unverified signups cannot create database
+// records, including when the caller supplies a valid invitation.
+func TestDoRegisterTurnstile(t *testing.T) {
+	cases := []struct {
+		name, token, body string
+		status            int
+	}{
+		{"missing token", "", "", 0},
+		{"blank token", "   ", "", 0},
+		{"oversized token", strings.Repeat("a", 2049), "", 0},
+		{"missing secret", "test-token", "", 0},
+		{"invalid token", "test-token", `{"success":false}`, 200},
+		{"expired or replayed", "test-token", `{"success":false,"error-codes":["timeout-or-duplicate"]}`, 200},
+		{"wrong action", "test-token", `{"success":true,"action":"login","hostname":"app.skyclerk.com"}`, 200},
+		{"wrong hostname", "test-token", `{"success":true,"action":"register","hostname":"other.example"}`, 200},
+		{"missing hostname", "test-token", `{"success":true,"action":"register","hostname":"app.skyclerk.com"}`, 200},
+		{"malformed JSON", "test-token", `{`, 200},
+		{"service unavailable", "test-token", `{"success":true,"action":"register","hostname":"app.skyclerk.com"}`, 503},
+		{"network failure", "test-token", "", -1},
+	}
+	for _, tc := range cases {
+		// Exercise failures through the real controller with a fresh database.
+		t.Run(tc.name, func(t *testing.T) {
+			// Missing configuration must fail closed even in local mode.
+			t.Setenv("APP_ENV", "local")
+			t.Setenv("TURNSTILE_SECRET_KEY", "test-secret")
+			t.Setenv("SITE_DOMAIN", "app.skyclerk.com")
+			if tc.name == "missing secret" {
+				t.Setenv("TURNSTILE_SECRET_KEY", "")
+			}
+			if tc.name == "missing hostname" {
+				t.Setenv("SITE_DOMAIN", "")
+			}
+			// Mock only verification requests, avoiding global HTTP transport changes.
+			calls := mockTurnstileResponse(t, tc.status, tc.body)
+			// Seed a valid client, account and invitation to reach the security check.
+			db, dbName, err := models.NewTestDB("")
+			if err != nil {
+				t.Fatal(err)
+			}
+			defer models.TestingTearDown(db, dbName)
+			application := test.GetRandomApplication()
+			application.GrantType = "password"
+			db.Save(&application)
+			account := test.GetRandomAccount(33)
+			db.Save(&account)
+			invite := models.Invite{AccountId: account.Id, Token: "valid-invite", ExpiresAt: time.Now().Add(time.Hour)}
+			db.Save(&invite)
+			// Submit an otherwise valid invited signup.
+			body, _ := json.Marshal(map[string]string{"first": "Jane", "last": "Wells", "email": "jane@wells.com", "password": "foobar123", "client_id": application.ClientId, "token": invite.Token, "turnstile_token": tc.token})
+			controller := &Controller{}
+			controller.SetDB(db)
+			router := gin.New()
+			router.POST("/register", controller.DoRegister)
+			writer := httptest.NewRecorder()
+			router.ServeHTTP(writer, httptest.NewRequest(http.MethodPost, "/register", bytes.NewReader(body)))
+			// Require the security error without any user, session or billing side effects.
+			st.Expect(t, writer.Code, http.StatusBadRequest)
+			st.Expect(t, writer.Body.String(), `{"error":"Please complete the security check and try again."}`)
+			for _, model := range []interface{}{&models.User{}, &models.Session{}, &models.Billing{}, &models.AcctToUsers{}} {
+				var count int
+				db.Model(model).Count(&count)
+				st.Expect(t, count, 0)
+			}
+			var accounts, invites int
+			db.Model(&models.Account{}).Count(&accounts)
+			db.Model(&models.Invite{}).Count(&invites)
+			st.Expect(t, accounts, 1)
+			st.Expect(t, invites, 1)
+			st.Expect(t, *calls > 0, tc.status != 0)
+		})
+	}
+}
+
+// TestRegisterConfig ensures the browser receives only the public key, with no
+// caching, and registration is unavailable when either key is missing.
+func TestRegisterConfig(t *testing.T) {
+	for _, keys := range []struct {
+		site, secret string
+		status       int
+	}{
+		{"public-key", "private-key", 200}, {"", "private-key", 503}, {"public-key", "", 503},
+	} {
+		// Isolate each configuration from real runtime credentials.
+		t.Run(fmt.Sprintf("%s-%d", keys.site, keys.status), func(t *testing.T) {
+			t.Setenv("TURNSTILE_SITE_KEY", keys.site)
+			t.Setenv("TURNSTILE_SECRET_KEY", keys.secret)
+			controller := &Controller{}
+			router := gin.New()
+			router.GET("/registration-config", controller.RegisterConfig)
+			writer := httptest.NewRecorder()
+			router.ServeHTTP(writer, httptest.NewRequest(http.MethodGet, "/registration-config", nil))
+			// Assert the secret never appears and key rotation is not hidden by caches.
+			st.Expect(t, writer.Code, keys.status)
+			st.Expect(t, writer.Header().Get("Cache-Control"), "no-store")
+			st.Expect(t, strings.Contains(writer.Body.String(), "private-key"), false)
+			if keys.status == 200 {
+				st.Expect(t, writer.Body.String(), `{"site_key":"public-key"}`)
+			}
+		})
+	}
 }
 
 /* End File */

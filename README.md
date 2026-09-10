@@ -48,6 +48,30 @@ The command provides a detailed summary showing:
 - Total accounts deleted
 - Accounts skipped due to email protection rule
 
+## Production deployment and registration security
+
+GitHub Actions (`.github/workflows/fly-deploy.yml`) tests and deploys `master` to
+Fly.io app `app-skyclerk-com`. The Digital Ocean instructions below are historical.
+
+Set GitHub repository secrets `TURNSTILE_SITE_KEY` and `TURNSTILE_SECRET_KEY` from
+1Password item **Cloudflare Turnstile - Skyclerk.com**. The existing `FLY_API_TOKEN`
+authorizes deployment. The workflow requires both Turnstile keys and stages them
+as Fly.io runtime secrets before deploying. No credentials are committed or
+embedded in the frontend build. `/registration-config` exposes only the public key.
+
+Turnstile protects both new accounts and invited registrations. Cloudflare must
+return a successful verification with action `register` and hostname matching
+`SITE_DOMAIN` (`app.skyclerk.com` in production). Ensure the widget allows
+`app.skyclerk.com` in Cloudflare before deployment. Missing configuration or a
+verification outage blocks signup. Failed submissions request a fresh challenge.
+
+For end-to-end local development, use a separate development widget that allows
+`localhost`, put its keys in `backend/.env`, and set `SITE_DOMAIN=localhost`.
+Cloudflare's [dummy keys](https://developers.cloudflare.com/turnstile/troubleshooting/testing/)
+can test the widget UI, but their fixed `test` action does not pass this backend's
+strict `register` action check. There is no `APP_ENV` bypass. Automated tests mock
+verification and never use real Turnstile keys.
+
 # Deploying Servers
 
 * When deploying a server with Digital Ocean copy the following into the `User-Data` filed. It will run Cloud Init when the VPS boots up.

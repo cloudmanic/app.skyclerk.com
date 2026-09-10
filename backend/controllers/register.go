@@ -8,8 +8,11 @@ package controllers
 
 import (
 	"encoding/json"
+	"io"
 	"net/http"
+	"net/url"
 	"os"
+	"strings"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -19,6 +22,9 @@ import (
 	"app.skyclerk.com/backend/models"
 	"app.skyclerk.com/backend/services"
 )
+
+// registerTurnstileClient bounds verification latency and allows isolated HTTP mocks in tests.
+var registerTurnstileClient = &http.Client{Timeout: 10 * time.Second}
 
 const registerStandardErrorMsg = "Something went wrong while logging into your account. Please try again or contact help@skyclerk.com. Sorry for the trouble."
 
@@ -33,13 +39,14 @@ func (t *Controller) DoRegister(c *gin.Context) {
 	decoder := json.NewDecoder(c.Request.Body)
 
 	type RegisterPost struct {
-		First    string `json:"first"`
-		Last     string `json:"last"`
-		Email    string `json:"email"`
-		Company  string `json:"company"`
-		Password string `json:"password"`
-		ClientId string `json:"client_id"`
-		Token    string `json:"token"`
+		First          string `json:"first"`
+		Last           string `json:"last"`
+		Email          string `json:"email"`
+		Company        string `json:"company"`
+		Password       string `json:"password"`
+		ClientId       string `json:"client_id"`
+		Token          string `json:"token"`
+		TurnstileToken string `json:"turnstile_token"`
 	}
 
 	var post RegisterPost
@@ -97,6 +104,13 @@ func (t *Controller) DoRegister(c *gin.Context) {
 			c.JSON(http.StatusBadRequest, gin.H{"error": "Your invite token is not found. Unknown account."})
 			return
 		}
+	}
+
+	// Verify the single-use challenge before creating users, accounts, or sessions.
+	if !verifyRegisterTurnstile(c.Request, post.TurnstileToken) {
+		// Return a recoverable error without exposing the secret or challenge token.
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Please complete the security check and try again."})
+		return
 	}
 
 	// Install new user.
@@ -178,6 +192,63 @@ func (t *Controller) DoRegister(c *gin.Context) {
 
 	// Return success json.
 	c.JSON(200, resObj)
+}
+
+// RegisterConfig exposes only the public widget key, with caching disabled so key
+// rotations take effect on the next page load. Missing configuration fails closed.
+func (t *Controller) RegisterConfig(c *gin.Context) {
+	// Prevent browsers and proxies from retaining a rotated site key.
+	c.Header("Cache-Control", "no-store")
+	// Read runtime configuration rather than embedding credentials in the frontend build.
+	siteKey := os.Getenv("TURNSTILE_SITE_KEY")
+	if siteKey == "" || os.Getenv("TURNSTILE_SECRET_KEY") == "" {
+		// Keep registration unavailable until both sides of verification are configured.
+		c.JSON(http.StatusServiceUnavailable, gin.H{"error": "Registration is temporarily unavailable. Please try again later."})
+		return
+	}
+	// Never include the secret key in the browser response.
+	c.JSON(http.StatusOK, gin.H{"site_key": siteKey})
+}
+
+// verifyRegisterTurnstile validates registration challenges directly with Cloudflare.
+// Failures, malformed responses, and missing configuration always reject signup.
+func verifyRegisterTurnstile(request *http.Request, token string) bool {
+	// Read the secret only on the server; local development also requires verification.
+	secret := os.Getenv("TURNSTILE_SECRET_KEY")
+	if secret == "" || strings.TrimSpace(token) == "" || len(token) > 2048 {
+		return false
+	}
+	form := url.Values{"secret": {secret}, "response": {token}}
+	// Propagate request cancellation and encode credentials in the POST body.
+	verification, err := http.NewRequestWithContext(request.Context(), http.MethodPost,
+		"https://challenges.cloudflare.com/turnstile/v0/siteverify", strings.NewReader(form.Encode()))
+	if err != nil {
+		return false
+	}
+	// Use Cloudflare's supported form encoding.
+	verification.Header.Set("Content-Type", "application/x-www-form-urlencoded")
+	// Bound network delays so an unavailable verification service cannot hang signup.
+	response, err := registerTurnstileClient.Do(verification)
+	if err != nil {
+		return false
+	}
+	// Release the connection regardless of verification outcome.
+	defer response.Body.Close()
+	if response.StatusCode != http.StatusOK {
+		return false
+	}
+	var result struct {
+		Success  bool   `json:"success"`
+		Action   string `json:"action"`
+		Hostname string `json:"hostname"`
+	}
+	// Limit response size and reject malformed JSON or an unexpected widget action.
+	if json.NewDecoder(io.LimitReader(response.Body, 16384)).Decode(&result) != nil || !result.Success || result.Action != "register" {
+		return false
+	}
+	// Bind the challenge to the configured site instead of trusting the request Host.
+	hostname := os.Getenv("SITE_DOMAIN")
+	return hostname != "" && result.Hostname == hostname
 }
 
 /* End File */
