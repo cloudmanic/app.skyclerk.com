@@ -23,7 +23,7 @@ RUN cd centcom/src && export NODE_ENV=production && npx tailwindcss build tailwi
 RUN cd centcom && npm run build -- --configuration=production --base-href="/centcom/"
 
 # Stage 2: Build Go Backend
-FROM golang:1.21-bullseye AS backend-builder
+FROM golang:1.21-bookworm AS backend-builder
 
 # Install build dependencies
 RUN apt-get update && apt-get install -y \
@@ -49,7 +49,7 @@ RUN CGO_ENABLED=1 go build -o skyclerk .
 FROM --platform=linux/amd64 h2non/imaginary:1.1.0 AS imaginary-extractor
 
 # Stage 4: Runtime Image with Imaginary
-FROM debian:bullseye-slim
+FROM debian:bookworm-slim
 
 # Install runtime dependencies including supervisor for multi-process management and libvips
 RUN apt-get update && apt-get install -y \
